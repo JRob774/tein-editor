@@ -37,7 +37,36 @@
 #include <string>
 #include <stack>
 
-#include <external.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_RECT_PACK_IMPLEMENTATION
+#define STB_IMAGE_WRITE_STATIC
+#define STB_IMAGE_STATIC
+#define STBRP_STATIC
+#include <stb_image_write.h>
+#include <stb_image.h>
+#include <stb_rect_pack.h>
+
+#define CURL_STATICLIB
+#include <curl/curl.h>
+
+#include <gon.hpp>
+#include <gon.cpp>
+
+#include <json.hpp>
+
+#include <glad/glad.c>
+#include <glad/glad.h>
 
 #include <utility.hpp>
 #include <version.hpp>
