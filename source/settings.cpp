@@ -59,7 +59,7 @@ FILDEF vec4 internal__get_settings_color (const GonObject& gon, std::string name
     if (did_default) *did_default = true;
 
     // If the color couldn't be found we just return back default.
-    if (!gon.Contains(name) || gon[name].type != GonObject::g_array)
+    if (!gon.Contains(name) || gon[name].type != GonObject::FieldType::ARRAY)
     {
         return default_value;
     }
@@ -148,7 +148,7 @@ FILDEF bool load_editor_settings ()
 
     // If we reach this point and there are no settings then we just use the defaults.
     // This could be the case if the settings failed to load or haven't been modified.
-    if (gon.type != GonObject::g_object)
+    if (gon.type != GonObject::FieldType::OBJECT)
     {
         LOG_DEBUG("No settings file found -- using defaults.");
         gon = GonObject::LoadFromBuffer(SETTINGS_FALLBACK);

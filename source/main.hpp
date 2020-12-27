@@ -60,7 +60,7 @@
 #define CURL_STATICLIB
 #include <curl/curl.h>
 
-#include <gon.hpp>
+#include <gon.h>
 #include <gon.cpp>
 
 #include <json.hpp>
