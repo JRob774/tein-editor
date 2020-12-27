@@ -491,7 +491,7 @@ TEINAPI Window& get_focused_window ()
 
 TEINAPI Window& get_window (std::string name)
 {
-    ASSERT(windows.find(name) != windows.end());
+    assert(windows.find(name) != windows.end());
     return windows.at(name);
 }
 

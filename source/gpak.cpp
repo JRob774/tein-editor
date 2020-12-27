@@ -188,7 +188,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
         return EXIT_FAILURE;
     }
 
-    ASSERT(files.size() == stripped_files.size());
+    assert(files.size() == stripped_files.size());
 
     u32 entry_count = static_cast<u32>(files.size());
     fwrite(&entry_count, sizeof(u32), 1, file);

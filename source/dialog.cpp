@@ -116,7 +116,7 @@ TEINAPI std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect
 #if defined(PLATFORM_WIN32)
 TEINAPI std::string save_dialog (Dialog_Type type)
 {
-    ASSERT(type != Dialog_Type::LVL_CSV);
+    assert(type != Dialog_Type::LVL_CSV);
 
     // NOTE: Used to prevent dialog box clicks from carrying into the editor.
     editor.dialog_box = true;

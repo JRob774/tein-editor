@@ -215,13 +215,13 @@ TEINAPI bool internal__handle_widget (quad b, bool locked)
 
 TEINAPI vec2& internal__get_cursor_ref (Panel& panel)
 {
-    ASSERT(panel.cursor);
+    assert(panel.cursor);
     return *panel.cursor;
 }
 
 TEINAPI vec2 internal__get_cursor (Panel& panel)
 {
-    ASSERT(panel.cursor);
+    assert(panel.cursor);
     return *panel.cursor;
 }
 
@@ -852,7 +852,7 @@ TEINAPI float calculate_button_txt_width (std::string text)
     // Important to return ceiled value otherwise the next button using the
     // cursor to position itself might overlap the previous button by 1px.
     constexpr float X_PADDING = 20;
-    ASSERT(ui_font);
+    assert(ui_font);
     return (ceilf(get_text_width_scaled(*ui_font, text)) + X_PADDING);
 }
 
@@ -861,7 +861,7 @@ TEINAPI float calculate_button_txt_width (std::string text)
 TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_texture);
+    assert(ui_texture);
 
     flags |= ui_panels.top().flags;
 
@@ -957,7 +957,7 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
 TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, std::string text, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_font);
+    assert(ui_font);
 
     flags |= ui_panels.top().flags;
 
@@ -1065,7 +1065,7 @@ TEINAPI bool do_button_txt (UI_Action action, float h, UI_Flag flags, std::strin
 TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, vec4 bg)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_font);
+    assert(ui_font);
 
     UI_Flag flags = ui_panels.top().flags;
 
@@ -1158,7 +1158,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, 
 {
     // Important to return ceiled value otherwise the next label using the
     // cursor to position itself might overlap the previous label by 1px.
-    ASSERT(ui_font);
+    assert(ui_font);
     float w = ceilf(get_text_width_scaled(*ui_font, text));
     return do_label(horz, vert, w, h, text, bg);
 }
@@ -1168,7 +1168,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, 
 TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, vec4 bg)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_font);
+    assert(ui_font);
 
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
@@ -1364,7 +1364,7 @@ TEINAPI float get_markdown_h (float w, std::string text)
 TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, std::string default_text, UI_Align halign)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_font);
+    assert(ui_font);
 
     flags |= ui_panels.top().flags;
     bool locked = (flags & UI_LOCKED);
@@ -1749,7 +1749,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
 TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& text, float label_w, std::string label, std::string default_text, UI_Align halign)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_font);
+    assert(ui_font);
 
     float lw = label_w;
     float tw = w - lw;
@@ -1778,7 +1778,7 @@ TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& 
 TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding& kb)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_font);
+    assert(ui_font);
 
     flags |= ui_panels.top().flags;
     bool locked = (flags & UI_LOCKED);
@@ -1908,7 +1908,7 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding
 TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding& kb)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_font);
+    assert(ui_font);
 
     // Cache the rebind's flags so they are easily accessible.
     flags |= ui_panels.top().flags;
@@ -2353,7 +2353,7 @@ TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_
 TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
-    ASSERT(ui_texture);
+    assert(ui_texture);
 
     flags |= ui_panels.top().flags;
 

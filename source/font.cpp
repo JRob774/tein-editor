@@ -82,7 +82,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
 
     fnt.glyphs.insert(std::pair<int, std::vector<Font_Glyph>>(pt,
         std::vector<Font_Glyph>(TOTAL_GLYPH_COUNT)));
-    ASSERT(fnt.glyphs.at(fnt.current_pt_size).size() == TOTAL_GLYPH_COUNT);
+    assert(fnt.glyphs.at(fnt.current_pt_size).size() == TOTAL_GLYPH_COUNT);
 
     for (int i=0; i<TOTAL_GLYPH_COUNT; ++i)
     {
@@ -146,7 +146,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
 
 TEINAPI bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, std::vector<int> pt, float csz)
 {
-    ASSERT(pt.size());
+    assert(pt.size());
 
     fnt.data.assign(file_data.begin(), file_data.end());
 
@@ -170,7 +170,7 @@ TEINAPI bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, s
 
 TEINAPI bool load_font_from_file (Font& fnt, std::string file_name, std::vector<int> pt, float csz)
 {
-    ASSERT(pt.size());
+    assert(pt.size());
 
     // Build an absolute path to the file based on the executable location.
     file_name = make_path_absolute(file_name);
@@ -292,7 +292,7 @@ TEINAPI float get_text_height_scaled (const Font& fnt, std::string text)
 
 TEINAPI void set_font_point_size (Font& fnt, int pt)
 {
-    ASSERT(fnt.glyphs.find(pt) != fnt.glyphs.end());
+    assert(fnt.glyphs.find(pt) != fnt.glyphs.end());
     internal__set_font_point_size(fnt, pt);
     fnt.current_pt_size = pt;
 }

@@ -9,6 +9,11 @@
 #endif
 #endif
 
+// We do this to disable assert in release.
+#if !defined(BUILD_DEBUG)
+#define NDEBUG
+#endif
+
 #if defined(PLATFORM_WIN32)
 #include <windows.h>
 #include <dbghelp.h>
@@ -19,6 +24,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <cstdio>
+#include <cassert>
 #include <cmath>
 #include <ctime>
 #include <cstring>

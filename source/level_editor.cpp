@@ -1575,7 +1575,7 @@ TEINAPI void add_to_history_normal_state (Level_History_Info info)
 
 TEINAPI void add_to_history_clear_state (Level_History_Info info)
 {
-    ASSERT(internal__get_current_history_state().action == Level_History_Action::CLEAR);
+    assert(internal__get_current_history_state().action == Level_History_Action::CLEAR);
     internal__get_current_history_state().info.push_back(info);
 }
 

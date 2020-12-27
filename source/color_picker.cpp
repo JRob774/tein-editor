@@ -161,7 +161,7 @@ TEINAPI void internal__do_color_preview (vec2& cursor, vec4 c, float size)
 
 TEINAPI void internal__do_swatch_panel (vec2& cursor)
 {
-    ASSERT(current_color_picker_color);
+    assert(current_color_picker_color);
 
     cursor.y += COLOR_PICKER_SWATCH_LG + COLOR_PICKER_YPAD;
 
@@ -314,7 +314,7 @@ TEINAPI void internal__okay_color ()
 
 TEINAPI void internal__save_color_swatch ()
 {
-    ASSERT(current_color_picker_color);
+    assert(current_color_picker_color);
 
     color_picker_swatches.pop_front();
     color_picker_swatches.push_back(*current_color_picker_color);
@@ -322,7 +322,7 @@ TEINAPI void internal__save_color_swatch ()
 
 TEINAPI void internal__cancel_color ()
 {
-    ASSERT(current_color_picker_color);
+    assert(current_color_picker_color);
     *current_color_picker_color = cached_color_picker_color;
 
     hide_window("WINCOLOR");
@@ -347,7 +347,7 @@ TEINAPI void open_color_picker (vec4* color)
     color_picker_active_channel = Channel_Type::INVALID;
     color_picker_mouse_pressed = false;
 
-    ASSERT(color);
+    assert(color);
 
     current_color_picker_color = color;
     cached_color_picker_color = *color;
@@ -408,7 +408,7 @@ TEINAPI void do_color_picker ()
 
     begin_panel(p2, UI_NONE, ui_color_medium);
 
-    ASSERT(current_color_picker_color);
+    assert(current_color_picker_color);
 
     vec4& c = *current_color_picker_color; // So much shorter to type out...
     vec2 cursor(COLOR_PICKER_XPAD, COLOR_PICKER_YPAD);

@@ -32,14 +32,6 @@ struct Defer_Help__
     Defer__<T> operator+ (T type) { return type; }
 };
 
-// @Temporary: Just replace with the actual assert() function call!
-#if defined(BUILD_DEBUG)
-#include <cassert>
-#define ASSERT(e) assert(e)
-#else
-#define ASSERT(e) ((void)0)
-#endif
-
 #define cstd_malloc( t,     sz) (t*)malloc ((sz)     *sizeof(t))
 #define cstd_realloc(t, pt, sz) (t*)realloc((pt),(sz)*sizeof(t))
 #define cstd_calloc( t,     sz) (t*)calloc ((sz),     sizeof(t))

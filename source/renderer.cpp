@@ -175,7 +175,7 @@ TEINAPI void render_clear (vec4 clear)
 
 TEINAPI void render_present ()
 {
-    ASSERT(render_target);
+    assert(render_target);
     if (render_target)
     {
         SDL_GL_SwapWindow(render_target->window);
@@ -259,7 +259,7 @@ TEINAPI Window* get_render_target ()
 TEINAPI void set_render_target (Window* window)
 {
     render_target = window;
-    ASSERT(render_target);
+    assert(render_target);
 
     if (SDL_GL_MakeCurrent(render_target->window, gl_context) < 0)
     {
@@ -695,7 +695,7 @@ TEINAPI void set_text_batch_color (vec4 color)
 
 TEINAPI void draw_batched_tile (float x, float y, const quad* clip)
 {
-    ASSERT(tile_texture);
+    assert(tile_texture);
 
     float cx1 =       (clip->x / tile_texture->w);
     float cy1 =       (clip->y / tile_texture->h);

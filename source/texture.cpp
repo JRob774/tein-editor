@@ -51,7 +51,7 @@ TEINAPI void free_texture (Texture& tex)
 TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Texture_Wrap wrap)
 {
     // Bytes-per-pixel needs to be one of these otherwise we can't use.
-    ASSERT(bpp == 1 || bpp == 2 || bpp == 3 || bpp == 4);
+    assert(bpp == 1 || bpp == 2 || bpp == 3 || bpp == 4);
 
     int max_texture_size = static_cast<int>(get_max_texture_size());
     if (w > max_texture_size || h > max_texture_size)
