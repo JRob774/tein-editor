@@ -96,7 +96,7 @@ FILDEF bool init_renderer ()
         return false;
     }
 
-    if (!load_opengl_procs(SDL_GL_GetProcAddress))
+    if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
     {
         LOG_ERROR(ERR_MIN, "Failed to load OpenGL procedures!");
         return false;

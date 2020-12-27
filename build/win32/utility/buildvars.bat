@@ -17,8 +17,7 @@ set IncludeDirs=           ^
 -I ..\source\              ^
 -I ..\source\external\     ^
 -I ..\source\external\FT2\ ^
--I ..\source\system\       ^
--I ..\source\opengl\
+-I ..\source\system\
 
 set LibraryDirs=-libpath:..\library\win32\%Architecture%\
 

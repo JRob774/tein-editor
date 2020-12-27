@@ -35,13 +35,6 @@
 #include <external.hpp>
 #include <version.hpp>
 
-#define OPENGL_LOAD_GL_VERSION_MAJOR 3
-#define OPENGL_LOAD_GL_VERSION_MINOR 0
-#define OPENGL_USE_COMPATIBILITY_PROFILE
-#define OPENGL_IMPLEMENTATION
-#define OPENGL_STATIC
-#include <opengl.hpp>
-
 #include <utility.hpp>
 #include <alert.hpp>
 #include <debug.hpp>

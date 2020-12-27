@@ -35,11 +35,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_RECT_PACK_IMPLEMENTATION
-
 #define STB_IMAGE_WRITE_STATIC
 #define STB_IMAGE_STATIC
 #define STBRP_STATIC
-
 #include <STB/stb_image_write.h>
 #include <STB/stb_image.h>
 #include <STB/stb_rect_pack.h>
@@ -51,6 +49,9 @@
 #include <GON/gon.cpp>
 
 #include <JSON/json.hpp>
+
+#include <GLAD/glad/glad.h>
+#include <GLAD/glad/glad.c>
 
 /* -------------------------------------------------------------------------- */
 
