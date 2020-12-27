@@ -25,7 +25,7 @@ struct Texture
     vec4   color;
 };
 
-TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_data, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
+TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<U8>& file_data, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
 TEINAPI bool load_texture_from_file (Texture& tex, std::string            file_name, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
 
 TEINAPI void free_texture (Texture& tex);

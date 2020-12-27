@@ -112,7 +112,7 @@ TEINAPI Shader load_shader_from_file (std::string file_name)
     return shader;
 }
 
-TEINAPI Shader load_shader_from_data (const std::vector<u8>& file_data)
+TEINAPI Shader load_shader_from_data (const std::vector<U8>& file_data)
 {
     std::string source(file_data.begin(), file_data.end());
     return load_shader_from_source(source);

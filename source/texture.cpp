@@ -9,13 +9,13 @@
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_data, Texture_Wrap wrap)
+TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<U8>& file_data, Texture_Wrap wrap)
 {
     const stbi_uc* buffer = &file_data[0];
     int size = static_cast<int>(file_data.size());
 
     int w, h, bpp;
-    u8* raw_data = stbi_load_from_memory(buffer, size, &w, &h, &bpp, 0);
+    U8* raw_data = stbi_load_from_memory(buffer, size, &w, &h, &bpp, 0);
     if (!raw_data)
     {
         LOG_ERROR(ERR_MIN, "Failed to load texture from data!");
@@ -32,7 +32,7 @@ TEINAPI bool load_texture_from_file (Texture& tex, std::string file_name, Textur
     file_name = make_path_absolute(file_name);
 
     int w, h, bpp;
-    u8* raw_data = stbi_load(file_name.c_str(), &w, &h, &bpp, 0);
+    U8* raw_data = stbi_load(file_name.c_str(), &w, &h, &bpp, 0);
     if (!raw_data)
     {
         LOG_ERROR(ERR_MIN, "Failed to load texture '%s'!", file_name.c_str());

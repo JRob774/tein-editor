@@ -30,7 +30,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     list_path_files(make_path_absolute(path).c_str(), files, true);
 
     // We will be loading all textures in the same 8-bit component RGBA format.
-    constexpr u32 SURFACE_FORMAT  = SDL_PIXELFORMAT_RGBA32;
+    constexpr U32 SURFACE_FORMAT  = SDL_PIXELFORMAT_RGBA32;
     constexpr int BYTES_PER_PIXEL = 4;
     constexpr int BITS_PER_PIXEL  = BYTES_PER_PIXEL * 8;
 
@@ -40,7 +40,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     // We must also keep the raw texture data until we are done with the SDL
     // surfaces as they do not make a copy of the pixel data during creation.
     SDL_Surface** surfaces = Malloc(SDL_Surface*, surface_count);
-    u8** raw_data = Malloc(u8*, surface_count);
+    U8** raw_data = Malloc(U8*, surface_count);
     if (!surfaces || !raw_data)
     {
         LOG_ERROR(ERR_MIN, "Failed to allocate texture atlas surfaces!");
@@ -48,7 +48,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     }
 
     memset(surfaces, 0, sizeof(SDL_Surface*)*surface_count);
-    memset(raw_data, 0, sizeof(u8*)*surface_count);
+    memset(raw_data, 0, sizeof(U8*)*surface_count);
 
     Defer
     {

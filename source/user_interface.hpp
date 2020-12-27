@@ -26,12 +26,12 @@ static vec4 ui_color_white;
 
 /* -------------------------------------------------------------------------- */
 
-static constexpr u32 UI_CURSOR_BLINK_INTERVAL = 700;
+static constexpr U32 UI_CURSOR_BLINK_INTERVAL = 700;
 
 // The function type that is called by various UI widgets when triggered.
 typedef void (*UI_Action)(void);
 
-typedef u32 UI_Flag;
+typedef U32 UI_Flag;
 
 static constexpr UI_Flag UI_NONE       = 0x00000000;
 static constexpr UI_Flag UI_LOCKED     = 0x00000001;

@@ -40,14 +40,14 @@ struct DeferHelp
 #define Malloc(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
 #define Free(pt) free((pt))
 
-typedef  uint8_t  u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
-typedef   int8_t  s8;
-typedef  int16_t s16;
-typedef  int32_t s32;
-typedef  int64_t s64;
+typedef  uint8_t  U8;
+typedef uint16_t U16;
+typedef uint32_t U32;
+typedef uint64_t U64;
+typedef   int8_t  S8;
+typedef  int16_t S16;
+typedef  int32_t S32;
+typedef  int64_t S64;
 
 typedef glm::vec2   vec2;
 typedef glm::vec3   vec3;
@@ -68,7 +68,7 @@ struct quad
     union { float h, y2; };
 };
 
-TEINAPI std::vector<u8> read_binary_file (std::string file_name);
+TEINAPI std::vector<U8> read_binary_file (std::string file_name);
 TEINAPI std::string     read_entire_file (std::string file_name);
 
 TEINAPI std::string get_executable_path ();
@@ -89,9 +89,9 @@ TEINAPI bool is_path_absolute (std::string path_name);
 TEINAPI bool is_file (std::string file_name);
 TEINAPI bool is_path (std::string path_name);
 
-TEINAPI u64 last_file_write_time (std::string file_name);
+TEINAPI U64 last_file_write_time (std::string file_name);
 
-TEINAPI int compare_file_write_times (u64 a, u64 b);
+TEINAPI int compare_file_write_times (U64 a, U64 b);
 
 TEINAPI std::string make_path_absolute (std::string path_name);
 TEINAPI std::string fix_path_slashes   (std::string path_name);

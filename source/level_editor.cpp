@@ -2262,13 +2262,13 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
     }
     else
     {
-        u64 oldest = UINT64_MAX;
+        U64 oldest = UINT64_MAX;
         int oldest_index = 0;
 
         for (int i=0; i<level_count; ++i)
         {
             std::string name(backup_name + std::to_string(i) + ".lvl");
-            u64 current = last_file_write_time(name);
+            U64 current = last_file_write_time(name);
             if (compare_file_write_times(current, oldest) == -1)
             {
                 oldest = current;

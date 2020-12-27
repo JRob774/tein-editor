@@ -13,7 +13,7 @@ static constexpr size_t DIALOG_BUFFER_SIZE = UINT16_MAX+1;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI u32 internal__dialog_cooldown_callback (u32 interval, void* user_data)
+TEINAPI U32 internal__dialog_cooldown_callback (U32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_COOLDOWN, NULL, NULL);
     return 0;

@@ -72,17 +72,17 @@ TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
     Defer { fclose(file); };
 
     std::vector<GPAK_Entry> entries;
-    u32 entry_count;
+    U32 entry_count;
 
-    fread(&entry_count, sizeof(u32), 1, file);
+    fread(&entry_count, sizeof(32), 1, file);
     entries.resize(entry_count);
 
     for (auto& e: entries)
     {
-        fread(&e.name_length, sizeof(u16),  1,             file);
+        fread(&e.name_length, sizeof(U16),  1,             file);
         e.name.resize(e.name_length);
         fread(&e.name[0],     sizeof(char), e.name_length, file);
-        fread(&e.file_size,   sizeof(u32),  1,             file);
+        fread(&e.file_size,   sizeof(U32),  1,             file);
 
         if (args->cancel.load()) // Cancel!
         {
@@ -98,15 +98,15 @@ TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
     }
     )->file_size;
 
-    std::vector<u8> file_buffer;
+    std::vector<U8> file_buffer;
     file_buffer.resize(max_size);
 
-    u32 entries_unpacked = 0;
+    U32 entries_unpacked = 0;
 
     std::string base_path(strip_file_name(file_name));
     for (auto& e: entries)
     {
-        fread(&file_buffer[0], sizeof(u8), e.file_size, file);
+        fread(&file_buffer[0], sizeof(U8), e.file_size, file);
 
         std::string full_file_name(base_path + e.name);
         std::string full_file_path(strip_file_name(full_file_name));
@@ -120,7 +120,7 @@ TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
             FILE* output = fopen(full_file_name.c_str(), "wb");
             if (output)
             {
-                fwrite(&file_buffer[0], sizeof(u8), e.file_size, output);
+                fwrite(&file_buffer[0], sizeof(U8), e.file_size, output);
                 fclose(output);
             }
         }
@@ -190,23 +190,23 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
 
     assert(files.size() == stripped_files.size());
 
-    u32 entry_count = static_cast<u32>(files.size());
-    fwrite(&entry_count, sizeof(u32), 1, file);
+    U32 entry_count = static_cast<U32>(files.size());
+    fwrite(&entry_count, sizeof(U32), 1, file);
 
-    u32 entries_packed = 0;
+    U32 entries_packed = 0;
 
     size_t max_size = 0;
     for (size_t i=0; i<files.size(); ++i)
     {
         std::string name = stripped_files.at(i);
-        u16 name_length  = static_cast<u16>(name.length());
-        u32 file_size    = static_cast<u32>(get_size_of_file(files.at(i)));
+        U16 name_length  = static_cast<U16>(name.length());
+        U32 file_size    = static_cast<U32>(get_size_of_file(files.at(i)));
 
         max_size = std::max(max_size, static_cast<size_t>(file_size));
 
-        fwrite(&name_length, sizeof(u16),  1,           file);
+        fwrite(&name_length, sizeof(U16),  1,           file);
         fwrite(name.c_str(), sizeof(char), name_length, file);
-        fwrite(&file_size,   sizeof(u32),  1,           file);
+        fwrite(&file_size,   sizeof(U32),  1,           file);
 
         ++entries_packed;
         args->progress.store(((static_cast<float>(entries_packed) / static_cast<float>(entry_count)) / 2));
@@ -218,11 +218,11 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
         }
     }
 
-    std::vector<u8> file_buffer;
+    std::vector<U8> file_buffer;
     file_buffer.resize(max_size);
 
-    u32 file_count = static_cast<u32>(files.size());
-    u32 files_packed = 0;
+    U32 file_count = static_cast<U32>(files.size());
+    U32 files_packed = 0;
 
     for (auto& f: files)
     {
@@ -230,8 +230,8 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
         if (input)
         {
             size_t file_size = get_size_of_file(input);
-            fread (&file_buffer[0], sizeof(u8), file_size, input);
-            fwrite(&file_buffer[0], sizeof(u8), file_size, file);
+            fread (&file_buffer[0], sizeof(U8), file_size, input);
+            fwrite(&file_buffer[0], sizeof(U8), file_size, file);
             fclose(input);
         }
 

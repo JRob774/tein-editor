@@ -42,7 +42,7 @@ TEINAPI Tab& internal__create_new_tab_and_focus (Tab_Type type)
     return tab;
 }
 
-TEINAPI u32 internal__backup_callback (u32 interval, void* user_data)
+TEINAPI U32 internal__backup_callback (U32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_BACKUP_TAB, NULL, NULL);
 
@@ -438,8 +438,8 @@ TEINAPI void update_backup_timer ()
         if (editor_settings.backup_interval > 0)
         {
             // Avoid any issues with overflows.
-            u32 backup_interval = static_cast<u32>(editor_settings.backup_interval)*1000;
-            if (static_cast<u64>(editor_settings.backup_interval)*1000 > INT_MAX)
+            U32 backup_interval = static_cast<U32>(editor_settings.backup_interval)*1000;
+            if (static_cast<U64>(editor_settings.backup_interval)*1000 > INT_MAX)
             {
                 backup_interval = INT_MAX;
             }

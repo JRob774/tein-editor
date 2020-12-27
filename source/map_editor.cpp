@@ -76,7 +76,7 @@ TEINAPI ivec2 internal__mouse_to_node_position_int ()
     return ivec2(static_cast<int>(m.x), static_cast<int>(m.y));
 }
 
-TEINAPI u32 internal__map_cursor_blink_callback (u32 interval, void* user_data)
+TEINAPI U32 internal__map_cursor_blink_callback (U32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
     return interval;
@@ -1150,13 +1150,13 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
     }
     else
     {
-        u64 oldest = UINT64_MAX;
+        U64 oldest = UINT64_MAX;
         int oldest_index = 0;
 
         for (int i=0; i<map_count; ++i)
         {
             std::string name(backup_name + std::to_string(i) + ".csv");
-            u64 current = last_file_write_time(name);
+            U64 current = last_file_write_time(name);
             if (current < oldest)
             {
                 oldest = current;

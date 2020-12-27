@@ -20,11 +20,11 @@ static constexpr int         MAIN_WINDOW_BASE_W = 1280;
 static constexpr int         MAIN_WINDOW_BASE_H =  722; // +2 so the info panel doesn't shift the layer panel!
 static constexpr int         MAIN_WINDOW_MIN_W  =  600;
 static constexpr int         MAIN_WINDOW_MIN_H  =  320;
-static constexpr u32         MAIN_WINDOW_FLAGS  = SDL_WINDOW_RESIZABLE;
+static constexpr U32         MAIN_WINDOW_FLAGS  = SDL_WINDOW_RESIZABLE;
 
 static constexpr float WINDOW_BORDER = 4.0f;
 
-typedef u32 Window_ID;
+typedef U32 Window_ID;
 struct      Window;
 
 TEINAPI bool init_window ();
@@ -68,7 +68,7 @@ struct Window
     float height;
 };
 
-TEINAPI bool create_window (std::string name, std::string title, int x, int y, int w, int h, int min_w = 0, int min_h = 0, u32 flags = 0);
+TEINAPI bool create_window (std::string name, std::string title, int x, int y, int w, int h, int min_w = 0, int min_h = 0, U32 flags = 0);
 
 TEINAPI bool is_window_hidden  (std::string name);
 TEINAPI bool is_window_focused (std::string name);

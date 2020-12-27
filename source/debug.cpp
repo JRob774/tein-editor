@@ -17,7 +17,7 @@ static FILE* debug_log;
 struct Debug_Timer
 {
     std::string  name;
-    u64 start_counter;
+    U64 start_counter;
 };
 
 static std::stack<Debug_Timer> debug_timers;
@@ -110,8 +110,8 @@ TEINAPI void end_debug_timer ()
     Debug_Timer timer = debug_timers.top();
     debug_timers.pop();
 
-    u64   start_counter = timer.start_counter;
-    u64   end_counter   = SDL_GetPerformanceCounter();
+    U64   start_counter = timer.start_counter;
+    U64   end_counter   = SDL_GetPerformanceCounter();
     float frequency     = static_cast<float>(SDL_GetPerformanceFrequency());
     float elapsed       = static_cast<float>(end_counter-start_counter);
     float seconds       = elapsed / frequency;

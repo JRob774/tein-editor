@@ -22,7 +22,7 @@ static SDL_TimerID tooltip_timer;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI u32 internal__tooltip_callback (u32 interval, void* user_data)
+TEINAPI U32 internal__tooltip_callback (U32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_SHOW_TOOLTIP, NULL, NULL);
     return 0;
@@ -56,7 +56,7 @@ TEINAPI void set_current_tooltip (std::string name, std::string desc)
     tooltip_name = name;
     tooltip_desc = desc;
 
-    tooltip_timer = SDL_AddTimer(static_cast<u32>(TOOLTIP_APPEAR_TIME*1000), internal__tooltip_callback, NULL);
+    tooltip_timer = SDL_AddTimer(static_cast<U32>(TOOLTIP_APPEAR_TIME*1000), internal__tooltip_callback, NULL);
     if (!tooltip_timer)
     {
         LOG_ERROR(ERR_MIN, "Failed to setup tooltip timer! (%s)", SDL_GetError());

@@ -24,9 +24,9 @@ enum class GPAK_Error
 
 struct GPAK_Entry
 {
-    u16  name_length;
+    U16  name_length;
     std::string name;
-    u32    file_size;
+    U32    file_size;
 };
 
 /* -------------------------------------------------------------------------- */

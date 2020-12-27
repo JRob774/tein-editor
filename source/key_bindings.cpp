@@ -452,7 +452,7 @@ TEINAPI bool is_key_mod_state_active (int mod)
 TEINAPI bool is_key_code_active (int code)
 {
     int key_count; // So we know the length of the returned array.
-    const u8* key_state = SDL_GetKeyboardState(&key_count);
+    const U8* key_state = SDL_GetKeyboardState(&key_count);
     // Need to convert the keycode to a scancode for this.
     SDL_Scancode scan = SDL_GetScancodeFromKey(code);
     return (scan < key_count) ? key_state[scan] : false;

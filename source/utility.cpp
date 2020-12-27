@@ -12,12 +12,12 @@ TEINAPI HWND internal__win32_get_window_handle (SDL_Window* window)
 }
 #endif
 
-TEINAPI std::vector<u8> read_binary_file (std::string file_name)
+TEINAPI std::vector<U8> read_binary_file (std::string file_name)
 {
     std::ifstream file(file_name, std::ios::binary);
-    std::vector<u8> content;
+    std::vector<U8> content;
     content.resize(get_size_of_file(file_name));
-    file.read(reinterpret_cast<char*>(&content[0]), content.size()*sizeof(u8));
+    file.read(reinterpret_cast<char*>(&content[0]), content.size()*sizeof(U8));
     return content;
 }
 
@@ -210,7 +210,7 @@ TEINAPI bool is_path (std::string path_name)
 }
 
 #if defined(PLATFORM_WIN32)
-TEINAPI u64 last_file_write_time (std::string file_name)
+TEINAPI U64 last_file_write_time (std::string file_name)
 {
     WIN32_FILE_ATTRIBUTE_DATA attributes;
     ULARGE_INTEGER write_time = {};
@@ -226,7 +226,7 @@ TEINAPI u64 last_file_write_time (std::string file_name)
 #endif
 
 #if defined(PLATFORM_WIN32)
-TEINAPI int compare_file_write_times (u64 a, u64 b)
+TEINAPI int compare_file_write_times (U64 a, U64 b)
 {
     ULARGE_INTEGER a2, b2;
     FILETIME a3, b3;

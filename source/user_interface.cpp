@@ -46,7 +46,7 @@ struct Panel
 
 /* -------------------------------------------------------------------------- */
 
-typedef u32 UI_ID;
+typedef U32 UI_ID;
 
 static constexpr UI_ID UI_INVALID_ID = UINT32_MAX;
 
@@ -84,7 +84,7 @@ static Window_ID ui_text_box_tab_window_id;
 static bool      ui_make_next_text_box_active;
 static bool      ui_tab_handled;
 
-enum class UI_Text_Event_Type: u32 { TEXT, KEY };
+enum class UI_Text_Event_Type: U32 { TEXT, KEY };
 
 struct UI_Text_Event
 {
@@ -101,7 +101,7 @@ static bool        ui_cursor_visible;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI u32 internal__cursor_blink_callback (u32 interval, void* user_data)
+TEINAPI U32 internal__cursor_blink_callback (U32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
     return interval;

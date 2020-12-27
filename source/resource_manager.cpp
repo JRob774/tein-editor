@@ -16,7 +16,7 @@ static std::string resource_location;
 static std::string current_editor_font;
 
 // Maps file names to the data that was stored within the editor GPAK.
-static std::map<std::string, std::vector<u8>> gpak_resource_lookup;
+static std::map<std::string, std::vector<U8>> gpak_resource_lookup;
 
 /* -------------------------------------------------------------------------- */
 
@@ -35,25 +35,25 @@ TEINAPI bool init_resource_manager ()
     Defer { fclose(gpak); };
 
     std::vector<GPAK_Entry> entries;
-    u32 entry_count;
+    U32 entry_count;
 
-    fread(&entry_count, sizeof(u32), 1, gpak);
+    fread(&entry_count, sizeof(U32), 1, gpak);
     entries.resize(entry_count);
 
     for (auto& e: entries)
     {
-        fread(&e.name_length, sizeof(u16),  1,             gpak);
+        fread(&e.name_length, sizeof(U16),  1,             gpak);
         e.name.resize(e.name_length);
         fread(&e.name[0],     sizeof(char), e.name_length, gpak);
-        fread(&e.file_size,   sizeof(u32),  1,             gpak);
+        fread(&e.file_size,   sizeof(U32),  1,             gpak);
     }
 
-    std::vector<u8> file_buffer;
+    std::vector<U8> file_buffer;
     for (auto& e: entries)
     {
         file_buffer.resize(e.file_size);
-        fread(&file_buffer[0], sizeof(u8), e.file_size, gpak);
-        gpak_resource_lookup.insert(std::pair<std::string, std::vector<u8>>(e.name, file_buffer));
+        fread(&file_buffer[0], sizeof(U8), e.file_size, gpak);
+        gpak_resource_lookup.insert(std::pair<std::string, std::vector<U8>>(e.name, file_buffer));
     }
 
     LOG_DEBUG("Loaded Editor GPAK");
@@ -105,7 +105,7 @@ TEINAPI Shader load_shader_resource (std::string file_name)
     else return load_shader_from_data(gpak_resource_lookup[file_name]);
 }
 
-TEINAPI std::vector<u8> load_binary_resource (std::string file_name)
+TEINAPI std::vector<U8> load_binary_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return read_binary_file(abs_file_name);

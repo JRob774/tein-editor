@@ -34,7 +34,7 @@ static float update_dialog_scroll_offset;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI u32 internal__update_show_callback (u32 interval, void* user_data)
+TEINAPI U32 internal__update_show_callback (U32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_SHOW_UPDATE, NULL, NULL);
     return 0;
@@ -119,7 +119,7 @@ TEINAPI void check_for_updates ()
 TEINAPI void open_update_window_timed ()
 {
     // Looked weird showing immediately so we put it on a timer.
-    u32 interval = static_cast<u32>((UPDATE_DIALOG_WAIT_TIME * 1000));
+    U32 interval = static_cast<U32>((UPDATE_DIALOG_WAIT_TIME * 1000));
     update_timer = SDL_AddTimer(interval, internal__update_show_callback, NULL);
     if (!update_timer) open_update_window(); // Just show it immediately.
 }

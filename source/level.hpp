@@ -18,7 +18,7 @@ static constexpr int   MINIMUM_LEVEL_HEIGHT = 32;
 static constexpr int   MAXIMUM_LEVEL_WIDTH  = 2840;
 static constexpr int   MAXIMUM_LEVEL_HEIGHT = 2840;
 
-typedef u32 Level_Layer;
+typedef U32 Level_Layer;
 
 static constexpr Level_Layer LEVEL_LAYER_TAG     = 0;
 static constexpr Level_Layer LEVEL_LAYER_OVERLAY = 1;
@@ -27,14 +27,14 @@ static constexpr Level_Layer LEVEL_LAYER_BACK1   = 3;
 static constexpr Level_Layer LEVEL_LAYER_BACK2   = 4;
 static constexpr Level_Layer LEVEL_LAYER_TOTAL   = 5;
 
-typedef s32 Tile_ID;
+typedef S32 Tile_ID;
 
 struct Level_Header
 {
-    s32 version;
-    s32 width;
-    s32 height;
-    s32 layers;
+    S32 version;
+    S32 width;
+    S32 height;
+    S32 layers;
 };
 
 typedef std::array<std::vector<Tile_ID>, LEVEL_LAYER_TOTAL> Level_Data;

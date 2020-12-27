@@ -79,7 +79,7 @@ TEINAPI void init_application (int argc, char** argv)
         return;
     }
 
-    u32 sdl_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
+    U32 sdl_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
     if (SDL_Init(sdl_flags) != 0)
     {
         LOG_ERROR(ERR_MAX, "Failed to initialize SDL! (%s)", SDL_GetError());

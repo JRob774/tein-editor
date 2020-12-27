@@ -192,7 +192,7 @@ TEINAPI void internal__save_window_state ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI bool create_window (std::string name, std::string title, int x, int y, int w, int h, int min_w, int min_h, u32 flags)
+TEINAPI bool create_window (std::string name, std::string title, int x, int y, int w, int h, int min_w, int min_h, U32 flags)
 {
     if (windows.find(name) != windows.end())
     {

@@ -34,7 +34,7 @@ struct Font
     // from data. This is because FT_New_Memory_Face does not copy over
     // the data passed into it so the pointer provided must remain valid
     // until we are done with the font face and finally call FT_Done_Face.
-    std::vector<u8> data;
+    std::vector<U8> data;
 
     std::map<int, std::vector<Font_Glyph>> glyphs;
 
@@ -52,7 +52,7 @@ struct Font
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
+TEINAPI bool load_font_from_data (Font& fnt, const std::vector<U8>& file_data, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
 TEINAPI bool load_font_from_file (Font& fnt, std::string            file_name, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
 TEINAPI void free_font           (Font& fnt);
 

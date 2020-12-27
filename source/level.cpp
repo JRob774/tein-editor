@@ -26,10 +26,10 @@ constexpr Level_Layer LEVEL_IO_ORDER[LEVEL_LAYER_TOTAL]
 
 TEINAPI bool internal__load_level (FILE* file, Level& level)
 {
-    fread(&level.header.version, sizeof(s32), 1, file);
-    fread(&level.header.width  , sizeof(s32), 1, file);
-    fread(&level.header.height , sizeof(s32), 1, file);
-    fread(&level.header.layers , sizeof(s32), 1, file);
+    fread(&level.header.version, sizeof(S32), 1, file);
+    fread(&level.header.width  , sizeof(S32), 1, file);
+    fread(&level.header.height , sizeof(S32), 1, file);
+    fread(&level.header.layers , sizeof(S32), 1, file);
 
     level.header.version = SDL_SwapBE32(level.header.version);
     level.header.width   = SDL_SwapBE32(level.header.width  );
@@ -43,8 +43,8 @@ TEINAPI bool internal__load_level (FILE* file, Level& level)
         return false;
     }
 
-    s32 lw = level.header.width;
-    s32 lh = level.header.height;
+    S32 lw = level.header.width;
+    S32 lh = level.header.height;
 
     for (int i=0; i<LEVEL_LAYER_TOTAL; ++i)
     {
@@ -62,15 +62,15 @@ TEINAPI bool internal__load_level (FILE* file, Level& level)
 
 TEINAPI void internal__save_level (FILE* file, const Level& level)
 {
-    s32 version = SDL_SwapBE32(level.header.version);
-    s32 width   = SDL_SwapBE32(level.header.width  );
-    s32 height  = SDL_SwapBE32(level.header.height );
-    s32 layers  = SDL_SwapBE32(level.header.layers );
+    S32 version = SDL_SwapBE32(level.header.version);
+    S32 width   = SDL_SwapBE32(level.header.width  );
+    S32 height  = SDL_SwapBE32(level.header.height );
+    S32 layers  = SDL_SwapBE32(level.header.layers );
 
-    fwrite(&version, sizeof(s32), 1, file);
-    fwrite(&width  , sizeof(s32), 1, file);
-    fwrite(&height , sizeof(s32), 1, file);
-    fwrite(&layers , sizeof(s32), 1, file);
+    fwrite(&version, sizeof(S32), 1, file);
+    fwrite(&width  , sizeof(S32), 1, file);
+    fwrite(&height , sizeof(S32), 1, file);
+    fwrite(&layers , sizeof(S32), 1, file);
 
     for (int i=0; i<LEVEL_LAYER_TOTAL; ++i)
     {
@@ -184,8 +184,8 @@ TEINAPI bool create_blank_level (Level& level, int w, int h)
     level.header.height  = h;
     level.header.layers  = LEVEL_LAYER_TOTAL;
 
-    s32 lw = level.header.width;
-    s32 lh = level.header.height;
+    S32 lw = level.header.width;
+    S32 lh = level.header.height;
 
     for (auto& layer: level.data) layer.assign(lw*lh, 0);
 

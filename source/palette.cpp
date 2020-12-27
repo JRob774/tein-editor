@@ -36,8 +36,8 @@ TEINAPI void init_palette_lookup ()
         PATH_EPIC_X64, PATH_EPIC_X86,
     };
 
-    std::vector<u8> palette_data;
-    std::vector<u8> tileset_data;
+    std::vector<U8> palette_data;
+    std::vector<U8> tileset_data;
 
     for (auto& path: PATHS)
     {
@@ -64,23 +64,23 @@ TEINAPI void init_palette_lookup ()
                 {
                     Defer { fclose(file); };
 
-                    u32 entry_count;
-                    fread(&entry_count, sizeof(u32), 1, file);
+                    U32 entry_count;
+                    fread(&entry_count, sizeof(U32), 1, file);
                     entries.resize(entry_count);
 
                     for (auto& e: entries)
                     {
-                        fread(&e.name_length, sizeof(u16),  1,             file);
+                        fread(&e.name_length, sizeof(U16),  1,             file);
                         e.name.resize(e.name_length);
                         fread(&e.name[0],     sizeof(char), e.name_length, file);
-                        fread(&e.file_size,   sizeof(u32),  1,             file);
+                        fread(&e.file_size,   sizeof(U32),  1,             file);
                     }
 
-                    std::vector<u8> file_buffer;
+                    std::vector<U8> file_buffer;
                     for (auto& e: entries)
                     {
                         file_buffer.resize(e.file_size);
-                        fread(&file_buffer[0], sizeof(u8), e.file_size, file);
+                        fread(&file_buffer[0], sizeof(U8), e.file_size, file);
                         if (palette_data.empty() && e.name == PALETTE_FILE)
                         {
                             palette_data = file_buffer;
@@ -106,7 +106,7 @@ TEINAPI void init_palette_lookup ()
     constexpr int BPP = 4;
 
     int w, h, bpp;
-    u8* palette = stbi_load_from_memory(&palette_data[0], static_cast<int>(palette_data.size()), &w, &h, &bpp, BPP);
+    U8* palette = stbi_load_from_memory(&palette_data[0], static_cast<int>(palette_data.size()), &w, &h, &bpp, BPP);
     if (!palette)
     {
         LOG_ERROR(ERR_MIN, "Failed to load palette data for the map editor!");

@@ -41,7 +41,7 @@ TEINAPI bool internal__load_cursor (Cursor cursor, const char* file_name, int x,
     // rather not because no one will want to use cursors with giant white
     // boxes around them... So instead we just fail and instead fallback to
     // using the standard operating system cursor instead of custom cursors.
-    u32 color_key = SDL_MapRGB(surface->format, 0xFF,0x00,0xFF);
+    U32 color_key = SDL_MapRGB(surface->format, 0xFF,0x00,0xFF);
     if (SDL_SetColorKey(surface, SDL_TRUE, color_key) < 0)
     {
         LOG_ERROR(ERR_MIN, "Failed to color key cursor '%s'!", file_name);
