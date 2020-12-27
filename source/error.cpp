@@ -36,7 +36,7 @@ FILDEF LONG WINAPI internal__unhandled_exception_filter (struct _EXCEPTION_POINT
         mini_dump_info.ExceptionPointers = info;
         mini_dump_info.ClientPointers    = TRUE;
 
-        MINIDUMP_TYPE type = CAST(MINIDUMP_TYPE, MiniDumpWithFullMemory|MiniDumpWithHandleData);
+        MINIDUMP_TYPE type = static_cast<MINIDUMP_TYPE>(MiniDumpWithFullMemory|MiniDumpWithHandleData);
         MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(),
             file, type, &mini_dump_info, NULL, NULL);
     }

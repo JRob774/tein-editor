@@ -73,7 +73,7 @@ FILDEF ivec2 internal__mouse_to_node_position_int ()
     m.x = floorf((m.x - map_editor.bounds.x) / MAP_NODE_W);
     m.y = floorf((m.y - map_editor.bounds.y) / MAP_NODE_H);
 
-    return ivec2(CAST(int, m.x), CAST(int, m.y));
+    return ivec2(static_cast<int>(m.x), static_cast<int>(m.y));
 }
 
 FILDEF u32 internal__map_cursor_blink_callback (u32 interval, void* user_data)
@@ -232,8 +232,8 @@ FILDEF void internal__draw_map_clipboard ()
 
     for (auto node: map_editor.clipboard)
     {
-        float nx = CAST(float, node.x + m.x) * MAP_NODE_W;
-        float ny = CAST(float, node.y + m.y) * MAP_NODE_H;
+        float nx = static_cast<float>(node.x + m.x) * MAP_NODE_W;
+        float ny = static_cast<float>(node.y + m.y) * MAP_NODE_H;
 
         float x1 = nx;
         float y1 = ny;
@@ -381,8 +381,8 @@ FILDEF void do_map_editor ()
     set_text_batch_font(fnt);
     for (auto node: tab.map)
     {
-        float nx = CAST(float, node.x) * MAP_NODE_W;
-        float ny = CAST(float, node.y) * MAP_NODE_H;
+        float nx = static_cast<float>(node.x) * MAP_NODE_W;
+        float ny = static_cast<float>(node.y) * MAP_NODE_H;
 
         float x1 = nx;
         float y1 = ny;
@@ -478,7 +478,7 @@ FILDEF void do_map_editor ()
         }
         else
         {
-            if (CAST(int, m.x) == node.x && CAST(int, m.y) == node.y)
+            if (static_cast<int>(m.x) == node.x && static_cast<int>(m.y) == node.y)
             {
                 set_current_tooltip(node.lvl);
             }
@@ -517,8 +517,8 @@ FILDEF void do_map_editor ()
         {
             std::string text = (tab.map_node_info.active) ? tab.map_node_info.active->lvl : "";
 
-            float nx = CAST(float, tab.map_node_info.active_pos.x) * MAP_NODE_W;
-            float ny = CAST(float, tab.map_node_info.active_pos.y) * MAP_NODE_H;
+            float nx = static_cast<float>(tab.map_node_info.active_pos.x) * MAP_NODE_W;
+            float ny = static_cast<float>(tab.map_node_info.active_pos.y) * MAP_NODE_H;
 
             float x1 = nx;
             float y1 = ny;
@@ -1203,7 +1203,7 @@ FILDEF float get_min_map_bounds_x ()
                     {
                         if (node.x < x)
                         {
-                            x = CAST(float, node.x);
+                            x = static_cast<float>(node.x);
                         }
                     }
                 }
@@ -1230,7 +1230,7 @@ FILDEF float get_min_map_bounds_y ()
                     {
                         if (node.y < y)
                         {
-                            y = CAST(float, node.y);
+                            y = static_cast<float>(node.y);
                         }
                     }
                 }
@@ -1254,7 +1254,7 @@ FILDEF float get_max_map_bounds_x ()
                 {
                     if (node.x > x)
                     {
-                        x = CAST(float, node.x);
+                        x = static_cast<float>(node.x);
                     }
                 }
             }
@@ -1277,7 +1277,7 @@ FILDEF float get_max_map_bounds_y ()
                 {
                     if (node.y > y)
                     {
-                        y = CAST(float, node.y);
+                        y = static_cast<float>(node.y);
                     }
                 }
             }
@@ -1397,10 +1397,10 @@ FILDEF void me_select_all ()
     {
         internal__deselect_active_node();
 
-        int x1 = CAST(int, get_min_map_bounds_x()/MAP_NODE_W);
-        int y1 = CAST(int, get_min_map_bounds_y()/MAP_NODE_H);
-        int x2 = CAST(int, get_max_map_bounds_x()/MAP_NODE_W);
-        int y2 = CAST(int, get_max_map_bounds_y()/MAP_NODE_H);
+        int x1 = static_cast<int>(get_min_map_bounds_x()/MAP_NODE_W);
+        int y1 = static_cast<int>(get_min_map_bounds_y()/MAP_NODE_H);
+        int x2 = static_cast<int>(get_max_map_bounds_x()/MAP_NODE_W);
+        int y2 = static_cast<int>(get_max_map_bounds_y()/MAP_NODE_H);
 
         tab.map_select.a = ivec2(x1,y1);
         tab.map_select.b = ivec2(x2,y2);
@@ -1423,7 +1423,7 @@ FILDEF void me_redo ()
 {
     Tab& tab = get_current_tab();
     // There is no history or we are already at the end.
-    int maximum = CAST(int, tab.map_history.state.size())-1;
+    int maximum = static_cast<int>(tab.map_history.state.size())-1;
     if (tab.map_history.current_position >= maximum) return;
     tab.map = tab.map_history.state.at(++tab.map_history.current_position);
     tab.unsaved_changes = true;
@@ -1442,7 +1442,7 @@ FILDEF void me_history_begin ()
 FILDEF void me_history_end ()
 {
     Tab& tab = get_current_tab();
-    int maximum = CAST(int, tab.map_history.state.size())-1;
+    int maximum = static_cast<int>(tab.map_history.state.size())-1;
     while (tab.map_history.current_position < maximum) me_redo();
     tab.unsaved_changes = true;
 }
@@ -1457,7 +1457,7 @@ FILDEF void new_map_history_state (Map& map)
     // Clear all the history after the current position, if there is any, as
     // it will no longer apply to the timeline of map editor actions anymore.
     int delete_position = tab.map_history.current_position+1;
-    if (delete_position < CAST(int, tab.map_history.state.size()))
+    if (delete_position < static_cast<int>(tab.map_history.state.size()))
     {
         auto begin = tab.map_history.state.begin();
         auto end = tab.map_history.state.end();

@@ -58,7 +58,7 @@ FILDEF void internal__handle_gpak_error (GPAK_Error error)
 
 STDDEF int internal__gpak_unpack_thread_main (void* user_data)
 {
-    GPAK_Unpack_Data* args = CAST(GPAK_Unpack_Data*, user_data);
+    GPAK_Unpack_Data* args = reinterpret_cast<GPAK_Unpack_Data*>(user_data);
 
     std::string file_name = args->file_name;
     bool overwrite = args->overwrite;
@@ -126,7 +126,7 @@ STDDEF int internal__gpak_unpack_thread_main (void* user_data)
         }
 
         ++entries_unpacked;
-        args->progress.store(CAST(float, entries_unpacked) / CAST(float, entry_count));
+        args->progress.store(static_cast<float>(entries_unpacked) / static_cast<float>(entry_count));
         push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
         if (args->cancel.load()) // Cancel!
@@ -144,7 +144,7 @@ STDDEF int internal__gpak_unpack_thread_main (void* user_data)
 
 STDDEF int internal__gpak_pack_thread_main (void* user_data)
 {
-    GPAK_Pack_Data* args = CAST(GPAK_Pack_Data*, user_data);
+    GPAK_Pack_Data* args = reinterpret_cast<GPAK_Pack_Data*>(user_data);
 
     std::string file_name = args->file_name;
     std::vector<std::string> paths = args->paths;
@@ -190,7 +190,7 @@ STDDEF int internal__gpak_pack_thread_main (void* user_data)
 
     ASSERT(files.size() == stripped_files.size());
 
-    u32 entry_count = CAST(u32, files.size());
+    u32 entry_count = static_cast<u32>(files.size());
     fwrite(&entry_count, sizeof(u32), 1, file);
 
     u32 entries_packed = 0;
@@ -199,17 +199,17 @@ STDDEF int internal__gpak_pack_thread_main (void* user_data)
     for (size_t i=0; i<files.size(); ++i)
     {
         std::string name = stripped_files.at(i);
-        u16 name_length  = CAST(u16, name.length());
-        u32 file_size    = CAST(u32, get_size_of_file(files.at(i)));
+        u16 name_length  = static_cast<u16>(name.length());
+        u32 file_size    = static_cast<u32>(get_size_of_file(files.at(i)));
 
-        max_size = std::max(max_size, CAST(size_t, file_size));
+        max_size = std::max(max_size, static_cast<size_t>(file_size));
 
         fwrite(&name_length, sizeof(u16),  1,           file);
         fwrite(name.c_str(), sizeof(char), name_length, file);
         fwrite(&file_size,   sizeof(u32),  1,           file);
 
         ++entries_packed;
-        args->progress.store(((CAST(float, entries_packed) / CAST(float, entry_count)) / 2));
+        args->progress.store(((static_cast<float>(entries_packed) / static_cast<float>(entry_count)) / 2));
         push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
         if (args->cancel.load()) // Cancel!
@@ -221,7 +221,7 @@ STDDEF int internal__gpak_pack_thread_main (void* user_data)
     std::vector<u8> file_buffer;
     file_buffer.resize(max_size);
 
-    u32 file_count = CAST(u32, files.size());
+    u32 file_count = static_cast<u32>(files.size());
     u32 files_packed = 0;
 
     for (auto& f: files)
@@ -236,7 +236,7 @@ STDDEF int internal__gpak_pack_thread_main (void* user_data)
         }
 
         ++files_packed;
-        args->progress.store(.5f + ((CAST(float, files_packed) / CAST(float, file_count)) / 2));
+        args->progress.store(.5f + ((static_cast<float>(files_packed) / static_cast<float>(file_count)) / 2));
         push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
         if (args->cancel.load()) // Cancel!

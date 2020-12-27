@@ -30,7 +30,7 @@ struct Camera
     float zoom;
 };
 
-GLOBAL constexpr size_t INVALID_TAB = CAST(size_t, -1);
+GLOBAL constexpr size_t INVALID_TAB = static_cast<size_t>(-1);
 
 enum class Tab_Type { LEVEL, MAP };
 

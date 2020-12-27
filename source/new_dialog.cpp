@@ -19,8 +19,8 @@ GLOBAL constexpr float NEW_TEXT_BOX_H = 20;
 GLOBAL constexpr const char* NEW_WIDTH_LABEL = "Level Width:  ";
 GLOBAL constexpr const char* NEW_HEIGHT_LABEL = "Level Height:  ";
 
-GLOBAL int current_new_width  = CAST(int, DEFAULT_LEVEL_WIDTH);
-GLOBAL int current_new_height = CAST(int, DEFAULT_LEVEL_HEIGHT);
+GLOBAL int current_new_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
+GLOBAL int current_new_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
 
 GLOBAL Tab_Type current_tab_type = Tab_Type::LEVEL;
 
@@ -48,8 +48,8 @@ FILDEF void internal__okay_new ()
 
 FILDEF void open_new ()
 {
-    current_new_width = CAST(int, DEFAULT_LEVEL_WIDTH);
-    current_new_height = CAST(int, DEFAULT_LEVEL_HEIGHT);
+    current_new_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
+    current_new_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
 
     // Default to level because people make more levels than they do maps.
     current_tab_type = Tab_Type::LEVEL;

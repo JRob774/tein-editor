@@ -1,14 +1,3 @@
-/*******************************************************************************
- * General-purpose utility functions, macros, and type definitions.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
 #if defined(PLATFORM_WIN32)
 FILDEF HWND internal__win32_get_window_handle (SDL_Window* window)
 {
@@ -23,14 +12,12 @@ FILDEF HWND internal__win32_get_window_handle (SDL_Window* window)
 }
 #endif
 
-/* -------------------------------------------------------------------------- */
-
 STDDEF std::vector<u8> read_binary_file (std::string file_name)
 {
     std::ifstream file(file_name, std::ios::binary);
     std::vector<u8> content;
     content.resize(get_size_of_file(file_name));
-    file.read(CAST(char*, &content[0]), content.size()*sizeof(u8));
+    file.read(reinterpret_cast<char*>(&content[0]), content.size()*sizeof(u8));
     return content;
 }
 
@@ -41,8 +28,6 @@ STDDEF std::string read_entire_file (std::string file_name)
     stream << file.rdbuf();
     return stream.str();
 }
-
-/* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
 STDDEF std::string get_executable_path ()
@@ -63,8 +48,6 @@ STDDEF std::string get_executable_path ()
 #error get_executable_path not implemented on the current platform!
 #endif
 
-/* -------------------------------------------------------------------------- */
-
 FILDEF size_t get_size_of_file (std::string file_name)
 {
     FILE* file = fopen(file_name.c_str(), "rb");
@@ -81,8 +64,6 @@ FILDEF size_t get_size_of_file (FILE* file)
     rewind(file); // Go back to avoid changing stream.
     return size;
 }
-
-/* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
 FILDEF bool does_file_exist (std::string file_name)
@@ -105,8 +86,6 @@ FILDEF bool does_path_exist (std::string path_name)
 #else
 #error does_path_exist not implemented on the current platform!
 #endif
-
-/* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
 STDDEF void list_path_content (std::string path_name, std::vector<std::string>& content)
@@ -247,8 +226,6 @@ STDDEF void list_path_files_r (std::string path_name, std::vector<std::string>& 
 #error list_path_files_r not implemented on the current platform!
 #endif
 
-/* -------------------------------------------------------------------------- */
-
 #if defined(PLATFORM_WIN32)
 FILDEF bool create_path (std::string path_name)
 {
@@ -278,8 +255,6 @@ FILDEF bool create_path (std::string path_name)
 #error create_path not implemented on the current platform!
 #endif
 
-/* -------------------------------------------------------------------------- */
-
 #if defined(PLATFORM_WIN32)
 FILDEF bool is_path_absolute (std::string path_name)
 {
@@ -288,8 +263,6 @@ FILDEF bool is_path_absolute (std::string path_name)
 #else
 #error is_path_absoolute not implemented on the current platform!
 #endif
-
-/* -------------------------------------------------------------------------- */
 
 // Aliases of the previous functions because the naming makes better sense in context.
 
@@ -303,8 +276,6 @@ FILDEF bool is_path (std::string path_name)
     return does_path_exist(path_name);
 }
 
-/* -------------------------------------------------------------------------- */
-
 #if defined(PLATFORM_WIN32)
 FILDEF u64 last_file_write_time (std::string file_name)
 {
@@ -315,13 +286,11 @@ FILDEF u64 last_file_write_time (std::string file_name)
         write_time.HighPart = attributes.ftLastWriteTime.dwHighDateTime;
         write_time.LowPart  = attributes.ftLastWriteTime.dwLowDateTime;
     }
-    return CAST(u64, write_time.QuadPart);
+    return write_time.QuadPart;
 }
 #else
 #error last_file_write_time not implemented on the current platform!
 #endif
-
-/* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
 FILDEF int compare_file_write_times (u64 a, u64 b)
@@ -343,8 +312,6 @@ FILDEF int compare_file_write_times (u64 a, u64 b)
 #error compare_file_write_times not implemented on the current platform!
 #endif
 
-/* -------------------------------------------------------------------------- */
-
 FILDEF std::string make_path_absolute (std::string path_name)
 {
     if (!is_path_absolute(path_name)) path_name.insert(0, get_executable_path());
@@ -356,8 +323,6 @@ FILDEF std::string fix_path_slashes (std::string path_name)
     std::replace(path_name.begin(), path_name.end(), '\\', '/');
     return path_name;
 }
-
-/* -------------------------------------------------------------------------- */
 
 FILDEF std::string strip_file_path (std::string file_name)
 {
@@ -399,8 +364,6 @@ FILDEF std::string strip_file_path_and_ext (std::string file_name)
     return strip_file_ext(strip_file_path(file_name));
 }
 
-/* -------------------------------------------------------------------------- */
-
 FILDEF void tokenize_string (const std::string& str, const char* delims,
                              std::vector<std::string>& tokens)
 {
@@ -417,8 +380,6 @@ FILDEF void tokenize_string (const std::string& str, const char* delims,
         tokens.push_back(str.substr(prev, std::string::npos));
     }
 }
-
-/* -------------------------------------------------------------------------- */
 
 INLDEF std::string format_string (const char* format, ...)
 {
@@ -444,16 +405,12 @@ INLDEF std::string format_string_v (const char* format, va_list args)
     return str;
 }
 
-/* -------------------------------------------------------------------------- */
-
 FILDEF vec2 get_mouse_pos ()
 {
     int imx, imy;
     SDL_GetMouseState(&imx, &imy);
-    return vec2(CAST(float, imx), CAST(float, imy));
+    return vec2(imx,imy);
 }
-
-/* -------------------------------------------------------------------------- */
 
 INLDEF std::string format_time (const char* format)
 {
@@ -480,18 +437,14 @@ INLDEF std::string format_time (const char* format)
     return std::string(buffer);
 }
 
-/* -------------------------------------------------------------------------- */
-
 #if defined(PLATFORM_WIN32)
 FILDEF unsigned int get_thread_id ()
 {
-    return CAST(unsigned int, GetCurrentThreadId());
+    return GetCurrentThreadId();
 }
 #else
 #error get_thread_id not implemented on the current platform!
 #endif
-
-/* -------------------------------------------------------------------------- */
 
 FILDEF bool point_in_bounds_xyxy (vec2 p, quad q)
 {
@@ -503,8 +456,6 @@ FILDEF bool point_in_bounds_xywh (vec2 p, quad q)
     return (p.x >= q.x && p.y >= q.y && p.x < (q.x+q.w) && p.y < (q.y+q.h));
 }
 
-/* -------------------------------------------------------------------------- */
-
 FILDEF bool insensitive_compare (const std::string& a, const std::string& b)
 {
     if (a.length() != b.length()) return false;
@@ -515,8 +466,6 @@ FILDEF bool insensitive_compare (const std::string& a, const std::string& b)
     return true;
 }
 
-/* -------------------------------------------------------------------------- */
-
 FILDEF bool string_replace (std::string& str, const std::string& from, const std::string& to)
 {
     std::string::size_type start_pos = str.find(from);
@@ -524,8 +473,6 @@ FILDEF bool string_replace (std::string& str, const std::string& from, const std
     str.replace(start_pos, from.length(), to);
     return true;
 }
-
-/* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
 FILDEF bool run_executable (std::string exe)
@@ -559,31 +506,3 @@ FILDEF void load_webpage (std::string url)
 #else
 #error load_webpage not implemented on the current platform!
 #endif
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

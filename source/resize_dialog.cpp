@@ -19,8 +19,8 @@ GLOBAL constexpr float RESIZE_TEXT_BOX_H = 20;
 GLOBAL constexpr const char* RESIZE_WIDTH_LABEL = "Level Width:  ";
 GLOBAL constexpr const char* RESIZE_HEIGHT_LABEL = "Level Height:  ";
 
-GLOBAL int current_resize_width  = CAST(int, DEFAULT_LEVEL_WIDTH);
-GLOBAL int current_resize_height = CAST(int, DEFAULT_LEVEL_HEIGHT);
+GLOBAL int current_resize_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
+GLOBAL int current_resize_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
 
 GLOBAL Resize_Dir resize_dialog_dir = Resize_Dir::CENTER;
 

@@ -112,9 +112,9 @@ FILDEF void end_debug_timer ()
 
     u64   start_counter = timer.start_counter;
     u64   end_counter   = SDL_GetPerformanceCounter();
-    float frequency     = CAST(float, SDL_GetPerformanceFrequency());
-    float elapsed       = CAST(float, end_counter - start_counter);
-    float seconds       = (elapsed / frequency);
+    float frequency     = static_cast<float>(SDL_GetPerformanceFrequency());
+    float elapsed       = static_cast<float>(end_counter-start_counter);
+    float seconds       = elapsed / frequency;
 
     std::string str(format_string("%s took %fs.", timer.name.c_str(), seconds));
     debug_timer_results.push_back(str);

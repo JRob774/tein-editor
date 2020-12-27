@@ -180,8 +180,8 @@ STDDEF bool save_restore_level (const Tab& tab, std::string file_name)
 FILDEF bool create_blank_level (Level& level, int w, int h)
 {
     level.header.version = 1;
-    level.header.width   = CAST(s32, w);
-    level.header.height  = CAST(s32, h);
+    level.header.width   = w;
+    level.header.height  = h;
     level.header.layers  = LEVEL_LAYER_TOTAL;
 
     s32 lw = level.header.width;

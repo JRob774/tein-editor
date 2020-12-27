@@ -234,9 +234,9 @@ STDDEF std::vector<std::string> path_dialog (bool multiselect)
                 paths.push_back(std::string());
                 std::string& path = paths.back();
 
-                int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wide_path[0], CAST(int, wide_path.size()), NULL, 0, NULL, NULL);
+                int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wide_path[0], static_cast<int>(wide_path.size()), NULL, 0, NULL, NULL);
                 path.resize(size_needed, 0);
-                WideCharToMultiByte(CP_UTF8, 0, &wide_path[0], CAST(int, wide_path.size()), &path[0], size_needed, NULL, NULL);
+                WideCharToMultiByte(CP_UTF8, 0, &wide_path[0], static_cast<int>(wide_path.size()), &path[0], size_needed, NULL, NULL);
             }
         }
     }

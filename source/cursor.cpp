@@ -48,8 +48,8 @@ FILDEF bool internal__load_cursor (Cursor cursor, const char* file_name, int x, 
         return false;
     }
 
-    cursors[CAST(int, cursor)] = SDL_CreateColorCursor(surface, x, y);
-    if (!cursors[CAST(int, cursor)])
+    cursors[static_cast<int>(cursor)] = SDL_CreateColorCursor(surface, x, y);
+    if (!cursors[static_cast<int>(cursor)])
     {
         LOG_ERROR(ERR_MIN, "Failed to create cursor '%s'!", file_name);
         return false;
@@ -94,7 +94,7 @@ FILDEF bool load_editor_cursors ()
     {
         if (cursors_loaded)
         {
-            SDL_SetCursor(cursors[CAST(int, Cursor::ARROW)]);
+            SDL_SetCursor(cursors[static_cast<int>(Cursor::ARROW)]);
             current_cursor = Cursor::ARROW;
         }
     }
@@ -109,7 +109,7 @@ FILDEF bool load_editor_cursors ()
 
 FILDEF void free_editor_cursors ()
 {
-    for (int i=0; i<CAST(int, Cursor::Total); ++i)
+    for (int i=0; i<static_cast<int>(Cursor::Total); ++i)
     {
         SDL_FreeCursor(cursors[i]);
         cursors[i] = NULL;
@@ -123,9 +123,9 @@ FILDEF void free_editor_cursors ()
 
 FILDEF void set_cursor (Cursor cursor)
 {
-    if (cursors_enabled && cursors_loaded && current_cursor != cursor && cursors[CAST(int, cursor)])
+    if (cursors_enabled && cursors_loaded && current_cursor != cursor && cursors[static_cast<int>(cursor)])
     {
-        SDL_SetCursor(cursors[CAST(int, cursor)]);
+        SDL_SetCursor(cursors[static_cast<int>(cursor)]);
         current_cursor = cursor;
     }
 }

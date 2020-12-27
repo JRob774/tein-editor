@@ -221,8 +221,8 @@ FILDEF void internal__handle_brush ()
 {
     vec2 tile_pos = internal__mouse_to_tile_position();
 
-    int x = CAST(int, tile_pos.x);
-    int y = CAST(int, tile_pos.y);
+    int x = static_cast<int>(tile_pos.x);
+    int y = static_cast<int>(tile_pos.y);
 
     bool place = (level_editor.tool_state == Tool_State::PLACE);
     Tile_ID id = (place) ? get_selected_tile() : 0;
@@ -278,7 +278,7 @@ FILDEF void internal__check_fill_neighbour (int x, int y)
     if (internal__get_fill_find_id(x, y, tab.tool_info.fill.layer) == tab.tool_info.fill.find_id)
     {
         internal__place_mirrored_tile(x, y, tab.tool_info.fill.replace_id, tab.tool_info.fill.layer);
-        tab.tool_info.fill.frontier.push_back({ CAST(float, x), CAST(float, y) });
+        tab.tool_info.fill.frontier.push_back({ x, y });
     }
 
     tab.tool_info.fill.searched.at(index) = true; // Mark as searched!
@@ -293,8 +293,8 @@ FILDEF void internal__fill ()
 
     tab.tool_info.fill.searched.resize(w*h, false);
 
-    int start_x = CAST(int, tab.tool_info.fill.start.x);
-    int start_y = CAST(int, tab.tool_info.fill.start.y);
+    int start_x = static_cast<int>(tab.tool_info.fill.start.x);
+    int start_y = static_cast<int>(tab.tool_info.fill.start.y);
 
     // Start tile marked searched as we can just replace it now.
     internal__place_mirrored_tile(start_x, start_y, tab.tool_info.fill.replace_id, tab.tool_info.fill.layer);
@@ -309,8 +309,8 @@ FILDEF void internal__fill ()
     {
         vec2 temp = tab.tool_info.fill.frontier.at(0);
 
-        int cx = CAST(int, temp.x);
-        int cy = CAST(int, temp.y);
+        int cx = static_cast<int>(temp.x);
+        int cy = static_cast<int>(temp.y);
 
         tab.tool_info.fill.frontier.erase(tab.tool_info.fill.frontier.begin());
 
@@ -361,8 +361,8 @@ FILDEF void internal__handle_fill ()
 {
     vec2 tile_pos = internal__mouse_to_tile_position();
 
-    int x = CAST(int, tile_pos.x);
-    int y = CAST(int, tile_pos.y);
+    int x = static_cast<int>(tile_pos.x);
+    int y = static_cast<int>(tile_pos.y);
 
     // Do not bother starting a fill if out of bounds!
     if (!internal__tile_in_bounds(x, y)) return;
@@ -446,8 +446,8 @@ FILDEF void internal__handle_select ()
 
         vec2 ta = internal__mouse_to_tile_position();
         // Set the starting anchor point of the selection (clamp in bounds).
-        select_bounds.top  = std::clamp(CAST(int, ta.y), 0, tab.level.header.height-1);
-        select_bounds.left = std::clamp(CAST(int, ta.x), 0, tab.level.header.width-1);
+        select_bounds.top  = std::clamp(static_cast<int>(ta.y), 0, tab.level.header.height-1);
+        select_bounds.left = std::clamp(static_cast<int>(ta.x), 0, tab.level.header.width-1);
 
         tab.tool_info.select.start = false;
         select_bounds.visible = false;
@@ -461,7 +461,7 @@ FILDEF void internal__handle_select ()
     if (!select_bounds.visible)
     {
         vec2 a = internal__mouse_to_tile_position();
-        if (internal__tile_in_bounds(CAST(int, a.x), CAST(int, a.y)))
+        if (internal__tile_in_bounds(static_cast<int>(a.x), static_cast<int>(a.y)))
         {
             select_bounds.visible = true;
         }
@@ -471,8 +471,8 @@ FILDEF void internal__handle_select ()
     {
         // Set the second point of the selection box bounds.
         vec2 tb = internal__mouse_to_tile_position();
-        select_bounds.bottom = std::clamp(CAST(int, tb.y), 0, tab.level.header.height-1);
-        select_bounds.right  = std::clamp(CAST(int, tb.x), 0, tab.level.header.width-1);
+        select_bounds.bottom = std::clamp(static_cast<int>(tb.y), 0, tab.level.header.height-1);
+        select_bounds.right  = std::clamp(static_cast<int>(tb.x), 0, tab.level.header.width-1);
     }
 }
 
@@ -619,8 +619,8 @@ FILDEF void internal__draw_mirrored_cursor ()
 
     vec2 t = internal__mouse_to_tile_position();
 
-    int tx = CAST(int, t.x);
-    int ty = CAST(int, t.y);
+    int tx = static_cast<int>(t.x);
+    int ty = static_cast<int>(t.y);
 
     Tile_ID id = get_selected_tile();
 
@@ -649,8 +649,8 @@ FILDEF void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
 
         vec2 t = internal__mouse_to_tile_position();
 
-        int tx = CAST(int, t.x) + clipboard.x;
-        int ty = CAST(int, t.y) + clipboard.y;
+        int tx = static_cast<int>(t.x) + clipboard.x;
+        int ty = static_cast<int>(t.y) + clipboard.y;
 
         if (xdir == UI_DIR_LEFT) tx = lw-sw-tx;
         if (ydir == UI_DIR_DOWN) ty = lh-sh-ty;
@@ -692,8 +692,8 @@ FILDEF void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
 
         vec2 t = internal__mouse_to_tile_position();
 
-        int x = CAST(int, t.x) + clipboard.x;
-        int y = CAST(int, t.y) + clipboard.y;
+        int x = static_cast<int>(t.x) + clipboard.x;
+        int y = static_cast<int>(t.y) + clipboard.y;
 
         if (xdir == UI_DIR_LEFT) x = lw-sw-x;
         if (ydir == UI_DIR_DOWN) y = lh-sh-y;
@@ -802,7 +802,7 @@ FILDEF void internal__dump_level_history ()
     const Tab& tab = get_current_tab();
 
     begin_debug_section("History Stack Dump:");
-    for (int i=0; i<CAST(int, tab.level_history.state.size()); ++i)
+    for (int i=0; i<static_cast<int>(tab.level_history.state.size()); ++i)
     {
         const Level_History_State& s = tab.level_history.state.at(i);
         std::string history_state = (tab.level_history.current_position==i) ? ">" : " ";
@@ -1056,7 +1056,7 @@ FILDEF void do_level_editor ()
         float tx = x+DEFAULT_TILE_SIZE_HALF;
 
         const auto& layer = tab.level.data[i];
-        for (int j=0; j<CAST(int, layer.size()); ++j)
+        for (int j=0; j<static_cast<int>(layer.size()); ++j)
         {
             if (layer[j] != 0) // No point drawing empty tiles...
             {
@@ -1144,10 +1144,10 @@ FILDEF void do_level_editor ()
                     vec2 tile = internal__mouse_to_tile_position();
                     ++camera_tile_count;
 
-                    cl = std::min(cl, CAST(int, tile.x));
-                    ct = std::min(ct, CAST(int, tile.y));
-                    cr = std::max(cr, CAST(int, tile.x));
-                    cb = std::max(cb, CAST(int, tile.y));
+                    cl = std::min(cl, static_cast<int>(tile.x));
+                    ct = std::min(ct, static_cast<int>(tile.y));
+                    cr = std::max(cr, static_cast<int>(tile.x));
+                    cb = std::max(cb, static_cast<int>(tile.y));
                 }
             }
         }
@@ -1161,10 +1161,10 @@ FILDEF void do_level_editor ()
             cb = 0;
         }
 
-        float cx1 = x + (CAST(float, std::min(cl, cr)    ) * DEFAULT_TILE_SIZE);
-        float cy1 = y + (CAST(float, std::min(ct, cb)    ) * DEFAULT_TILE_SIZE);
-        float cx2 = x + (CAST(float, std::max(cl, cr) + 1) * DEFAULT_TILE_SIZE);
-        float cy2 = y + (CAST(float, std::max(ct, cb) + 1) * DEFAULT_TILE_SIZE);
+        float cx1 = x + (static_cast<float>(std::min(cl, cr)    ) * DEFAULT_TILE_SIZE);
+        float cy1 = y + (static_cast<float>(std::min(ct, cb)    ) * DEFAULT_TILE_SIZE);
+        float cx2 = x + (static_cast<float>(std::max(cl, cr) + 1) * DEFAULT_TILE_SIZE);
+        float cy2 = y + (static_cast<float>(std::max(ct, cb) + 1) * DEFAULT_TILE_SIZE);
 
         begin_stencil();
 
@@ -1188,10 +1188,10 @@ FILDEF void do_level_editor ()
             int il, it, ir, ib;
             get_ordered_select_bounds(bounds, &il, &it, &ir, &ib);
 
-            float l =       CAST(float, il);
-            float r = ceilf(CAST(float, ir)+.5f);
-            float b =       CAST(float, ib);
-            float t = ceilf(CAST(float, it)+.5f);
+            float l =       static_cast<float>(il);
+            float r = ceilf(static_cast<float>(ir)+.5f);
+            float b =       static_cast<float>(ib);
+            float t = ceilf(static_cast<float>(it)+.5f);
 
             float sx1 = x   + (l     * DEFAULT_TILE_SIZE);
             float sy1 = y   + (b     * DEFAULT_TILE_SIZE);
@@ -1243,7 +1243,7 @@ FILDEF void do_level_editor ()
             float tx = x+DEFAULT_TILE_SIZE_HALF;
 
             auto& layer = tab.level.data[LEVEL_LAYER_ACTIVE];
-            for (int i=0; i<CAST(int, layer.size()); ++i)
+            for (int i=0; i<static_cast<int>(layer.size()); ++i)
             {
                 // Ensures that the tile is an Entity and not a Basic.
                 Tile_ID id = layer[i];
@@ -1482,7 +1482,7 @@ FILDEF void new_level_history_state (Level_History_Action action)
     // Clear all the history after the current position, if there is any, as it
     // will no longer apply to the timeline of level editor actions anymore.
     int delete_position = tab.level_history.current_position+1;
-    if (delete_position < CAST(int, tab.level_history.state.size()))
+    if (delete_position < static_cast<int>(tab.level_history.state.size()))
     {
         auto begin = tab.level_history.state.begin();
         auto end = tab.level_history.state.end();
@@ -1820,8 +1820,8 @@ FILDEF void le_paste ()
 
     for (auto& clipboard: level_editor.clipboard)
     {
-        int x = CAST(int, tile_pos.x) + clipboard.x;
-        int y = CAST(int, tile_pos.y) + clipboard.y;
+        int x = static_cast<int>(tile_pos.x) + clipboard.x;
+        int y = static_cast<int>(tile_pos.y) + clipboard.y;
         int w = clipboard.w;
         int h = clipboard.h;
 
@@ -1833,7 +1833,7 @@ FILDEF void le_paste ()
             {
                 for (int ix=x; ix<(x+w); ++ix)
                 {
-                    internal__place_mirrored_tile(ix, iy, src_layer[(iy-y)*w+(ix-x)], CAST(Level_Layer, i));
+                    internal__place_mirrored_tile(ix, iy, src_layer[(iy-y)*w+(ix-x)], static_cast<Level_Layer>(i));
                 }
             }
         }
@@ -1958,7 +1958,7 @@ FILDEF void le_redo ()
     Tab& tab = get_current_tab();
 
     // There is no history or we are already at the end.
-    if (tab.level_history.current_position >= CAST(int, tab.level_history.state.size())-1) return;
+    if (tab.level_history.current_position >= tab.level_history.state.size()-1) return;
 
     ++tab.level_history.current_position;
 
@@ -2001,7 +2001,7 @@ FILDEF void le_redo ()
     // If we end on an empty normal state and we are not already at the end of
     // the redo history then we redo again as it feels nicer. This action is
     // the inverse of what we do when we do an undo with blank normal actions.
-    if (tab.level_history.current_position+1 < CAST(int, tab.level_history.state.size()))
+    if (tab.level_history.current_position+1 < tab.level_history.state.size())
     {
         // Jump forward to see if it is empty, if it's not then revert back.
         ++tab.level_history.current_position;
@@ -2031,7 +2031,7 @@ FILDEF void le_history_begin ()
 FILDEF void le_history_end ()
 {
     Tab& tab = get_current_tab();
-    int maximum = CAST(int, tab.level_history.state.size()-1);
+    int maximum = static_cast<int>(tab.level_history.state.size()-1);
     while (tab.level_history.current_position < maximum) le_redo();
     tab.unsaved_changes = true;
 }

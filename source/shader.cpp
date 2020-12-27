@@ -50,8 +50,8 @@ STDDEF Shader load_shader_from_source (std::string source)
     string_replace(frag_src, "COMPILING_VERTEX_PROGRAM",   "0");
     string_replace(frag_src, "COMPILING_FRAGMENT_PROGRAM", "1");
 
-    const GLchar* vsrc = CAST(const GLchar*, vert_src.c_str());
-    const GLchar* fsrc = CAST(const GLchar*, frag_src.c_str());
+    const GLchar* vsrc = static_cast<const GLchar*>(vert_src.c_str());
+    const GLchar* fsrc = static_cast<const GLchar*>(frag_src.c_str());
 
     GLuint vert = internal__compile_shader(vsrc, GL_VERTEX_SHADER);
     GLuint frag = internal__compile_shader(fsrc, GL_FRAGMENT_SHADER);

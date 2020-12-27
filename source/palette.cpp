@@ -106,7 +106,7 @@ FILDEF void init_palette_lookup ()
     constexpr int BPP = 4;
 
     int w, h, bpp;
-    u8* palette = stbi_load_from_memory(&palette_data[0], CAST(int, palette_data.size()), &w, &h, &bpp, BPP);
+    u8* palette = stbi_load_from_memory(&palette_data[0], static_cast<int>(palette_data.size()), &w, &h, &bpp, BPP);
     if (!palette)
     {
         LOG_ERROR(ERR_MIN, "Failed to load palette data for the map editor!");
@@ -119,14 +119,14 @@ FILDEF void init_palette_lookup ()
     for (auto it: gon.children_map)
     {
         std::string name = it.first;
-        int palette_row = CAST(int, gon.children_array[it.second]["palette"].Number(0));
+        int palette_row = gon.children_array[it.second]["palette"].Int(0);
 
         int index = (palette_row * (w*BPP) + (PALETTE_MAIN_COLUMN   * BPP));
 
-        float r = CAST(float, palette[index+0]) / 255;
-        float g = CAST(float, palette[index+1]) / 255;
-        float b = CAST(float, palette[index+2]) / 255;
-        float a = CAST(float, palette[index+3]) / 255;
+        float r = static_cast<float>(palette[index+0]) / 255;
+        float g = static_cast<float>(palette[index+1]) / 255;
+        float b = static_cast<float>(palette[index+2]) / 255;
+        float a = static_cast<float>(palette[index+3]) / 255;
 
         palette_main_lookup.insert(std::pair<std::string, vec4>(name, vec4(r,g,b,a)));
     }

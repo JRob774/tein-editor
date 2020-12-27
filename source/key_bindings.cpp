@@ -166,7 +166,7 @@ FILDEF void internal__add_key_binding (const GonObject& gon, const GonObject& go
 
             if (key_code != SDLK_UNKNOWN)
             {
-                code = CAST(int, key_code);
+                code = key_code;
             }
             else
             {
@@ -195,7 +195,7 @@ FILDEF void internal__add_key_binding (const GonObject& gon, const GonObject& go
 
             if (key_code != SDLK_UNKNOWN)
             {
-                alt_code = CAST(int, key_code);
+                alt_code = key_code;
             }
             else
             {
@@ -439,7 +439,7 @@ FILDEF bool is_key_mod_state_active (int mod)
     if (text_box_is_active() | !is_window_focused("WINMAIN")) return false;
 
     // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
-    int curr_mod = CAST(int, (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS)));
+    int curr_mod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
     // We do not care whether the right or left variants have been pressed.
     if (curr_mod&KMOD_LCTRL  || curr_mod&KMOD_RCTRL ) curr_mod |= KMOD_CTRL;
     if (curr_mod&KMOD_LALT   || curr_mod&KMOD_RALT  ) curr_mod |= KMOD_ALT;
@@ -454,7 +454,7 @@ FILDEF bool is_key_code_active (int code)
     int key_count; // So we know the length of the returned array.
     const u8* key_state = SDL_GetKeyboardState(&key_count);
     // Need to convert the keycode to a scancode for this.
-    SDL_Scancode scan = SDL_GetScancodeFromKey(CAST(SDL_Keycode, code));
+    SDL_Scancode scan = SDL_GetScancodeFromKey(code);
     return (scan < key_count) ? key_state[scan] : false;
 }
 

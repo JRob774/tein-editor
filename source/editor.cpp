@@ -118,7 +118,7 @@ FILDEF void internal__load_session_tabs ()
                     value_name_len = VALUE_NAME_LEN;
                     std::string buffer;
                     buffer.resize(value_size-1);
-                    ret = RegEnumValueA(key, index, value_name, &value_name_len, NULL, &type, CAST(BYTE*, &buffer[0]), &value_size);
+                    ret = RegEnumValueA(key, index, value_name, &value_name_len, NULL, &type, reinterpret_cast<BYTE*>(&buffer[0]), &value_size);
                     // Load the actual level/map now that we have the name.
                     if (does_file_exist(buffer))
                     {
@@ -147,7 +147,7 @@ FILDEF void internal__load_session_tabs ()
         DWORD buffer_length = MAX_PATH;
         char buffer[MAX_PATH] = {};
 
-        if (RegQueryValueExA(key, "szTab", NULL, NULL, CAST(BYTE*, &buffer[0]), &buffer_length) != ERROR_SUCCESS) return;
+        if (RegQueryValueExA(key, "szTab", NULL, NULL, reinterpret_cast<BYTE*>(&buffer[0]), &buffer_length) != ERROR_SUCCESS) return;
 
         tab_to_start_from_session_load = get_tab_index_with_this_file_name(buffer);
     }
@@ -180,7 +180,7 @@ FILDEF void internal__save_session_tabs ()
         {
             if (!tab.name.empty())
             {
-                RegSetValueExA(key, std::to_string(index).c_str(), 0, REG_SZ, CAST(BYTE*, tab.name.c_str()), CAST(DWORD, tab.name.length()+1));
+                RegSetValueExA(key, std::to_string(index).c_str(), 0, REG_SZ, reinterpret_cast<const BYTE*>(tab.name.c_str()), static_cast<DWORD>(tab.name.length()+1));
                 index++;
             }
         }
@@ -200,7 +200,7 @@ FILDEF void internal__save_session_tabs ()
         if (are_there_any_tabs())
         {
             std::string name(editor.tabs.at(editor.current_tab).name);
-            RegSetValueExA(key, "szTab", 0, REG_SZ, CAST(BYTE*, name.c_str()), CAST(DWORD, name.length()+1));
+            RegSetValueExA(key, "szTab", 0, REG_SZ, reinterpret_cast<const BYTE*>(name.c_str()), static_cast<DWORD>(name.length()+1));
         }
     }
 }
@@ -392,8 +392,8 @@ FILDEF void handle_editor_events ()
             // Handle the camera panning.
             if (editor.is_panning)
             {
-                tab->camera.x += CAST(float, main_event.motion.xrel) / tab->camera.zoom;
-                tab->camera.y += CAST(float, main_event.motion.yrel) / tab->camera.zoom;
+                tab->camera.x += static_cast<float>(main_event.motion.xrel) / tab->camera.zoom;
+                tab->camera.y += static_cast<float>(main_event.motion.yrel) / tab->camera.zoom;
             }
         } break;
         case (SDL_KEYDOWN):
@@ -438,8 +438,8 @@ FILDEF void update_backup_timer ()
         if (editor_settings.backup_interval > 0)
         {
             // Avoid any issues with overflows.
-            u32 backup_interval = CAST(u32, editor_settings.backup_interval)*1000;
-            if (CAST(u64, editor_settings.backup_interval)*1000 > INT_MAX)
+            u32 backup_interval = static_cast<u32>(editor_settings.backup_interval)*1000;
+            if (static_cast<u64>(editor_settings.backup_interval)*1000 > INT_MAX)
             {
                 backup_interval = INT_MAX;
             }

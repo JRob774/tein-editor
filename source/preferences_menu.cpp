@@ -218,7 +218,7 @@ FILDEF void internal__do_settings_color_swatch (vec2& cursor, float sw, float sh
     float tx = x1 + (tw/2);
     float ty = y1 + (th/2);
 
-    const Texture& tex = (CAST(int, th) % 14 == 0) ? resource_checker_14 : resource_checker_16;
+    const Texture& tex = (static_cast<int>(th) % 14 == 0) ? resource_checker_14 : resource_checker_16;
 
     quad clip = { 0, 0, tw, th };
     draw_texture(tex, tx, ty, &clip);

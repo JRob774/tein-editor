@@ -119,7 +119,7 @@ FILDEF void check_for_updates ()
 FILDEF void open_update_window_timed ()
 {
     // Looked weird showing immediately so we put it on a timer.
-    u32 interval = CAST(u32, (UPDATE_DIALOG_WAIT_TIME * 1000));
+    u32 interval = static_cast<u32>((UPDATE_DIALOG_WAIT_TIME * 1000));
     update_timer = SDL_AddTimer(interval, internal__update_show_callback, NULL);
     if (!update_timer) open_update_window(); // Just show it immediately.
 }

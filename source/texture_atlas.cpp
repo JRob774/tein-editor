@@ -24,10 +24,10 @@ FILDEF bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon)
         auto& clip_data = obj["clip"].children_array;
         quad clip
         {
-        CAST(float, clip_data[0].Number()),
-        CAST(float, clip_data[1].Number()),
-        CAST(float, clip_data[2].Number()),
-        CAST(float, clip_data[3].Number())
+        static_cast<float>(clip_data[0].Number()),
+        static_cast<float>(clip_data[1].Number()),
+        static_cast<float>(clip_data[2].Number()),
+        static_cast<float>(clip_data[3].Number())
         };
         atlas.clips.insert(std::pair<s32, quad>(id, clip));
     }

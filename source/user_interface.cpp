@@ -326,7 +326,7 @@ STDDEF std::string internal__do_markdown_formatting (std::vector<std::string>& l
             int i = 0;
             int p = 0;
 
-            for (int j=0; j<CAST(int, line.length()); ++j)
+            for (int j=0; j<static_cast<int>(line.length()); ++j)
             {
                 xoff += get_glyph_advance(fnt, line.at(j), i, p);
 
@@ -461,7 +461,7 @@ FILDEF void reset_ui_state ()
     // We do this during every event otherwise we can end up with some weird
     // values provided by SDL_GetRelativeMouseState, so we just cache here.
     int imx, imy; SDL_GetRelativeMouseState(&imx, &imy);
-    ui_mouse_relative = ivec2(CAST(float, imx), CAST(float, imy));
+    ui_mouse_relative = ivec2(imx, imy);
 
     ui_mouse_down   = false;
     ui_mouse_up     = false;
@@ -1856,7 +1856,7 @@ STDDEF void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding&
                 kb.code = main_event.key.keysym.sym;
 
                 // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
-                kb.mod = CAST(int, (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS)));
+                kb.mod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
 
                 // We do not care whether the right or left variants have been pressed.
                 if (kb.mod&KMOD_LCTRL  || kb.mod&KMOD_RCTRL)  kb.mod |= KMOD_CTRL;
@@ -1987,7 +1987,7 @@ STDDEF void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding& 
                 kb.alt_code = main_event.key.keysym.sym;
 
                 // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
-                kb.alt_mod = CAST(int, (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS)));
+                kb.alt_mod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
 
                 // We do not care whether the right or left variants have been pressed.
                 if (kb.alt_mod&KMOD_LCTRL  || kb.alt_mod&KMOD_RCTRL)  kb.alt_mod |= KMOD_CTRL;

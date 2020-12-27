@@ -71,11 +71,11 @@ FILDEF void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float&
     end_draw();
 
     float percent = std::clamp(roundf(channel*100), 0.0f, 100.0f);
-    std::string channel_str(std::to_string(CAST(int, percent)));
+    std::string channel_str(std::to_string(static_cast<int>(percent)));
     cursor.y += (ch + ypad);
     do_text_box(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, channel_str, "0");
     if (atoi(channel_str.c_str()) > 100) channel_str = "100";
-    float new_channel = CAST(float, atoi(channel_str.c_str())) / 100;
+    float new_channel = static_cast<float>(atoi(channel_str.c_str())) / 100;
     if (channel != new_channel) channel = new_channel;
     // Reset cursor after text box.
     cursor.x -=  cw;
@@ -131,7 +131,7 @@ FILDEF void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float&
 
 FILDEF void internal__do_color_preview (vec2& cursor, vec4 c, float size)
 {
-    const Texture& tex = (CAST(int, size) % 14 == 0) ? resource_checker_14 : resource_checker_16;
+    const Texture& tex = (static_cast<int>(size) % 14 == 0) ? resource_checker_14 : resource_checker_16;
 
     float x = cursor.x;
     float y = cursor.y;
@@ -213,10 +213,10 @@ FILDEF void internal__do_alpha_channel (vec2& cursor, vec4& c)
     cursor.y += (ypad*1.25f);
 
     float percent = std::clamp(roundf(c.a*100), 0.0f, 100.0f);
-    std::string alpha_str(std::to_string(CAST(int, percent)));
+    std::string alpha_str(std::to_string(static_cast<int>(percent)));
     do_text_box(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, alpha_str, "0");
     if (atoi(alpha_str.c_str()) > 100) alpha_str = "100";
-    float new_alpha = CAST(float, atoi(alpha_str.c_str())) / 100;
+    float new_alpha = static_cast<float>(atoi(alpha_str.c_str())) / 100;
     if (c.a != new_alpha) c.a = new_alpha;
 
     cursor.x += xpad;

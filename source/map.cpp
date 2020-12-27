@@ -86,10 +86,10 @@ FILDEF bool internal__load_map (Tab& tab, std::istream&& stream)
 {
     // Convert raw CSV values into our internal map format.
     auto csv = internal__read_csv(stream);
-    for (int iy=0; iy<CAST(int, csv.size()); ++iy)
+    for (int iy=0; iy<static_cast<int>(csv.size()); ++iy)
     {
         const auto& row = csv.at(iy);
-        for (int ix=0; ix<CAST(int, row.size()); ++ix)
+        for (int ix=0; ix<static_cast<int>(row.size()); ++ix)
         {
             const auto& field = row.at(ix);
             if (!field.empty())

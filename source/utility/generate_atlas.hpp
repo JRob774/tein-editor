@@ -28,8 +28,8 @@ STDDEF void internal__generate_texture_atlas (std::string output_name, std::stri
     // This is some old code ported over to here so I'm not sure how good it is.
     // Doesn't really matter though as it is not being shipped with the release.
 
-    const int atlas_w = CAST(int, w);
-    const int atlas_h = CAST(int, h);
+    const int atlas_w = static_cast<int>(w);
+    const int atlas_h = static_cast<int>(h);
 
     std::vector<std::string> files;
     list_path_files_r(make_path_absolute(path).c_str(), files);
@@ -102,7 +102,7 @@ STDDEF void internal__generate_texture_atlas (std::string output_name, std::stri
     }
     defer { cstd_free(nodes); };
 
-    int rect_count = CAST(int, surface_count);
+    int rect_count = static_cast<int>(surface_count);
     stbrp_rect* rects = cstd_malloc(stbrp_rect, rect_count);
     if (!rects)
     {
@@ -115,8 +115,8 @@ STDDEF void internal__generate_texture_atlas (std::string output_name, std::stri
     // can know the dimensions when packing the rects into a texture atlas.
     for (int i=0; i<rect_count; ++i)
     {
-        rects[i].w = CAST(stbrp_coord, surfaces[i]->w);
-        rects[i].h = CAST(stbrp_coord, surfaces[i]->h);
+        rects[i].w = static_cast<stbrp_coord>(surfaces[i]->w);
+        rects[i].h = static_cast<stbrp_coord>(surfaces[i]->h);
     }
 
     // Basic initialization needed to begin using the stb_rect_pack library.
@@ -154,10 +154,10 @@ STDDEF void internal__generate_texture_atlas (std::string output_name, std::stri
     {
         SDL_Rect rect
         {
-            CAST(int, rects[i].x),
-            CAST(int, rects[i].y),
-            CAST(int, rects[i].w),
-            CAST(int, rects[i].h)
+            static_cast<int>(rects[i].x),
+            static_cast<int>(rects[i].y),
+            static_cast<int>(rects[i].w),
+            static_cast<int>(rects[i].h)
         };
         if (SDL_BlitSurface(surfaces[i], NULL, atlas_surface, &rect) != 0)
         {

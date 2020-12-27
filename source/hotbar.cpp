@@ -75,7 +75,7 @@ FILDEF void do_hotbar ()
 
         if (tab.type == Tab_Type::LEVEL)
         {
-            if (tab.level_history.current_position == CAST(int, tab.level_history.state.size())-1)
+            if (tab.level_history.current_position == tab.level_history.state.size()-1)
             {
                 redo_flags = UI_LOCKED;
             }
@@ -91,7 +91,7 @@ FILDEF void do_hotbar ()
         }
         else
         {
-            if (tab.map_history.current_position == CAST(int, tab.map_history.state.size())-1)
+            if (tab.map_history.current_position == tab.map_history.state.size()-1)
             {
                 redo_flags = UI_LOCKED;
             }

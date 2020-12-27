@@ -117,7 +117,7 @@ FILDEF SDL_Surface* load_surface_resource (std::string file_name)
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return SDL_LoadBMP(abs_file_name.c_str());
     else return SDL_LoadBMP_RW(SDL_RWFromConstMem(&gpak_resource_lookup[file_name][0],
-        CAST(int, gpak_resource_lookup[file_name].size())), true);
+        static_cast<int>(gpak_resource_lookup[file_name].size())), true);
 }
 
 FILDEF std::string load_string_resource (std::string file_name)

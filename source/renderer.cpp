@@ -246,7 +246,7 @@ STDDEF vec2 world_to_screen (vec2 world)
 
 FILDEF float get_max_texture_size ()
 {
-    return CAST(float, max_gl_texture_size);
+    return max_gl_texture_size;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -274,14 +274,14 @@ FILDEF float get_render_target_w ()
 {
     int w = 0;
     if (render_target) SDL_GL_GetDrawableSize(render_target->window, &w, NULL);
-    return CAST(float, w);
+    return static_cast<float>(w);
 }
 
 FILDEF float get_render_target_h ()
 {
     int h = 0;
     if (render_target) SDL_GL_GetDrawableSize(render_target->window, NULL, &h);
-    return CAST(float, h);
+    return static_cast<float>(h);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -305,10 +305,10 @@ STDDEF void set_viewport (float x, float y, float w, float h)
     renderer_viewport = { x, y, w, h };
     quad v = internal__convert_viewport(renderer_viewport);
 
-    GLint   vx = CAST(GLint,   v.x);
-    GLint   vy = CAST(GLint,   v.y);
-    GLsizei vw = CAST(GLsizei, v.w);
-    GLsizei vh = CAST(GLsizei, v.h);
+    GLint   vx = static_cast<GLint>(v.x);
+    GLint   vy = static_cast<GLint>(v.y);
+    GLsizei vw = static_cast<GLsizei>(v.w);
+    GLsizei vh = static_cast<GLsizei>(v.h);
 
     glViewport(vx, vy, vw, vh);
 
@@ -389,10 +389,10 @@ STDDEF void begin_scissor (float x, float y, float w, float h)
     scissor_stack.push({ x, y, w, h });
 
     // GL expects bottom-left so we have to flip the Y coordinate around.
-    GLint   sx = CAST(GLint,   renderer_viewport.x + x);
-    GLint   sy = CAST(GLint,   get_render_target_h() - (renderer_viewport.y + (y + h)));
-    GLsizei sw = CAST(GLsizei, w);
-    GLsizei sh = CAST(GLsizei, h);
+    GLint   sx = static_cast<GLint>(renderer_viewport.x + x);
+    GLint   sy = static_cast<GLint>(get_render_target_h() - (renderer_viewport.y + (y + h)));
+    GLsizei sw = static_cast<GLsizei>(w);
+    GLsizei sh = static_cast<GLsizei>(h);
 
     glScissor(sx, sy, sw, sh);
 }
@@ -404,10 +404,10 @@ STDDEF void end_scissor ()
     scissor_stack.pop();
 
     // GL expects bottom-left so we have to flip the Y coordinate around.
-    GLint   x = CAST(GLint,   renderer_viewport.x + s.x);
-    GLint   y = CAST(GLint,   get_render_target_h() - (renderer_viewport.y + (s.y + s.h)));
-    GLsizei w = CAST(GLsizei, s.w);
-    GLsizei h = CAST(GLsizei, s.h);
+    GLint   x = static_cast<GLint>(renderer_viewport.x + s.x);
+    GLint   y = static_cast<GLint>(get_render_target_h() - (renderer_viewport.y + (s.y + s.h)));
+    GLsizei w = static_cast<GLsizei>(s.w);
+    GLsizei h = static_cast<GLsizei>(s.h);
 
     glScissor(x, y, w, h);
 
@@ -434,7 +434,7 @@ FILDEF void stencil_mode_erase ()
 {
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
     glDepthMask(GL_FALSE);
-    glStencilFunc(GL_ALWAYS, CAST(GLuint, 1), CAST(GLuint, ~0));
+    glStencilFunc(GL_ALWAYS, 1, ~0u);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 }
 
@@ -442,7 +442,7 @@ FILDEF void stencil_mode_draw ()
 {
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask(GL_TRUE);
-    glStencilFunc(GL_NOTEQUAL, CAST(GLuint, 1), CAST(GLuint, ~0));
+    glStencilFunc(GL_NOTEQUAL, 1, ~0u);
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 }
 
@@ -641,14 +641,14 @@ FILDEF void put_vertex (float x, float y, vec4 color)
 
 FILDEF void push_matrix (Matrix_Mode mode)
 {
-    glMatrixMode(CAST(GLenum, mode));
+    glMatrixMode(static_cast<GLenum>(mode));
     glPushMatrix();
     glLoadIdentity();
 }
 
 FILDEF void pop_matrix (Matrix_Mode mode)
 {
-    glMatrixMode(CAST(GLenum, mode));
+    glMatrixMode(static_cast<GLenum>(mode));
     glPopMatrix();
 }
 

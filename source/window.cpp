@@ -55,12 +55,12 @@ STDDEF int internal__resize_window (void* main_window_thread_id, SDL_Event* even
 
             float old_width  = window.width;
             float old_height = window.height;
-            window.width     = CAST(float, event->window.data1);
-            window.height    = CAST(float, event->window.data2);
+            window.width     = static_cast<float>(event->window.data1);
+            window.height    = static_cast<float>(event->window.data2);
 
             // If not on main thread leave early as it would be unsafe otherwise.
             // See the top of the init_window() function for a clear explanation.
-            if (*CAST(unsigned int*, main_window_thread_id) == get_thread_id())
+            if (*reinterpret_cast<unsigned int*>(main_window_thread_id) == get_thread_id())
             {
                 // Force a redraw on resize, which looks nicer than the usual glitchy
                 // looking screen content when a program's window is usually resized.
@@ -69,8 +69,7 @@ STDDEF int internal__resize_window (void* main_window_thread_id, SDL_Event* even
                 {
                     if (window.resize_callback)
                     {
-                        if (old_width  != CAST(float, event->window.data1) ||
-                            old_height != CAST(float, event->window.data2))
+                        if (old_width != event->window.data1 || old_height != event->window.data2)
                         {
                             window.resize_callback();
                         }
@@ -106,17 +105,17 @@ FILDEF void internal__load_window_state ()
     DWORD len = sizeof(DWORD);
 
     // We return so we don't set potentially invalid data as the window state.
-    if (RegQueryValueExA(key, "dwBoundsX"     , 0, 0, CAST(BYTE*, &dwX           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwBoundsY"     , 0, 0, CAST(BYTE*, &dwY           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwBoundsW"     , 0, 0, CAST(BYTE*, &dwW           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwBoundsH"     , 0, 0, CAST(BYTE*, &dwH           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwMaximized"   , 0, 0, CAST(BYTE*, &dwMaximized   ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwDisplayIndex", 0, 0, CAST(BYTE*, &dwDisplayIndex), &len) != ERROR_SUCCESS) return;
+    if (RegQueryValueExA(key, "dwBoundsX"     , 0, 0, reinterpret_cast<BYTE*>(&dwX           ), &len) != ERROR_SUCCESS) return;
+    if (RegQueryValueExA(key, "dwBoundsY"     , 0, 0, reinterpret_cast<BYTE*>(&dwY           ), &len) != ERROR_SUCCESS) return;
+    if (RegQueryValueExA(key, "dwBoundsW"     , 0, 0, reinterpret_cast<BYTE*>(&dwW           ), &len) != ERROR_SUCCESS) return;
+    if (RegQueryValueExA(key, "dwBoundsH"     , 0, 0, reinterpret_cast<BYTE*>(&dwH           ), &len) != ERROR_SUCCESS) return;
+    if (RegQueryValueExA(key, "dwMaximized"   , 0, 0, reinterpret_cast<BYTE*>(&dwMaximized   ), &len) != ERROR_SUCCESS) return;
+    if (RegQueryValueExA(key, "dwDisplayIndex", 0, 0, reinterpret_cast<BYTE*>(&dwDisplayIndex), &len) != ERROR_SUCCESS) return;
 
-    int x = CAST(int, dwX);
-    int y = CAST(int, dwY);
-    int w = CAST(int, dwW);
-    int h = CAST(int, dwH);
+    int x = dwX;
+    int y = dwY;
+    int w = dwW;
+    int h = dwH;
 
     SDL_Window* win = windows.at("WINMAIN").window;
     SDL_Rect display_bounds;
@@ -173,19 +172,19 @@ FILDEF void internal__save_window_state ()
     SDL_GetWindowPosition(win, &x,&y);
     SDL_GetWindowSize(win, &w,&h);
 
-    DWORD dwX            = CAST(DWORD, x            );
-    DWORD dwY            = CAST(DWORD, y            );
-    DWORD dwW            = CAST(DWORD, w            );
-    DWORD dwH            = CAST(DWORD, h            );
-    DWORD dwMaximized    = CAST(DWORD, maximized    );
-    DWORD dwDisplayIndex = CAST(DWORD, display_index);
+    DWORD dwX            = x;
+    DWORD dwY            = y;
+    DWORD dwW            = w;
+    DWORD dwH            = h;
+    DWORD dwMaximized    = maximized;
+    DWORD dwDisplayIndex = display_index;
 
-    RegSetValueExA(key, "dwBoundsX"     , 0, REG_DWORD, CAST(BYTE*, &dwX           ), sizeof(dwX           ));
-    RegSetValueExA(key, "dwBoundsY"     , 0, REG_DWORD, CAST(BYTE*, &dwY           ), sizeof(dwY           ));
-    RegSetValueExA(key, "dwBoundsW"     , 0, REG_DWORD, CAST(BYTE*, &dwW           ), sizeof(dwW           ));
-    RegSetValueExA(key, "dwBoundsH"     , 0, REG_DWORD, CAST(BYTE*, &dwH           ), sizeof(dwH           ));
-    RegSetValueExA(key, "dwMaximized"   , 0, REG_DWORD, CAST(BYTE*, &dwMaximized   ), sizeof(dwMaximized   ));
-    RegSetValueExA(key, "dwDisplayIndex", 0, REG_DWORD, CAST(BYTE*, &dwDisplayIndex), sizeof(dwDisplayIndex));
+    RegSetValueExA(key, "dwBoundsX"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwX           ), sizeof(dwX           ));
+    RegSetValueExA(key, "dwBoundsY"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwY           ), sizeof(dwY           ));
+    RegSetValueExA(key, "dwBoundsW"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwW           ), sizeof(dwW           ));
+    RegSetValueExA(key, "dwBoundsH"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwH           ), sizeof(dwH           ));
+    RegSetValueExA(key, "dwMaximized"   , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwMaximized   ), sizeof(dwMaximized   ));
+    RegSetValueExA(key, "dwDisplayIndex", 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwDisplayIndex), sizeof(dwDisplayIndex));
 }
 #else
 #error internal__save_window_state not implemented on the current platform!
@@ -234,8 +233,8 @@ STDDEF bool create_window (std::string name, std::string title, int x, int y,
 
     SDL_GetWindowSize(window.window, &final_width, &final_height);
 
-    window.width  = CAST(float, final_width);
-    window.height = CAST(float, final_height);
+    window.width = static_cast<float>(final_width);
+    window.height = static_cast<float>(final_height);
 
     // Default to false and it will get handled by the window event system.
     window.focus = false;

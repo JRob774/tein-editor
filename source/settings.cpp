@@ -66,10 +66,10 @@ FILDEF vec4 internal__get_settings_color (const GonObject& gon, std::string name
 
     vec4 color;
 
-    color.r = CAST(float, gon[name][0].Number(1));
-    color.g = CAST(float, gon[name][1].Number(1));
-    color.b = CAST(float, gon[name][2].Number(1));
-    color.a = CAST(float, gon[name][3].Number(1));
+    color.r = static_cast<float>(gon[name][0].Number(1));
+    color.g = static_cast<float>(gon[name][1].Number(1));
+    color.b = static_cast<float>(gon[name][2].Number(1));
+    color.a = static_cast<float>(gon[name][3].Number(1));
 
     if (did_default) *did_default = false;
 

@@ -55,7 +55,7 @@ FILDEF bool internal__do_layer_button (UI_Flag flags, int layer, const char* nam
         else
         {
             Tile_Category category = get_selected_category();
-            if (category_to_layer(category) == CAST(Level_Layer, layer))
+            if (category_to_layer(category) == static_cast<Level_Layer>(layer))
             {
                 flags |= UI_HIGHLIGHT;
             }

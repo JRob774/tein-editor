@@ -12,7 +12,7 @@
 GLOBAL constexpr float DEFAULT_LEVEL_TAB_WIDTH = 128;
 GLOBAL constexpr float SHIFT_TAB_BUTTON_WIDTH  =  13;
 
-GLOBAL constexpr size_t NO_TAB_TO_CLOSE = CAST(size_t, -1);
+GLOBAL constexpr size_t NO_TAB_TO_CLOSE = static_cast<size_t>(-1);
 
 GLOBAL size_t starting_tab_offset = 0;
 GLOBAL size_t max_number_of_tabs  = 0;
@@ -117,7 +117,7 @@ FILDEF void do_tab_bar ()
     if (!current_tab_is_level()) pw += 1;
 
     // Figure out how many tabs we can fit on the bar before we need to start scrolling.
-    max_number_of_tabs = CAST(int, ceilf(pw / (DEFAULT_LEVEL_TAB_WIDTH + 1)));
+    max_number_of_tabs = static_cast<int>(ceilf(pw / (DEFAULT_LEVEL_TAB_WIDTH + 1)));
 
     if (need_to_scroll_tab_bar)
     {
@@ -130,7 +130,7 @@ FILDEF void do_tab_bar ()
 
     if (editor.tabs.size() >= max_number_of_tabs)
     {
-        tab_width = floorf((pw-((max_number_of_tabs-1)*1)) / CAST(float, max_number_of_tabs));
+        tab_width = floorf((pw-((max_number_of_tabs-1)*1)) / max_number_of_tabs);
         left_over = (pw-((max_number_of_tabs-1)*1)) - (tab_width * max_number_of_tabs);
     }
     else

@@ -12,7 +12,7 @@
 FILDEF bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_data, Texture_Wrap wrap)
 {
     const stbi_uc* buffer = &file_data[0];
-    int size = CAST(int, file_data.size());
+    int size = static_cast<int>(file_data.size());
 
     int w, h, bpp;
     u8* raw_data = stbi_load_from_memory(buffer, size, &w, &h, &bpp, 0);
@@ -53,7 +53,7 @@ STDDEF bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Tex
     // Bytes-per-pixel needs to be one of these otherwise we can't use.
     ASSERT(bpp == 1 || bpp == 2 || bpp == 3 || bpp == 4);
 
-    int max_texture_size = CAST(int, get_max_texture_size());
+    int max_texture_size = static_cast<int>(get_max_texture_size());
     if (w > max_texture_size || h > max_texture_size)
     {
         LOG_ERROR(ERR_MIN, "Texture size %dx%d too large for GPU!", w,h);
@@ -107,7 +107,7 @@ STDDEF bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Tex
     glGenerateMipmap(GL_TEXTURE_2D);
     #endif // RENDERER_USE_MIPMAPS
 
-    tex.w = CAST(float, w), tex.h = CAST(float, h);
+    tex.w = static_cast<float>(w), tex.h = static_cast<float>(h);
     tex.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     return true;

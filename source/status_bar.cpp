@@ -60,16 +60,16 @@ FILDEF void do_status_bar ()
         {
             if (point_in_bounds_xywh(get_mouse_pos(), level_editor.viewport))
             {
-                mx = CAST(int, level_editor.mouse_tile.x);
-                my = CAST(int, level_editor.mouse_tile.y);
+                mx = static_cast<int>(level_editor.mouse_tile.x);
+                my = static_cast<int>(level_editor.mouse_tile.y);
             }
         }
         else if (current_tab_is_map())
         {
             if (point_in_bounds_xywh(get_mouse_pos(), map_editor.viewport))
             {
-                mx = CAST(int, map_editor.mouse_tile.x);
-                my = CAST(int, map_editor.mouse_tile.y);
+                mx = static_cast<int>(map_editor.mouse_tile.x);
+                my = static_cast<int>(map_editor.mouse_tile.y);
             }
         }
     }

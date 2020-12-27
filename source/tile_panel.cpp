@@ -61,7 +61,7 @@ FILDEF bool internal__is_category_active (Tile_Category category)
 FILDEF float internal__do_tile_panel_category (vec2& cursor, Tile_Category category_index, std::vector<Tile_Group>& category)
 {
     // Determine how many rows of entities are present in the category.
-    float items = CAST(float, category.size());
+    float items = static_cast<float>(category.size());
     float rows = ceilf(items / TILE_PANEL_COLUMNS);
 
     float total_item_pad = (rows - 1) * TILE_PANEL_ITEM_PAD;
@@ -135,7 +135,7 @@ FILDEF float internal__do_tile_panel_category (vec2& cursor, Tile_Category categ
                 if (in_bounds)
                 {
                     tile_panel.selected_category = category_index;
-                    tile_panel.selected_group = CAST(int, i);
+                    tile_panel.selected_group = static_cast<int>(i);
                 }
             }
         }
@@ -148,7 +148,7 @@ FILDEF float internal__do_tile_panel_category (vec2& cursor, Tile_Category categ
             float qh = TILE_PANEL_ITEM_SIZE + 2;
 
             // If we are the currently selected group then we draw the highlight.
-            if ((category_index == CAST(Tile_Category, tile_panel.selected_category)) && (CAST(int, i) == tile_panel.selected_group))
+            if ((category_index == tile_panel.selected_category) && (i == tile_panel.selected_group))
             {
                 set_draw_color(ui_color_light);
                 fill_quad(qx, qy, qx+qw, qy+qh);
@@ -190,10 +190,10 @@ FILDEF float internal__do_tile_panel_category (vec2& cursor, Tile_Category categ
 
 FILDEF void internal__load_flip_data (const GonObject& data, std::vector<Tile_Flip_Map>& flip)
 {
-    for (int i=0; i<CAST(int, data.children_array.size()); ++i)
+    for (int i=0; i<static_cast<int>(data.children_array.size()); ++i)
     {
-        Tile_ID a = CAST(Tile_ID, data[i][0].Int());
-        Tile_ID b = CAST(Tile_ID, data[i][1].Int());
+        Tile_ID a = data[i][0].Int();
+        Tile_ID b = data[i][1].Int();
 
         flip.push_back(Tile_Flip_Map(a, b));
     }
@@ -206,7 +206,7 @@ FILDEF float internal__calculate_tile_panel_height ()
     {
         const std::vector<Tile_Group>& c = it.second;
 
-        float items          = CAST(float, c.size());
+        float items          = static_cast<float>(c.size());
         float rows           = ceilf(items / TILE_PANEL_COLUMNS);
         float total_item_pad = (rows-1) * TILE_PANEL_ITEM_PAD;
         float category_pad   = (TILE_PANEL_INNER_PAD*2);
@@ -226,7 +226,7 @@ FILDEF void internal__set_category_as_active (Tile_Category category)
     tile_panel.selected_group = 0;
 
     // Make sure we are actually jumping to an active category.
-    if (!internal__is_category_active(CAST(Tile_Category, tile_panel.selected_category)))
+    if (!internal__is_category_active(tile_panel.selected_category))
     {
         select_next_active_group();
     }
@@ -277,16 +277,16 @@ FILDEF bool init_tile_panel ()
             const GonObject& category_data = tile_gon_data.children_array[it.second];
             if (std::stoi(it.first) < TILE_CATEGORY_TOTAL)
             {
-                Tile_Category category_id = CAST(Tile_Category, std::stoi(it.first));
+                Tile_Category category_id = std::stoi(it.first);
                 for (auto& tile_group_gon_data: category_data.children_array)
                 {
                     Tile_Group group;
                     group.selected_index = 0;
                     group.name = tile_group_gon_data["name"].String();
                     group.desc = tile_group_gon_data["tooltip"].String();
-                    for (int i=0; i<CAST(int, tile_group_gon_data["id"].size()); ++i)
+                    for (int i=0; i<tile_group_gon_data["id"].size(); ++i)
                     {
-                        Tile_ID tile_id = CAST(Tile_ID, tile_group_gon_data["id"][i].Int());
+                        Tile_ID tile_id = tile_group_gon_data["id"][i].Int();
                         group.tile.push_back(tile_id);
                     }
                     tile_panel.category[category_id].push_back(group);
@@ -435,7 +435,7 @@ FILDEF void reload_tile_graphics ()
 
 FILDEF Tile_Category get_selected_category ()
 {
-    return CAST(Tile_Category, tile_panel.selected_category);
+    return tile_panel.selected_category;
 }
 
 FILDEF Tile_ID get_selected_tile ()
@@ -518,7 +518,7 @@ FILDEF void increment_selected_tile ()
     {
         auto& group = tile_panel.category[tile_panel.selected_category][tile_panel.selected_group];
         int old_selected_index = group.selected_index;
-        if ((++group.selected_index) > CAST(int, group.tile.size()-1))
+        if ((++group.selected_index) > group.tile.size()-1)
         {
             group.selected_index = 0;
         }
@@ -546,7 +546,7 @@ FILDEF void decrement_selected_tile ()
         int old_selected_index = group.selected_index;
         if ((--group.selected_index) < 0)
         {
-            group.selected_index = CAST(int, group.tile.size()-1);
+            group.selected_index = static_cast<int>(group.tile.size()-1);
         }
         // Feels correct that a new history state should be made.
         if (old_selected_index != group.selected_index)
@@ -572,7 +572,7 @@ FILDEF void increment_selected_group ()
     {
         auto& category = tile_panel.category[tile_panel.selected_category];
         int old_selected_group = tile_panel.selected_group;
-        if ((++tile_panel.selected_group) > CAST(int, category.size()-1))
+        if ((++tile_panel.selected_group) > category.size()-1)
         {
             tile_panel.selected_group = 0;
         }
@@ -600,7 +600,7 @@ FILDEF void decrement_selected_group ()
         int old_selected_group = tile_panel.selected_group;
         if ((--tile_panel.selected_group) < 0)
         {
-            tile_panel.selected_group = CAST(int, category.size()-1);
+            tile_panel.selected_group = static_cast<int>(category.size()-1);
         }
         // Feels correct that a new history state should be made.
         if (old_selected_group != tile_panel.selected_group)
@@ -627,7 +627,7 @@ FILDEF void increment_selected_category ()
 
     if (!are_all_layers_inactive())
     {
-        if ((++tile_panel.selected_category) > CAST(int, TILE_CATEGORY_BACK2))
+        if ((++tile_panel.selected_category) > TILE_CATEGORY_BACK2)
         {
             tile_panel.selected_category = TILE_CATEGORY_BASIC;
         }
@@ -656,7 +656,7 @@ FILDEF void decrement_selected_category ()
 
     if (!are_all_layers_inactive())
     {
-        if ((--tile_panel.selected_category) < CAST(int, TILE_CATEGORY_BASIC))
+        if ((--tile_panel.selected_category) < TILE_CATEGORY_BASIC)
         {
             tile_panel.selected_category = TILE_CATEGORY_BACK2;
         }

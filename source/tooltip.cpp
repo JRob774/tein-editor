@@ -56,7 +56,7 @@ STDDEF void set_current_tooltip (std::string name, std::string desc)
     tooltip_name = name;
     tooltip_desc = desc;
 
-    tooltip_timer = SDL_AddTimer(CAST(u32, TOOLTIP_APPEAR_TIME * 1000), internal__tooltip_callback, NULL);
+    tooltip_timer = SDL_AddTimer(static_cast<u32>(TOOLTIP_APPEAR_TIME*1000), internal__tooltip_callback, NULL);
     if (!tooltip_timer)
     {
         LOG_ERROR(ERR_MIN, "Failed to setup tooltip timer! (%s)", SDL_GetError());
