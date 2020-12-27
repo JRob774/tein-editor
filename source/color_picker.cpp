@@ -145,7 +145,7 @@ TEINAPI void internal__do_color_preview (Vec2& cursor, Vec4 c, float size)
     float tx = x + (size / 2);
     float ty = y + (size / 2);
 
-    quad clip = { 0, 0, size, size };
+    Quad clip = { 0, 0, size, size };
     draw_texture(tex, tx, ty, &clip);
 
     Vec4 max(c.r, c.g, c.b,   1);
@@ -236,7 +236,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float tx = cursor.x + (tw / 2);
     float ty = cursor.y + (th / 2);
 
-    quad clip1 = { 0, 0, tw, th };
+    Quad clip1 = { 0, 0, tw, th };
     draw_texture(resource_checker_20, tx, ty, &clip1);
 
     Vec4 min(c.r, c.g, c.b, 0);
@@ -267,7 +267,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float itx = ix1 + (itw / 2);
     float ity = iy1 + (ith / 2);
 
-    quad clip2 = { ix1-cursor.x, -2, itw, ith };
+    Quad clip2 = { ix1-cursor.x, -2, itw, ith };
     draw_texture(resource_checker_20, itx, ity, &clip2);
 
     set_draw_color(c);
@@ -362,7 +362,7 @@ TEINAPI void do_color_picker ()
 {
     if (is_window_hidden("WINCOLOR")) return;
 
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;

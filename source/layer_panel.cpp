@@ -28,13 +28,13 @@ static float layer_panel_panel_height;
 
 static float layer_panel_scroll_offset;
 
-static quad layer_panel_bounds;
+static Quad layer_panel_bounds;
 
 /* -------------------------------------------------------------------------- */
 
 TEINAPI bool internal__do_layer_button (UI_Flag flags, int layer, const char* name, const char* info)
 {
-    const quad& clip = (flags & UI_INACTIVE) ? CLIP_CROSS : CLIP_EYE;
+    const Quad& clip = (flags & UI_INACTIVE) ? CLIP_CROSS : CLIP_EYE;
 
     constexpr float PAD = 5;
     Vec2 cursor(PAD, 0);

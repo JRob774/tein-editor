@@ -12,7 +12,7 @@
 TEINAPI bool internal__mouse_inside_map_editor_viewport ()
 {
     Vec2 m = map_editor.mouse;
-    quad v = map_editor.viewport;
+    Quad v = map_editor.viewport;
 
     // We do this check for the disabling of cursor drawing during a resize.
     // As once the resize is done normally this function would end up being
@@ -313,7 +313,7 @@ TEINAPI void do_map_editor ()
 {
     set_cursor(Cursor::ARROW);
 
-    quad p1;
+    Quad p1;
 
     p1.x = get_toolbar_w() + 1;
     p1.y = TAB_BAR_HEIGHT  + 1;

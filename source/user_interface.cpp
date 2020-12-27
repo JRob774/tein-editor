@@ -32,8 +32,8 @@ static const Vec4 UI_L_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
 
 struct Panel
 {
-    quad absolute_bounds; // Panel position and size on the window.
-    quad viewport;        // Viewport clipped inside parent.
+    Quad absolute_bounds; // Panel position and size on the window.
+    Quad viewport;        // Viewport clipped inside parent.
     Vec2 relative_offset; // Panel position relative to its viewport.
 
     UI_Flag flags;        // Flags that get applied to a panel's content.
@@ -122,15 +122,15 @@ TEINAPI bool internal__is_file_path (char c)
     return (std::string("<>\"|?*").find(c) == std::string::npos);
 }
 
-TEINAPI quad internal__get_clipped_bounds (float x, float y, float w, float h)
+TEINAPI Quad internal__get_clipped_bounds (float x, float y, float w, float h)
 {
     // Clip the widget's bounds to be within the panel's visible area.
     // This stops the user being able to click on invisible portions.
     //
     // We also make the bounds relative to the window, so that they can
     // properly be compared with the mouse cursor without any issues.
-    const quad& v = get_viewport();
-    quad clipped_bounds;
+    const Quad& v = get_viewport();
+    Quad clipped_bounds;
 
     clipped_bounds.x1 = std::max(x,        0.0f) + v.x;
     clipped_bounds.y1 = std::max(y,        0.0f) + v.y;
@@ -140,15 +140,15 @@ TEINAPI quad internal__get_clipped_bounds (float x, float y, float w, float h)
     return clipped_bounds;
 }
 
-TEINAPI quad internal__get_clipped_bounds (quad& p)
+TEINAPI Quad internal__get_clipped_bounds (Quad& p)
 {
     // Clip the widget's bounds to be within the panel's visible area.
     // This stops the user being able to click on invisible portions.
     //
     // We also make the bounds relative to the window, so that they can
     // properly be compared with the mouse cursor without any issues.
-    const quad& v = get_viewport();
-    quad clipped_bounds;
+    const Quad& v = get_viewport();
+    Quad clipped_bounds;
 
     clipped_bounds.x1 = std::max(p.x,          0.0f) + v.x;
     clipped_bounds.y1 = std::max(p.y,          0.0f) + v.y;
@@ -167,7 +167,7 @@ TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool l
     {
         if (get_render_target()->focus && get_render_target()->mouse)
         {
-            quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
+            Quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
             Vec2 mouse = get_mouse_pos();
 
             // Determine the hot and active states for the global UI context.
@@ -208,7 +208,7 @@ TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool l
     return result;
 }
 
-TEINAPI bool internal__handle_widget (quad b, bool locked)
+TEINAPI bool internal__handle_widget (Quad b, bool locked)
 {
     return internal__handle_widget(b.x, b.y, b.w, b.h, locked);
 }
@@ -569,13 +569,13 @@ TEINAPI Vec2 ui_get_relative_mouse ()
 
 TEINAPI bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h)
 {
-    quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
+    Quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
     Vec2 mouse = get_mouse_pos();
 
     return point_in_bounds_xyxy(mouse, clipped_bounds);
 }
 
-TEINAPI bool mouse_in_ui_bounds_xywh (quad b)
+TEINAPI bool mouse_in_ui_bounds_xywh (Quad b)
 {
     return mouse_in_ui_bounds_xywh(b.x, b.y, b.w, b.h);
 }
@@ -658,12 +658,12 @@ TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, Vec
     panel.absolute_bounds = { x, y, w, h };
     if (ui_panels.size() > 0)
     {
-        const quad& p_ab = ui_panels.top().absolute_bounds;
-        const quad& p_v  = ui_panels.top().viewport;
+        const Quad& p_ab = ui_panels.top().absolute_bounds;
+        const Quad& p_v  = ui_panels.top().viewport;
         const Vec2& p_ro = ui_panels.top().relative_offset;
 
-        quad& c_ab = panel.absolute_bounds;
-        quad& c_v  = panel.viewport;
+        Quad& c_ab = panel.absolute_bounds;
+        Quad& c_v  = panel.viewport;
         Vec2& c_ro = panel.relative_offset;
 
         c_ab.x += p_ab.x + p_ro.x;
@@ -710,7 +710,7 @@ TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, Vec
     fill_quad(0, 0, panel.viewport.w, panel.viewport.h);
 }
 
-TEINAPI void begin_panel (quad bounds, UI_Flag flags, Vec4 c)
+TEINAPI void begin_panel (Quad bounds, UI_Flag flags, Vec4 c)
 {
     begin_panel(bounds.x, bounds.y, bounds.w, bounds.h, flags, c);
 }
@@ -858,7 +858,7 @@ TEINAPI float calculate_button_txt_width (std::string text)
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
+TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const Quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
     assert(ui_texture);
@@ -1146,7 +1146,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
     fnt.color = front;
     draw_text(fnt, x, y, clipped_text);
 
-    quad clipped_bounds = internal__get_clipped_bounds(cur.x, cur.y, w, h);
+    Quad clipped_bounds = internal__get_clipped_bounds(cur.x, cur.y, w, h);
     Vec2 mouse = get_mouse_pos();
     bool inside = point_in_bounds_xyxy(mouse, clipped_bounds);
     if (text_clipped && inside) set_current_tooltip(text);
@@ -2040,7 +2040,7 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding&
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void do_icon (float w, float h, Texture& tex, const quad* clip)
+TEINAPI void do_icon (float w, float h, Texture& tex, const Quad* clip)
 {
     UI_ID flags = ui_panels.top().flags;
 
@@ -2113,7 +2113,7 @@ TEINAPI void do_separator (float size)
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void do_scrollbar (quad bounds, float content_height, float& scroll_offset)
+TEINAPI void do_scrollbar (Quad bounds, float content_height, float& scroll_offset)
 {
     do_scrollbar(bounds.x, bounds.y, bounds.w, bounds.h, content_height, scroll_offset);
 }
@@ -2226,12 +2226,12 @@ TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag f
     panel.absolute_bounds = { x, y, w, h };
     if (ui_panels.size() > 0)
     {
-        const quad& p_ab = ui_panels.top().absolute_bounds;
-        const quad& p_v  = ui_panels.top().viewport;
+        const Quad& p_ab = ui_panels.top().absolute_bounds;
+        const Quad& p_v  = ui_panels.top().viewport;
         const Vec2& p_ro = ui_panels.top().relative_offset;
 
-        quad& c_ab = panel.absolute_bounds;
-        quad& c_v  = panel.viewport;
+        Quad& c_ab = panel.absolute_bounds;
+        Quad& c_v  = panel.viewport;
         Vec2& c_ro = panel.relative_offset;
 
         c_ab.x += p_ab.x + p_ro.x;
@@ -2282,7 +2282,7 @@ TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag f
     end_draw();
 }
 
-TEINAPI void begin_panel_gradient (quad bounds, UI_Flag flags, Vec4 cl, Vec4 cr)
+TEINAPI void begin_panel_gradient (Quad bounds, UI_Flag flags, Vec4 cl, Vec4 cr)
 {
     begin_panel_gradient(bounds.x, bounds.y, bounds.w, bounds.h, flags, cl, cr);
 }
@@ -2350,7 +2350,7 @@ TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
+TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const Quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
     assert(ui_texture);

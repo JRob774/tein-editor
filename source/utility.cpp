@@ -379,12 +379,12 @@ TEINAPI unsigned int get_thread_id ()
 #error get_thread_id not implemented on the current platform!
 #endif
 
-TEINAPI bool point_in_bounds_xyxy (Vec2 p, quad q)
+TEINAPI bool point_in_bounds_xyxy (Vec2 p, Quad q)
 {
     return (p.x >= q.x1 && p.y >= q.y1 && p.x <= q.x2 && p.y <= q.y2);
 }
 
-TEINAPI bool point_in_bounds_xywh (Vec2 p, quad q)
+TEINAPI bool point_in_bounds_xywh (Vec2 p, Quad q)
 {
     return (p.x >= q.x && p.y >= q.y && p.x < (q.x+q.w) && p.y < (q.y+q.h));
 }

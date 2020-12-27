@@ -66,8 +66,8 @@ struct Map_Editor
     SDL_TimerID cursor_blink_timer;
     bool        cursor_visible;
 
-    quad bounds;
-    quad viewport;
+    Quad bounds;
+    Quad viewport;
 
     std::map<Vec4,Vec4, Color_Map_Compare> text_color_map;
 };

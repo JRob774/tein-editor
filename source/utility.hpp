@@ -37,6 +37,7 @@ struct DeferHelp
     DeferType<T> operator+ (T type) { return type; }
 };
 
+// We wrap the C functions malloc and free because C++ does not implicitly cast from void* so this macro handles the cast.
 #define Malloc(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
 #define Free(pt) free((pt))
 
@@ -60,7 +61,7 @@ typedef glm::mat2   Mat2;
 typedef glm::mat3   Mat3;
 typedef glm::mat4   Mat4;
 
-struct quad
+struct Quad
 {
     union { float x, x1; };
     union { float y, y1; };
@@ -113,8 +114,8 @@ TEINAPI std::string format_time (const char* format);
 
 TEINAPI unsigned int get_thread_id ();
 
-TEINAPI bool point_in_bounds_xyxy (Vec2 p, quad q);
-TEINAPI bool point_in_bounds_xywh (Vec2 p, quad q);
+TEINAPI bool point_in_bounds_xyxy (Vec2 p, Quad q);
+TEINAPI bool point_in_bounds_xywh (Vec2 p, Quad q);
 
 TEINAPI bool insensitive_compare (const std::string& a, const std::string& b);
 

@@ -220,7 +220,7 @@ TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float s
 
     const Texture& tex = (static_cast<int>(th) % 14 == 0) ? resource_checker_14 : resource_checker_16;
 
-    quad clip = { 0, 0, tw, th };
+    Quad clip = { 0, 0, tw, th };
     draw_texture(tex, tx, ty, &clip);
 
     Vec4 max(color.r, color.g, color.b,       1);
@@ -708,7 +708,7 @@ TEINAPI void init_preferences_menu ()
 
 TEINAPI void do_preferences_menu ()
 {
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;

@@ -139,7 +139,7 @@ TEINAPI void open_update_window ()
 
 TEINAPI void do_update ()
 {
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;

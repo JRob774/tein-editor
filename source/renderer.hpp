@@ -38,8 +38,8 @@ TEINAPI float get_render_target_h ();
 TEINAPI void set_orthographic (float l, float r, float b, float t);
 
 TEINAPI void set_viewport (float x, float y, float w, float h);
-TEINAPI void set_viewport (quad v);
-TEINAPI quad get_viewport ();
+TEINAPI void set_viewport (Quad v);
+TEINAPI Quad get_viewport ();
 
 TEINAPI void set_draw_color (float r, float g, float b, float a);
 TEINAPI void set_draw_color (Vec4 color);
@@ -65,7 +65,7 @@ TEINAPI void draw_line (float x1, float y1, float x2, float y2);
 TEINAPI void draw_quad (float x1, float y1, float x2, float y2);
 TEINAPI void fill_quad (float x1, float y1, float x2, float y2);
 
-TEINAPI void draw_texture (const Texture& tex, float x, float y, const quad* clip);
+TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* clip);
 TEINAPI void draw_text    (const Font&    fnt, float x, float y, std::string text);
 
 TEINAPI void begin_draw (Buffer_Mode mode);
@@ -85,7 +85,7 @@ TEINAPI void set_text_batch_font    (Font&    fnt);
 TEINAPI void set_tile_batch_color   (Vec4 color);
 TEINAPI void set_text_batch_color   (Vec4 color);
 
-TEINAPI void draw_batched_tile  (float x, float y, const quad* clip);
+TEINAPI void draw_batched_tile  (float x, float y, const Quad* clip);
 TEINAPI void draw_batched_text  (float x, float y, std::string text);
 
 TEINAPI void flush_batched_tile ();

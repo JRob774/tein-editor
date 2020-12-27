@@ -321,7 +321,7 @@ TEINAPI void do_unpack ()
 {
     if (is_window_hidden("WINUNPACK")) return;
 
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;
@@ -391,7 +391,7 @@ TEINAPI void do_pack ()
 {
     if (is_window_hidden("WINPACK")) return;
 
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;

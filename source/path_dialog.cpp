@@ -22,7 +22,7 @@ TEINAPI void open_path ()
 
 TEINAPI void do_path ()
 {
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;

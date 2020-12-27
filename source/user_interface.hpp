@@ -78,7 +78,7 @@ TEINAPI bool is_ui_light ();
 TEINAPI Vec2 ui_get_relative_mouse ();
 
 TEINAPI bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h);
-TEINAPI bool mouse_in_ui_bounds_xywh (quad b);
+TEINAPI bool mouse_in_ui_bounds_xywh (Quad b);
 
 TEINAPI void set_ui_texture (Texture* tex);
 TEINAPI void set_ui_font    (Font*    fnt);
@@ -95,7 +95,7 @@ TEINAPI bool hotkey_is_active              ();
 TEINAPI void deselect_active_hotkey_rebind ();
 
 TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, Vec4 c = Vec4(0,0,0,0));
-TEINAPI void begin_panel (quad bounds, UI_Flag flags, Vec4 c = Vec4(0,0,0,0));
+TEINAPI void begin_panel (Quad bounds, UI_Flag flags, Vec4 c = Vec4(0,0,0,0));
 
 TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flags, std::string info = "");
 
@@ -120,7 +120,7 @@ TEINAPI UI_Flag get_panel_flags ();
 
 TEINAPI float calculate_button_txt_width (std::string text);
 
-TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const quad* clip = NULL, std::string info = "", std::string kb = "", std::string name = "");
+TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const Quad* clip = NULL, std::string info = "", std::string kb = "", std::string name = "");
 TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, std::string text,        std::string info = "", std::string kb = "", std::string name = "");
 TEINAPI bool do_button_txt (UI_Action action,          float h, UI_Flag flags, std::string text,        std::string info = "", std::string kb = "", std::string name = "");
 
@@ -139,20 +139,20 @@ TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& 
 TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding& kb);
 TEINAPI void do_hotkey_rebind_alt  (float w, float h, UI_Flag flags, Key_Binding& kb);
 
-TEINAPI void do_icon (float w, float h, Texture& tex, const quad* clip = NULL);
+TEINAPI void do_icon (float w, float h, Texture& tex, const Quad* clip = NULL);
 TEINAPI void do_quad (float w, float h, Vec4 color);
 
 TEINAPI void do_separator (float size);
 
-TEINAPI void do_scrollbar (quad bounds,                        float content_height, float& scroll_offset);
+TEINAPI void do_scrollbar (Quad bounds,                        float content_height, float& scroll_offset);
 TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_height, float& scroll_offset);
 
 TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, Vec4 cl = Vec4(0,0,0,0), Vec4 cr = Vec4(0,0,0,0));
-TEINAPI void begin_panel_gradient (quad bounds,                        UI_Flag flags, Vec4 cl = Vec4(0,0,0,0), Vec4 cr = Vec4(0,0,0,0));
+TEINAPI void begin_panel_gradient (Quad bounds,                        UI_Flag flags, Vec4 cl = Vec4(0,0,0,0), Vec4 cr = Vec4(0,0,0,0));
 
 TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_Flag flags, std::string info = "");
 
-TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const quad* clip = NULL, std::string info = "", std::string kb = "", std::string name = "");
+TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const Quad* clip = NULL, std::string info = "", std::string kb = "", std::string name = "");
 
 /* -------------------------------------------------------------------------- */
 

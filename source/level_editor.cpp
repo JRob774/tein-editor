@@ -14,7 +14,7 @@ static constexpr Tile_ID CAMERA_ID            = 20000;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI quad& internal__get_tile_graphic_clip (Texture_Atlas& atlas, Tile_ID id)
+TEINAPI Quad& internal__get_tile_graphic_clip (Texture_Atlas& atlas, Tile_ID id)
 {
     if (level_editor.large_tiles && atlas.clips.count(id + ALT_OFFSET))
     {
@@ -939,7 +939,7 @@ TEINAPI void init_level_editor ()
 
 TEINAPI void do_level_editor ()
 {
-    quad p1;
+    Quad p1;
 
     p1.x = get_toolbar_w() + 1;
     p1.y = TAB_BAR_HEIGHT  + 1;
@@ -1249,7 +1249,7 @@ TEINAPI void do_level_editor ()
                 Tile_ID id = layer[i];
                 if ((id != 0) && ((id-40000) >= 0))
                 {
-                    quad& b = internal__get_tile_graphic_clip(atlas, id);
+                    Quad& b = internal__get_tile_graphic_clip(atlas, id);
 
                     float hw = (b.w * tile_scale) / 2;
                     float hh = (b.h * tile_scale) / 2;
@@ -1449,7 +1449,7 @@ TEINAPI void handle_level_editor_events ()
 TEINAPI bool mouse_inside_level_editor_viewport ()
 {
     Vec2 m = level_editor.mouse;
-    quad v = level_editor.viewport;
+    Quad v = level_editor.viewport;
 
     // We do this check for the disabling of cursor drawing during a resize.
     // As once the resize is done normally this function would end up being

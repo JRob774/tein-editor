@@ -24,7 +24,7 @@ static FT_Library freetype;
 struct Font_Glyph
 {
     Vec2  bearing;
-    quad  bounds;
+    Quad  bounds;
     float advance;
 };
 

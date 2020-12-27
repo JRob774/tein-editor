@@ -24,15 +24,15 @@ static int current_resize_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
 
 static Resize_Dir resize_dialog_dir = Resize_Dir::CENTER;
 
-static const quad* nw_clip     = &CLIP_RESIZE_NW;
-static const quad* n_clip      = &CLIP_RESIZE_N;
-static const quad* ne_clip     = &CLIP_RESIZE_NE;
-static const quad* w_clip      = &CLIP_RESIZE_W;
-static const quad* center_clip = &CLIP_BULLET;
-static const quad* e_clip      = &CLIP_RESIZE_E;
-static const quad* sw_clip     = &CLIP_RESIZE_SW;
-static const quad* s_clip      = &CLIP_RESIZE_S;
-static const quad* se_clip     = &CLIP_RESIZE_SE;
+static const Quad* nw_clip     = &CLIP_RESIZE_NW;
+static const Quad* n_clip      = &CLIP_RESIZE_N;
+static const Quad* ne_clip     = &CLIP_RESIZE_NE;
+static const Quad* w_clip      = &CLIP_RESIZE_W;
+static const Quad* center_clip = &CLIP_BULLET;
+static const Quad* e_clip      = &CLIP_RESIZE_E;
+static const Quad* sw_clip     = &CLIP_RESIZE_SW;
+static const Quad* s_clip      = &CLIP_RESIZE_S;
+static const Quad* se_clip     = &CLIP_RESIZE_SE;
 
 /* -------------------------------------------------------------------------- */
 
@@ -236,7 +236,7 @@ TEINAPI void open_resize (int lw, int lh)
 
 TEINAPI void do_resize ()
 {
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;

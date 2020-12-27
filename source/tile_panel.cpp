@@ -36,7 +36,7 @@ struct Tile_Panel
 
     std::map<Tile_Category, std::vector<Tile_Group>> category;
 
-    quad bounds;
+    Quad bounds;
 
     int selected_category;
     int selected_group;
@@ -120,7 +120,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
         tile_cursor.y += get_panel_offset().y;
 
         const Tile_Group& tile_group = category[i];
-        quad tile_group_bounds = { tile_cursor.x, tile_cursor.y, TILE_PANEL_ITEM_SIZE, TILE_PANEL_ITEM_SIZE };
+        Quad tile_group_bounds = { tile_cursor.x, tile_cursor.y, TILE_PANEL_ITEM_SIZE, TILE_PANEL_ITEM_SIZE };
 
         if (is_active)
         {
@@ -338,7 +338,7 @@ TEINAPI void do_tile_panel (bool scrollbar)
         float w = CONTROL_PANEL_SCROLLBAR_WIDTH - CONTROL_PANEL_INNER_PAD;
         float h = get_viewport().h - (CONTROL_PANEL_INNER_PAD * 2);
 
-        quad sb = { x,y,w,h };
+        Quad sb = { x,y,w,h };
 
         do_scrollbar(sb, tile_panel.content_height, tile_panel.scroll_offset);
     }

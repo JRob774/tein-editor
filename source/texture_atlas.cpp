@@ -22,14 +22,14 @@ TEINAPI bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon
     {
         S32   id        = std::stoi(obj["id"].String());
         auto& clip_data = obj["clip"].children_array;
-        quad clip
+        Quad clip
         {
         static_cast<float>(clip_data[0].Number()),
         static_cast<float>(clip_data[1].Number()),
         static_cast<float>(clip_data[2].Number()),
         static_cast<float>(clip_data[3].Number())
         };
-        atlas.clips.insert(std::pair<S32, quad>(id, clip));
+        atlas.clips.insert(std::pair<S32, Quad>(id, clip));
     }
 
     return true;
@@ -58,7 +58,7 @@ TEINAPI void free_texture_atlas (Texture_Atlas& atlas)
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI quad& get_atlas_clip (Texture_Atlas& atlas, S32 key)
+TEINAPI Quad& get_atlas_clip (Texture_Atlas& atlas, S32 key)
 {
     return atlas.clips[key];
 }

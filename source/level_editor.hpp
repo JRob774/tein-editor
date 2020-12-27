@@ -148,8 +148,8 @@ struct Level_Editor
     bool mirror_h;
     bool mirror_v;
 
-    quad bounds;
-    quad viewport;
+    Quad bounds;
+    Quad viewport;
 };
 
 /* -------------------------------------------------------------------------- */

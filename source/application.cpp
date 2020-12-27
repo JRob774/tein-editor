@@ -199,7 +199,7 @@ TEINAPI void do_application ()
 
     render_clear(ui_color_medium);
 
-    quad p1, p2;
+    Quad p1, p2;
 
     p1.x = WINDOW_BORDER;
     p1.y = WINDOW_BORDER;

@@ -12,10 +12,10 @@
 static SDL_GLContext gl_context;
 static Window*    render_target;
 
-static quad renderer_viewport;
+static Quad renderer_viewport;
 static Vec4 renderer_draw_color;
 
-static std::stack<quad> scissor_stack;
+static std::stack<Quad> scissor_stack;
 
 static Shader untextured_shader;
 static Shader   textured_shader;
@@ -43,10 +43,10 @@ static Font*    text_font;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI quad internal__convert_viewport (quad viewport)
+TEINAPI Quad internal__convert_viewport (Quad viewport)
 {
     // Converts a viewport in our top-left format to GL's bottom-left format.
-    quad converted;
+    Quad converted;
 
     converted.x = viewport.x;
     converted.y = (get_render_target_h() - (viewport.y + viewport.h));
@@ -187,7 +187,7 @@ TEINAPI void render_present ()
 TEINAPI Vec2 screen_to_world (Vec2 screen)
 {
     // GL expects bottom-left so we have to convert our viewport first.
-    quad v = internal__convert_viewport(renderer_viewport);
+    Quad v = internal__convert_viewport(renderer_viewport);
 
     // We also need to do flip the Y coordinate to use this system.
     screen.y = get_render_target_h() - screen.y;
@@ -215,7 +215,7 @@ TEINAPI Vec2 screen_to_world (Vec2 screen)
 TEINAPI Vec2 world_to_screen (Vec2 world)
 {
     // GL expects bottom-left so we have to convert our viewport first.
-    quad v = internal__convert_viewport(renderer_viewport);
+    Quad v = internal__convert_viewport(renderer_viewport);
 
     Vec3 coord(world.x, world.y, 0);
 
@@ -303,7 +303,7 @@ TEINAPI void set_viewport (float x, float y, float w, float h)
 {
     // GL expects bottom-left so we have to flip the Y coordinate around.
     renderer_viewport = { x, y, w, h };
-    quad v = internal__convert_viewport(renderer_viewport);
+    Quad v = internal__convert_viewport(renderer_viewport);
 
     GLint   vx = static_cast<GLint>(v.x);
     GLint   vy = static_cast<GLint>(v.y);
@@ -315,12 +315,12 @@ TEINAPI void set_viewport (float x, float y, float w, float h)
     set_orthographic(0, w, h, 0);
 }
 
-TEINAPI void set_viewport (quad v)
+TEINAPI void set_viewport (Quad v)
 {
     set_viewport(v.x, v.y, v.w, v.h);
 }
 
-TEINAPI quad get_viewport ()
+TEINAPI Quad get_viewport ()
 {
     return renderer_viewport;
 }
@@ -400,7 +400,7 @@ TEINAPI void begin_scissor (float x, float y, float w, float h)
 TEINAPI void end_scissor ()
 {
     // Pop the last scissor region off the stack.
-    quad s = scissor_stack.top();
+    Quad s = scissor_stack.top();
     scissor_stack.pop();
 
     // GL expects bottom-left so we have to flip the Y coordinate around.
@@ -493,7 +493,7 @@ TEINAPI void fill_quad (float x1, float y1, float x2, float y2)
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void draw_texture (const Texture& tex, float x, float y, const quad* clip)
+TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* clip)
 {
     glBindTexture(GL_TEXTURE_2D, tex.handle);
     glEnable(GL_TEXTURE_2D);
@@ -579,7 +579,7 @@ TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
             default:
             {
                 const Font_Glyph& glyph = glyphs.at(*c);
-                const quad& clip = glyph.bounds;
+                const Quad& clip = glyph.bounds;
 
                 float bearing_x = glyph.bearing.x * scale;
                 float bearing_y = glyph.bearing.y * scale;
@@ -693,7 +693,7 @@ TEINAPI void set_text_batch_color (Vec4 color)
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void draw_batched_tile (float x, float y, const quad* clip)
+TEINAPI void draw_batched_tile (float x, float y, const Quad* clip)
 {
     assert(tile_texture);
 
@@ -748,7 +748,7 @@ TEINAPI void draw_batched_text (float x, float y, std::string text)
             default:
             {
                 const Font_Glyph& glyph = glyphs.at(*c);
-                const quad& clip = glyph.bounds;
+                const Quad& clip = glyph.bounds;
 
                 float bearing_x = glyph.bearing.x * scale;
                 float bearing_y = glyph.bearing.y * scale;
