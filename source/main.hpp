@@ -63,7 +63,7 @@
 #include <gon.h>
 #include <gon.cpp>
 
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 #include <glad/glad.c>
 #include <glad/glad.h>
