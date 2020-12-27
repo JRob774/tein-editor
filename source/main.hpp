@@ -69,7 +69,6 @@
 #include <glad/glad.h>
 
 #include "utility.hpp"
-#include "version.hpp"
 #include "alert.hpp"
 #include "debug.hpp"
 #include "error.hpp"
