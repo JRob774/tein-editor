@@ -93,7 +93,7 @@ TEINAPI bool load_level (Level& level, std::string file_name)
     FILE* file = fopen(file_name.c_str(), "rb");
     if (!file)
     {
-        LOG_ERROR(ERR_MED, "Failed to load level file '%s'!", file_name.c_str());
+        LogError(ERR_MED, "Failed to load level file '%s'!", file_name.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -111,7 +111,7 @@ TEINAPI bool save_level (const Level& level, std::string file_name)
     FILE* file = fopen(file_name.c_str(), "wb");
     if (!file)
     {
-        LOG_ERROR(ERR_MED, "Failed to save level file '%s'!", file_name.c_str());
+        LogError(ERR_MED, "Failed to save level file '%s'!", file_name.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -127,7 +127,7 @@ TEINAPI bool load_restore_level (Tab& tab, std::string file_name)
     FILE* file = fopen(file_name.c_str(), "rb");
     if (!file)
     {
-        LOG_ERROR(ERR_MED, "Failed to load restore file '%s'!", file_name.c_str());
+        LogError(ERR_MED, "Failed to load restore file '%s'!", file_name.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -154,7 +154,7 @@ TEINAPI bool save_restore_level (const Tab& tab, std::string file_name)
     FILE* file = fopen(file_name.c_str(), "wb");
     if (!file)
     {
-        LOG_ERROR(ERR_MED, "Failed to save restore file '%s'!", file_name.c_str());
+        LogError(ERR_MED, "Failed to save restore file '%s'!", file_name.c_str());
         return false;
     }
     Defer { fclose(file); };

@@ -88,7 +88,7 @@ TEINAPI void internal__init_map_editor_cursor ()
     map_editor.cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__map_cursor_blink_callback, NULL);
     if (!map_editor.cursor_blink_timer)
     {
-        LOG_ERROR(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+        LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
     }
 }
 
@@ -850,7 +850,7 @@ TEINAPI void handle_map_editor_events ()
                                 std::string text(tab.map_node_info.active->lvl.substr(begin, end-begin));
                                 if (SDL_SetClipboardText(text.c_str()) < 0)
                                 {
-                                    LOG_ERROR(ERR_MED, "Failed to set clipboard text! (%s)", SDL_GetError());
+                                    LogError(ERR_MED, "Failed to set clipboard text! (%s)", SDL_GetError());
                                 }
                             }
                         }
@@ -866,7 +866,7 @@ TEINAPI void handle_map_editor_events ()
                                 std::string text(tab.map_node_info.active->lvl.substr(begin, end-begin));
                                 if (SDL_SetClipboardText(text.c_str()) < 0)
                                 {
-                                    LOG_ERROR(ERR_MED, "Failed to set clipboard text! (%s)", SDL_GetError());
+                                    LogError(ERR_MED, "Failed to set clipboard text! (%s)", SDL_GetError());
                                 }
                                 else
                                 {
@@ -964,7 +964,7 @@ TEINAPI void handle_map_editor_events ()
             map_editor.cursor_visible = true;
             map_editor.cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__map_cursor_blink_callback, NULL);
             if (!map_editor.cursor_blink_timer) {
-                LOG_ERROR(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+                LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }
         }
     }
@@ -1120,7 +1120,7 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
     {
         if (!CreatePath(backup_path))
         {
-            LOG_ERROR(ERR_MIN, "Failed to create backup for map \"%s\"!", map_name.c_str());
+            LogError(ERR_MIN, "Failed to create backup for map \"%s\"!", map_name.c_str());
             return;
         }
     }

@@ -14,7 +14,7 @@ TEINAPI bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon
     std::string texture_file(gon["texture"].String());
     if (!load_texture_resource(texture_file, atlas.texture))
     {
-        LOG_ERROR(ERR_MIN, "Failed to load texture atlas image!");
+        LogError(ERR_MIN, "Failed to load texture atlas image!");
         return false;
     }
 

@@ -92,13 +92,13 @@ TEINAPI bool init_renderer ()
     gl_context = SDL_GL_CreateContext(get_window("WINMAIN").window);
     if (!gl_context)
     {
-        LOG_ERROR(ERR_MIN, "Failed to create GL context! (%s)", SDL_GetError());
+        LogError(ERR_MIN, "Failed to create GL context! (%s)", SDL_GetError());
         return false;
     }
 
     if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
     {
-        LOG_ERROR(ERR_MIN, "Failed to load OpenGL procedures!");
+        LogError(ERR_MIN, "Failed to load OpenGL procedures!");
         return false;
     }
 
@@ -115,14 +115,14 @@ TEINAPI bool init_renderer ()
     untextured_shader = load_shader_resource("shaders/untextured.shader");
     if (!untextured_shader)
     {
-        LOG_ERROR(ERR_MAX, "Failed to load the untextured shader!");
+        LogError(ERR_MAX, "Failed to load the untextured shader!");
         return false;
     }
 
     textured_shader = load_shader_resource("shaders/textured.shader");
     if (!textured_shader)
     {
-        LOG_ERROR(ERR_MAX, "Failed to load the textured shader!");
+        LogError(ERR_MAX, "Failed to load the textured shader!");
         return false;
     }
 
@@ -131,7 +131,7 @@ TEINAPI bool init_renderer ()
     text_shader = load_shader_resource("shaders/text.shader");
     if (!text_shader)
     {
-        LOG_ERROR(ERR_MED, "Failed to load the text shader!");
+        LogError(ERR_MED, "Failed to load the text shader!");
     }
 
     // By default we render to the main window.
@@ -264,7 +264,7 @@ TEINAPI void set_render_target (Window* window)
     if (SDL_GL_MakeCurrent(render_target->window, gl_context) < 0)
     {
         render_target = NULL;
-        LOG_ERROR(ERR_MED, "Failed to set render target! (%s)", SDL_GetError());
+        LogError(ERR_MED, "Failed to set render target! (%s)", SDL_GetError());
     }
 }
 

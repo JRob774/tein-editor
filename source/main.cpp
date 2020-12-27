@@ -2,8 +2,8 @@
 
 int main (int argc, char** argv)
 {
-    error_terminate_callback = quit_application;
-    error_maximum_callback = save_restore_files;
+    gErrorTerminateCallback = quit_application;
+    gErrorMaximumCallback = save_restore_files;
 
     // We defer so that this always gets scalled on scope exit no matter what.
     Defer { quit_application(); };

@@ -125,7 +125,7 @@ TEINAPI void okay_path ()
 
     if (!RunExecutable(editor_settings.game_path))
     {
-        LOG_ERROR(ERR_MED, "Failed to launch The End is Nigh executable!");
+        LogError(ERR_MED, "Failed to launch The End is Nigh executable!");
     }
 }
 

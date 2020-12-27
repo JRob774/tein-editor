@@ -20,7 +20,7 @@ TEINAPI bool internal__set_font_point_size (Font& fnt, int pt)
     float hdpi, vdpi;
     if (SDL_GetDisplayDPI(0, NULL, &hdpi, &vdpi) != 0)
     {
-        LOG_ERROR(ERR_MIN, "Failed to determine display DPI! (%s)", SDL_GetError());
+        LogError(ERR_MIN, "Failed to determine display DPI! (%s)", SDL_GetError());
         return false;
     }
 
@@ -31,7 +31,7 @@ TEINAPI bool internal__set_font_point_size (Font& fnt, int pt)
 
     if (FT_Set_Char_Size(fnt.face, 0, pt_height, hres, vres) != 0)
     {
-        LOG_ERROR(ERR_MIN, "Failed to set font glyph size!");
+        LogError(ERR_MIN, "Failed to set font glyph size!");
         return false;
     }
 
@@ -45,7 +45,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
     GLfloat cache_size = std::min(get_max_texture_size(), csz);
     if (cache_size < csz)
     {
-        LOG_ERROR(ERR_MIN, "Font cache size shrunk to %f!", cache_size);
+        LogError(ERR_MIN, "Font cache size shrunk to %f!", cache_size);
     }
 
     if (!internal__set_font_point_size(fnt, pt)) return false;
@@ -59,7 +59,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
     U8* buffer = Malloc(U8, cache_bytes);
     if (!buffer)
     {
-        LOG_ERROR(ERR_MIN, "Failed to create glyph buffer!");
+        LogError(ERR_MIN, "Failed to create glyph buffer!");
         return false;
     }
     Defer { Free(buffer); };
@@ -90,7 +90,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
         int index = FT_Get_Char_Index(fnt.face, i);
         if (FT_Load_Glyph(fnt.face, index, FT_LOAD_RENDER) != 0)
         {
-            LOG_ERROR(ERR_MIN, "Failed to load glyph '%c'!", i);
+            LogError(ERR_MIN, "Failed to load glyph '%c'!", i);
             return false;
         }
 
@@ -108,7 +108,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
             // If we hit the bottom edge then we are out of space.
             if (cursor.y + bitmap_height >= cache_size)
             {
-                LOG_ERROR(ERR_MIN, "Font cache too small!");
+                LogError(ERR_MIN, "Font cache too small!");
                 return false;
             }
         }
@@ -156,7 +156,7 @@ TEINAPI bool load_font_from_data (Font& fnt, const std::vector<U8>& file_data, s
 
     if (FT_New_Memory_Face(freetype, buffer, size, 0, &fnt.face) != 0)
     {
-        LOG_ERROR(ERR_MIN, "Failed to load font from data!");
+        LogError(ERR_MIN, "Failed to load font from data!");
         return false;
     }
 
@@ -178,7 +178,7 @@ TEINAPI bool load_font_from_file (Font& fnt, std::string file_name, std::vector<
 
     if (FT_New_Face(freetype, file_name.c_str(), 0, &fnt.face) != 0)
     {
-        LOG_ERROR(ERR_MIN, "Failed to load font '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to load font '%s'!", file_name.c_str());
         return false;
     }
 

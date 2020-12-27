@@ -29,7 +29,7 @@ TEINAPI bool internal__load_cursor (Cursor cursor, const char* file_name, int x,
     SDL_Surface* surface = load_surface_resource(file_name);
     if (!surface)
     {
-        LOG_ERROR(ERR_MIN, "Failed to load cursor file '%s'!", file_name);
+        LogError(ERR_MIN, "Failed to load cursor file '%s'!", file_name);
         return false;
     }
     Defer { SDL_FreeSurface(surface); };
@@ -44,14 +44,14 @@ TEINAPI bool internal__load_cursor (Cursor cursor, const char* file_name, int x,
     U32 color_key = SDL_MapRGB(surface->format, 0xFF,0x00,0xFF);
     if (SDL_SetColorKey(surface, SDL_TRUE, color_key) < 0)
     {
-        LOG_ERROR(ERR_MIN, "Failed to color key cursor '%s'!", file_name);
+        LogError(ERR_MIN, "Failed to color key cursor '%s'!", file_name);
         return false;
     }
 
     cursors[static_cast<int>(cursor)] = SDL_CreateColorCursor(surface, x, y);
     if (!cursors[static_cast<int>(cursor)])
     {
-        LOG_ERROR(ERR_MIN, "Failed to create cursor '%s'!", file_name);
+        LogError(ERR_MIN, "Failed to create cursor '%s'!", file_name);
         return false;
     }
 

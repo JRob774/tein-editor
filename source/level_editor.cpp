@@ -2232,7 +2232,7 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
     {
         if (!CreatePath(backup_path))
         {
-            LOG_ERROR(ERR_MIN, "Failed to create backup for level \"%s\"!", level_name.c_str());
+            LogError(ERR_MIN, "Failed to create backup for level \"%s\"!", level_name.c_str());
             return;
         }
     }

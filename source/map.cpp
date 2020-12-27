@@ -158,7 +158,7 @@ TEINAPI bool load_map (Tab& tab, std::string file_name)
 
     if (!DoesFileExist(file_name))
     {
-        LOG_ERROR(ERR_MED, "CSV file '%s' does not exist!", file_name.c_str());
+        LogError(ERR_MED, "CSV file '%s' does not exist!", file_name.c_str());
         return false;
     }
 
@@ -173,7 +173,7 @@ TEINAPI bool save_map (const Tab& tab, std::string file_name)
     FILE* file = fopen(file_name.c_str(), "wb");
     if (!file)
     {
-        LOG_ERROR(ERR_MED, "Failed to save level file '%s'!", file_name.c_str());
+        LogError(ERR_MED, "Failed to save level file '%s'!", file_name.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -206,7 +206,7 @@ TEINAPI bool save_restore_map (const Tab& tab, std::string file_name)
     FILE* file = fopen(file_name.c_str(), "wb");
     if (!file)
     {
-        LOG_ERROR(ERR_MED, "Failed to save restore file '%s'!", file_name.c_str());
+        LogError(ERR_MED, "Failed to save restore file '%s'!", file_name.c_str());
         return false;
     }
     Defer { fclose(file); };

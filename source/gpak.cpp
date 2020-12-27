@@ -48,9 +48,9 @@ TEINAPI void internal__handle_gpak_error (GPAK_Error error)
 {
     switch (error)
     {
-        case(GPAK_Error::WRITE): LOG_ERROR(ERR_MED, "Failed to write GPAK data!"); break;
-        case(GPAK_Error::READ ): LOG_ERROR(ERR_MED, "Failed to read GPAK data!" ); break;
-        case(GPAK_Error::EMPTY): LOG_ERROR(ERR_MED, "No files found to pack!"   ); break;
+        case(GPAK_Error::WRITE): LogError(ERR_MED, "Failed to write GPAK data!"); break;
+        case(GPAK_Error::READ ): LogError(ERR_MED, "Failed to read GPAK data!" ); break;
+        case(GPAK_Error::EMPTY): LogError(ERR_MED, "No files found to pack!"   ); break;
     }
 }
 
@@ -265,7 +265,7 @@ TEINAPI void gpak_unpack (std::string file_name, bool overwrite)
     gpak_unpack_thread = SDL_CreateThread(internal__gpak_unpack_thread_main, "UnpackGPAK", &gpak_unpack_data);
     if (!gpak_unpack_thread)
     {
-        LOG_ERROR(ERR_MED, "Failed to perform GPAK unpack operation! (%s)", SDL_GetError());
+        LogError(ERR_MED, "Failed to perform GPAK unpack operation! (%s)", SDL_GetError());
         return;
     }
     SDL_DetachThread(gpak_unpack_thread);
@@ -285,7 +285,7 @@ TEINAPI void gpak_pack (std::string file_name, std::vector<std::string> paths)
     gpak_pack_thread = SDL_CreateThread(internal__gpak_pack_thread_main, "PackGPAK", &gpak_pack_data);
     if (!gpak_pack_thread)
     {
-        LOG_ERROR(ERR_MED, "Failed to perform GPAK pack operation! (%s)", SDL_GetError());
+        LogError(ERR_MED, "Failed to perform GPAK pack operation! (%s)", SDL_GetError());
         return;
     }
     SDL_DetachThread(gpak_pack_thread);

@@ -29,7 +29,7 @@ TEINAPI bool init_resource_manager ()
     FILE* gpak = fopen(gpak_file_name.c_str(), "rb");
     if (!gpak)
     {
-        LOG_ERROR(ERR_MED, "Failed to load editor GPAK!");
+        LogError(ERR_MED, "Failed to load editor GPAK!");
         return true;
     }
     Defer { fclose(gpak); };
@@ -134,52 +134,52 @@ TEINAPI bool load_editor_resources ()
 {
     if (!load_texture_resource("textures/editor_ui/tools.png", resource_icons))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load editor icons!");
+        LogError(ERR_MAX, "Failed to load editor icons!");
         return false;
     }
     if (!load_texture_resource("textures/editor_ui/checker_x14.png", resource_checker_14, TEXTURE_WRAP_REPEAT))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load the checker-x14 image!");
+        LogError(ERR_MAX, "Failed to load the checker-x14 image!");
         return false;
     }
     if (!load_texture_resource("textures/editor_ui/checker_x16.png", resource_checker_16, TEXTURE_WRAP_REPEAT))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load the checker-x16 image!");
+        LogError(ERR_MAX, "Failed to load the checker-x16 image!");
         return false;
     }
     if (!load_texture_resource("textures/editor_ui/checker_x20.png", resource_checker_20, TEXTURE_WRAP_REPEAT))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load the checker-x20 image!");
+        LogError(ERR_MAX, "Failed to load the checker-x20 image!");
         return false;
     }
     if (!load_font_resource("fonts/opensans-regular.ttf", resource_font_regular_sans, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load OpenSans regular font!");
+        LogError(ERR_MAX, "Failed to load OpenSans regular font!");
         return false;
     }
     if (!load_font_resource("fonts/opensans-bold.ttf", resource_font_bold_sans, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load OpenSans bold font!");
+        LogError(ERR_MAX, "Failed to load OpenSans bold font!");
         return false;
     }
     if (!load_font_resource("fonts/liberationmono-regular.ttf", resource_font_regular_libmono))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load LiberationMono regular font!");
+        LogError(ERR_MAX, "Failed to load LiberationMono regular font!");
         return false;
     }
     if (!load_font_resource("fonts/opendyslexic-regular.ttf", resource_font_regular_dyslexic, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load OpenDyslexic regular font!");
+        LogError(ERR_MAX, "Failed to load OpenDyslexic regular font!");
         return false;
     }
     if (!load_font_resource("fonts/opendyslexic-bold.ttf", resource_font_bold_dyslexic, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load OpenDyslexic bold font!");
+        LogError(ERR_MAX, "Failed to load OpenDyslexic bold font!");
         return false;
     }
     if (!load_font_resource("fonts/opendyslexic-mono.ttf", resource_font_mono_dyslexic))
     {
-        LOG_ERROR(ERR_MAX, "Failed to load OpenDyslexic mono font!");
+        LogError(ERR_MAX, "Failed to load OpenDyslexic mono font!");
         return false;
     }
 

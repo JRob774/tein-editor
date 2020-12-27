@@ -18,7 +18,7 @@ TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<U8>& file_d
     U8* raw_data = stbi_load_from_memory(buffer, size, &w, &h, &bpp, 0);
     if (!raw_data)
     {
-        LOG_ERROR(ERR_MIN, "Failed to load texture from data!");
+        LogError(ERR_MIN, "Failed to load texture from data!");
         return false;
     }
     Defer { stbi_image_free(raw_data); };
@@ -35,7 +35,7 @@ TEINAPI bool load_texture_from_file (Texture& tex, std::string file_name, Textur
     U8* raw_data = stbi_load(file_name.c_str(), &w, &h, &bpp, 0);
     if (!raw_data)
     {
-        LOG_ERROR(ERR_MIN, "Failed to load texture '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to load texture '%s'!", file_name.c_str());
         return false;
     }
     Defer { stbi_image_free(raw_data); };
@@ -56,13 +56,13 @@ TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Te
     int max_texture_size = static_cast<int>(get_max_texture_size());
     if (w > max_texture_size || h > max_texture_size)
     {
-        LOG_ERROR(ERR_MIN, "Texture size %dx%d too large for GPU!", w,h);
+        LogError(ERR_MIN, "Texture size %dx%d too large for GPU!", w,h);
         return false;
     }
 
     if (!data)
     {
-        LOG_ERROR(ERR_MIN, "No texture data passed for creation!");
+        LogError(ERR_MIN, "No texture data passed for creation!");
         return false;
     }
 

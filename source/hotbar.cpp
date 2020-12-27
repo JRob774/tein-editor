@@ -424,7 +424,7 @@ TEINAPI void hb_run_game ()
     }
     else if (!RunExecutable(executable))
     {
-        LOG_ERROR(ERR_MED, "Failed to launch The End is Nigh executable!");
+        LogError(ERR_MED, "Failed to launch The End is Nigh executable!");
     }
 }
 

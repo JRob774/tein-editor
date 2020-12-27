@@ -322,7 +322,7 @@ TEINAPI void internal__save_settings ()
     FILE* file = fopen(file_name.c_str(), "w");
     if (!file)
     {
-        LOG_ERROR(ERR_MED, "Failed to save settings data!");
+        LogError(ERR_MED, "Failed to save settings data!");
         return;
     }
     Defer { fclose(file); };

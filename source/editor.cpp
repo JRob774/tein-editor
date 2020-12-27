@@ -236,7 +236,7 @@ TEINAPI void init_editor (int argc, char** argv)
             {
                 if (!internal__restore_tab(file_name))
                 {
-                    LOG_ERROR(ERR_MED, "Failed to restore '%s'!", file_name.c_str());
+                    LogError(ERR_MED, "Failed to restore '%s'!", file_name.c_str());
                     close_current_tab();
                 }
                 else
@@ -447,7 +447,7 @@ TEINAPI void update_backup_timer ()
             editor.backup_timer = SDL_AddTimer(backup_interval, internal__backup_callback, NULL);
             if (!editor.backup_timer)
             {
-                LOG_ERROR(ERR_MED, "Failed to setup backup timer system! (%s)", SDL_GetError());
+                LogError(ERR_MED, "Failed to setup backup timer system! (%s)", SDL_GetError());
             }
         }
     }

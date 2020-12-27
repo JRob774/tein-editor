@@ -1385,7 +1385,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
             ui_cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__cursor_blink_callback, NULL);
             if (!ui_cursor_blink_timer)
             {
-                LOG_ERROR(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+                LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }
 
             ui_text_box_cursor = text.length();
@@ -1660,7 +1660,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
                 ui_cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__cursor_blink_callback, NULL);
                 if (!ui_cursor_blink_timer)
                 {
-                    LOG_ERROR(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+                    LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
                 }
             }
         }

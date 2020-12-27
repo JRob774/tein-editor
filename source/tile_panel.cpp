@@ -302,7 +302,7 @@ TEINAPI bool init_tile_panel ()
     }
     catch (const char* msg)
     {
-        LOG_ERROR(ERR_MED, "%s", msg);
+        LogError(ERR_MED, "%s", msg);
         return false;
     }
 

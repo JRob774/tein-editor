@@ -27,7 +27,7 @@ TEINAPI GLuint internal__compile_shader (const GLchar* source, GLenum type)
         if (!compile_success)
         {
             glGetShaderInfoLog(shader, info_log_length, NULL, info_log);
-            LOG_ERROR(ERR_MIN, "Failed to compile shader:\n%s", info_log);
+            LogError(ERR_MIN, "Failed to compile shader:\n%s", info_log);
         }
     }
 
@@ -82,7 +82,7 @@ TEINAPI Shader load_shader_from_source (std::string source)
         if (!link_success)
         {
             glGetProgramInfoLog(program, info_log_length, NULL, info_log);
-            LOG_ERROR(ERR_MIN, "Failed to link shader:\n%s", info_log);
+            LogError(ERR_MIN, "Failed to link shader:\n%s", info_log);
 
             glDeleteProgram(program);
             program = NULL;
@@ -100,14 +100,14 @@ TEINAPI Shader load_shader_from_file (std::string file_name)
     std::string source = ReadEntireFile(file_name);
     if (source.empty())
     {
-        LOG_ERROR(ERR_MIN, "Failed to load shader '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to load shader '%s'!", file_name.c_str());
         return NULL;
     }
 
     Shader shader = load_shader_from_source(source);
     if (!shader)
     {
-        LOG_ERROR(ERR_MIN, "Failed to build shader '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to build shader '%s'!", file_name.c_str());
     }
     return shader;
 }

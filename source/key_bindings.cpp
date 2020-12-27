@@ -144,13 +144,13 @@ TEINAPI void internal__add_key_binding (const GonObject& gon, const GonObject& g
     bool gon_contains = gon.Contains(name);
     if (!gon_contains && !gon_fallback.Contains(name))
     {
-        LOG_ERROR(ERR_MIN, "No key binding for '%s'!", name);
+        LogError(ERR_MIN, "No key binding for '%s'!", name);
         return;
     }
 
     if (key_bindings.count(name) > 0)
     {
-        LOG_ERROR(ERR_MED, "Duplicate key binding '%s'!", name);
+        LogError(ERR_MED, "Duplicate key binding '%s'!", name);
         return;
     }
 
@@ -176,7 +176,7 @@ TEINAPI void internal__add_key_binding (const GonObject& gon, const GonObject& g
                 }
                 else
                 {
-                    LOG_ERROR(ERR_MED, "Invalid key mod '%s'!", key_name.c_str());
+                    LogError(ERR_MED, "Invalid key mod '%s'!", key_name.c_str());
                     return;
                 }
             }
@@ -205,7 +205,7 @@ TEINAPI void internal__add_key_binding (const GonObject& gon, const GonObject& g
                 }
                 else
                 {
-                    LOG_ERROR(ERR_MED, "Invalid key mod '%s'!", key_name.c_str());
+                    LogError(ERR_MED, "Invalid key mod '%s'!", key_name.c_str());
                     return;
                 }
             }
@@ -215,7 +215,7 @@ TEINAPI void internal__add_key_binding (const GonObject& gon, const GonObject& g
     // If neither are set then input was malformed or empty.
     if (!code && !mod)
     {
-        LOG_ERROR(ERR_MED, "Invalid key binding '%s'!", name);
+        LogError(ERR_MED, "Invalid key binding '%s'!", name);
         return;
     }
 
@@ -327,13 +327,13 @@ TEINAPI bool load_editor_key_bindings ()
     }
     catch (const char* msg)
     {
-        LOG_ERROR(ERR_MED, "%s", msg);
+        LogError(ERR_MED, "%s", msg);
 
         // If we already have key bind data then we just inform the user that the operation
         // failed. Otherwise, we just fallback to using the default application key binds.
         if (!key_bindings.empty())
         {
-            LOG_ERROR(ERR_MED, "Failed to reload key bindings data!");
+            LogError(ERR_MED, "Failed to reload key bindings data!");
             return false;
         }
         else
@@ -427,7 +427,7 @@ TEINAPI bool is_key_binding_active (std::string name)
     // If the key binding doesn't exist then it can't be active.
     if (!key_bindings.count(name))
     {
-        LOG_ERROR(ERR_MIN, "No key binding with name '%s'!", name.c_str());
+        LogError(ERR_MIN, "No key binding with name '%s'!", name.c_str());
         return false;
     }
 

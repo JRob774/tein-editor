@@ -24,7 +24,7 @@ TEINAPI void internal__set_dialog_cooldown ()
     editor.cooldown_timer = SDL_AddTimer(60, internal__dialog_cooldown_callback, NULL);
     if (!editor.cooldown_timer)
     {
-        LOG_ERROR(ERR_MIN, "Failed to setup dialog cooldown! (%s)", SDL_GetError());
+        LogError(ERR_MIN, "Failed to setup dialog cooldown! (%s)", SDL_GetError());
     }
 }
 
@@ -76,7 +76,7 @@ TEINAPI std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect
         DWORD error = CommDlgExtendedError();
         if (error) // Zero means the user cancelled -- not an actual error!
         {
-            LOG_ERROR(ERR_MED, "Failed to open file! (Error: 0x%X)", error);
+            LogError(ERR_MED, "Failed to open file! (Error: 0x%X)", error);
         }
     }
     else
@@ -155,7 +155,7 @@ TEINAPI std::string save_dialog (Dialog_Type type)
         DWORD error = CommDlgExtendedError();
         if (error) // Zero means the user cancelled -- not an actual error!
         {
-            LOG_ERROR(ERR_MED, "Failed to save file! (Error: 0x%X)", error);
+            LogError(ERR_MED, "Failed to save file! (Error: 0x%X)", error);
         }
     }
     else
@@ -184,7 +184,7 @@ TEINAPI std::vector<std::string> path_dialog (bool multiselect)
     IFileOpenDialog* file_dialog = NULL;
     if (!SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&file_dialog))))
     {
-        LOG_ERROR(ERR_MED, "Failed to create the folder dialog!");
+        LogError(ERR_MED, "Failed to create the folder dialog!");
         return paths;
     }
     Defer { file_dialog->Release(); };
@@ -192,7 +192,7 @@ TEINAPI std::vector<std::string> path_dialog (bool multiselect)
     DWORD options;
     if (!SUCCEEDED(file_dialog->GetOptions(&options)))
     {
-        LOG_ERROR(ERR_MED, "Failed to get folder dialog options!");
+        LogError(ERR_MED, "Failed to get folder dialog options!");
         return paths;
     }
 
@@ -209,7 +209,7 @@ TEINAPI std::vector<std::string> path_dialog (bool multiselect)
     IShellItemArray* shell_item_array = NULL;
     if (!SUCCEEDED(file_dialog->GetResults(&shell_item_array)))
     {
-        LOG_ERROR(ERR_MED, "Failed to create shell item array!");
+        LogError(ERR_MED, "Failed to create shell item array!");
         return paths;
     }
     Defer { shell_item_array->Release(); };

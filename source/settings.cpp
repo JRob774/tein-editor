@@ -131,13 +131,13 @@ TEINAPI bool load_editor_settings ()
     }
     catch (const char* msg)
     {
-        LOG_ERROR(ERR_MED, "%s", msg);
+        LogError(ERR_MED, "%s", msg);
 
         // If we already have settings data then we just inform the user that the operation
         // failed. Otherwise, we just fallback to using the default application settings.
         if (settings_loaded)
         {
-            LOG_ERROR(ERR_MED, "Failed to reload settings data!");
+            LogError(ERR_MED, "Failed to reload settings data!");
             return false;
         }
         else

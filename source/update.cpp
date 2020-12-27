@@ -68,7 +68,7 @@ TEINAPI void check_for_updates ()
     curl = curl_easy_init();
     if (!curl)
     {
-        LOG_ERROR(ERR_MIN, "Failed to initialize Curl!");
+        LogError(ERR_MIN, "Failed to initialize Curl!");
         return;
     }
     Defer { curl_easy_cleanup(curl); };
@@ -91,7 +91,7 @@ TEINAPI void check_for_updates ()
 
     if (http_code != HTTP_CODE_OK && http_code != HTTP_CODE_CREATED)
     {
-        LOG_ERROR(ERR_MIN, "Failed to GET update information (%d)!", http_code);
+        LogError(ERR_MIN, "Failed to GET update information (%d)!", http_code);
         return;
     }
 

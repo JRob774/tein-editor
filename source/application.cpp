@@ -50,7 +50,7 @@ TEINAPI void init_application (int argc, char** argv)
 {
     BeginDebugTimer("init_application");
 
-    // We set this here at program start so any fatal calls to LOG_ERROR can
+    // We set this here at program start so any fatal calls to LogError can
     // set this to false and we will never enter the main application loop.
     main_running = true;
 
@@ -73,42 +73,42 @@ TEINAPI void init_application (int argc, char** argv)
 
     BeginDebugSection("Initialization:");
 
-    if (!init_error_system())
+    if (!InitErrorSystem())
     {
-        LOG_ERROR(ERR_MAX, "Failed to setup the error system!");
+        LogError(ERR_MAX, "Failed to setup the error system!");
         return;
     }
 
     U32 sdl_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
     if (SDL_Init(sdl_flags) != 0)
     {
-        LOG_ERROR(ERR_MAX, "Failed to initialize SDL! (%s)", SDL_GetError());
+        LogError(ERR_MAX, "Failed to initialize SDL! (%s)", SDL_GetError());
         return;
     }
     else LogDebug("Initialized SDL2 Library");
 
     if (FT_Init_FreeType(&freetype) != 0)
     {
-        LOG_ERROR(ERR_MAX, "Failed to initialize FreeType!");
+        LogError(ERR_MAX, "Failed to initialize FreeType!");
         return;
     }
     else LogDebug("Initialized FreeType2 Library");
 
     internal__dump_debug_application_info();
 
-    if (!init_resource_manager()) { LOG_ERROR(ERR_MAX, "Failed to setup the resource manager!"); return; }
-    if (!init_ui_system       ()) { LOG_ERROR(ERR_MAX, "Failed to setup the UI system!"       ); return; }
-    if (!init_window          ()) { LOG_ERROR(ERR_MAX, "Failed to setup the window system!"   ); return; }
+    if (!init_resource_manager()) { LogError(ERR_MAX, "Failed to setup the resource manager!"); return; }
+    if (!init_ui_system       ()) { LogError(ERR_MAX, "Failed to setup the UI system!"       ); return; }
+    if (!init_window          ()) { LogError(ERR_MAX, "Failed to setup the window system!"   ); return; }
 
-    if (!create_window("WINPREFERENCES", "Preferences"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create preferences window!" ); return; }
-    if (!create_window("WINCOLOR"      , "Color Picker"    , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create color picker window!"); return; }
-    if (!create_window("WINNEW"        , "New"             , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create new window!"         ); return; }
-    if (!create_window("WINRESIZE"     , "Resize"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create resize window!"      ); return; }
-    if (!create_window("WINABOUT"      , "About"           , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440, 96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create about window!"       ); return; }
-    if (!create_window("WINUNPACK"     , "Unpack"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
-    if (!create_window("WINPACK"       , "Pack"            , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
-    if (!create_window("WINPATH"       , "Locate Game"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create path window!"        ); return; }
-    if (!create_window("WINUPDATE"     , "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LOG_ERROR(ERR_MAX, "Failed to create update window!"      ); return; }
+    if (!create_window("WINPREFERENCES", "Preferences"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!" ); return; }
+    if (!create_window("WINCOLOR"      , "Color Picker"    , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create color picker window!"); return; }
+    if (!create_window("WINNEW"        , "New"             , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create new window!"         ); return; }
+    if (!create_window("WINRESIZE"     , "Resize"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create resize window!"      ); return; }
+    if (!create_window("WINABOUT"      , "About"           , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440, 96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create about window!"       ); return; }
+    if (!create_window("WINUNPACK"     , "Unpack"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
+    if (!create_window("WINPACK"       , "Pack"            , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
+    if (!create_window("WINPATH"       , "Locate Game"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"        ); return; }
+    if (!create_window("WINUPDATE"     , "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"      ); return; }
 
     get_window("WINPREFERENCES"). close_callback = []() { cancel_preferences    (); };
     get_window("WINCOLOR"      ). close_callback = []() { cancel_color_picker   (); };
@@ -131,11 +131,11 @@ TEINAPI void init_application (int argc, char** argv)
     set_window_child("WINPATH");
     set_window_child("WINUPDATE");
 
-    if (!init_renderer           ()) { LOG_ERROR(ERR_MAX, "Failed to setup the renderer!"      ); return; }
-    if (!load_editor_settings    ()) { LOG_ERROR(ERR_MED, "Failed to load editor settings!"    );         }
-    if (!load_editor_key_bindings()) { LOG_ERROR(ERR_MED, "Failed to load editor key bindings!");         }
-    if (!load_editor_resources   ()) { LOG_ERROR(ERR_MAX, "Failed to load editor resources!"   ); return; }
-    if (!init_tile_panel         ()) { LOG_ERROR(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
+    if (!init_renderer           ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
+    if (!load_editor_settings    ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
+    if (!load_editor_key_bindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
+    if (!load_editor_resources   ()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
+    if (!init_tile_panel         ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
 
     init_layer_panel   ();
     init_color_picker  ();
@@ -181,7 +181,7 @@ TEINAPI void quit_application ()
     quit_window();
 
     QuitDebugSystem();
-    quit_error_system();
+    QuitErrorSystem();
 
     FT_Done_FreeType(freetype);
     SDL_Quit();
@@ -326,7 +326,7 @@ TEINAPI bool handle_application_events ()
     // We wait for events so we don't waste CPU and GPU power.
     if (!SDL_WaitEvent(&main_event))
     {
-        LOG_ERROR(ERR_MED, "Error waiting for events! (%s)", SDL_GetError());
+        LogError(ERR_MED, "Error waiting for events! (%s)", SDL_GetError());
         return false;
     }
 

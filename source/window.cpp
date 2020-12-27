@@ -196,7 +196,7 @@ TEINAPI bool create_window (std::string name, std::string title, int x, int y, i
 {
     if (windows.find(name) != windows.end())
     {
-        LOG_ERROR(ERR_MAX, "Window with name \"%s\" already exists!", name.c_str());
+        LogError(ERR_MAX, "Window with name \"%s\" already exists!", name.c_str());
         return false;
     }
 
@@ -208,14 +208,14 @@ TEINAPI bool create_window (std::string name, std::string title, int x, int y, i
     window.window = SDL_CreateWindow(title.c_str(), x, y, w, h, flags);
     if (!window.window)
     {
-        LOG_ERROR(ERR_MIN, "Failed to create window! (%s)", SDL_GetError());
+        LogError(ERR_MIN, "Failed to create window! (%s)", SDL_GetError());
         return false;
     }
 
     window.id = SDL_GetWindowID(window.window);
     if (!window.id)
     {
-        LOG_ERROR(ERR_MIN, "Failed to get window ID! (%s)", SDL_GetError());
+        LogError(ERR_MIN, "Failed to get window ID! (%s)", SDL_GetError());
         return false;
     }
 
@@ -341,7 +341,7 @@ TEINAPI bool init_window ()
         MAIN_WINDOW_X,MAIN_WINDOW_Y,MAIN_WINDOW_BASE_W,MAIN_WINDOW_BASE_H,
         MAIN_WINDOW_MIN_W,MAIN_WINDOW_MIN_H, MAIN_WINDOW_FLAGS))
     {
-        LOG_ERROR(ERR_MAX, "Failed to create the main application window!");
+        LogError(ERR_MAX, "Failed to create the main application window!");
         return false;
     }
 
