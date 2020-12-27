@@ -17,10 +17,10 @@ TEINAPI GLuint internal__compile_shader (const GLchar* source, GLenum type)
 
     GLint info_log_length;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_log_length);
-    char* info_log = cstd_malloc(char, info_log_length);
+    char* info_log = Malloc(char, info_log_length);
     if (info_log)
     {
-        Defer { cstd_free(info_log); };
+        Defer { Free(info_log); };
 
         GLint compile_success;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_success);
@@ -72,10 +72,10 @@ TEINAPI Shader load_shader_from_source (std::string source)
 
     GLint info_log_length;
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_log_length);
-    char* info_log = cstd_malloc(char, info_log_length);
+    char* info_log = Malloc(char, info_log_length);
     if (info_log)
     {
-        Defer { cstd_free(info_log); };
+        Defer { Free(info_log); };
 
         GLint link_success;
         glGetProgramiv(program, GL_LINK_STATUS, &link_success);

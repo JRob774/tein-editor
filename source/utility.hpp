@@ -37,10 +37,8 @@ struct DeferHelp
     DeferType<T> operator+ (T type) { return type; }
 };
 
-#define cstd_malloc( t,     sz) (t*)malloc ((sz)     *sizeof(t))
-#define cstd_realloc(t, pt, sz) (t*)realloc((pt),(sz)*sizeof(t))
-#define cstd_calloc( t,     sz) (t*)calloc ((sz),     sizeof(t))
-#define cstd_free(      pt)           free ((pt))
+#define Malloc(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
+#define Free(pt) free((pt))
 
 typedef  uint8_t  u8;
 typedef uint16_t u16;

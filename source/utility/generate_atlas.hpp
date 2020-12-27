@@ -39,13 +39,16 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     // It is important to use calloc to ensure all pointers are set to NULL!
     // We must also keep the raw texture data until we are done with the SDL
     // surfaces as they do not make a copy of the pixel data during creation.
-    SDL_Surface** surfaces = cstd_calloc(SDL_Surface*, surface_count);
-    u8** raw_data = cstd_calloc(u8*, surface_count);
+    SDL_Surface** surfaces = Malloc(SDL_Surface*, surface_count);
+    u8** raw_data = Malloc(u8*, surface_count);
     if (!surfaces || !raw_data)
     {
         LOG_ERROR(ERR_MIN, "Failed to allocate texture atlas surfaces!");
         return;
     }
+
+    memset(surfaces, 0, sizeof(SDL_Surface*)*surface_count);
+    memset(raw_data, 0, sizeof(u8*)*surface_count);
 
     Defer
     {
@@ -54,8 +57,8 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
             SDL_FreeSurface(surfaces[i]);
             stbi_image_free(raw_data[i]);
         }
-        cstd_free(surfaces); surfaces = NULL;
-        cstd_free(raw_data); raw_data = NULL;
+        Free(surfaces); surfaces = NULL;
+        Free(raw_data); raw_data = NULL;
     };
 
     // Go through each of the textures to be packed and load as surfaces.
@@ -89,22 +92,22 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
 
     // Allocate memory for the necessary components used by the rect packer.
     int node_count = atlas_w;
-    stbrp_node* nodes = cstd_malloc(stbrp_node, node_count);
+    stbrp_node* nodes = Malloc(stbrp_node, node_count);
     if (!nodes)
     {
         LOG_ERROR(ERR_MIN, "Failed to allocate atlas packing nodes!");
         return;
     }
-    Defer { cstd_free(nodes); };
+    Defer { Free(nodes); };
 
     int rect_count = static_cast<int>(surface_count);
-    stbrp_rect* rects = cstd_malloc(stbrp_rect, rect_count);
+    stbrp_rect* rects = Malloc(stbrp_rect, rect_count);
     if (!rects)
     {
         LOG_ERROR(ERR_MIN, "Failed to allocate atlas packing rects!");
         return;
     }
-    Defer { cstd_free(rects); };
+    Defer { Free(rects); };
 
     // We need to store the size of each texture into the rects so that stb
     // can know the dimensions when packing the rects into a texture atlas.

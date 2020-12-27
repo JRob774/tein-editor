@@ -56,14 +56,15 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
     size_t cache_row = static_cast<size_t>(cache_size);
     size_t cache_bytes = cache_row * cache_row;
 
-    // We use calloc to fill the buffer with black instead of garbage.
-    u8* buffer = cstd_calloc(u8, cache_bytes);
+    u8* buffer = Malloc(u8, cache_bytes);
     if (!buffer)
     {
         LOG_ERROR(ERR_MIN, "Failed to create glyph buffer!");
         return false;
     }
-    Defer { cstd_free(buffer); };
+    Defer { Free(buffer); };
+
+    memset(buffer, 0, sizeof(u8)*cache_bytes); // We don't want the buffer filled with garbage data!
 
     fnt.has_kerning = FT_HAS_KERNING(fnt.face);
     fnt.color       = vec4(1,1,1,1);

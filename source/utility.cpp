@@ -328,12 +328,12 @@ TEINAPI std::string format_string_v (const char* format, va_list args)
 {
     std::string str;
     int size = vsnprintf(NULL, 0, format, args) + 1;
-    char* buffer = cstd_malloc(char, size);
+    char* buffer = Malloc(char, size);
     if (buffer)
     {
         vsnprintf(buffer, size, format, args);
         str = buffer;
-        cstd_free(buffer);
+        Free(buffer);
     }
     return str;
 }
@@ -357,8 +357,8 @@ TEINAPI std::string format_time (const char* format)
     char* buffer = NULL;
     do
     {
-        if (buffer) cstd_free(buffer);
-        buffer = cstd_malloc(char, length);
+        if (buffer) Free(buffer);
+        buffer = Malloc(char, length);
         if (!buffer) return std::string();
 
         result = strftime(buffer, length, format, cur_time);
@@ -366,7 +366,7 @@ TEINAPI std::string format_time (const char* format)
     }
     while (!result);
 
-    Defer { cstd_free(buffer); };
+    Defer { Free(buffer); };
     return std::string(buffer);
 }
 
