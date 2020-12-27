@@ -75,7 +75,6 @@
 #include <glad/glad.h>
 
 #include "utility.hpp"
-#include "alert.hpp"
 #include "debug.hpp"
 #include "error.hpp"
 #include "dialog.hpp"
@@ -117,7 +116,6 @@
 #include "application.hpp"
 
 #include "utility.cpp"
-#include "alert.cpp"
 #include "debug.cpp"
 #include "error.cpp"
 #include "dialog.cpp"

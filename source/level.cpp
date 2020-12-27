@@ -39,7 +39,7 @@ TEINAPI bool internal__load_level (FILE* file, Level& level)
     if (level.header.version != 1)
     {
         std::string msg(FormatString("Invalid level file version '%d'!", level.header.version));
-        show_alert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
+        ShowAlert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
         return false;
     }
 

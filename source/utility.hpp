@@ -69,6 +69,28 @@ struct Quad
     union { float h, y2; };
 };
 
+enum AlertButton
+{
+    ALERT_BUTTON_YES_NO_CANCEL,
+    ALERT_BUTTON_YES_NO,
+    ALERT_BUTTON_OK,
+    ALERT_BUTTON_OK_CANCEL
+};
+enum AlertType
+{
+    ALERT_TYPE_INFO,
+    ALERT_TYPE_WARNING,
+    ALERT_TYPE_ERROR
+};
+enum AlertResult
+{
+    ALERT_RESULT_INVALID,
+    ALERT_RESULT_CANCEL,
+    ALERT_RESULT_OK,
+    ALERT_RESULT_NO,
+    ALERT_RESULT_YES
+};
+
 TEINAPI std::vector<U8> ReadBinaryFile (std::string fileName);
 TEINAPI std::string     ReadEntireFile (std::string fileName);
 
@@ -122,3 +144,5 @@ TEINAPI bool StringReplace (std::string& str, const std::string& from, const std
 
 TEINAPI bool RunExecutable (std::string exe);
 TEINAPI void LoadWebpage   (std::string url);
+
+TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType type, AlertButton buttons, std::string window = "");

@@ -210,8 +210,7 @@ TEINAPI void internal__okay_resize ()
 {
     if (current_resize_width < MINIMUM_LEVEL_WIDTH || current_resize_height < MINIMUM_LEVEL_HEIGHT)
     {
-        show_alert("Warning", FormatString("Minimum level size is %dx%d!", MINIMUM_LEVEL_WIDTH,
-            MINIMUM_LEVEL_HEIGHT), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINRESIZE");
+        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", MINIMUM_LEVEL_WIDTH, MINIMUM_LEVEL_HEIGHT), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINRESIZE");
         return;
     }
 

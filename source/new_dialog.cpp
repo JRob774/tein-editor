@@ -30,8 +30,7 @@ TEINAPI void internal__okay_new ()
 {
     if (current_new_width < MINIMUM_LEVEL_WIDTH || current_new_height < MINIMUM_LEVEL_HEIGHT)
     {
-        show_alert("Warning", FormatString("Minimum level size is %dx%d!", MINIMUM_LEVEL_WIDTH,
-            MINIMUM_LEVEL_HEIGHT), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINNEW");
+        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", MINIMUM_LEVEL_WIDTH, MINIMUM_LEVEL_HEIGHT), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINNEW");
         return;
     }
 

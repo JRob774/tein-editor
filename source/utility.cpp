@@ -411,3 +411,38 @@ TEINAPI void LoadWebpage (std::string url)
     ShellExecuteA(NULL, NULL, url.c_str(), NULL, NULL, SW_SHOW);
 }
 #endif
+
+TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType type, AlertButton buttons, std::string window)
+{
+    // Convert the type and button parameters into values that can be used by MessageBoxA.
+    UINT flags = 0;
+    switch (type)
+    {
+        case (ALERT_TYPE_INFO): flags |= MB_ICONINFORMATION; break;
+        case (ALERT_TYPE_WARNING): flags |= MB_ICONWARNING; break;
+        case (ALERT_TYPE_ERROR): flags |= MB_ICONERROR; break;
+    }
+    switch (buttons)
+    {
+        case (ALERT_BUTTON_YES_NO_CANCEL): flags |= MB_YESNOCANCEL; break;
+        case (ALERT_BUTTON_YES_NO): flags |= MB_YESNO; break;
+        case (ALERT_BUTTON_OK): flags |= MB_OK; break;
+        case (ALERT_BUTTON_OK_CANCEL): flags |= MB_OKCANCEL; break;
+    }
+
+    // We don't allow hidden windows because it causes program hang.
+    HWND hwnd = (!window.empty() && !is_window_hidden(window)) ? Internal::Win32GetWindowHandle(get_window(window).window) : NULL;
+    int ret = MessageBoxA(hwnd, msg.c_str(), title.c_str(), (type|buttons));
+
+    // Convert the result into a platform-agnostic value for use in the program.
+    AlertResult result = ALERT_RESULT_INVALID;
+    switch (ret)
+    {
+        case (IDCANCEL): result = ALERT_RESULT_CANCEL; break;
+        case (IDOK): result = ALERT_RESULT_OK; break;
+        case (IDNO): result = ALERT_RESULT_NO; break;
+        case (IDYES): result = ALERT_RESULT_YES; break;
+    }
+
+    return result;
+}

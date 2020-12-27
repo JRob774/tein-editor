@@ -20,8 +20,7 @@ static FILE* error_log;
 #if defined(PLATFORM_WIN32)
 TEINAPI LONG WINAPI internal__unhandled_exception_filter (struct _EXCEPTION_POINTERS* info)
 {
-    show_alert("Error", "Fatal exception occurred!\nCreating crash dump!",
-        ALERT_TYPE_ERROR, ALERT_BUTTON_OK);
+    ShowAlert("Error", "Fatal exception occurred!\nCreating crash dump!", ALERT_TYPE_ERROR, ALERT_BUTTON_OK);
 
     std::string file_name(MakePathAbsolute(CRASH_DUMP_NAME));
     HANDLE file = CreateFileA(file_name.c_str(), GENERIC_WRITE, 0, NULL,
@@ -89,7 +88,7 @@ TEINAPI void internal__log_error (const char* file, int line, Error_Level level,
 
     va_start(args, format);
     std::string msg = FormatStringV(format, args);
-    show_alert("Error!", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
+    ShowAlert("Error!", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
     va_end(args);
 
     if (level == ERR_MED) return;

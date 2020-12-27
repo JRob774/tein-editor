@@ -229,7 +229,7 @@ TEINAPI void init_editor (int argc, char** argv)
     bool denied_restore = false;
     if (!restore_files.empty())
     {
-        if (show_alert("Restore", "Would you like to attempt to restore tabs?",
+        if (ShowAlert("Restore", "Would you like to attempt to restore tabs?",
             ALERT_TYPE_INFO, ALERT_BUTTON_YES_NO, "WINMAIN") == ALERT_RESULT_YES)
         {
             for (auto& file_name: restore_files)
@@ -264,7 +264,7 @@ TEINAPI void init_editor (int argc, char** argv)
             if (!DoesFileExist(argv[i]))
             {
                 std::string msg(FormatString("Could not find file '%s'!", argv[i]));
-                show_alert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
+                ShowAlert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
             }
             else
             {
@@ -711,7 +711,7 @@ TEINAPI int save_changes_prompt (Tab& tab)
 
     std::string tab_name((tab.name.empty()) ? "Untitled" : StripFilePath(tab.name));
     std::string msg(FormatString("'%s' has unsaved changes!\nWould you like to save?", tab_name.c_str()));
-    int result = show_alert("Unsaved Changes", msg, ALERT_TYPE_WARNING, ALERT_BUTTON_YES_NO_CANCEL, "WINMAIN");
+    int result = ShowAlert("Unsaved Changes", msg, ALERT_TYPE_WARNING, ALERT_BUTTON_YES_NO_CANCEL, "WINMAIN");
     if (result == ALERT_RESULT_YES)
     {
         // The save was cancelled or there was an error so we cancel the action

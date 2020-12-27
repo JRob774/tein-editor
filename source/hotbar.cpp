@@ -352,8 +352,7 @@ TEINAPI void hb_gpak_unpack ()
     if (!files.empty())
     {
         bool should_overwrite = true;
-        if (show_alert("Overwrite", "Do you want to overwrite any existing files during unpack?",
-                ALERT_TYPE_INFO, ALERT_BUTTON_YES_NO) == ALERT_RESULT_NO)
+        if (ShowAlert("Overwrite", "Do you want to overwrite any existing files during unpack?", ALERT_TYPE_INFO, ALERT_BUTTON_YES_NO) == ALERT_RESULT_NO)
         {
             should_overwrite = false;
         }
