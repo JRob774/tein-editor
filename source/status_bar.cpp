@@ -9,10 +9,10 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* STATUS_BAR_DEFAULT_MSG = "Hover over items and widgets for more information.";
-GLOBAL constexpr float       STATUS_BAR_LABEL_WIDTH = .125f; // NDC!
+static constexpr const char* STATUS_BAR_DEFAULT_MSG = "Hover over items and widgets for more information.";
+static constexpr float       STATUS_BAR_LABEL_WIDTH = .125f; // NDC!
 
-GLOBAL std::string status_bar_pushed_message;
+static std::string status_bar_pushed_message;
 
 /* -------------------------------------------------------------------------- */
 

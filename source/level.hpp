@@ -16,21 +16,21 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float DEFAULT_LEVEL_WIDTH  = 54;
-GLOBAL constexpr float DEFAULT_LEVEL_HEIGHT = 32;
-GLOBAL constexpr int   MINIMUM_LEVEL_WIDTH  = 54;
-GLOBAL constexpr int   MINIMUM_LEVEL_HEIGHT = 32;
-GLOBAL constexpr int   MAXIMUM_LEVEL_WIDTH  = 2840;
-GLOBAL constexpr int   MAXIMUM_LEVEL_HEIGHT = 2840;
+static constexpr float DEFAULT_LEVEL_WIDTH  = 54;
+static constexpr float DEFAULT_LEVEL_HEIGHT = 32;
+static constexpr int   MINIMUM_LEVEL_WIDTH  = 54;
+static constexpr int   MINIMUM_LEVEL_HEIGHT = 32;
+static constexpr int   MAXIMUM_LEVEL_WIDTH  = 2840;
+static constexpr int   MAXIMUM_LEVEL_HEIGHT = 2840;
 
 typedef u32 Level_Layer;
 
-GLOBAL constexpr Level_Layer LEVEL_LAYER_TAG     = 0;
-GLOBAL constexpr Level_Layer LEVEL_LAYER_OVERLAY = 1;
-GLOBAL constexpr Level_Layer LEVEL_LAYER_ACTIVE  = 2; // Combo of Basic and Entity.
-GLOBAL constexpr Level_Layer LEVEL_LAYER_BACK1   = 3;
-GLOBAL constexpr Level_Layer LEVEL_LAYER_BACK2   = 4;
-GLOBAL constexpr Level_Layer LEVEL_LAYER_TOTAL   = 5;
+static constexpr Level_Layer LEVEL_LAYER_TAG     = 0;
+static constexpr Level_Layer LEVEL_LAYER_OVERLAY = 1;
+static constexpr Level_Layer LEVEL_LAYER_ACTIVE  = 2; // Combo of Basic and Entity.
+static constexpr Level_Layer LEVEL_LAYER_BACK1   = 3;
+static constexpr Level_Layer LEVEL_LAYER_BACK2   = 4;
+static constexpr Level_Layer LEVEL_LAYER_TOTAL   = 5;
 
 typedef s32 Tile_ID;
 

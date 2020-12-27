@@ -11,27 +11,27 @@
 
 // These are default values for if certain settings values cannot be found.
 
-GLOBAL constexpr const char* SETTINGS_DEFAULT_GAME_PATH           = "";
-GLOBAL constexpr const char* SETTINGS_DEFAULT_UI_THEME            = "dark";
-GLOBAL constexpr const char* SETTINGS_DEFAULT_FONT_FACE           = "OpenSans";
-GLOBAL constexpr const char* SETTINGS_DEFAULT_TILE_GRAPHICS       = "new";
-GLOBAL constexpr bool        SETTINGS_DEFAULT_CUSTOM_CURSORS      = true;
-GLOBAL constexpr bool        SETTINGS_DEFAULT_SHOW_TOOLTIPS       = true;
-GLOBAL constexpr bool        SETTINGS_DEFAULT_UNLIMITED_BACKUPS   = false;
-GLOBAL constexpr int         SETTINGS_DEFAULT_BACKUP_COUNT        = 5;
-GLOBAL constexpr bool        SETTINGS_DEFAULT_AUTO_BACKUP         = true;
-GLOBAL constexpr int         SETTINGS_DEFAULT_BACKUP_INTERVAL     = 180;
-GLOBAL           const vec4  SETTINGS_DEFAULT_SELECT_COLOR        = { .94f, .0f, 1.0f, .25f };
-GLOBAL           const vec4  SETTINGS_DEFAULT_OUT_OF_BOUNDS_COLOR = { .25f, .1f,  .1f, .40f };
-GLOBAL           const vec4  SETTINGS_DEFAULT_CURSOR_COLOR        = { .20f, .9f,  .2f, .40f };
-GLOBAL           const vec4  SETTINGS_DEFAULT_MIRROR_LINE_COLOR   = { .80f, .2f,  .2f, .80f };
+static constexpr const char* SETTINGS_DEFAULT_GAME_PATH           = "";
+static constexpr const char* SETTINGS_DEFAULT_UI_THEME            = "dark";
+static constexpr const char* SETTINGS_DEFAULT_FONT_FACE           = "OpenSans";
+static constexpr const char* SETTINGS_DEFAULT_TILE_GRAPHICS       = "new";
+static constexpr bool        SETTINGS_DEFAULT_CUSTOM_CURSORS      = true;
+static constexpr bool        SETTINGS_DEFAULT_SHOW_TOOLTIPS       = true;
+static constexpr bool        SETTINGS_DEFAULT_UNLIMITED_BACKUPS   = false;
+static constexpr int         SETTINGS_DEFAULT_BACKUP_COUNT        = 5;
+static constexpr bool        SETTINGS_DEFAULT_AUTO_BACKUP         = true;
+static constexpr int         SETTINGS_DEFAULT_BACKUP_INTERVAL     = 180;
+static           const vec4  SETTINGS_DEFAULT_SELECT_COLOR        = { .94f, .0f, 1.0f, .25f };
+static           const vec4  SETTINGS_DEFAULT_OUT_OF_BOUNDS_COLOR = { .25f, .1f,  .1f, .40f };
+static           const vec4  SETTINGS_DEFAULT_CURSOR_COLOR        = { .20f, .9f,  .2f, .40f };
+static           const vec4  SETTINGS_DEFAULT_MIRROR_LINE_COLOR   = { .80f, .2f,  .2f, .80f };
 
 /* -------------------------------------------------------------------------- */
 
 // Fallback copy of the settings file we can load in the case that the
 // settings file is not present and then we just save these defaults.
 
-GLOBAL constexpr const char* SETTINGS_FALLBACK =
+static constexpr const char* SETTINGS_FALLBACK =
 "user_interface_theme dark\n"
 "font_face OpenSans\n"
 "tile_graphics new\n"
@@ -50,7 +50,7 @@ GLOBAL constexpr const char* SETTINGS_FALLBACK =
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL bool settings_loaded;
+static bool settings_loaded;
 
 /* -------------------------------------------------------------------------- */
 

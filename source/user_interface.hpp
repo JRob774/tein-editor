@@ -19,38 +19,38 @@
 // These colors are filled with the appropriate values based on whether the
 // user would prefer to use the dark or light theme for the level editor.
 
-GLOBAL vec4 ui_color_black;
-GLOBAL vec4 ui_color_ex_dark;
-GLOBAL vec4 ui_color_dark;
-GLOBAL vec4 ui_color_med_dark;
-GLOBAL vec4 ui_color_medium;
-GLOBAL vec4 ui_color_med_light;
-GLOBAL vec4 ui_color_light;
-GLOBAL vec4 ui_color_ex_light;
-GLOBAL vec4 ui_color_white;
+static vec4 ui_color_black;
+static vec4 ui_color_ex_dark;
+static vec4 ui_color_dark;
+static vec4 ui_color_med_dark;
+static vec4 ui_color_medium;
+static vec4 ui_color_med_light;
+static vec4 ui_color_light;
+static vec4 ui_color_ex_light;
+static vec4 ui_color_white;
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr u32 UI_CURSOR_BLINK_INTERVAL = 700;
+static constexpr u32 UI_CURSOR_BLINK_INTERVAL = 700;
 
 // The function type that is called by various UI widgets when triggered.
 typedef void (*UI_Action)(void);
 
 typedef u32 UI_Flag;
 
-GLOBAL constexpr UI_Flag UI_NONE       = 0x00000000;
-GLOBAL constexpr UI_Flag UI_LOCKED     = 0x00000001;
-GLOBAL constexpr UI_Flag UI_INACTIVE   = 0x00000002;
-GLOBAL constexpr UI_Flag UI_HIGHLIGHT  = 0x00000004;
-GLOBAL constexpr UI_Flag UI_DARKEN     = 0x00000008;
-GLOBAL constexpr UI_Flag UI_TOOLTIP    = 0x00000010;
-GLOBAL constexpr UI_Flag UI_SINGLE     = 0x00000020;
+static constexpr UI_Flag UI_NONE       = 0x00000000;
+static constexpr UI_Flag UI_LOCKED     = 0x00000001;
+static constexpr UI_Flag UI_INACTIVE   = 0x00000002;
+static constexpr UI_Flag UI_HIGHLIGHT  = 0x00000004;
+static constexpr UI_Flag UI_DARKEN     = 0x00000008;
+static constexpr UI_Flag UI_TOOLTIP    = 0x00000010;
+static constexpr UI_Flag UI_SINGLE     = 0x00000020;
 
 // Flags for what type of characters can be written into a text box.
-GLOBAL constexpr UI_Flag UI_ALPHABETIC = 0x00000040;
-GLOBAL constexpr UI_Flag UI_NUMERIC    = 0x00000080;
-GLOBAL constexpr UI_Flag UI_ALPHANUM   = 0x00000100;
-GLOBAL constexpr UI_Flag UI_FILEPATH   = 0x00000200;
+static constexpr UI_Flag UI_ALPHABETIC = 0x00000040;
+static constexpr UI_Flag UI_NUMERIC    = 0x00000080;
+static constexpr UI_Flag UI_ALPHANUM   = 0x00000100;
+static constexpr UI_Flag UI_FILEPATH   = 0x00000200;
 
 enum UI_Align
 {
@@ -69,7 +69,7 @@ enum UI_Dir
     UI_DIR_LEFT
 };
 
-GLOBAL bool should_push_ui_redraw_event;
+static bool should_push_ui_redraw_event;
 
 /* -------------------------------------------------------------------------- */
 

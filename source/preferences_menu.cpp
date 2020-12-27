@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL const std::map<std::string, const char*> PREFERENCES_SETTINGS_NAMES
+static const std::map<std::string, const char*> PREFERENCES_SETTINGS_NAMES
 {
 { SETTING_UI_THEME,            "Theme"                         },
 { SETTING_FONT_FACE,           "Font"                          },
@@ -30,7 +30,7 @@ GLOBAL const std::map<std::string, const char*> PREFERENCES_SETTINGS_NAMES
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL const std::map<std::string, const char*> PREFERENCES_HOTKEYS_NAMES
+static const std::map<std::string, const char*> PREFERENCES_HOTKEYS_NAMES
 {
 { KB_LEVEL_NEW,                "New"                           },
 { KB_LEVEL_OPEN,               "Load"                          },
@@ -99,20 +99,20 @@ GLOBAL const std::map<std::string, const char*> PREFERENCES_HOTKEYS_NAMES
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float PREFERENCES_V_FRAME_H       = 26;
-GLOBAL constexpr float PREFERENCES_SECTION_H       = 24;
-GLOBAL constexpr float PREFERENCES_INNER_XPAD      = 10;
-GLOBAL constexpr float PREFERENCES_INNER_YPAD      =  5;
-GLOBAL constexpr float PREFERENCES_TEXT_BOX_INSET  =  2;
-GLOBAL constexpr float PREFERENCES_SCROLLBAR_WIDTH = 12;
-GLOBAL constexpr float PREFERENCES_COLOR_HEIGHT    = 18;
+static constexpr float PREFERENCES_V_FRAME_H       = 26;
+static constexpr float PREFERENCES_SECTION_H       = 24;
+static constexpr float PREFERENCES_INNER_XPAD      = 10;
+static constexpr float PREFERENCES_INNER_YPAD      =  5;
+static constexpr float PREFERENCES_TEXT_BOX_INSET  =  2;
+static constexpr float PREFERENCES_SCROLLBAR_WIDTH = 12;
+static constexpr float PREFERENCES_COLOR_HEIGHT    = 18;
 
 enum class Preferennes_Tab { SETTINGS, HOTKEYS };
 
-GLOBAL Preferennes_Tab preferences_tab = Preferennes_Tab::SETTINGS;
+static Preferennes_Tab preferences_tab = Preferennes_Tab::SETTINGS;
 
-GLOBAL float preferences_scroll_offset = 0;
-GLOBAL bool  preferences_mouse_pressed = false;
+static float preferences_scroll_offset = 0;
+static bool  preferences_mouse_pressed = false;
 
 // When the preferences menu is opened we cache the current settings and
 // hotkey states. This allows the preferences menu to modify the current
@@ -120,8 +120,8 @@ GLOBAL bool  preferences_mouse_pressed = false;
 // then wants to cancel the changes made, we can just restore the cached
 // versions of the settings and hotkeys to return to the original state.
 
-GLOBAL Settings                           cached_editor_settings;
-GLOBAL std::map<std::string, Key_Binding> cached_editor_hotkeys;
+static Settings                           cached_editor_settings;
+static std::map<std::string, Key_Binding> cached_editor_hotkeys;
 
 /* -------------------------------------------------------------------------- */
 

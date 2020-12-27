@@ -9,8 +9,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float PATH_DIALOG_BOTTOM_BORDER = 26;
-GLOBAL std::string temp_game_path;
+static constexpr float PATH_DIALOG_BOTTOM_BORDER = 26;
+static std::string temp_game_path;
 
 /* -------------------------------------------------------------------------- */
 

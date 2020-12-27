@@ -9,18 +9,18 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* CURSOR_FILE_ARROW   = "textures/editor_ui/cursor_arrow.bmp";
-GLOBAL constexpr const char* CURSOR_FILE_BEAM_D  = "textures/editor_ui/cursor_beam_dark.bmp";
-GLOBAL constexpr const char* CURSOR_FILE_BEAM_L  = "textures/editor_ui/cursor_beam_light.bmp";
-GLOBAL constexpr const char* CURSOR_FILE_POINTER = "textures/editor_ui/cursor_pointer.bmp";
-GLOBAL constexpr const char* CURSOR_FILE_BRUSH   = "textures/editor_ui/cursor_brush.bmp";
-GLOBAL constexpr const char* CURSOR_FILE_FILL    = "textures/editor_ui/cursor_fill.bmp";
-GLOBAL constexpr const char* CURSOR_FILE_SELECT  = "textures/editor_ui/cursor_select.bmp";
+static constexpr const char* CURSOR_FILE_ARROW   = "textures/editor_ui/cursor_arrow.bmp";
+static constexpr const char* CURSOR_FILE_BEAM_D  = "textures/editor_ui/cursor_beam_dark.bmp";
+static constexpr const char* CURSOR_FILE_BEAM_L  = "textures/editor_ui/cursor_beam_light.bmp";
+static constexpr const char* CURSOR_FILE_POINTER = "textures/editor_ui/cursor_pointer.bmp";
+static constexpr const char* CURSOR_FILE_BRUSH   = "textures/editor_ui/cursor_brush.bmp";
+static constexpr const char* CURSOR_FILE_FILL    = "textures/editor_ui/cursor_fill.bmp";
+static constexpr const char* CURSOR_FILE_SELECT  = "textures/editor_ui/cursor_select.bmp";
 
-GLOBAL SDL_Cursor* cursors[Cursor::Total];
-GLOBAL Cursor      current_cursor;
-GLOBAL bool        cursors_enabled;
-GLOBAL bool        cursors_loaded;
+static SDL_Cursor* cursors[Cursor::Total];
+static Cursor      current_cursor;
+static bool        cursors_enabled;
+static bool        cursors_loaded;
 
 /* -------------------------------------------------------------------------- */
 

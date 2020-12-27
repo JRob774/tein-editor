@@ -1,11 +1,11 @@
 #pragma once
 
-#define INTERNAL static
-#define GLOBAL static
+// We use static linkage for faster compilation times as we use unity/jumbo build.
+// #define TEINAPI static
 
-#define STDDEF INTERNAL        // @Temporary: Rename this!
-#define INLDEF INTERNAL inline // @Temporary: Remove this!
-#define FILDEF INTERNAL inline // @Temporary: Remove this!
+#define STDDEF static        // @Temporary: Rename this!
+#define INLDEF static inline // @Temporary: Remove this!
+#define FILDEF static inline // @Temporary: Remove this!
 
 #define JOIN( a, b) JOIN2(a, b)
 #define JOIN2(a, b) JOIN1(a, b)

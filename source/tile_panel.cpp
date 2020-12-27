@@ -9,15 +9,15 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* TILE_DATA_FILE = "data/editor_tiles.txt";
-GLOBAL constexpr const char* FLIP_DATA_FILE = "data/editor_flips.txt";
+static constexpr const char* TILE_DATA_FILE = "data/editor_tiles.txt";
+static constexpr const char* FLIP_DATA_FILE = "data/editor_flips.txt";
 
-GLOBAL constexpr float TILE_PANEL_ITEM_PAD   =    4;
-GLOBAL constexpr float TILE_PANEL_ITEM_SIZE  =   20;
-GLOBAL constexpr float TILE_PANEL_COLUMNS    =   11;
-GLOBAL constexpr float TILE_PANEL_INNER_PAD  =    3;
-GLOBAL constexpr float TILE_PANEL_LABEL_H    =   20;
-GLOBAL constexpr float TILE_PANEL_INACTIVE_A = .33f;
+static constexpr float TILE_PANEL_ITEM_PAD   =    4;
+static constexpr float TILE_PANEL_ITEM_SIZE  =   20;
+static constexpr float TILE_PANEL_COLUMNS    =   11;
+static constexpr float TILE_PANEL_INNER_PAD  =    3;
+static constexpr float TILE_PANEL_LABEL_H    =   20;
+static constexpr float TILE_PANEL_INACTIVE_A = .33f;
 
 typedef std::pair<Tile_ID, Tile_ID> Tile_Flip_Map;
 
@@ -47,7 +47,7 @@ struct Tile_Panel
     float scroll_offset;
 };
 
-GLOBAL Tile_Panel tile_panel;
+static Tile_Panel tile_panel;
 
 /* -------------------------------------------------------------------------- */
 

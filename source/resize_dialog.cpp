@@ -9,30 +9,30 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float RESIZE_BOTTOM_BORDER = 26;
+static constexpr float RESIZE_BOTTOM_BORDER = 26;
 
-GLOBAL constexpr float RESIZE_XPAD = 8;
-GLOBAL constexpr float RESIZE_YPAD = 8;
+static constexpr float RESIZE_XPAD = 8;
+static constexpr float RESIZE_YPAD = 8;
 
-GLOBAL constexpr float RESIZE_TEXT_BOX_H = 20;
+static constexpr float RESIZE_TEXT_BOX_H = 20;
 
-GLOBAL constexpr const char* RESIZE_WIDTH_LABEL = "Level Width:  ";
-GLOBAL constexpr const char* RESIZE_HEIGHT_LABEL = "Level Height:  ";
+static constexpr const char* RESIZE_WIDTH_LABEL = "Level Width:  ";
+static constexpr const char* RESIZE_HEIGHT_LABEL = "Level Height:  ";
 
-GLOBAL int current_resize_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
-GLOBAL int current_resize_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
+static int current_resize_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
+static int current_resize_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
 
-GLOBAL Resize_Dir resize_dialog_dir = Resize_Dir::CENTER;
+static Resize_Dir resize_dialog_dir = Resize_Dir::CENTER;
 
-GLOBAL const quad* nw_clip     = &CLIP_RESIZE_NW;
-GLOBAL const quad* n_clip      = &CLIP_RESIZE_N;
-GLOBAL const quad* ne_clip     = &CLIP_RESIZE_NE;
-GLOBAL const quad* w_clip      = &CLIP_RESIZE_W;
-GLOBAL const quad* center_clip = &CLIP_BULLET;
-GLOBAL const quad* e_clip      = &CLIP_RESIZE_E;
-GLOBAL const quad* sw_clip     = &CLIP_RESIZE_SW;
-GLOBAL const quad* s_clip      = &CLIP_RESIZE_S;
-GLOBAL const quad* se_clip     = &CLIP_RESIZE_SE;
+static const quad* nw_clip     = &CLIP_RESIZE_NW;
+static const quad* n_clip      = &CLIP_RESIZE_N;
+static const quad* ne_clip     = &CLIP_RESIZE_NE;
+static const quad* w_clip      = &CLIP_RESIZE_W;
+static const quad* center_clip = &CLIP_BULLET;
+static const quad* e_clip      = &CLIP_RESIZE_E;
+static const quad* sw_clip     = &CLIP_RESIZE_SW;
+static const quad* s_clip      = &CLIP_RESIZE_S;
+static const quad* se_clip     = &CLIP_RESIZE_SE;
 
 /* -------------------------------------------------------------------------- */
 

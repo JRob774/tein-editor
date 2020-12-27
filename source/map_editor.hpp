@@ -16,11 +16,11 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float MAP_EDITOR_TEXT_CUT_OFF = .5f;
-GLOBAL constexpr float MAP_EDITOR_TEXT_PAD = 3;
+static constexpr float MAP_EDITOR_TEXT_CUT_OFF = .5f;
+static constexpr float MAP_EDITOR_TEXT_PAD = 3;
 
-GLOBAL constexpr float MAP_NODE_W = 88;
-GLOBAL constexpr float MAP_NODE_H = 22;
+static constexpr float MAP_NODE_W = 88;
+static constexpr float MAP_NODE_H = 22;
 
 struct Map_History
 {
@@ -77,7 +77,7 @@ struct Map_Editor
     std::map<vec4,vec4, Color_Map_Compare> text_color_map;
 };
 
-GLOBAL Map_Editor map_editor;
+static Map_Editor map_editor;
 
 /* -------------------------------------------------------------------------- */
 

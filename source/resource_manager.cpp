@@ -9,14 +9,14 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* RESOURCE_LOCATION = "resource_location.txt";
-GLOBAL constexpr const char* RESOURCE_GPAK = "editor.gpak";
+static constexpr const char* RESOURCE_LOCATION = "resource_location.txt";
+static constexpr const char* RESOURCE_GPAK = "editor.gpak";
 
-GLOBAL std::string resource_location;
-GLOBAL std::string current_editor_font;
+static std::string resource_location;
+static std::string current_editor_font;
 
 // Maps file names to the data that was stored within the editor GPAK.
-GLOBAL std::map<std::string, std::vector<u8>> gpak_resource_lookup;
+static std::map<std::string, std::vector<u8>> gpak_resource_lookup;
 
 /* -------------------------------------------------------------------------- */
 

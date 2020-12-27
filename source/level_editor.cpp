@@ -9,8 +9,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float   GHOSTED_CURSOR_ALPHA =   .5f;
-GLOBAL constexpr Tile_ID CAMERA_ID            = 20000;
+static constexpr float   GHOSTED_CURSOR_ALPHA =   .5f;
+static constexpr Tile_ID CAMERA_ID            = 20000;
 
 /* -------------------------------------------------------------------------- */
 

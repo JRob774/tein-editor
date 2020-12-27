@@ -9,9 +9,9 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* TILE_LAYER_INFO  = "Toggle this tile layer's visibility (invisible layers can't be interacted with).";
+static constexpr const char* TILE_LAYER_INFO  = "Toggle this tile layer's visibility (invisible layers can't be interacted with).";
 
-GLOBAL const vec4 LAYER_COLORS[LEVEL_LAYER_TOTAL]
+static const vec4 LAYER_COLORS[LEVEL_LAYER_TOTAL]
 {
 { .75f, .38f, .38f, 1 }, // Tag
 { .44f, .51f, .72f, 1 }, // Overlay
@@ -20,15 +20,15 @@ GLOBAL const vec4 LAYER_COLORS[LEVEL_LAYER_TOTAL]
 { .57f, .48f, .71f, 1 }  // Back 2
 };
 
-GLOBAL constexpr float LAYER_PANEL_INNER_PAD =  3;
-GLOBAL constexpr float LAYER_PANEL_BUTTON_H  = 24;
+static constexpr float LAYER_PANEL_INNER_PAD =  3;
+static constexpr float LAYER_PANEL_BUTTON_H  = 24;
 
-GLOBAL float layer_panel_content_height;
-GLOBAL float layer_panel_panel_height;
+static float layer_panel_content_height;
+static float layer_panel_panel_height;
 
-GLOBAL float layer_panel_scroll_offset;
+static float layer_panel_scroll_offset;
 
-GLOBAL quad layer_panel_bounds;
+static quad layer_panel_bounds;
 
 /* -------------------------------------------------------------------------- */
 

@@ -9,24 +9,24 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL const vec4 UI_D_COLOR_BLACK     = {  .00f,  .00f, 0.00f, 1 };
-GLOBAL const vec4 UI_D_COLOR_EX_DARK   = {  .20f,  .20f, 0.20f, 1 };
-GLOBAL const vec4 UI_D_COLOR_DARK      = {  .20f,  .20f, 0.20f, 1 };
-GLOBAL const vec4 UI_D_COLOR_MED_DARK  = {  .25f,  .25f, 0.25f, 1 };
-GLOBAL const vec4 UI_D_COLOR_MEDIUM    = {  .33f,  .33f, 0.33f, 1 };
-GLOBAL const vec4 UI_D_COLOR_MED_LIGHT = {  .43f,  .43f, 0.43f, 1 };
-GLOBAL const vec4 UI_D_COLOR_LIGHT     = {  .60f,  .60f, 0.60f, 1 };
-GLOBAL const vec4 UI_D_COLOR_EX_LIGHT  = {  .90f,  .90f, 0.90f, 1 };
-GLOBAL const vec4 UI_D_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
-GLOBAL const vec4 UI_L_COLOR_BLACK     = {  .15f,  .15f,  .15f, 1 };
-GLOBAL const vec4 UI_L_COLOR_EX_DARK   = {  .35f,  .35f,  .35f, 1 };
-GLOBAL const vec4 UI_L_COLOR_DARK      = {  .55f,  .55f,  .55f, 1 };
-GLOBAL const vec4 UI_L_COLOR_MED_DARK  = {  .70f,  .70f,  .70f, 1 };
-GLOBAL const vec4 UI_L_COLOR_MEDIUM    = {  .80f,  .80f,  .80f, 1 };
-GLOBAL const vec4 UI_L_COLOR_MED_LIGHT = {  .93f,  .93f,  .93f, 1 };
-GLOBAL const vec4 UI_L_COLOR_LIGHT     = {  .93f,  .93f,  .93f, 1 };
-GLOBAL const vec4 UI_L_COLOR_EX_LIGHT  = {  .96f,  .96f,  .96f, 1 };
-GLOBAL const vec4 UI_L_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
+static const vec4 UI_D_COLOR_BLACK     = {  .00f,  .00f, 0.00f, 1 };
+static const vec4 UI_D_COLOR_EX_DARK   = {  .20f,  .20f, 0.20f, 1 };
+static const vec4 UI_D_COLOR_DARK      = {  .20f,  .20f, 0.20f, 1 };
+static const vec4 UI_D_COLOR_MED_DARK  = {  .25f,  .25f, 0.25f, 1 };
+static const vec4 UI_D_COLOR_MEDIUM    = {  .33f,  .33f, 0.33f, 1 };
+static const vec4 UI_D_COLOR_MED_LIGHT = {  .43f,  .43f, 0.43f, 1 };
+static const vec4 UI_D_COLOR_LIGHT     = {  .60f,  .60f, 0.60f, 1 };
+static const vec4 UI_D_COLOR_EX_LIGHT  = {  .90f,  .90f, 0.90f, 1 };
+static const vec4 UI_D_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
+static const vec4 UI_L_COLOR_BLACK     = {  .15f,  .15f,  .15f, 1 };
+static const vec4 UI_L_COLOR_EX_DARK   = {  .35f,  .35f,  .35f, 1 };
+static const vec4 UI_L_COLOR_DARK      = {  .55f,  .55f,  .55f, 1 };
+static const vec4 UI_L_COLOR_MED_DARK  = {  .70f,  .70f,  .70f, 1 };
+static const vec4 UI_L_COLOR_MEDIUM    = {  .80f,  .80f,  .80f, 1 };
+static const vec4 UI_L_COLOR_MED_LIGHT = {  .93f,  .93f,  .93f, 1 };
+static const vec4 UI_L_COLOR_LIGHT     = {  .93f,  .93f,  .93f, 1 };
+static const vec4 UI_L_COLOR_EX_LIGHT  = {  .96f,  .96f,  .96f, 1 };
+static const vec4 UI_L_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
 
 /* -------------------------------------------------------------------------- */
 
@@ -48,41 +48,41 @@ struct Panel
 
 typedef u32 UI_ID;
 
-GLOBAL constexpr UI_ID UI_INVALID_ID = UINT32_MAX;
+static constexpr UI_ID UI_INVALID_ID = UINT32_MAX;
 
-GLOBAL std::stack<Panel> ui_panels;
+static std::stack<Panel> ui_panels;
 
-GLOBAL UI_ID ui_current_id;
+static UI_ID ui_current_id;
 
-GLOBAL UI_ID ui_hot_id;
-GLOBAL UI_ID ui_hit_id;
+static UI_ID ui_hot_id;
+static UI_ID ui_hit_id;
 
-GLOBAL UI_ID  ui_active_text_box;
-GLOBAL UI_ID  ui_hot_text_box;
-GLOBAL size_t ui_text_box_cursor;
+static UI_ID  ui_active_text_box;
+static UI_ID  ui_hot_text_box;
+static size_t ui_text_box_cursor;
 
-GLOBAL UI_ID ui_hot_hyperlink;
+static UI_ID ui_hot_hyperlink;
 
-GLOBAL UI_ID ui_active_hotkey_rebind;
+static UI_ID ui_active_hotkey_rebind;
 
-GLOBAL Texture* ui_texture;
-GLOBAL Font*    ui_font;
+static Texture* ui_texture;
+static Font*    ui_font;
 
-GLOBAL vec2 ui_mouse_relative;
+static vec2 ui_mouse_relative;
 
-GLOBAL bool ui_mouse_up;
-GLOBAL bool ui_mouse_down;
+static bool ui_mouse_up;
+static bool ui_mouse_down;
 
-GLOBAL bool ui_mouse_r_up;
-GLOBAL bool ui_mouse_r_down;
+static bool ui_mouse_r_up;
+static bool ui_mouse_r_down;
 
-GLOBAL bool ui_is_light;
+static bool ui_is_light;
 
 // We also store the active window ID at the time of the tab press so that the
 // system does not move from window-to-window when the user presseses tab.
-GLOBAL Window_ID ui_text_box_tab_window_id;
-GLOBAL bool      ui_make_next_text_box_active;
-GLOBAL bool      ui_tab_handled;
+static Window_ID ui_text_box_tab_window_id;
+static bool      ui_make_next_text_box_active;
+static bool      ui_tab_handled;
 
 enum class UI_Text_Event_Type: u32 { TEXT, KEY };
 
@@ -94,10 +94,10 @@ struct UI_Text_Event
     SDL_Keycode key;
 };
 
-GLOBAL std::vector<UI_Text_Event> ui_text_events;
+static std::vector<UI_Text_Event> ui_text_events;
 
-GLOBAL SDL_TimerID ui_cursor_blink_timer;
-GLOBAL bool        ui_cursor_visible;
+static SDL_TimerID ui_cursor_blink_timer;
+static bool        ui_cursor_visible;
 
 /* -------------------------------------------------------------------------- */
 

@@ -9,11 +9,11 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL const vec4 GPAK_PROGRESS_BAR_MIN_COLOR = { .2f,.5f,.2f, 1 };
-GLOBAL const vec4 GPAK_PROGRESS_BAR_MAX_COLOR = { .2f,.9f,.2f, 1 };
+static const vec4 GPAK_PROGRESS_BAR_MIN_COLOR = { .2f,.5f,.2f, 1 };
+static const vec4 GPAK_PROGRESS_BAR_MAX_COLOR = { .2f,.9f,.2f, 1 };
 
-GLOBAL SDL_Thread* gpak_unpack_thread;
-GLOBAL SDL_Thread* gpak_pack_thread;
+static SDL_Thread* gpak_unpack_thread;
+static SDL_Thread* gpak_pack_thread;
 
 struct GPAK_Unpack_Data
 {
@@ -39,8 +39,8 @@ struct GPAK_Pack_Data
     std::atomic<GPAK_Error> error;
 };
 
-GLOBAL GPAK_Unpack_Data gpak_unpack_data;
-GLOBAL GPAK_Pack_Data gpak_pack_data;
+static GPAK_Unpack_Data gpak_unpack_data;
+static GPAK_Pack_Data gpak_pack_data;
 
 /* -------------------------------------------------------------------------- */
 
@@ -151,7 +151,7 @@ STDDEF int internal__gpak_pack_thread_main (void* user_data)
 
     // We say approximate because this isn't true if you are loading the loader
     // GPAK or if it is a modified GPAK with extra stuff in (added mod files).
-    GLOBAL constexpr size_t APRROX_TEIN_GPAK_ENTRIES = 1340;
+    static constexpr size_t APRROX_TEIN_GPAK_ENTRIES = 1340;
 
     FILE* file = fopen(file_name.c_str(), "wb");
     if (!file)

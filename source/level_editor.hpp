@@ -121,8 +121,8 @@ struct Level_History
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float DEFAULT_TILE_SIZE      = 16;
-GLOBAL constexpr float DEFAULT_TILE_SIZE_HALF = DEFAULT_TILE_SIZE / 2;
+static constexpr float DEFAULT_TILE_SIZE      = 16;
+static constexpr float DEFAULT_TILE_SIZE_HALF = DEFAULT_TILE_SIZE / 2;
 
 struct Level_Clipboard
 {
@@ -159,7 +159,7 @@ struct Level_Editor
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL Level_Editor level_editor;
+static Level_Editor level_editor;
 
 /* -------------------------------------------------------------------------- */
 

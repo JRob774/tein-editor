@@ -9,10 +9,10 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* DEBUG_LOG_NAME = "logs/debug_editor.log";
+static constexpr const char* DEBUG_LOG_NAME = "logs/debug_editor.log";
 
-GLOBAL int   current_debug_section = 0;
-GLOBAL FILE* debug_log;
+static int   current_debug_section = 0;
+static FILE* debug_log;
 
 struct Debug_Timer
 {
@@ -20,8 +20,8 @@ struct Debug_Timer
     u64 start_counter;
 };
 
-GLOBAL std::stack<Debug_Timer> debug_timers;
-GLOBAL std::vector<std::string> debug_timer_results;
+static std::stack<Debug_Timer> debug_timers;
+static std::vector<std::string> debug_timer_results;
 
 /* -------------------------------------------------------------------------- */
 

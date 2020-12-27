@@ -9,8 +9,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float TAB_LENGTH_IN_SPACES  = 4;
-GLOBAL constexpr float FONT_GLYPH_CACHE_PADS = 6;
+static constexpr float TAB_LENGTH_IN_SPACES  = 4;
+static constexpr float FONT_GLYPH_CACHE_PADS = 6;
 
 /* -------------------------------------------------------------------------- */
 

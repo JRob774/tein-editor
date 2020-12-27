@@ -16,7 +16,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* SETTINGS_FILE_NAME = "settings_editor.txt";
+static constexpr const char* SETTINGS_FILE_NAME = "settings_editor.txt";
 
 /* -------------------------------------------------------------------------- */
 
@@ -25,22 +25,22 @@ GLOBAL constexpr const char* SETTINGS_FILE_NAME = "settings_editor.txt";
 // then we only have to update them here rather than everywhere they are
 // referenced throughout the program's source code -- would be annoying!
 
-GLOBAL constexpr const char* SETTING_GAME_PATH           = "game_path";
-GLOBAL constexpr const char* SETTING_UI_THEME            = "user_interface_theme";
-GLOBAL constexpr const char* SETTING_FONT_FACE           = "font_face";
-GLOBAL constexpr const char* SETTING_TILE_GRAPHICS       = "tile_graphics";
-GLOBAL constexpr const char* SETTING_CUSTOM_CURSORS      = "custom_cursors";
-GLOBAL constexpr const char* SETTING_SHOW_TOOLTIPS       = "show_tooltips";
-GLOBAL constexpr const char* SETTING_UNLIMITED_BACKUPS   = "unlimited_backups";
-GLOBAL constexpr const char* SETTING_BACKUP_COUNT        = "backup_count";
-GLOBAL constexpr const char* SETTING_AUTO_BACKUP         = "auto_backup";
-GLOBAL constexpr const char* SETTING_BACKUP_INTERVAL     = "auto_backup_interval";
-GLOBAL constexpr const char* SETTING_BACKGROUND_COLOR    = "background_color";
-GLOBAL constexpr const char* SETTING_SELECT_COLOR        = "select_color";
-GLOBAL constexpr const char* SETTING_OUT_OF_BOUNDS_COLOR = "out_of_bounds_color";
-GLOBAL constexpr const char* SETTING_CURSOR_COLOR        = "cursor_color";
-GLOBAL constexpr const char* SETTING_MIRROR_LINE_COLOR   = "mirror_line_color";
-GLOBAL constexpr const char* SETTING_TILE_GRID_COLOR     = "tile_grid_color";
+static constexpr const char* SETTING_GAME_PATH           = "game_path";
+static constexpr const char* SETTING_UI_THEME            = "user_interface_theme";
+static constexpr const char* SETTING_FONT_FACE           = "font_face";
+static constexpr const char* SETTING_TILE_GRAPHICS       = "tile_graphics";
+static constexpr const char* SETTING_CUSTOM_CURSORS      = "custom_cursors";
+static constexpr const char* SETTING_SHOW_TOOLTIPS       = "show_tooltips";
+static constexpr const char* SETTING_UNLIMITED_BACKUPS   = "unlimited_backups";
+static constexpr const char* SETTING_BACKUP_COUNT        = "backup_count";
+static constexpr const char* SETTING_AUTO_BACKUP         = "auto_backup";
+static constexpr const char* SETTING_BACKUP_INTERVAL     = "auto_backup_interval";
+static constexpr const char* SETTING_BACKGROUND_COLOR    = "background_color";
+static constexpr const char* SETTING_SELECT_COLOR        = "select_color";
+static constexpr const char* SETTING_OUT_OF_BOUNDS_COLOR = "out_of_bounds_color";
+static constexpr const char* SETTING_CURSOR_COLOR        = "cursor_color";
+static constexpr const char* SETTING_MIRROR_LINE_COLOR   = "mirror_line_color";
+static constexpr const char* SETTING_TILE_GRID_COLOR     = "tile_grid_color";
 
 /* -------------------------------------------------------------------------- */
 
@@ -79,7 +79,7 @@ FILDEF bool operator!= (const Settings& a, const Settings& b);
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL Settings editor_settings;
+static Settings editor_settings;
 
 /* -------------------------------------------------------------------------- */
 

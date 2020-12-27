@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr size_t DIALOG_BUFFER_SIZE = UINT16_MAX+1;
+static constexpr size_t DIALOG_BUFFER_SIZE = UINT16_MAX+1;
 
 /* -------------------------------------------------------------------------- */
 

@@ -16,14 +16,14 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr int APP_VER_MAJOR = 1;
-GLOBAL constexpr int APP_VER_MINOR = 1;
-GLOBAL constexpr int APP_VER_PATCH = 0;
+static constexpr int APP_VER_MAJOR = 1;
+static constexpr int APP_VER_MINOR = 1;
+static constexpr int APP_VER_PATCH = 0;
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL SDL_Event main_event;
-GLOBAL bool      main_running;
+static SDL_Event main_event;
+static bool      main_running;
 
 /* -------------------------------------------------------------------------- */
 

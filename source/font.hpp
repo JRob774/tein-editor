@@ -16,15 +16,15 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr int   DEFAULT_FONT_GLYPH_POINT_SIZE =    9;
-GLOBAL constexpr float DEFAULT_FONT_GLYPH_CACHE_SIZE = 1024;
+static constexpr int   DEFAULT_FONT_GLYPH_POINT_SIZE =    9;
+static constexpr float DEFAULT_FONT_GLYPH_CACHE_SIZE = 1024;
 
-GLOBAL constexpr int TOTAL_GLYPH_COUNT = 128;
+static constexpr int TOTAL_GLYPH_COUNT = 128;
 
-GLOBAL constexpr int SMALL_FONT_POINT_SIZE = DEFAULT_FONT_GLYPH_POINT_SIZE;
-GLOBAL constexpr int LARGE_FONT_POINT_SIZE = 14;
+static constexpr int SMALL_FONT_POINT_SIZE = DEFAULT_FONT_GLYPH_POINT_SIZE;
+static constexpr int LARGE_FONT_POINT_SIZE = 14;
 
-GLOBAL FT_Library freetype;
+static FT_Library freetype;
 
 struct Font_Glyph
 {

@@ -9,41 +9,41 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* HB_NAME_NEW         = "New";
-GLOBAL constexpr const char* HB_NAME_LOAD        = "Load";
-GLOBAL constexpr const char* HB_NAME_SAVE        = "Save";
-GLOBAL constexpr const char* HB_NAME_SAVE_AS     = "Save As";
-GLOBAL constexpr const char* HB_NAME_UNDO        = "Undo";
-GLOBAL constexpr const char* HB_NAME_REDO        = "Redo";
-GLOBAL constexpr const char* HB_NAME_ZOOM_OUT    = "Zoom Out";
-GLOBAL constexpr const char* HB_NAME_ZOOM_IN     = "Zoom In";
-GLOBAL constexpr const char* HB_NAME_PACK        = "Pack GPAK";
-GLOBAL constexpr const char* HB_NAME_UNPACK      = "Unpack GPAK";
-GLOBAL constexpr const char* HB_NAME_RUN_GAME    = "Play";
-GLOBAL constexpr const char* HB_NAME_PREFERENCES = "Preferences";
-GLOBAL constexpr const char* HB_NAME_ABOUT       = "About";
-GLOBAL constexpr const char* HB_NAME_HELP        = "Help";
-GLOBAL constexpr const char* HB_NAME_BUG_REPORT  = "Bug Report";
-GLOBAL constexpr const char* HB_NAME_UPDATE      = "Update";
+static constexpr const char* HB_NAME_NEW         = "New";
+static constexpr const char* HB_NAME_LOAD        = "Load";
+static constexpr const char* HB_NAME_SAVE        = "Save";
+static constexpr const char* HB_NAME_SAVE_AS     = "Save As";
+static constexpr const char* HB_NAME_UNDO        = "Undo";
+static constexpr const char* HB_NAME_REDO        = "Redo";
+static constexpr const char* HB_NAME_ZOOM_OUT    = "Zoom Out";
+static constexpr const char* HB_NAME_ZOOM_IN     = "Zoom In";
+static constexpr const char* HB_NAME_PACK        = "Pack GPAK";
+static constexpr const char* HB_NAME_UNPACK      = "Unpack GPAK";
+static constexpr const char* HB_NAME_RUN_GAME    = "Play";
+static constexpr const char* HB_NAME_PREFERENCES = "Preferences";
+static constexpr const char* HB_NAME_ABOUT       = "About";
+static constexpr const char* HB_NAME_HELP        = "Help";
+static constexpr const char* HB_NAME_BUG_REPORT  = "Bug Report";
+static constexpr const char* HB_NAME_UPDATE      = "Update";
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* HB_INFO_NEW         = "Create a new empty level.";
-GLOBAL constexpr const char* HB_INFO_LOAD        = "Load an existing level.";
-GLOBAL constexpr const char* HB_INFO_SAVE        = "Save the current level.";
-GLOBAL constexpr const char* HB_INFO_SAVE_AS     = "Save the current level as a new file.";
-GLOBAL constexpr const char* HB_INFO_UNDO        = "Undo the last recorded action.";
-GLOBAL constexpr const char* HB_INFO_REDO        = "Redo the last recorded action.";
-GLOBAL constexpr const char* HB_INFO_ZOOM_OUT    = "Zoom out the editor camera.";
-GLOBAL constexpr const char* HB_INFO_ZOOM_IN     = "Zoom in the editor camera.";
-GLOBAL constexpr const char* HB_INFO_PACK        = "Pack data files into the GPAK file format.";
-GLOBAL constexpr const char* HB_INFO_UNPACK      = "Unpack data files from the GPAK file format.";
-GLOBAL constexpr const char* HB_INFO_RUN_GAME    = "Runs The End is Nigh game application.";
-GLOBAL constexpr const char* HB_INFO_PREFERENCES = "Open the preferences menu to customize the editor.";
-GLOBAL constexpr const char* HB_INFO_ABOUT       = "Open the about menu for application information.";
-GLOBAL constexpr const char* HB_INFO_BUG_REPORT  = "Report technical issues or bugs with the editor.";
-GLOBAL constexpr const char* HB_INFO_HELP        = "Information and help about modding The End is Nigh.";
-GLOBAL constexpr const char* HB_INFO_UPDATE      = "There is a new update available for the editor.";
+static constexpr const char* HB_INFO_NEW         = "Create a new empty level.";
+static constexpr const char* HB_INFO_LOAD        = "Load an existing level.";
+static constexpr const char* HB_INFO_SAVE        = "Save the current level.";
+static constexpr const char* HB_INFO_SAVE_AS     = "Save the current level as a new file.";
+static constexpr const char* HB_INFO_UNDO        = "Undo the last recorded action.";
+static constexpr const char* HB_INFO_REDO        = "Redo the last recorded action.";
+static constexpr const char* HB_INFO_ZOOM_OUT    = "Zoom out the editor camera.";
+static constexpr const char* HB_INFO_ZOOM_IN     = "Zoom in the editor camera.";
+static constexpr const char* HB_INFO_PACK        = "Pack data files into the GPAK file format.";
+static constexpr const char* HB_INFO_UNPACK      = "Unpack data files from the GPAK file format.";
+static constexpr const char* HB_INFO_RUN_GAME    = "Runs The End is Nigh game application.";
+static constexpr const char* HB_INFO_PREFERENCES = "Open the preferences menu to customize the editor.";
+static constexpr const char* HB_INFO_ABOUT       = "Open the about menu for application information.";
+static constexpr const char* HB_INFO_BUG_REPORT  = "Report technical issues or bugs with the editor.";
+static constexpr const char* HB_INFO_HELP        = "Information and help about modding The End is Nigh.";
+static constexpr const char* HB_INFO_UPDATE      = "There is a new update available for the editor.";
 
 /* -------------------------------------------------------------------------- */
 

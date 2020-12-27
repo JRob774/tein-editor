@@ -18,9 +18,9 @@
 
 typedef GLenum Texture_Wrap;
 
-GLOBAL constexpr Texture_Wrap TEXTURE_WRAP_REPEAT          = GL_REPEAT;
-GLOBAL constexpr Texture_Wrap TEXTURE_WRAP_MIRRORED_REPEAT = GL_MIRRORED_REPEAT;
-GLOBAL constexpr Texture_Wrap TEXTURE_WRAP_CLAMP_TO_EDGE   = GL_CLAMP_TO_EDGE;
+static constexpr Texture_Wrap TEXTURE_WRAP_REPEAT          = GL_REPEAT;
+static constexpr Texture_Wrap TEXTURE_WRAP_MIRRORED_REPEAT = GL_MIRRORED_REPEAT;
+static constexpr Texture_Wrap TEXTURE_WRAP_CLAMP_TO_EDGE   = GL_CLAMP_TO_EDGE;
 
 struct Texture
 {

@@ -9,20 +9,20 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float NEW_V_FRAME_H = 26;
+static constexpr float NEW_V_FRAME_H = 26;
 
-GLOBAL constexpr float NEW_XPAD = 8;
-GLOBAL constexpr float NEW_YPAD = 8;
+static constexpr float NEW_XPAD = 8;
+static constexpr float NEW_YPAD = 8;
 
-GLOBAL constexpr float NEW_TEXT_BOX_H = 20;
+static constexpr float NEW_TEXT_BOX_H = 20;
 
-GLOBAL constexpr const char* NEW_WIDTH_LABEL = "Level Width:  ";
-GLOBAL constexpr const char* NEW_HEIGHT_LABEL = "Level Height:  ";
+static constexpr const char* NEW_WIDTH_LABEL = "Level Width:  ";
+static constexpr const char* NEW_HEIGHT_LABEL = "Level Height:  ";
 
-GLOBAL int current_new_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
-GLOBAL int current_new_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
+static int current_new_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
+static int current_new_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
 
-GLOBAL Tab_Type current_tab_type = Tab_Type::LEVEL;
+static Tab_Type current_tab_type = Tab_Type::LEVEL;
 
 /* -------------------------------------------------------------------------- */
 

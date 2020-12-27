@@ -16,7 +16,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr s32 ALT_OFFSET = 60000;
+static constexpr s32 ALT_OFFSET = 60000;
 
 struct Texture_Atlas
 {

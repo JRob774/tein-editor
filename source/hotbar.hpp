@@ -16,7 +16,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float HOTBAR_HEIGHT = 26;
+static constexpr float HOTBAR_HEIGHT = 26;
 
 FILDEF void do_hotbar ();
 

@@ -10,27 +10,27 @@
 /* -------------------------------------------------------------------------- */
 
 // GitHub Releases API: https://developer.github.com/v3/repos/releases/#get-the-slatest-release
-GLOBAL constexpr const char* GITHUB_API_USER_AGENT = "tein-editor";
-GLOBAL constexpr const char* GITHUB_API_URL = "https://api.github.com/repos/JRob774/tein-editor/releases/latest";
+static constexpr const char* GITHUB_API_USER_AGENT = "tein-editor";
+static constexpr const char* GITHUB_API_URL = "https://api.github.com/repos/JRob774/tein-editor/releases/latest";
 
-GLOBAL constexpr const char* DOWNLOAD_PAGE = "https://jrob774.itch.io/tein-editor";
+static constexpr const char* DOWNLOAD_PAGE = "https://jrob774.itch.io/tein-editor";
 
-GLOBAL constexpr int HTTP_CODE_OK      = 200;
-GLOBAL constexpr int HTTP_CODE_CREATED = 201;
+static constexpr int HTTP_CODE_OK      = 200;
+static constexpr int HTTP_CODE_CREATED = 201;
 
-GLOBAL constexpr float UPDATE_DIALOG_BOTTOM_BORDER =   26;
-GLOBAL constexpr float UPDATE_DIALOG_WAIT_TIME     = .33f; // Seconds
+static constexpr float UPDATE_DIALOG_BOTTOM_BORDER =   26;
+static constexpr float UPDATE_DIALOG_WAIT_TIME     = .33f; // Seconds
 
-GLOBAL CURL*                 curl;
-GLOBAL SDL_TimerID   update_timer;
-GLOBAL bool    there_is_an_update;
-GLOBAL nlohmann::json update_json;
+static CURL*                 curl;
+static SDL_TimerID   update_timer;
+static bool    there_is_an_update;
+static nlohmann::json update_json;
 
-GLOBAL std::string update_title;
-GLOBAL std::string update_body;
+static std::string update_title;
+static std::string update_body;
 
-GLOBAL float update_dialog_content_height;
-GLOBAL float update_dialog_scroll_offset;
+static float update_dialog_content_height;
+static float update_dialog_scroll_offset;
 
 /* -------------------------------------------------------------------------- */
 

@@ -16,17 +16,17 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float TILE_IMAGE_SIZE = 64;
+static constexpr float TILE_IMAGE_SIZE = 64;
 
 typedef int Tile_Category;
 
-GLOBAL constexpr Tile_Category TILE_CATEGORY_BASIC   = 0;
-GLOBAL constexpr Tile_Category TILE_CATEGORY_TAG     = 1;
-GLOBAL constexpr Tile_Category TILE_CATEGORY_OVERLAY = 2;
-GLOBAL constexpr Tile_Category TILE_CATEGORY_ENTITY  = 3;
-GLOBAL constexpr Tile_Category TILE_CATEGORY_BACK1   = 4;
-GLOBAL constexpr Tile_Category TILE_CATEGORY_BACK2   = 5;
-GLOBAL constexpr Tile_Category TILE_CATEGORY_TOTAL   = 6;
+static constexpr Tile_Category TILE_CATEGORY_BASIC   = 0;
+static constexpr Tile_Category TILE_CATEGORY_TAG     = 1;
+static constexpr Tile_Category TILE_CATEGORY_OVERLAY = 2;
+static constexpr Tile_Category TILE_CATEGORY_ENTITY  = 3;
+static constexpr Tile_Category TILE_CATEGORY_BACK1   = 4;
+static constexpr Tile_Category TILE_CATEGORY_BACK2   = 5;
+static constexpr Tile_Category TILE_CATEGORY_TOTAL   = 6;
 
 /* -------------------------------------------------------------------------- */
 

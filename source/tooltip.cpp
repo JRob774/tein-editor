@@ -9,16 +9,16 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr size_t TOOLTIP_MAX_LINE_LENGTH =  96;
-GLOBAL constexpr float  TOOLTIP_APPEAR_TIME     = .5f; // Seconds
+static constexpr size_t TOOLTIP_MAX_LINE_LENGTH =  96;
+static constexpr float  TOOLTIP_APPEAR_TIME     = .5f; // Seconds
 
-GLOBAL std::string tooltip_name;
-GLOBAL std::string tooltip_desc;
+static std::string tooltip_name;
+static std::string tooltip_desc;
 
-GLOBAL bool tooltip_set_this_update;
-GLOBAL bool tooltip_visible;
+static bool tooltip_set_this_update;
+static bool tooltip_visible;
 
-GLOBAL SDL_TimerID tooltip_timer;
+static SDL_TimerID tooltip_timer;
 
 /* -------------------------------------------------------------------------- */
 

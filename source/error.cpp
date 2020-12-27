@@ -9,11 +9,11 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* CRASH_DUMP_NAME = "TheEndEditor-Crash.dmp";
-GLOBAL constexpr const char* DEBUG_DUMP_NAME = "TheEndEditor-Debug.dmp";
-GLOBAL constexpr const char*  ERROR_LOG_NAME =  "logs/error_editor.log";
+static constexpr const char* CRASH_DUMP_NAME = "TheEndEditor-Crash.dmp";
+static constexpr const char* DEBUG_DUMP_NAME = "TheEndEditor-Debug.dmp";
+static constexpr const char*  ERROR_LOG_NAME =  "logs/error_editor.log";
 
-GLOBAL FILE* error_log;
+static FILE* error_log;
 
 /* -------------------------------------------------------------------------- */
 

@@ -16,11 +16,11 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float MIN_LVL_EDITOR_ZOOM   =  .25f;
-GLOBAL constexpr float MAX_LVL_EDITOR_ZOOM   =     4;
-GLOBAL constexpr float MIN_MAP_EDITOR_ZOOM   = .125f;
-GLOBAL constexpr float MAX_MAP_EDITOR_ZOOM   =     1;
-GLOBAL constexpr float EDITOR_ZOOM_INCREMENT =   .1f;
+static constexpr float MIN_LVL_EDITOR_ZOOM   =  .25f;
+static constexpr float MAX_LVL_EDITOR_ZOOM   =     4;
+static constexpr float MIN_MAP_EDITOR_ZOOM   = .125f;
+static constexpr float MAX_MAP_EDITOR_ZOOM   =     1;
+static constexpr float EDITOR_ZOOM_INCREMENT =   .1f;
 
 struct Camera
 {
@@ -30,7 +30,7 @@ struct Camera
     float zoom;
 };
 
-GLOBAL constexpr size_t INVALID_TAB = static_cast<size_t>(-1);
+static constexpr size_t INVALID_TAB = static_cast<size_t>(-1);
 
 enum class Tab_Type { LEVEL, MAP };
 
@@ -72,7 +72,7 @@ struct Editor
     bool dialog_box; // NOTE: See <dialog.cpp> for information.
 };
 
-GLOBAL Editor editor;
+static Editor editor;
 
 /* -------------------------------------------------------------------------- */
 

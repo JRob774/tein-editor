@@ -17,10 +17,10 @@
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-GLOBAL constexpr int ALERT_BUTTON_YES_NO_CANCEL = MB_YESNOCANCEL;
-GLOBAL constexpr int ALERT_BUTTON_YES_NO        = MB_YESNO;
-GLOBAL constexpr int ALERT_BUTTON_OK            = MB_OK;
-GLOBAL constexpr int ALERT_BUTTON_OK_CANCEL     = MB_OKCANCEL;
+static constexpr int ALERT_BUTTON_YES_NO_CANCEL = MB_YESNOCANCEL;
+static constexpr int ALERT_BUTTON_YES_NO        = MB_YESNO;
+static constexpr int ALERT_BUTTON_OK            = MB_OK;
+static constexpr int ALERT_BUTTON_OK_CANCEL     = MB_OKCANCEL;
 #else
 #error ALERT_BUTTON enumeration not defined!
 #endif
@@ -28,9 +28,9 @@ GLOBAL constexpr int ALERT_BUTTON_OK_CANCEL     = MB_OKCANCEL;
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-GLOBAL constexpr int ALERT_TYPE_INFO    = MB_ICONINFORMATION;
-GLOBAL constexpr int ALERT_TYPE_WARNING = MB_ICONWARNING;
-GLOBAL constexpr int ALERT_TYPE_ERROR   = MB_ICONERROR;
+static constexpr int ALERT_TYPE_INFO    = MB_ICONINFORMATION;
+static constexpr int ALERT_TYPE_WARNING = MB_ICONWARNING;
+static constexpr int ALERT_TYPE_ERROR   = MB_ICONERROR;
 #else
 #error ALERT_TYPE enumeration not defined!
 #endif
@@ -38,11 +38,11 @@ GLOBAL constexpr int ALERT_TYPE_ERROR   = MB_ICONERROR;
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-GLOBAL constexpr int ALERT_RESULT_INVALID = 0;
-GLOBAL constexpr int ALERT_RESULT_CANCEL  = IDCANCEL;
-GLOBAL constexpr int ALERT_RESULT_OK      = IDOK;
-GLOBAL constexpr int ALERT_RESULT_NO      = IDNO;
-GLOBAL constexpr int ALERT_RESULT_YES     = IDYES;
+static constexpr int ALERT_RESULT_INVALID = 0;
+static constexpr int ALERT_RESULT_CANCEL  = IDCANCEL;
+static constexpr int ALERT_RESULT_OK      = IDOK;
+static constexpr int ALERT_RESULT_NO      = IDNO;
+static constexpr int ALERT_RESULT_YES     = IDYES;
 #else
 #error ALERT_RESULT enumeration not defined!
 #endif

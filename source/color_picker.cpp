@@ -11,36 +11,36 @@
 
 enum class Channel_Type { INVALID, R, G, B, A };
 
-GLOBAL constexpr float COLOR_PICKER_CHANNEL_W =  40;
-GLOBAL constexpr float COLOR_PICKER_CHANNEL_H = 180;
+static constexpr float COLOR_PICKER_CHANNEL_W =  40;
+static constexpr float COLOR_PICKER_CHANNEL_H = 180;
 
-GLOBAL constexpr float COLOR_PICKER_XPAD = 8;
-GLOBAL constexpr float COLOR_PICKER_YPAD = 8;
+static constexpr float COLOR_PICKER_XPAD = 8;
+static constexpr float COLOR_PICKER_YPAD = 8;
 
-GLOBAL constexpr float COLOR_PICKER_TEXT_BOX_H = 20;
-GLOBAL constexpr float COLOR_PICKER_ALPHA_H    = 20;
+static constexpr float COLOR_PICKER_TEXT_BOX_H = 20;
+static constexpr float COLOR_PICKER_ALPHA_H    = 20;
 
-GLOBAL constexpr float COLOR_PICKER_BOTTOM_BORDER = 26.;
+static constexpr float COLOR_PICKER_BOTTOM_BORDER = 26.;
 
-GLOBAL constexpr float COLOR_PICKER_SWATCH_LG    = 32;
-GLOBAL constexpr float COLOR_PICKER_SWATCH_SM    = 16;
-GLOBAL constexpr float COLOR_PICKER_SWATCH_XPAD  =  7;
-GLOBAL constexpr float COLOR_PICKER_SWATCH_YPAD  =  8;
-GLOBAL constexpr float COLOR_PICKER_SWATCH_GAP   =  6;
-GLOBAL constexpr int   COLOR_PICKER_SWATCH_COUNT =  9;
+static constexpr float COLOR_PICKER_SWATCH_LG    = 32;
+static constexpr float COLOR_PICKER_SWATCH_SM    = 16;
+static constexpr float COLOR_PICKER_SWATCH_XPAD  =  7;
+static constexpr float COLOR_PICKER_SWATCH_YPAD  =  8;
+static constexpr float COLOR_PICKER_SWATCH_GAP   =  6;
+static constexpr int   COLOR_PICKER_SWATCH_COUNT =  9;
 
-GLOBAL Channel_Type color_picker_active_channel;
-GLOBAL bool color_picker_mouse_pressed;
+static Channel_Type color_picker_active_channel;
+static bool color_picker_mouse_pressed;
 
-GLOBAL std::deque<vec4> color_picker_swatches;
+static std::deque<vec4> color_picker_swatches;
 
 // When the color picker menu is opened we cache the current color value.
 // This allows the color picker menu to modify the current color immediately
 // for instant feedback. If the user then wants to cancel the changes made,
 // we can just restore the cached version of the color to turn it back.
 
-GLOBAL vec4* current_color_picker_color;
-GLOBAL vec4  cached_color_picker_color;
+static vec4* current_color_picker_color;
+static vec4  cached_color_picker_color;
 
 /* -------------------------------------------------------------------------- */
 

@@ -12,7 +12,7 @@
 // Fallback copy of the key bindings file we can load in the case that the
 // key bindings file is not present and then we just use these defaults.
 
-GLOBAL constexpr const char* KEY_BINDINGS_FALLBACK =
+static constexpr const char* KEY_BINDINGS_FALLBACK =
 "level_new { main [\"Ctrl\" \"N\"] }\n"
 "level_open { main [\"Ctrl\" \"O\"] }\n"
 "level_save  { main [\"Ctrl\" \"S\"] }\n"
@@ -81,7 +81,7 @@ GLOBAL constexpr const char* KEY_BINDINGS_FALLBACK =
 
 typedef std::pair<std::string, Key_Binding> KB_Pair;
 
-GLOBAL const std::map<std::string, int> KEY_MOD_MAP
+static const std::map<std::string, int> KEY_MOD_MAP
 {
 { "None",  0          },
 { "Ctrl",  KMOD_CTRL  },

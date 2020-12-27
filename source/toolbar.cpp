@@ -9,30 +9,30 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* TB_INFO_BRUSH    = "Brush Tool: Allows for placing and erasing of single tiles.";
-GLOBAL constexpr const char* TB_INFO_FILL     = "Fill Tool: Fills or erases a given region with tiles.";
-GLOBAL constexpr const char* TB_INFO_SELECT   = "Select Tool: Click and drag to select tiles for copy, cut, delete, grouping, etc.";
-GLOBAL constexpr const char* TB_INFO_GRID     = "Grid: Toggle the tile grid on and off.";
-GLOBAL constexpr const char* TB_INFO_BOUNDS   = "Bounds: Toggle the shaded out-of-bounds region on and off.";
-GLOBAL constexpr const char* TB_INFO_LAYERS   = "Layer Transparency: Toggles the transparency applied to layers above the active layer.";
-GLOBAL constexpr const char* TB_INFO_CAMERA   = "Reset Camera: Return to the editor's default position and zoom.";
-GLOBAL constexpr const char* TB_INFO_RESIZE   = "Resize: Resize the boundaries of the level.";
-GLOBAL constexpr const char* TB_INFO_FLIP_H   = "Flip Horizontal: Flip the level's content horizontally.";
-GLOBAL constexpr const char* TB_INFO_FLIP_V   = "Flip Vertical: Flip the level's content vertically.";
-GLOBAL constexpr const char* TB_INFO_MIRROR_H = "Mirror Horizontal: Toggle horizontal symmetry on and off.";
-GLOBAL constexpr const char* TB_INFO_MIRROR_V = "Mirror Vertical: Toggle vertical symmetry on and off.";
-GLOBAL constexpr const char* TB_INFO_CUT      = "Cut: Copy and delete the currently selected region.";
-GLOBAL constexpr const char* TB_INFO_COPY     = "Copy: Copy the currently selected region.";
-GLOBAL constexpr const char* TB_INFO_DESELECT = "Deselect: Removes the current box selection.";
-GLOBAL constexpr const char* TB_INFO_CLEAR    = "Clear Selection: Deletes everything inside the current selection.";
-GLOBAL constexpr const char* TB_INFO_ENTITY   = "Large Entities: Toggles entity graphics to represent their in-game size.";
-GLOBAL constexpr const char* TB_INFO_GUIDES   = "Entity Guides: Toggles guides to showcase entity placement and bounds.";
+static constexpr const char* TB_INFO_BRUSH    = "Brush Tool: Allows for placing and erasing of single tiles.";
+static constexpr const char* TB_INFO_FILL     = "Fill Tool: Fills or erases a given region with tiles.";
+static constexpr const char* TB_INFO_SELECT   = "Select Tool: Click and drag to select tiles for copy, cut, delete, grouping, etc.";
+static constexpr const char* TB_INFO_GRID     = "Grid: Toggle the tile grid on and off.";
+static constexpr const char* TB_INFO_BOUNDS   = "Bounds: Toggle the shaded out-of-bounds region on and off.";
+static constexpr const char* TB_INFO_LAYERS   = "Layer Transparency: Toggles the transparency applied to layers above the active layer.";
+static constexpr const char* TB_INFO_CAMERA   = "Reset Camera: Return to the editor's default position and zoom.";
+static constexpr const char* TB_INFO_RESIZE   = "Resize: Resize the boundaries of the level.";
+static constexpr const char* TB_INFO_FLIP_H   = "Flip Horizontal: Flip the level's content horizontally.";
+static constexpr const char* TB_INFO_FLIP_V   = "Flip Vertical: Flip the level's content vertically.";
+static constexpr const char* TB_INFO_MIRROR_H = "Mirror Horizontal: Toggle horizontal symmetry on and off.";
+static constexpr const char* TB_INFO_MIRROR_V = "Mirror Vertical: Toggle vertical symmetry on and off.";
+static constexpr const char* TB_INFO_CUT      = "Cut: Copy and delete the currently selected region.";
+static constexpr const char* TB_INFO_COPY     = "Copy: Copy the currently selected region.";
+static constexpr const char* TB_INFO_DESELECT = "Deselect: Removes the current box selection.";
+static constexpr const char* TB_INFO_CLEAR    = "Clear Selection: Deletes everything inside the current selection.";
+static constexpr const char* TB_INFO_ENTITY   = "Large Entities: Toggles entity graphics to represent their in-game size.";
+static constexpr const char* TB_INFO_GUIDES   = "Entity Guides: Toggles guides to showcase entity placement and bounds.";
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float TOTAL_TOOLBAR_LVL_BUTTONS = 18;
-GLOBAL constexpr float TOTAL_TOOLBAR_MAP_BUTTONS =  1;
-GLOBAL           float toolbar_width = TOOLBAR_WIDTH;
+static constexpr float TOTAL_TOOLBAR_LVL_BUTTONS = 18;
+static constexpr float TOTAL_TOOLBAR_MAP_BUTTONS =  1;
+static           float toolbar_width = TOOLBAR_WIDTH;
 
 /* -------------------------------------------------------------------------- */
 

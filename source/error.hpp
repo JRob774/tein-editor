@@ -21,8 +21,8 @@
 /* -------------------------------------------------------------------------- */
 
 // Set this callback and it will be called during fatal exception termination.
-GLOBAL void(*error_terminate_callback)(void);
-GLOBAL void(*error_maximum_callback)(void);
+static void(*error_terminate_callback)(void);
+static void(*error_maximum_callback)(void);
 
 enum Error_Level { ERR_MIN, ERR_MED, ERR_MAX };
 

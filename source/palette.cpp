@@ -9,14 +9,14 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* PALETTE_FILE = "textures/palette.png";
-GLOBAL constexpr const char* TILESET_FILE = "data/tilesets.txt";
-GLOBAL constexpr const char* GAME_GPAK    = "game.gpak";
+static constexpr const char* PALETTE_FILE = "textures/palette.png";
+static constexpr const char* TILESET_FILE = "data/tilesets.txt";
+static constexpr const char* GAME_GPAK    = "game.gpak";
 
 // The columns in the palette file to pull the colors from.
-GLOBAL constexpr int PALETTE_MAIN_COLUMN = 5;
+static constexpr int PALETTE_MAIN_COLUMN = 5;
 
-GLOBAL std::map<std::string, vec4> palette_main_lookup;
+static std::map<std::string, vec4> palette_main_lookup;
 
 /* -------------------------------------------------------------------------- */
 

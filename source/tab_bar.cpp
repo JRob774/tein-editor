@@ -9,17 +9,17 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float DEFAULT_LEVEL_TAB_WIDTH = 128;
-GLOBAL constexpr float SHIFT_TAB_BUTTON_WIDTH  =  13;
+static constexpr float DEFAULT_LEVEL_TAB_WIDTH = 128;
+static constexpr float SHIFT_TAB_BUTTON_WIDTH  =  13;
 
-GLOBAL constexpr size_t NO_TAB_TO_CLOSE = static_cast<size_t>(-1);
+static constexpr size_t NO_TAB_TO_CLOSE = static_cast<size_t>(-1);
 
-GLOBAL size_t starting_tab_offset = 0;
-GLOBAL size_t max_number_of_tabs  = 0;
+static size_t starting_tab_offset = 0;
+static size_t max_number_of_tabs  = 0;
 
-GLOBAL bool need_to_scroll_tab_bar;
+static bool need_to_scroll_tab_bar;
 
-GLOBAL bool can_scroll_in_tab_bar = false;
+static bool can_scroll_in_tab_bar = false;
 
 /* -------------------------------------------------------------------------- */
 

@@ -16,8 +16,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float TOOLBAR_INNER_PAD =  1;
-GLOBAL constexpr float TOOLBAR_WIDTH     = 30;
+static constexpr float TOOLBAR_INNER_PAD =  1;
+static constexpr float TOOLBAR_WIDTH     = 30;
 
 FILDEF void  do_toolbar    ();
 FILDEF float get_toolbar_w ();

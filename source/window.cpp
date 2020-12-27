@@ -9,14 +9,14 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* WINDOW_STATE_KEY_NAME = "Software\\TheEndEditor\\WindowPlacement";
+static constexpr const char* WINDOW_STATE_KEY_NAME = "Software\\TheEndEditor\\WindowPlacement";
 
-GLOBAL std::vector<std::string> restore_list;
-GLOBAL std::map<std::string, Window> windows;
+static std::vector<std::string> restore_list;
+static std::map<std::string, Window> windows;
 
-GLOBAL unsigned int main_thread_id;
-GLOBAL bool        window_resizing;
-GLOBAL bool     from_manual_resize; // Hack used to solve a stupid flashing window bug with the New/Resize window.
+static unsigned int main_thread_id;
+static bool        window_resizing;
+static bool     from_manual_resize; // Hack used to solve a stupid flashing window bug with the New/Resize window.
 
 /* -------------------------------------------------------------------------- */
 

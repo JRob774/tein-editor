@@ -9,37 +9,37 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL SDL_GLContext gl_context;
-GLOBAL Window*    render_target;
+static SDL_GLContext gl_context;
+static Window*    render_target;
 
-GLOBAL quad renderer_viewport;
-GLOBAL vec4 renderer_draw_color;
+static quad renderer_viewport;
+static vec4 renderer_draw_color;
 
-GLOBAL std::stack<quad> scissor_stack;
+static std::stack<quad> scissor_stack;
 
-GLOBAL Shader untextured_shader;
-GLOBAL Shader   textured_shader;
-GLOBAL Shader       text_shader;
+static Shader untextured_shader;
+static Shader   textured_shader;
+static Shader       text_shader;
 
-GLOBAL float texture_draw_scale_x;
-GLOBAL float texture_draw_scale_y;
+static float texture_draw_scale_x;
+static float texture_draw_scale_y;
 
-GLOBAL float font_draw_scale;
+static float font_draw_scale;
 
-GLOBAL GLfloat max_gl_texture_size;
+static GLfloat max_gl_texture_size;
 
-GLOBAL Buffer_Mode immediate_buffer_draw_mode;
+static Buffer_Mode immediate_buffer_draw_mode;
 
-GLOBAL Vertex_Buffer draw_buffer;
-GLOBAL Vertex_Buffer tile_buffer;
-GLOBAL Vertex_Buffer text_buffer;
+static Vertex_Buffer draw_buffer;
+static Vertex_Buffer tile_buffer;
+static Vertex_Buffer text_buffer;
 
 // Batched tile rendering.
-GLOBAL vec4     tile_draw_color;
-GLOBAL Texture* tile_texture;
+static vec4     tile_draw_color;
+static Texture* tile_texture;
 // Batched text rendering.
-GLOBAL vec4     text_draw_color;
-GLOBAL Font*    text_font;
+static vec4     text_draw_color;
+static Font*    text_font;
 
 /* -------------------------------------------------------------------------- */
 

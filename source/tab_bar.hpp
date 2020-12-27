@@ -16,7 +16,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr float TAB_BAR_HEIGHT = 25;
+static constexpr float TAB_BAR_HEIGHT = 25;
 
 FILDEF void handle_tab_bar_events ();
 

@@ -9,10 +9,10 @@
 
 /* -------------------------------------------------------------------------- */
 
-GLOBAL constexpr const char* TAB_STATE_KEY_NAME = "Software\\TheEndEditor\\PreviousSessionTabs";
-GLOBAL constexpr const char* SELECTED_STATE_KEY_NAME = "Software\\TheEndEditor\\SelectedTab";
+static constexpr const char* TAB_STATE_KEY_NAME = "Software\\TheEndEditor\\PreviousSessionTabs";
+static constexpr const char* SELECTED_STATE_KEY_NAME = "Software\\TheEndEditor\\SelectedTab";
 
-GLOBAL size_t tab_to_start_from_session_load = INVALID_TAB;
+static size_t tab_to_start_from_session_load = INVALID_TAB;
 
 /* -------------------------------------------------------------------------- */
 
