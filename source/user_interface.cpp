@@ -103,7 +103,7 @@ static bool        ui_cursor_visible;
 
 TEINAPI U32 internal__cursor_blink_callback (U32 interval, void* user_data)
 {
-    push_editor_event(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
+    PushEditorEvent(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
     return interval;
 }
 

@@ -36,7 +36,7 @@ static float update_dialog_scroll_offset;
 
 TEINAPI U32 internal__update_show_callback (U32 interval, void* user_data)
 {
-    push_editor_event(EDITOR_EVENT_SHOW_UPDATE, NULL, NULL);
+    PushEditorEvent(EDITOR_EVENT_SHOW_UPDATE, NULL, NULL);
     return 0;
 }
 

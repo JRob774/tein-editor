@@ -4,7 +4,7 @@ namespace Internal
 {
     TEINAPI U32 DialogCooldownCallback (U32 interval, void* userData)
     {
-        push_editor_event(EDITOR_EVENT_COOLDOWN, NULL, NULL);
+        PushEditorEvent(EDITOR_EVENT_COOLDOWN, NULL, NULL);
         return 0;
     }
 

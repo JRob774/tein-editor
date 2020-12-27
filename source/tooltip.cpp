@@ -24,7 +24,7 @@ static SDL_TimerID tooltip_timer;
 
 TEINAPI U32 internal__tooltip_callback (U32 interval, void* user_data)
 {
-    push_editor_event(EDITOR_EVENT_SHOW_TOOLTIP, NULL, NULL);
+    PushEditorEvent(EDITOR_EVENT_SHOW_TOOLTIP, NULL, NULL);
     return 0;
 }
 

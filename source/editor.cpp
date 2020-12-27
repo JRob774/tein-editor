@@ -44,7 +44,7 @@ TEINAPI Tab& internal__create_new_tab_and_focus (Tab_Type type)
 
 TEINAPI U32 internal__backup_callback (U32 interval, void* user_data)
 {
-    push_editor_event(EDITOR_EVENT_BACKUP_TAB, NULL, NULL);
+    PushEditorEvent(EDITOR_EVENT_BACKUP_TAB, NULL, NULL);
 
     // This tells SDL to setup the timer again to run with the new interval.
     // In this case we are just using the exact same interval as previously.

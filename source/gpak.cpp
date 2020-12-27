@@ -127,7 +127,7 @@ TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
 
         ++entries_unpacked;
         args->progress.store(static_cast<float>(entries_unpacked) / static_cast<float>(entry_count));
-        push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+        PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
         if (args->cancel.load()) // Cancel!
         {
@@ -136,7 +136,7 @@ TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
     }
 
     args->complete.store(true);
-    push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+    PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
     // printf("GPAK Unpack Complete!\n");
     return EXIT_SUCCESS;
@@ -210,7 +210,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
 
         ++entries_packed;
         args->progress.store(((static_cast<float>(entries_packed) / static_cast<float>(entry_count)) / 2));
-        push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+        PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
         if (args->cancel.load()) // Cancel!
         {
@@ -237,7 +237,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
 
         ++files_packed;
         args->progress.store(.5f + ((static_cast<float>(files_packed) / static_cast<float>(file_count)) / 2));
-        push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+        PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
         if (args->cancel.load()) // Cancel!
         {
@@ -246,7 +246,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
     }
 
     args->complete.store(true);
-    push_editor_event(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+    PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
 
     return EXIT_SUCCESS;
 }

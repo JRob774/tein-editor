@@ -314,7 +314,7 @@ TEINAPI void do_application ()
     // IMPORTANT: Otherwise the UI will not redraw very well!
     if (should_push_ui_redraw_event)
     {
-        push_editor_event(EDITOR_EVENT_UI_REDRAW, NULL, NULL);
+        PushEditorEvent(EDITOR_EVENT_UI_REDRAW, NULL, NULL);
         should_push_ui_redraw_event = false;
     }
 }
