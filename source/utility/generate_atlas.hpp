@@ -27,7 +27,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     const int atlas_h = static_cast<int>(h);
 
     std::vector<std::string> files;
-    list_path_files(make_path_absolute(path).c_str(), files, true);
+    ListPathFiles(MakePathAbsolute(path).c_str(), files, true);
 
     // We will be loading all textures in the same 8-bit component RGBA format.
     constexpr U32 SURFACE_FORMAT  = SDL_PIXELFORMAT_RGBA32;
@@ -170,7 +170,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         int rw = rects[i].w - (PADDING * 2);
         int rh = rects[i].h - (PADDING * 2);
 
-        std::string id_str(strip_file_path_and_ext(files[i].c_str()));
+        std::string id_str(StripFilePathAndExt(files[i].c_str()));
         int id = std::stoi(id_str);
         if (id_str.find("-alt") != std::string::npos) id += ALT_OFFSET;
 
@@ -183,7 +183,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     stbi_write_png(output_png_name.c_str(), atlas_w,atlas_h, BYTES_PER_PIXEL,
         atlas_surface->pixels, atlas_w*BYTES_PER_PIXEL);
 
-    LOG_DEBUG("Created Texture Atlas: %s", strip_file_path(output_name).c_str());
+    LOG_DEBUG("Created Texture Atlas: %s", StripFilePath(output_name).c_str());
 }
 
 /* -------------------------------------------------------------------------- */

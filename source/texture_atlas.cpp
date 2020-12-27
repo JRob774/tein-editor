@@ -39,7 +39,7 @@ TEINAPI bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon
 
 TEINAPI bool load_texture_atlas_from_file (Texture_Atlas& atlas, std::string file_name)
 {
-    file_name = make_path_absolute(file_name);
+    file_name = MakePathAbsolute(file_name);
     return internal__create_texture_atlas(atlas, GonObject::Load(file_name));
 }
 TEINAPI bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vector<U8>& file_data)

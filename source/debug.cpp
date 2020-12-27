@@ -31,11 +31,11 @@ TEINAPI void internal__log_debug (const char* format, ...)
     if (!debug_log)
     {
         std::string debug_log_name(build_resource_string(DEBUG_LOG_NAME));
-        create_path(strip_file_name(debug_log_name));
+        CreatePath(StripFileName(debug_log_name));
         debug_log = fopen(debug_log_name.c_str(), "w");
         if (debug_log)
         {
-            LOG_DEBUG("DEBUG LOG [%s]", format_time("%m/%d/%Y %H:%M:%S").c_str());
+            LOG_DEBUG("DEBUG LOG [%s]", FormatTime("%m/%d/%Y %H:%M:%S").c_str());
         }
     }
 
@@ -116,7 +116,7 @@ TEINAPI void end_debug_timer ()
     float elapsed       = static_cast<float>(end_counter-start_counter);
     float seconds       = elapsed / frequency;
 
-    std::string str(format_string("%s took %fs.", timer.name.c_str(), seconds));
+    std::string str(FormatString("%s took %fs.", timer.name.c_str(), seconds));
     debug_timer_results.push_back(str);
 }
 

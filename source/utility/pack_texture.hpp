@@ -68,7 +68,7 @@ TEINAPI void internal__pack_textures (std::string in, std::string out)
     constexpr int BPP = 4;
 
     std::vector<std::string> files;
-    list_path_files(make_path_absolute(in).c_str(), files, true);
+    ListPathFiles(MakePathAbsolute(in).c_str(), files, true);
 
     for (auto f: files)
     {
@@ -94,7 +94,7 @@ TEINAPI void internal__pack_textures (std::string in, std::string out)
 
         internal__do_tile_padding(in_pixels, out_pixels, w,h, xpad,ypad, PADDING);
 
-        std::string file_name(make_path_absolute(out) + strip_file_path(f));
+        std::string file_name(MakePathAbsolute(out) + StripFilePath(f));
         stbi_write_png(file_name.c_str(), w+xpad,h+ypad, BPP, out_pixels, (w+xpad)*BPP);
     }
 

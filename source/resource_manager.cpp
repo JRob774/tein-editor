@@ -22,8 +22,8 @@ static std::map<std::string, std::vector<U8>> gpak_resource_lookup;
 
 TEINAPI bool init_resource_manager ()
 {
-    std::string gpak_file_name(make_path_absolute(RESOURCE_GPAK));
-    if (!does_file_exist(gpak_file_name)) return true;
+    std::string gpak_file_name(MakePathAbsolute(RESOURCE_GPAK));
+    if (!DoesFileExist(gpak_file_name)) return true;
 
     // Return true because we may still function.
     FILE* gpak = fopen(gpak_file_name.c_str(), "rb");
@@ -62,11 +62,11 @@ TEINAPI bool init_resource_manager ()
 
 TEINAPI void get_resource_location ()
 {
-    std::string resource_location_file(get_executable_path() + RESOURCE_LOCATION);
-    if (does_file_exist(resource_location_file))
+    std::string resource_location_file(GetExecutablePath() + RESOURCE_LOCATION);
+    if (DoesFileExist(resource_location_file))
     {
-        std::string relative_path(read_entire_file(resource_location_file));
-        resource_location = get_executable_path() + relative_path;
+        std::string relative_path(ReadEntireFile(resource_location_file));
+        resource_location = GetExecutablePath() + relative_path;
         // Remove trailing whitespace, if there is any.
         resource_location.erase(resource_location.find_last_not_of(" \t\n\r\f\v") + 1);
     }
@@ -80,42 +80,42 @@ TEINAPI void get_resource_location ()
 TEINAPI bool load_texture_resource (std::string file_name, Texture& tex, Texture_Wrap wrap)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (does_file_exist(abs_file_name)) return load_texture_from_file(tex, abs_file_name, wrap);
+    if (DoesFileExist(abs_file_name)) return load_texture_from_file(tex, abs_file_name, wrap);
     else return load_texture_from_data(tex, gpak_resource_lookup[file_name], wrap);
 }
 
 TEINAPI bool load_atlas_resource (std::string file_name, Texture_Atlas& atlas)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (does_file_exist(abs_file_name)) return load_texture_atlas_from_file(atlas, abs_file_name);
+    if (DoesFileExist(abs_file_name)) return load_texture_atlas_from_file(atlas, abs_file_name);
     else return load_texture_atlas_from_data(atlas, gpak_resource_lookup[file_name]);
 }
 
 TEINAPI bool load_font_resource (std::string file_name, Font& fnt, std::vector<int> pt, float csz)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (does_file_exist(abs_file_name)) return load_font_from_file(fnt, abs_file_name, pt, csz);
+    if (DoesFileExist(abs_file_name)) return load_font_from_file(fnt, abs_file_name, pt, csz);
     else return load_font_from_data(fnt, gpak_resource_lookup[file_name], pt, csz);
 }
 
 TEINAPI Shader load_shader_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (does_file_exist(abs_file_name)) return load_shader_from_file(abs_file_name);
+    if (DoesFileExist(abs_file_name)) return load_shader_from_file(abs_file_name);
     else return load_shader_from_data(gpak_resource_lookup[file_name]);
 }
 
 TEINAPI std::vector<U8> load_binary_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (does_file_exist(abs_file_name)) return read_binary_file(abs_file_name);
+    if (DoesFileExist(abs_file_name)) return ReadBinaryFile(abs_file_name);
     else return gpak_resource_lookup[file_name];
 }
 
 TEINAPI SDL_Surface* load_surface_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (does_file_exist(abs_file_name)) return SDL_LoadBMP(abs_file_name.c_str());
+    if (DoesFileExist(abs_file_name)) return SDL_LoadBMP(abs_file_name.c_str());
     else return SDL_LoadBMP_RW(SDL_RWFromConstMem(&gpak_resource_lookup[file_name][0],
         static_cast<int>(gpak_resource_lookup[file_name].size())), true);
 }
@@ -123,7 +123,7 @@ TEINAPI SDL_Surface* load_surface_resource (std::string file_name)
 TEINAPI std::string load_string_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (does_file_exist(abs_file_name)) return read_entire_file(abs_file_name);
+    if (DoesFileExist(abs_file_name)) return ReadEntireFile(abs_file_name);
     else return std::string(gpak_resource_lookup[file_name].begin(),
         gpak_resource_lookup[file_name].end());
 }
@@ -209,7 +209,7 @@ TEINAPI void free_editor_resources ()
 
 TEINAPI std::string build_resource_string (std::string str)
 {
-    return (is_path_absolute(str)) ? str : (resource_location + str);
+    return (IsPathAbsolute(str)) ? str : (resource_location + str);
 }
 
 /* -------------------------------------------------------------------------- */

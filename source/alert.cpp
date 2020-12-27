@@ -16,7 +16,7 @@ TEINAPI int show_alert (std::string title, std::string msg, int type, int button
     HWND hwnd = NULL;
     if (!window.empty() && !is_window_hidden(window))
     {
-        hwnd = internal__win32_get_window_handle(get_window(window).window);
+        hwnd = Internal::Win32GetWindowHandle(get_window(window).window);
     }
     return MessageBoxA(hwnd, msg.c_str(), title.c_str(), (type|buttons));
 }

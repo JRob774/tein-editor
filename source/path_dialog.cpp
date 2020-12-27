@@ -117,13 +117,13 @@ TEINAPI void do_path ()
 
 TEINAPI void okay_path ()
 {
-    temp_game_path = fix_path_slashes(temp_game_path);
+    temp_game_path = FixPathSlashes(temp_game_path);
     editor_settings.game_path = temp_game_path;
 
     save_preferences();
     hide_window("WINPATH");
 
-    if (!run_executable(editor_settings.game_path))
+    if (!RunExecutable(editor_settings.game_path))
     {
         LOG_ERROR(ERR_MED, "Failed to launch The End is Nigh executable!");
     }

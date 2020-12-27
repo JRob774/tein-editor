@@ -54,14 +54,14 @@ TEINAPI U32 internal__backup_callback (U32 interval, void* user_data)
 TEINAPI std::vector<std::string> internal__get_restore_files ()
 {
     std::vector<std::string> files;
-    list_path_files(get_executable_path(), files);
+    ListPathFiles(GetExecutablePath(), files);
 
     // Remove any listed files that are not .restore files.
     std::vector<std::string> restores;
     for (auto& file: files)
     {
-        std::string file_name(strip_file_path(file));
-        if (insensitive_compare(".restore", file_name.substr(4, strlen(".restore")))) // NOTE: 4 because that is the length of ".csv" and ".lvl".
+        std::string file_name(StripFilePath(file));
+        if (InsensitiveCompare(".restore", file_name.substr(4, strlen(".restore")))) // NOTE: 4 because that is the length of ".csv" and ".lvl".
         {
             restores.push_back(file);
         }
@@ -72,7 +72,7 @@ TEINAPI std::vector<std::string> internal__get_restore_files ()
 
 TEINAPI bool internal__restore_tab (std::string file_name)
 {
-    std::string type(strip_file_path(file_name).substr(0, 4)); // NOTE: 4 because that is the length of ".csv" and ".lvl".
+    std::string type(StripFilePath(file_name).substr(0, 4)); // NOTE: 4 because that is the length of ".csv" and ".lvl".
     if (type == ".lvl")
     {
         create_new_level_tab_and_focus();
@@ -120,7 +120,7 @@ TEINAPI void internal__load_session_tabs ()
                     buffer.resize(value_size-1);
                     ret = RegEnumValueA(key, index, value_name, &value_name_len, NULL, &type, reinterpret_cast<BYTE*>(&buffer[0]), &value_size);
                     // Load the actual level/map now that we have the name.
-                    if (does_file_exist(buffer))
+                    if (DoesFileExist(buffer))
                     {
                         std::string ext(buffer.substr(buffer.find_last_of(".")));
                         Tab* tab = NULL;
@@ -261,9 +261,9 @@ TEINAPI void init_editor (int argc, char** argv)
     {
         for (int i=1; i<argc; ++i)
         {
-            if (!does_file_exist(argv[i]))
+            if (!DoesFileExist(argv[i]))
             {
-                std::string msg(format_string("Could not find file '%s'!", argv[i]));
+                std::string msg(FormatString("Could not find file '%s'!", argv[i]));
                 show_alert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
             }
             else
@@ -709,8 +709,8 @@ TEINAPI int save_changes_prompt (Tab& tab)
     // If there are no unsaved changes then the prompt is not presented.
     if (!tab.unsaved_changes) return ALERT_RESULT_INVALID;
 
-    std::string tab_name((tab.name.empty()) ? "Untitled" : strip_file_path(tab.name));
-    std::string msg(format_string("'%s' has unsaved changes!\nWould you like to save?", tab_name.c_str()));
+    std::string tab_name((tab.name.empty()) ? "Untitled" : StripFilePath(tab.name));
+    std::string msg(FormatString("'%s' has unsaved changes!\nWould you like to save?", tab_name.c_str()));
     int result = show_alert("Unsaved Changes", msg, ALERT_TYPE_WARNING, ALERT_BUTTON_YES_NO_CANCEL, "WINMAIN");
     if (result == ALERT_RESULT_YES)
     {
@@ -799,7 +799,7 @@ TEINAPI void open_recently_closed_tab ()
     if (editor.closed_tabs.empty()) return;
     std::string name(editor.closed_tabs.back());
     editor.closed_tabs.pop_back();
-    if (does_file_exist(name))
+    if (DoesFileExist(name))
     {
         std::string ext(name.substr(name.find_last_of(".")));
         Tab* tab = NULL;
@@ -817,7 +817,7 @@ TEINAPI void save_restore_files ()
         std::string file_name;
         if      (editor.tabs.at(i).type == Tab_Type::LEVEL) file_name = ".lvl.restore" + std::to_string(i);
         else if (editor.tabs.at(i).type == Tab_Type::MAP  ) file_name = ".csv.restore" + std::to_string(i);
-        file_name = make_path_absolute(file_name);
+        file_name = MakePathAbsolute(file_name);
         if      (editor.tabs.at(i).type == Tab_Type::LEVEL) save_restore_level(editor.tabs.at(i), file_name);
         else if (editor.tabs.at(i).type == Tab_Type::MAP  ) save_restore_map  (editor.tabs.at(i), file_name);
     }

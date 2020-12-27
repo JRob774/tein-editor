@@ -55,7 +55,7 @@ TEINAPI std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect
 
     OPENFILENAMEA open_file_name = {};
 
-    open_file_name.hwndOwner    = internal__win32_get_window_handle(get_window("WINMAIN").window);
+    open_file_name.hwndOwner    = Internal::Win32GetWindowHandle(get_window("WINMAIN").window);
     open_file_name.lStructSize  = sizeof(OPENFILENAMEA);
     open_file_name.nFilterIndex = 2;
     open_file_name.lpstrFilter  = filter;
@@ -85,10 +85,10 @@ TEINAPI std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect
         if (*pos != '\0')
         {
             // Determines if there is just one file or multiple
-            if (is_path(pos))
+            if (IsPath(pos))
             {
                 // First part is always the path.
-                std::string path(fix_path_slashes(pos));
+                std::string path(FixPathSlashes(pos));
                 path.push_back('/');
                 // Then it is followed by all the names.
                 pos += open_file_name.nFileOffset;
@@ -100,7 +100,7 @@ TEINAPI std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect
             }
             else
             {
-                files.push_back(fix_path_slashes(pos));
+                files.push_back(FixPathSlashes(pos));
             }
         }
     }
@@ -139,7 +139,7 @@ TEINAPI std::string save_dialog (Dialog_Type type)
 
     OPENFILENAMEA open_file_name = {};
 
-    open_file_name.hwndOwner    = internal__win32_get_window_handle(get_window("WINMAIN").window);
+    open_file_name.hwndOwner    = Internal::Win32GetWindowHandle(get_window("WINMAIN").window);
     open_file_name.lStructSize  = sizeof(OPENFILENAMEA);
     open_file_name.nFilterIndex = 2;
     open_file_name.lpstrFilter  = filter;
@@ -160,7 +160,7 @@ TEINAPI std::string save_dialog (Dialog_Type type)
     }
     else
     {
-        file = fix_path_slashes(file_buffer);
+        file = FixPathSlashes(file_buffer);
     }
 
     return file;

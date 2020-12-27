@@ -115,7 +115,7 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
         {
             color_picker_active_channel = type;
             // Determine where the click was and jump to that position.
-            float my = ch - (get_mouse_pos().y - get_viewport().y - cursor.y);
+            float my = ch - (GetMousePos().y - get_viewport().y - cursor.y);
             channel = my / ch;
         }
     }
@@ -284,7 +284,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
         {
             color_picker_active_channel = Channel_Type::A;
             // Determine where the click was and jump to that position.
-            float mx = tw - (get_mouse_pos().x - get_viewport().x - cursor.x);
+            float mx = tw - (GetMousePos().x - get_viewport().x - cursor.x);
             c.a = 1 - (mx / tw);
         }
     }

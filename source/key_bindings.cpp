@@ -322,7 +322,7 @@ TEINAPI bool load_editor_key_bindings ()
     GonObject gon;
     try
     {
-        std::string file_name(make_path_absolute(KEY_BINDINGS_FILE_NAME));
+        std::string file_name(MakePathAbsolute(KEY_BINDINGS_FILE_NAME));
         gon = GonObject::Load(file_name);
     }
     catch (const char* msg)

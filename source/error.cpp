@@ -10,8 +10,7 @@
 /* -------------------------------------------------------------------------- */
 
 static constexpr const char* CRASH_DUMP_NAME = "TheEndEditor-Crash.dmp";
-static constexpr const char* DEBUG_DUMP_NAME = "TheEndEditor-Debug.dmp";
-static constexpr const char*  ERROR_LOG_NAME =  "logs/error_editor.log";
+static constexpr const char* ERROR_LOG_NAME = "logs/error_editor.log";
 
 static FILE* error_log;
 
@@ -24,7 +23,7 @@ TEINAPI LONG WINAPI internal__unhandled_exception_filter (struct _EXCEPTION_POIN
     show_alert("Error", "Fatal exception occurred!\nCreating crash dump!",
         ALERT_TYPE_ERROR, ALERT_BUTTON_OK);
 
-    std::string file_name(make_path_absolute(CRASH_DUMP_NAME));
+    std::string file_name(MakePathAbsolute(CRASH_DUMP_NAME));
     HANDLE file = CreateFileA(file_name.c_str(), GENERIC_WRITE, 0, NULL,
         CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (file != INVALID_HANDLE_VALUE)
@@ -56,14 +55,14 @@ TEINAPI void internal__log_error (const char* file, int line, Error_Level level,
     if (!error_log)
     {
         std::string error_log_name(build_resource_string(ERROR_LOG_NAME));
-        create_path(strip_file_name(error_log_name));
+        CreatePath(StripFileName(error_log_name));
         error_log = fopen(error_log_name.c_str(), "a");
     }
 
     va_list args;
 
-    std::string file_str = fix_path_slashes(file);
-    std::string time_str = format_time("%m/%d/%Y %H:%M:%S");
+    std::string file_str = FixPathSlashes(file);
+    std::string time_str = FormatTime("%m/%d/%Y %H:%M:%S");
 
     const char* err_format = "[%s] Error in %s at line %d: ";
 
@@ -89,7 +88,7 @@ TEINAPI void internal__log_error (const char* file, int line, Error_Level level,
     if (level == ERR_MIN) return;
 
     va_start(args, format);
-    std::string msg = format_string_v(format, args);
+    std::string msg = FormatStringV(format, args);
     show_alert("Error!", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
     va_end(args);
 

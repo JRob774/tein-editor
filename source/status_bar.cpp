@@ -21,7 +21,7 @@ TEINAPI void push_status_bar_message (const char* fmt, ...)
     va_list args;
 
     va_start(args, fmt);
-    status_bar_pushed_message = format_string_v(fmt, args);
+    status_bar_pushed_message = FormatStringV(fmt, args);
     va_end(args);
 }
 
@@ -58,7 +58,7 @@ TEINAPI void do_status_bar ()
     {
         if (current_tab_is_level())
         {
-            if (point_in_bounds_xywh(get_mouse_pos(), level_editor.viewport))
+            if (PointInBoundsXYWH(GetMousePos(), level_editor.viewport))
             {
                 mx = static_cast<int>(level_editor.mouse_tile.x);
                 my = static_cast<int>(level_editor.mouse_tile.y);
@@ -66,7 +66,7 @@ TEINAPI void do_status_bar ()
         }
         else if (current_tab_is_map())
         {
-            if (point_in_bounds_xywh(get_mouse_pos(), map_editor.viewport))
+            if (PointInBoundsXYWH(GetMousePos(), map_editor.viewport))
             {
                 mx = static_cast<int>(map_editor.mouse_tile.x);
                 my = static_cast<int>(map_editor.mouse_tile.y);
@@ -89,8 +89,8 @@ TEINAPI void do_status_bar ()
         sx = l, sy = b, sw = (r-l)+1, sh = (t-b)+1;
     }
 
-    std::string mouse_str = format_string("Position (%d,%d)", mx,my);
-    std::string select_str = format_string("Selection (%d,%d,%d,%d)", sx,sy,sw,sh);
+    std::string mouse_str = FormatString("Position (%d,%d)", mx,my);
+    std::string select_str = FormatString("Selection (%d,%d,%d,%d)", sx,sy,sw,sh);
 
     // We ensure that the mouse and select labels are always big enough to
     // show their entire content and they take priority over the tool-tip.

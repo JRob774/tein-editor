@@ -318,7 +318,7 @@ TEINAPI void internal__do_hotkey_rebind (Vec2& cursor, const char* key)
 
 TEINAPI void internal__save_settings ()
 {
-    std::string file_name(make_path_absolute(SETTINGS_FILE_NAME));
+    std::string file_name(MakePathAbsolute(SETTINGS_FILE_NAME));
     FILE* file = fopen(file_name.c_str(), "w");
     if (!file)
     {

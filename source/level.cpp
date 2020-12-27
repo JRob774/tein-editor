@@ -38,7 +38,7 @@ TEINAPI bool internal__load_level (FILE* file, Level& level)
 
     if (level.header.version != 1)
     {
-        std::string msg(format_string("Invalid level file version '%d'!", level.header.version));
+        std::string msg(FormatString("Invalid level file version '%d'!", level.header.version));
         show_alert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
         return false;
     }
@@ -99,8 +99,8 @@ TEINAPI bool load_level (Level& level, std::string file_name)
     Defer { fclose(file); };
 
     // If the level is empty/blank we just create a blank default level.
-    if (get_size_of_file(file) == 0) return create_blank_level(level);
-    else                             return internal__load_level(file, level);
+    if (GetSizeOfFile(file) == 0) return create_blank_level(level);
+    else                          return internal__load_level(file, level);
 }
 
 TEINAPI bool save_level (const Level& level, std::string file_name)

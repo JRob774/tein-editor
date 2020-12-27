@@ -41,14 +41,14 @@ TEINAPI Shader load_shader_from_source (std::string source)
     std::string vert_src(source);
     std::string frag_src(source);
 
-    string_replace(vert_src, " vert()", " main()");
-    string_replace(frag_src, " frag()", " main()");
+    StringReplace(vert_src, " vert()", " main()");
+    StringReplace(frag_src, " frag()", " main()");
 
-    string_replace(vert_src, "COMPILING_VERTEX_PROGRAM",   "1");
-    string_replace(vert_src, "COMPILING_FRAGMENT_PROGRAM", "0");
+    StringReplace(vert_src, "COMPILING_VERTEX_PROGRAM",   "1");
+    StringReplace(vert_src, "COMPILING_FRAGMENT_PROGRAM", "0");
 
-    string_replace(frag_src, "COMPILING_VERTEX_PROGRAM",   "0");
-    string_replace(frag_src, "COMPILING_FRAGMENT_PROGRAM", "1");
+    StringReplace(frag_src, "COMPILING_VERTEX_PROGRAM",   "0");
+    StringReplace(frag_src, "COMPILING_FRAGMENT_PROGRAM", "1");
 
     const GLchar* vsrc = static_cast<const GLchar*>(vert_src.c_str());
     const GLchar* fsrc = static_cast<const GLchar*>(frag_src.c_str());
@@ -95,9 +95,9 @@ TEINAPI Shader load_shader_from_source (std::string source)
 TEINAPI Shader load_shader_from_file (std::string file_name)
 {
     // Build an absolute path to the file based on the executable location.
-    file_name = make_path_absolute(file_name);
+    file_name = MakePathAbsolute(file_name);
 
-    std::string source = read_entire_file(file_name);
+    std::string source = ReadEntireFile(file_name);
     if (source.empty())
     {
         LOG_ERROR(ERR_MIN, "Failed to load shader '%s'!", file_name.c_str());

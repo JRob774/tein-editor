@@ -156,7 +156,8 @@ TEINAPI bool load_map (Tab& tab, std::string file_name)
     // We don't make the path absolute or anything becuase if that is needed
     // then it should be handled by a higher-level than this internal system.
 
-    if (!does_file_exist(file_name)) {
+    if (!DoesFileExist(file_name))
+    {
         LOG_ERROR(ERR_MED, "CSV file '%s' does not exist!", file_name.c_str());
         return false;
     }
@@ -184,7 +185,7 @@ TEINAPI bool save_map (const Tab& tab, std::string file_name)
 
 TEINAPI bool load_restore_map (Tab& tab, std::string file_name)
 {
-    std::string data(read_entire_file(file_name));
+    std::string data(ReadEntireFile(file_name));
 
     // Read until the null-terminator to get the name of the map.
     std::string map_name;

@@ -817,7 +817,7 @@ TEINAPI void internal__dump_level_history ()
             case (Level_History_Action::RESIZE       ): history_state += "| RESIZE | "; break;
         }
 
-        history_state += format_string("%5zd | ", s.info.size());
+        history_state += FormatString("%5zd | ", s.info.size());
 
         if (s.action == Level_History_Action::FLIP_LEVEL_H || s.action == Level_History_Action::FLIP_LEVEL_V)
         {
@@ -954,8 +954,8 @@ TEINAPI void do_level_editor ()
     // prior to doing this there were bugs with the cursor's position being
     // slightly off during those operations + it's probably a bit faster.
     push_editor_camera_transform();
-    level_editor.mouse_world = screen_to_world(get_mouse_pos());
-    level_editor.mouse = get_mouse_pos();
+    level_editor.mouse_world = screen_to_world(GetMousePos());
+    level_editor.mouse = GetMousePos();
     level_editor.mouse_tile = internal__mouse_to_tile_position();
     pop_editor_camera_transform();
 
@@ -2075,10 +2075,10 @@ TEINAPI void le_load_prev_level ()
 
     Tab& tab = get_current_tab();
 
-    std::string path(strip_file_name(tab.name));
+    std::string path(StripFileName(tab.name));
 
     std::vector<std::string> files;
-    list_path_files(path, files);
+    ListPathFiles(path, files);
     if (files.size() <= 1) return;
 
     files.erase(std::remove_if(files.begin(), files.end(),
@@ -2090,11 +2090,11 @@ TEINAPI void le_load_prev_level ()
 
     // We strip the extensions then sort the files as they can interfere with
     // getting a good alphabetical sort on the strings. We add them back later.
-    for (auto& f: files) f = strip_file_ext(f);
+    for (auto& f: files) f = StripFileExt(f);
     std::sort(files.begin(), files.end());
 
     // Find our current location and move on to the prev file.
-    std::string current(strip_file_ext(tab.name));
+    std::string current(StripFileExt(tab.name));
     auto iter = std::find(files.begin(), files.end(), current);
     if (iter == files.end()) return; // Shouldn't happen...
 
@@ -2126,10 +2126,10 @@ TEINAPI void le_load_next_level ()
 
     Tab& tab = get_current_tab();
 
-    std::string path(strip_file_name(tab.name));
+    std::string path(StripFileName(tab.name));
 
     std::vector<std::string> files;
-    list_path_files(path, files);
+    ListPathFiles(path, files);
     if (files.size() <= 1) return;
 
     files.erase(std::remove_if(files.begin(), files.end(),
@@ -2144,12 +2144,12 @@ TEINAPI void le_load_next_level ()
     for (auto& f: files)
     {
         std::string ext(f.substr(f.find_last_of(".")));
-        f = strip_file_ext(f);
+        f = StripFileExt(f);
     }
     std::sort(files.begin(), files.end());
 
     // Find our current location and move on to the next file.
-    std::string current(strip_file_ext(tab.name));
+    std::string current(StripFileExt(tab.name));
     auto iter = std::find(files.begin(), files.end(), current);
     if (iter == files.end()) return; // Shouldn't happen...
 
@@ -2179,7 +2179,7 @@ TEINAPI void le_load_next_level ()
 
 TEINAPI void level_drop_file (Tab* tab, std::string file_name)
 {
-    file_name = fix_path_slashes(file_name);
+    file_name = FixPathSlashes(file_name);
 
     // If there is just one tab and it is completely empty with no changes
     // then we close this tab before opening the new level(s) in editor.
@@ -2220,17 +2220,17 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
     int backup_count = editor_settings.backup_count;
     if (backup_count <= 0) return; // No backups are wanted!
 
-    std::string level_name((file_name.empty()) ? "untitled" : strip_file_path_and_ext(file_name));
+    std::string level_name((file_name.empty()) ? "untitled" : StripFilePathAndExt(file_name));
 
     // Create a folder for this particular level's backups if it does not exist.
     // We make separate sub-folders in the backup directory for each level as
     // there was an issue in older versions with the editor freezing when backing
     // up levels to a backups folder with loads of saves. This was because the
     // editor was searching the folder for old backups (leading to a freeze).
-    std::string backup_path(make_path_absolute("backups/" + level_name + "/"));
-    if (!does_path_exist(backup_path))
+    std::string backup_path(MakePathAbsolute("backups/" + level_name + "/"));
+    if (!DoesPathExist(backup_path))
     {
-        if (!create_path(backup_path))
+        if (!CreatePath(backup_path))
         {
             LOG_ERROR(ERR_MIN, "Failed to create backup for level \"%s\"!", level_name.c_str());
             return;
@@ -2239,16 +2239,16 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
 
     // Determine how many backups are already saved of this level.
     std::vector<std::string> backups;
-    list_path_content(backup_path, backups);
+    ListPathContent(backup_path, backups);
 
     int level_count = 0;
     for (auto& file: backups)
     {
-        if (is_file(file))
+        if (IsFile(file))
         {
             // We strip extension twice because there are two extension parts to backups the .bak and the .lvl.
-            std::string compare_name(strip_file_ext(strip_file_path_and_ext(file)));
-            if (insensitive_compare(level_name, compare_name)) ++level_count;
+            std::string compare_name(StripFileExt(StripFilePathAndExt(file)));
+            if (InsensitiveCompare(level_name, compare_name)) ++level_count;
         }
     }
 
@@ -2268,8 +2268,8 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
         for (int i=0; i<level_count; ++i)
         {
             std::string name(backup_name + std::to_string(i) + ".lvl");
-            U64 current = last_file_write_time(name);
-            if (compare_file_write_times(current, oldest) == -1)
+            U64 current = LastFileWriteTime(name);
+            if (CompareFileWriteTimes(current, oldest) == -1)
             {
                 oldest = current;
                 oldest_index = i;

@@ -168,10 +168,10 @@ TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool l
         if (get_render_target()->focus && get_render_target()->mouse)
         {
             Quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
-            Vec2 mouse = get_mouse_pos();
+            Vec2 mouse = GetMousePos();
 
             // Determine the hot and active states for the global UI context.
-            bool inside = point_in_bounds_xyxy(mouse, clipped_bounds);
+            bool inside = PointInBoundsXYXY(mouse, clipped_bounds);
             if (!locked && ui_hit_id == ui_current_id)
             {
                 if (ui_mouse_up)
@@ -570,9 +570,8 @@ TEINAPI Vec2 ui_get_relative_mouse ()
 TEINAPI bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h)
 {
     Quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
-    Vec2 mouse = get_mouse_pos();
-
-    return point_in_bounds_xyxy(mouse, clipped_bounds);
+    Vec2 mouse = GetMousePos();
+    return PointInBoundsXYXY(mouse, clipped_bounds);
 }
 
 TEINAPI bool mouse_in_ui_bounds_xywh (Quad b)
@@ -934,13 +933,13 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
         std::string kb_info;
         if (!kb.empty())
         {
-            kb_info = format_string("(%s)", get_key_binding_main_string(kb).c_str());
+            kb_info = FormatString("(%s)", get_key_binding_main_string(kb).c_str());
             if (get_key_binding(kb).alt_code && get_key_binding(kb).alt_mod)
             {
-                kb_info += format_string(" or (%s)", get_key_binding_alt_string(kb).c_str());
+                kb_info += FormatString(" or (%s)", get_key_binding_alt_string(kb).c_str());
             }
         }
-        std::string info_text((kb_info.empty()) ? info : format_string("%s %s", kb_info.c_str(), info.c_str()));
+        std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
         push_status_bar_message(info_text.c_str());
     }
     // If we are currently hot then set the tooltip.
@@ -1031,13 +1030,13 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
         std::string kb_info;
         if (!kb.empty())
         {
-            kb_info = format_string("(%s)", get_key_binding_main_string(kb).c_str());
+            kb_info = FormatString("(%s)", get_key_binding_main_string(kb).c_str());
             if (get_key_binding(kb).alt_code && get_key_binding(kb).alt_mod)
             {
-                kb_info += format_string(" or (%s)", get_key_binding_alt_string(kb).c_str());
+                kb_info += FormatString(" or (%s)", get_key_binding_alt_string(kb).c_str());
             }
         }
-        std::string info_text((kb_info.empty()) ? info : format_string("%s %s", kb_info.c_str(), info.c_str()));
+        std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
         push_status_bar_message(info_text.c_str());
     }
     // If we are currently hot then set the tooltip.
@@ -1147,8 +1146,8 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
     draw_text(fnt, x, y, clipped_text);
 
     Quad clipped_bounds = internal__get_clipped_bounds(cur.x, cur.y, w, h);
-    Vec2 mouse = get_mouse_pos();
-    bool inside = point_in_bounds_xyxy(mouse, clipped_bounds);
+    Vec2 mouse = GetMousePos();
+    bool inside = PointInBoundsXYXY(mouse, clipped_bounds);
     if (text_clipped && inside) set_current_tooltip(text);
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
@@ -1248,10 +1247,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
     float ww = get_text_width_scaled (fnt, link);
     float wh = get_text_height_scaled(fnt, link);
 
-    if (internal__handle_widget(wx,wy,ww,wh, false))
-    {
-        load_webpage(href);
-    }
+    if (internal__handle_widget(wx,wy,ww,wh, false)) LoadWebpage(href);
 
     float x = cur.x;
     float y = cur.y;
@@ -1309,7 +1305,7 @@ TEINAPI void do_markdown (float w, float h, std::string text)
     Defer { end_scissor(); };
 
     std::vector<std::string> lines;
-    tokenize_string(text, "\r\n", lines);
+    TokenizeString(text, "\r\n", lines);
 
     float x = cur.x;
     float y = cur.y + fnt.line_gap[fnt.current_pt_size];
@@ -1330,7 +1326,7 @@ TEINAPI void do_markdown (float w, float h, std::string text)
     for (auto& line: lines)
     {
         std::vector<std::string> sub_lines;
-        tokenize_string(line, "\r\n", sub_lines);
+        TokenizeString(line, "\r\n", sub_lines);
 
         for (size_t i=0; i<sub_lines.size(); ++i)
         {
@@ -1352,7 +1348,7 @@ TEINAPI float get_markdown_h (float w, std::string text)
     Font& fnt = get_editor_regular_font();
 
     std::vector<std::string> lines;
-    tokenize_string(text, "\r\n", lines);
+    TokenizeString(text, "\r\n", lines);
 
     std::string md_text = internal__do_markdown_formatting(lines, w);
 
@@ -2444,13 +2440,13 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
         std::string kb_info;
         if (kb.empty())
         {
-            kb_info = format_string("(%s)", get_key_binding_main_string(kb).c_str());
+            kb_info = FormatString("(%s)", get_key_binding_main_string(kb).c_str());
             if (get_key_binding(kb).alt_code && get_key_binding(kb).alt_mod)
             {
-                kb_info += format_string(" or (%s)", get_key_binding_alt_string(kb).c_str());
+                kb_info += FormatString(" or (%s)", get_key_binding_alt_string(kb).c_str());
             }
         }
-        std::string info_text((kb_info.empty()) ? info : format_string("%s %s", kb_info.c_str(), info.c_str()));
+        std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
         push_status_bar_message(info_text.c_str());
     }
     // If we are currently hot then set the tooltip.

@@ -110,7 +110,7 @@ TEINAPI void do_tooltip ()
         float dw = get_text_width_scaled (fnt, desc        );
         float dh = get_text_height_scaled(fnt, desc        );
 
-        Vec2 mouse = get_mouse_pos();
+        Vec2 mouse = GetMousePos();
 
         float tx = mouse.x;
         float ty = mouse.y + 16; // Some constant just so it doesn't get covered by the mouse.

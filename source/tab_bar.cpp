@@ -39,7 +39,7 @@ TEINAPI bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool
     float pw = tw-(bw);
     float lw = pw-(xpad*2);
 
-    std::string name((!tab.name.empty()) ? strip_file_path(tab.name) : "Untitled");
+    std::string name((!tab.name.empty()) ? StripFilePath(tab.name) : "Untitled");
     // We insert at the start so that it is always visible even if the
     // level's name gets cut off by the width of the final level tab.
     if (tab.unsaved_changes) name.insert(0, "* ");

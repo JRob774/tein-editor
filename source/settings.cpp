@@ -126,7 +126,7 @@ TEINAPI bool load_editor_settings ()
     GonObject gon;
     try
     {
-        std::string file_name(make_path_absolute(SETTINGS_FILE_NAME));
+        std::string file_name(MakePathAbsolute(SETTINGS_FILE_NAME));
         gon = GonObject::Load(file_name);
     }
     catch (const char* msg)

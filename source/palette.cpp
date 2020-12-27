@@ -31,7 +31,7 @@ TEINAPI void init_palette_lookup ()
     // In order of priority of where we want to search.
     const std::vector<std::string> PATHS
     {
-        make_path_absolute(""),
+        MakePathAbsolute(""),
         PATH_STEAM_X64, PATH_STEAM_X86,
         PATH_EPIC_X64, PATH_EPIC_X86,
     };
@@ -42,14 +42,14 @@ TEINAPI void init_palette_lookup ()
     for (auto& path: PATHS)
     {
         std::string pname(path + PALETTE_FILE);
-        if (palette_data.empty() && does_file_exist(pname))
+        if (palette_data.empty() && DoesFileExist(pname))
         {
-            palette_data = read_binary_file(pname);
+            palette_data = ReadBinaryFile(pname);
         }
         std::string tname(path + TILESET_FILE);
-        if (tileset_data.empty() && does_file_exist(tname))
+        if (tileset_data.empty() && DoesFileExist(tname))
         {
-            tileset_data = read_binary_file(tname);
+            tileset_data = ReadBinaryFile(tname);
         }
 
         // If either data does not exist then we will attempt to load from the GPAK.
@@ -57,7 +57,7 @@ TEINAPI void init_palette_lookup ()
         {
             std::string file_name(path + "game.gpak");
             std::vector<GPAK_Entry> entries;
-            if (does_file_exist(file_name))
+            if (DoesFileExist(file_name))
             {
                 FILE* file = fopen(file_name.c_str(), "rb");
                 if (file)

@@ -29,7 +29,7 @@ TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<U8>& file_d
 TEINAPI bool load_texture_from_file (Texture& tex, std::string file_name, Texture_Wrap wrap)
 {
     // Build an absolute path to the file based on the executable location.
-    file_name = make_path_absolute(file_name);
+    file_name = MakePathAbsolute(file_name);
 
     int w, h, bpp;
     U8* raw_data = stbi_load(file_name.c_str(), &w, &h, &bpp, 0);

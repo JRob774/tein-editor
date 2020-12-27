@@ -174,7 +174,7 @@ TEINAPI bool load_font_from_file (Font& fnt, std::string file_name, std::vector<
     assert(pt.size());
 
     // Build an absolute path to the file based on the executable location.
-    file_name = make_path_absolute(file_name);
+    file_name = MakePathAbsolute(file_name);
 
     if (FT_New_Face(freetype, file_name.c_str(), 0, &fnt.face) != 0)
     {

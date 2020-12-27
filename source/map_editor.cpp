@@ -331,8 +331,8 @@ TEINAPI void do_map_editor ()
     // prior to doing this there were bugs with the cursor's position being
     // slightly off during those operations + it's probably a bit faster.
     push_editor_camera_transform();
-    map_editor.mouse_world = screen_to_world(get_mouse_pos());
-    map_editor.mouse = get_mouse_pos();
+    map_editor.mouse_world = screen_to_world(GetMousePos());
+    map_editor.mouse = GetMousePos();
     map_editor.mouse_tile = internal__mouse_to_node_position();
     pop_editor_camera_transform();
 
@@ -1065,7 +1065,7 @@ TEINAPI void save_map_tab_as ()
 
 TEINAPI void map_drop_file (Tab* tab, std::string file_name)
 {
-    file_name = fix_path_slashes(file_name);
+    file_name = FixPathSlashes(file_name);
 
     // If there is just one tab and it is completely empty with no changes
     // then we close this tab before opening the new world map(s) in editor.
@@ -1108,17 +1108,17 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
     int backup_count = editor_settings.backup_count;
     if (backup_count <= 0) return; // No backups are wanted!
 
-    std::string map_name((file_name.empty()) ? "untitled" : strip_file_path_and_ext(file_name));
+    std::string map_name((file_name.empty()) ? "untitled" : StripFilePathAndExt(file_name));
 
     // Create a folder for this particular map's backups if it does not exist.
     // We make separate sub-folders in the backup directory for each map as
     // there was an issue in older versions with the editor freezing when backing
     // up levels to a backups folder with loads of saves. This was because the
     // editor was searching the folder for old backups (leading to a freeze).
-    std::string backup_path(make_path_absolute("backups/" + map_name + "/"));
-    if (!does_path_exist(backup_path))
+    std::string backup_path(MakePathAbsolute("backups/" + map_name + "/"));
+    if (!DoesPathExist(backup_path))
     {
-        if (!create_path(backup_path))
+        if (!CreatePath(backup_path))
         {
             LOG_ERROR(ERR_MIN, "Failed to create backup for map \"%s\"!", map_name.c_str());
             return;
@@ -1127,16 +1127,16 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
 
     // Determine how many backups are already saved of this map.
     std::vector<std::string> backups;
-    list_path_content(backup_path, backups);
+    ListPathContent(backup_path, backups);
 
     int map_count = 0;
     for (auto& file: backups)
     {
-        if (is_file(file))
+        if (IsFile(file))
         {
             // We strip extension twice because there are two extension parts to backups the .bak and the .csv.
-            std::string compare_name(strip_file_ext(strip_file_path_and_ext(file)));
-            if (insensitive_compare(map_name, compare_name)) ++map_count;
+            std::string compare_name(StripFileExt(StripFilePathAndExt(file)));
+            if (InsensitiveCompare(map_name, compare_name)) ++map_count;
         }
     }
 
@@ -1156,7 +1156,7 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
         for (int i=0; i<map_count; ++i)
         {
             std::string name(backup_name + std::to_string(i) + ".csv");
-            U64 current = last_file_write_time(name);
+            U64 current = LastFileWriteTime(name);
             if (current < oldest)
             {
                 oldest = current;

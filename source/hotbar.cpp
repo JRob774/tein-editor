@@ -397,7 +397,7 @@ TEINAPI void hb_run_game ()
     if (!editor_settings.game_path.empty())
     {
         executable = editor_settings.game_path;
-        if (!does_file_exist(executable))
+        if (!DoesFileExist(executable))
         {
             executable.clear();
         }
@@ -407,12 +407,12 @@ TEINAPI void hb_run_game ()
         for (auto exe: EXECUTABLES)
         {
             executable = exe;
-            if (does_file_exist(executable))
+            if (DoesFileExist(executable))
             {
                 break;
             }
         }
-        if (!does_file_exist(executable))
+        if (!DoesFileExist(executable))
         {
             executable.clear();
         }
@@ -423,7 +423,7 @@ TEINAPI void hb_run_game ()
     {
         open_path();
     }
-    else if (!run_executable(executable))
+    else if (!RunExecutable(executable))
     {
         LOG_ERROR(ERR_MED, "Failed to launch The End is Nigh executable!");
     }
@@ -458,12 +458,12 @@ TEINAPI void hb_about ()
 
 TEINAPI void hb_help ()
 {
-    load_webpage("http://glaielgames.com/teinworkshop/moddermanual/");
+    LoadWebpage("http://glaielgames.com/teinworkshop/moddermanual/");
 }
 
 TEINAPI void hb_bug_report ()
 {
-    load_webpage("https://itch.io/t/822898/bug-reports");
+    LoadWebpage("https://itch.io/t/822898/bug-reports");
 }
 
 TEINAPI void hb_update ()

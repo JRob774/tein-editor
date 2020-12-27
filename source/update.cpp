@@ -42,7 +42,7 @@ TEINAPI U32 internal__update_show_callback (U32 interval, void* user_data)
 
 TEINAPI void internal__update_dialog_update ()
 {
-    load_webpage(DOWNLOAD_PAGE);
+    LoadWebpage(DOWNLOAD_PAGE);
     hide_window("WINUPDATE");
 }
 
@@ -97,7 +97,7 @@ TEINAPI void check_for_updates ()
 
     update_json = nlohmann::json::parse(*http_data.get());
 
-    std::string current_version(format_string("v%d.%d.%d", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string current_version(FormatString("v%d.%d.%d", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
     std::string latest_version(current_version);
     if (update_json.find("tag_name") != update_json.end())
     {

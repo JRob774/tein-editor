@@ -60,7 +60,7 @@ TEINAPI int internal__resize_window (void* main_window_thread_id, SDL_Event* eve
 
             // If not on main thread leave early as it would be unsafe otherwise.
             // See the top of the init_window() function for a clear explanation.
-            if (*reinterpret_cast<unsigned int*>(main_window_thread_id) == get_thread_id())
+            if (*reinterpret_cast<unsigned int*>(main_window_thread_id) == GetThreadID())
             {
                 // Force a redraw on resize, which looks nicer than the usual glitchy
                 // looking screen content when a program's window is usually resized.
@@ -303,7 +303,7 @@ TEINAPI void set_window_size (std::string name, int w, int h)
 #if defined(PLATFORM_WIN32)
 TEINAPI void set_window_child (std::string name)
 {
-    HWND hwnd = internal__win32_get_window_handle(get_window(name).window);
+    HWND hwnd = Internal::Win32GetWindowHandle(get_window(name).window);
     LONG old = GetWindowLongA(hwnd, GWL_EXSTYLE);
 
     SetWindowLongA(hwnd, GWL_EXSTYLE, old|WS_EX_TOOLWINDOW);
@@ -321,7 +321,7 @@ TEINAPI bool init_window ()
     // resize is potentially unstable. As a result, we pass in the ID for
     // the main thread and then when in the resize handler check to see if
     // its thread ID is the same -- if it is then we can redraw safely.
-    main_thread_id = get_thread_id();
+    main_thread_id = GetThreadID();
 
     // The SDL docs say that this should be done before creation of the window!
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,                                            8);
@@ -332,11 +332,9 @@ TEINAPI bool init_window ()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 
     #if defined(BUILD_DEBUG)
-    std::string main_title(format_string("[DEBUG] %s (%d.%d.%d)",
-        MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string main_title(FormatString("[DEBUG] %s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
     #else
-    std::string main_title(format_string("%s (%d.%d.%d)",
-        MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string main_title(FormatString("%s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
     #endif // BUILD_DEBUG
 
     if (!create_window("WINMAIN", main_title,
@@ -457,11 +455,9 @@ TEINAPI void handle_window_events ()
 TEINAPI void set_main_window_subtitle (std::string subtitle)
 {
     #if defined(BUILD_DEBUG)
-    std::string main_title(format_string("[DEBUG] %s (%d.%d.%d)",
-        MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string main_title(FormatString("[DEBUG] %s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
     #else
-    std::string main_title(format_string("%s (%d.%d.%d)",
-        MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string main_title(FormatString("%s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
     #endif
 
     if (!subtitle.empty())

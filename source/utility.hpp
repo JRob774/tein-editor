@@ -69,57 +69,56 @@ struct Quad
     union { float h, y2; };
 };
 
-TEINAPI std::vector<U8> read_binary_file (std::string file_name);
-TEINAPI std::string     read_entire_file (std::string file_name);
+TEINAPI std::vector<U8> ReadBinaryFile (std::string fileName);
+TEINAPI std::string     ReadEntireFile (std::string fileName);
 
-TEINAPI std::string get_executable_path ();
+TEINAPI std::string GetExecutablePath ();
 
-TEINAPI size_t get_size_of_file (std::string file_name);
-TEINAPI size_t get_size_of_file (FILE*       file);
+TEINAPI size_t GetSizeOfFile (std::string fileName);
+TEINAPI size_t GetSizeOfFile (FILE* file);
 
-TEINAPI bool does_file_exist (std::string file_name);
-TEINAPI bool does_path_exist (std::string path_name);
+TEINAPI bool DoesFileExist (std::string fileName);
+TEINAPI bool DoesPathExist (std::string pathName);
 
-TEINAPI void list_path_content (std::string path_name, std::vector<std::string>& content, bool recursive = false);
-TEINAPI void list_path_files   (std::string path_name, std::vector<std::string>& files,   bool recursive = false);
+TEINAPI void ListPathContent (std::string pathName, std::vector<std::string>& content, bool recursive = false);
+TEINAPI void ListPathFiles   (std::string pathName, std::vector<std::string>& files,   bool recursive = false);
 
-TEINAPI bool create_path (std::string path_name);
+TEINAPI bool CreatePath (std::string pathName);
 
-TEINAPI bool is_path_absolute (std::string path_name);
+TEINAPI bool IsPathAbsolute (std::string pathName);
 
-TEINAPI bool is_file (std::string file_name);
-TEINAPI bool is_path (std::string path_name);
+TEINAPI bool IsFile (std::string fileName);
+TEINAPI bool IsPath (std::string pathName);
 
-TEINAPI U64 last_file_write_time (std::string file_name);
+TEINAPI U64 LastFileWriteTime (std::string fileName);
 
-TEINAPI int compare_file_write_times (U64 a, U64 b);
+TEINAPI int CompareFileWriteTimes (U64 a, U64 b);
 
-TEINAPI std::string make_path_absolute (std::string path_name);
-TEINAPI std::string fix_path_slashes   (std::string path_name);
+TEINAPI std::string MakePathAbsolute (std::string pathName);
+TEINAPI std::string FixPathSlashes   (std::string pathName);
 
-TEINAPI std::string strip_file_path         (std::string file_name);
-TEINAPI std::string strip_file_ext          (std::string file_name);
-TEINAPI std::string strip_file_name         (std::string file_name);
-TEINAPI std::string strip_file_path_and_ext (std::string file_name);
+TEINAPI std::string StripFilePath       (std::string fileName);
+TEINAPI std::string StripFileExt        (std::string fileName);
+TEINAPI std::string StripFileName       (std::string fileName);
+TEINAPI std::string StripFilePathAndExt (std::string fileName);
 
-TEINAPI void tokenize_string (const std::string& str, const char* delims,
-                             std::vector<std::string>& tokens);
+TEINAPI void TokenizeString (const std::string& str, const char* delims, std::vector<std::string>& tokens);
 
-TEINAPI std::string format_string   (const char* format, ...);
-TEINAPI std::string format_string_v (const char* format, va_list args);
+TEINAPI std::string FormatString  (const char* format, ...);
+TEINAPI std::string FormatStringV (const char* format, va_list args);
 
-TEINAPI Vec2 get_mouse_pos ();
+TEINAPI Vec2 GetMousePos ();
 
-TEINAPI std::string format_time (const char* format);
+TEINAPI std::string FormatTime (const char* format);
 
-TEINAPI unsigned int get_thread_id ();
+TEINAPI unsigned int GetThreadID ();
 
-TEINAPI bool point_in_bounds_xyxy (Vec2 p, Quad q);
-TEINAPI bool point_in_bounds_xywh (Vec2 p, Quad q);
+TEINAPI bool PointInBoundsXYXY (Vec2 p, Quad q);
+TEINAPI bool PointInBoundsXYWH (Vec2 p, Quad q);
 
-TEINAPI bool insensitive_compare (const std::string& a, const std::string& b);
+TEINAPI bool InsensitiveCompare (const std::string& a, const std::string& b);
 
-TEINAPI bool string_replace (std::string& str, const std::string& from, const std::string& to);
+TEINAPI bool StringReplace (std::string& str, const std::string& from, const std::string& to);
 
-TEINAPI bool run_executable (std::string exe);
-TEINAPI void load_webpage   (std::string url);
+TEINAPI bool RunExecutable (std::string exe);
+TEINAPI void LoadWebpage   (std::string url);

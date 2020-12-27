@@ -103,19 +103,19 @@ TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
 
     U32 entries_unpacked = 0;
 
-    std::string base_path(strip_file_name(file_name));
+    std::string base_path(StripFileName(file_name));
     for (auto& e: entries)
     {
         fread(&file_buffer[0], sizeof(U8), e.file_size, file);
 
         std::string full_file_name(base_path + e.name);
-        std::string full_file_path(strip_file_name(full_file_name));
+        std::string full_file_path(StripFileName(full_file_name));
 
-        if (!does_path_exist(full_file_path))
+        if (!DoesPathExist(full_file_path))
         {
-            create_path(full_file_path);
+            CreatePath(full_file_path);
         }
-        if (!does_file_exist(full_file_name) || overwrite)
+        if (!DoesFileExist(full_file_name) || overwrite)
         {
             FILE* output = fopen(full_file_name.c_str(), "wb");
             if (output)
@@ -170,7 +170,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
     for (auto path: paths)
     {
         std::vector<std::string> temp_files;
-        list_path_files(path, temp_files, true);
+        ListPathFiles(path, temp_files, true);
 
         files.insert(files.end(), temp_files.begin(), temp_files.end());
 
@@ -200,7 +200,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
     {
         std::string name = stripped_files.at(i);
         U16 name_length  = static_cast<U16>(name.length());
-        U32 file_size    = static_cast<U32>(get_size_of_file(files.at(i)));
+        U32 file_size    = static_cast<U32>(GetSizeOfFile(files.at(i)));
 
         max_size = std::max(max_size, static_cast<size_t>(file_size));
 
@@ -229,7 +229,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
         FILE* input = fopen(f.c_str(), "rb");
         if (input)
         {
-            size_t file_size = get_size_of_file(input);
+            size_t file_size = GetSizeOfFile(input);
             fread (&file_buffer[0], sizeof(U8), file_size, input);
             fwrite(&file_buffer[0], sizeof(U8), file_size, file);
             fclose(input);
