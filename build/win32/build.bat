@@ -8,9 +8,6 @@ pushd ..\..
 call build\win32\utility\findvsdev.bat
 call build\win32\utility\buildvars.bat
 
-                          python tools\manifest.py
-if %BuildMode%==Release ( python tools\packgpak.py )
-
 call %VSDevPath% -no_logo -arch=%Architecture%
 
 if not exist binary mkdir binary
