@@ -970,17 +970,17 @@ TEINAPI void do_level_editor ()
     {
         switch (level_editor.tool_type)
         {
-            case (Tool_Type::BRUSH ): set_cursor(Cursor::BRUSH);  break;
-            case (Tool_Type::FILL  ): set_cursor(Cursor::FILL);   break;
-            case (Tool_Type::SELECT): set_cursor(Cursor::SELECT); break;
+            case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH);  break;
+            case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL);   break;
+            case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
         }
     }
     else
     {
         // We do this check so it doesn't mess with text box and hyperlink UI cursors!
-        if (get_cursor() != Cursor::BEAM && get_cursor() != Cursor::POINTER)
+        if (GetCursorType() != Cursor::BEAM && GetCursorType() != Cursor::POINTER)
         {
-            set_cursor(Cursor::ARROW);
+            SetCursorType(Cursor::ARROW);
         }
     }
 

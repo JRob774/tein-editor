@@ -434,7 +434,7 @@ TEINAPI void load_ui_theme ()
     }
 
     // Reload cursors because the beam cursor changes based on theme.
-    load_editor_cursors();
+    LoadEditorCursors();
 
     // These colors, if default, also depend on the UI theme.
     Vec4 default_background_color = ui_color_light;
@@ -1212,7 +1212,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
     if (internal__is_hot())
     {
         ui_hot_hyperlink = ui_current_id;
-        set_cursor(Cursor::POINTER);
+        SetCursorType(Cursor::POINTER);
     }
     else
     {
@@ -1230,14 +1230,14 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
             {
                 switch (level_editor.tool_type)
                 {
-                case (Tool_Type::BRUSH ): set_cursor(Cursor::BRUSH);  break;
-                case (Tool_Type::FILL  ): set_cursor(Cursor::FILL);   break;
-                case (Tool_Type::SELECT): set_cursor(Cursor::SELECT); break;
+                case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH);  break;
+                case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL);   break;
+                case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
                 }
             }
             else
             {
-                set_cursor(Cursor::ARROW);
+                SetCursorType(Cursor::ARROW);
             }
         }
     }
@@ -1416,7 +1416,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
     if (internal__is_hot())
     {
         ui_hot_text_box = ui_current_id;
-        set_cursor(Cursor::BEAM);
+        SetCursorType(Cursor::BEAM);
     }
     else
     {
@@ -1435,14 +1435,14 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
             {
                 switch (level_editor.tool_type)
                 {
-                case (Tool_Type::BRUSH ): set_cursor(Cursor::BRUSH ); break;
-                case (Tool_Type::FILL  ): set_cursor(Cursor::FILL  ); break;
-                case (Tool_Type::SELECT): set_cursor(Cursor::SELECT); break;
+                case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH ); break;
+                case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL  ); break;
+                case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
                 }
             }
             else
             {
-                set_cursor(Cursor::ARROW);
+                SetCursorType(Cursor::ARROW);
             }
         }
     }

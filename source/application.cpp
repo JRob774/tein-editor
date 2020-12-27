@@ -174,7 +174,7 @@ TEINAPI void quit_application ()
 
     quit_editor();
 
-    free_editor_cursors();
+    FreeEditorCursors();
     free_editor_resources();
 
     quit_renderer();

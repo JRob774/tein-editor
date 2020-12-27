@@ -311,7 +311,7 @@ TEINAPI void init_map_editor ()
 
 TEINAPI void do_map_editor ()
 {
-    set_cursor(Cursor::ARROW);
+    SetCursorType(Cursor::ARROW);
 
     Quad p1;
 

@@ -306,7 +306,7 @@ TEINAPI void do_editor ()
 
     if (!are_there_any_tabs())
     {
-        set_cursor(Cursor::ARROW);
+        SetCursorType(Cursor::ARROW);
         return;
     }
 

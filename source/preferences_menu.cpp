@@ -498,17 +498,17 @@ TEINAPI void internal__do_preferences_settings ()
     internal__next_section(cursor);
 
     internal__do_settings_label(sw, SETTING_CUSTOM_CURSORS);
-    UI_Flag cursor_enabled_flags  = (custom_cursors_enabled()) ? UI_NONE : UI_INACTIVE;
-    UI_Flag cursor_disabled_flags = (custom_cursors_enabled()) ? UI_INACTIVE : UI_NONE;
+    UI_Flag cursor_enabled_flags  = (CustomCursorsEnabled()) ? UI_NONE : UI_INACTIVE;
+    UI_Flag cursor_disabled_flags = (CustomCursorsEnabled()) ? UI_INACTIVE : UI_NONE;
     if (do_button_txt(NULL, bw,sh, cursor_enabled_flags,  "Enabled"))
     {
         editor_settings.custom_cursors = true;
-        load_editor_cursors();
+        LoadEditorCursors();
     }
     if (do_button_txt(NULL, bw,sh, cursor_disabled_flags, "Disabled"))
     {
         editor_settings.custom_cursors = false;
-        load_editor_cursors();
+        LoadEditorCursors();
     }
     internal__next_section(cursor);
 
