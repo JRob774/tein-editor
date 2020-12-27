@@ -44,8 +44,7 @@ static constexpr int ALERT_RESULT_YES     = IDYES;
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF int show_alert (std::string title, std::string msg, int type,
-                       int buttons, std::string window = "");
+TEINAPI int show_alert (std::string title, std::string msg, int type, int buttons, std::string window = "");
 
 /* -------------------------------------------------------------------------- */
 

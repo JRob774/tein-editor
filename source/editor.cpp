@@ -16,7 +16,7 @@ static size_t tab_to_start_from_session_load = INVALID_TAB;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Tab& internal__create_new_tab_and_focus (Tab_Type type)
+TEINAPI Tab& internal__create_new_tab_and_focus (Tab_Type type)
 {
     size_t location;
 
@@ -42,7 +42,7 @@ FILDEF Tab& internal__create_new_tab_and_focus (Tab_Type type)
     return tab;
 }
 
-FILDEF u32 internal__backup_callback (u32 interval, void* user_data)
+TEINAPI u32 internal__backup_callback (u32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_BACKUP_TAB, NULL, NULL);
 
@@ -51,7 +51,7 @@ FILDEF u32 internal__backup_callback (u32 interval, void* user_data)
     return interval;
 }
 
-FILDEF std::vector<std::string> internal__get_restore_files ()
+TEINAPI std::vector<std::string> internal__get_restore_files ()
 {
     std::vector<std::string> files;
     list_path_files(get_executable_path(), files);
@@ -70,7 +70,7 @@ FILDEF std::vector<std::string> internal__get_restore_files ()
     return restores;
 }
 
-FILDEF bool internal__restore_tab (std::string file_name)
+TEINAPI bool internal__restore_tab (std::string file_name)
 {
     std::string type(strip_file_path(file_name).substr(0, 4)); // NOTE: 4 because that is the length of ".csv" and ".lvl".
     if (type == ".lvl")
@@ -89,7 +89,7 @@ FILDEF bool internal__restore_tab (std::string file_name)
 }
 
 #if defined(PLATFORM_WIN32)
-FILDEF void internal__load_session_tabs ()
+TEINAPI void internal__load_session_tabs ()
 {
     // LOAD THE PREVIOUS SESSION TABS
     {
@@ -157,7 +157,7 @@ FILDEF void internal__load_session_tabs ()
 #endif
 
 #if defined(PLATFORM_WIN32)
-FILDEF void internal__save_session_tabs ()
+TEINAPI void internal__save_session_tabs ()
 {
     // Clear the old session tabs so that we have a fresh start for saving.
     RegDeleteKeyA(HKEY_CURRENT_USER, SELECTED_STATE_KEY_NAME);
@@ -210,7 +210,7 @@ FILDEF void internal__save_session_tabs ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_editor (int argc, char** argv)
+TEINAPI void init_editor (int argc, char** argv)
 {
     editor.tabs.clear();
     editor.current_tab = INVALID_TAB;
@@ -283,7 +283,7 @@ FILDEF void init_editor (int argc, char** argv)
     }
 }
 
-FILDEF void quit_editor ()
+TEINAPI void quit_editor ()
 {
     internal__save_session_tabs();
 
@@ -293,7 +293,7 @@ FILDEF void quit_editor ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_editor ()
+TEINAPI void do_editor ()
 {
     // If the user was in a specific tab from a previous session we set to it
     // here. We do this here because it needs to be after a call to do_tab_bar
@@ -319,7 +319,7 @@ FILDEF void do_editor ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_editor_events ()
+TEINAPI void handle_editor_events ()
 {
     Tab* tab = NULL;
 
@@ -426,7 +426,7 @@ FILDEF void handle_editor_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void update_backup_timer ()
+TEINAPI void update_backup_timer ()
 {
     // Remove the old backup timer if there is one currently present.
     if (editor.backup_timer) SDL_RemoveTimer(editor.backup_timer);
@@ -455,7 +455,7 @@ FILDEF void update_backup_timer ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_current_tab (size_t index)
+TEINAPI void set_current_tab (size_t index)
 {
     // If there are no tabs then there is nothing to set.
     if (editor.tabs.empty()) return;
@@ -481,25 +481,25 @@ FILDEF void set_current_tab (size_t index)
     maybe_scroll_tab_bar();
 }
 
-FILDEF Tab& get_current_tab ()
+TEINAPI Tab& get_current_tab ()
 {
     return editor.tabs.at(editor.current_tab);
 }
 
-FILDEF Tab& get_tab_at_index (size_t index)
+TEINAPI Tab& get_tab_at_index (size_t index)
 {
     if (index >= editor.tabs.size()) index = editor.tabs.size()-1;
     return editor.tabs.at(index);
 }
 
-FILDEF bool are_there_any_tabs ()
+TEINAPI bool are_there_any_tabs ()
 {
     return !editor.tabs.empty();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void increment_tab ()
+TEINAPI void increment_tab ()
 {
     if (are_there_any_tabs())
     {
@@ -517,7 +517,7 @@ FILDEF void increment_tab ()
         map_editor.left_pressed = false;
     }
 }
-FILDEF void decrement_tab ()
+TEINAPI void decrement_tab ()
 {
     if (are_there_any_tabs())
     {
@@ -538,14 +538,14 @@ FILDEF void decrement_tab ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_main_window_subtitle_for_tab (const std::string& subtitle)
+TEINAPI void set_main_window_subtitle_for_tab (const std::string& subtitle)
 {
     set_main_window_subtitle((subtitle.empty()) ? "Untitled" : subtitle);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool are_there_any_level_tabs ()
+TEINAPI bool are_there_any_level_tabs ()
 {
     for (auto tab: editor.tabs)
     {
@@ -553,7 +553,7 @@ FILDEF bool are_there_any_level_tabs ()
     }
     return false;
 }
-FILDEF bool are_there_any_map_tabs ()
+TEINAPI bool are_there_any_map_tabs ()
 {
     for (auto tab: editor.tabs)
     {
@@ -564,7 +564,7 @@ FILDEF bool are_there_any_map_tabs ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void create_new_level_tab_and_focus (int w, int h)
+TEINAPI void create_new_level_tab_and_focus (int w, int h)
 {
     Tab& tab = internal__create_new_tab_and_focus(Tab_Type::LEVEL);
 
@@ -575,7 +575,7 @@ FILDEF void create_new_level_tab_and_focus (int w, int h)
     create_blank_level(tab.level, w, h);
 }
 
-FILDEF void create_new_map_tab_and_focus ()
+TEINAPI void create_new_map_tab_and_focus ()
 {
     Tab& tab = internal__create_new_tab_and_focus(Tab_Type::MAP);
 
@@ -592,12 +592,12 @@ FILDEF void create_new_map_tab_and_focus ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool current_tab_is_level ()
+TEINAPI bool current_tab_is_level ()
 {
     if (!are_there_any_tabs()) return false;
     return (get_current_tab().type == Tab_Type::LEVEL);
 }
-FILDEF bool current_tab_is_map ()
+TEINAPI bool current_tab_is_map ()
 {
     if (!are_there_any_tabs()) return false;
     return (get_current_tab().type == Tab_Type::MAP);
@@ -605,7 +605,7 @@ FILDEF bool current_tab_is_map ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void close_tab (size_t index)
+TEINAPI void close_tab (size_t index)
 {
     if (index >= editor.tabs.size()) return;
 
@@ -646,13 +646,13 @@ FILDEF void close_tab (size_t index)
     }
 }
 
-FILDEF void close_current_tab ()
+TEINAPI void close_current_tab ()
 {
     if (!are_there_any_tabs()) return;
     else close_tab(editor.current_tab);
 }
 
-FILDEF void close_all_tabs ()
+TEINAPI void close_all_tabs ()
 {
     if (!are_there_any_tabs()) return;
     while (!editor.tabs.empty()) close_tab(0);
@@ -660,7 +660,7 @@ FILDEF void close_all_tabs ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF size_t get_tab_index_with_this_file_name (std::string file_name)
+TEINAPI size_t get_tab_index_with_this_file_name (std::string file_name)
 {
     for (size_t i=0; i<editor.tabs.size(); ++i)
     {
@@ -672,7 +672,7 @@ FILDEF size_t get_tab_index_with_this_file_name (std::string file_name)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void push_editor_camera_transform ()
+TEINAPI void push_editor_camera_transform ()
 {
     const Tab& tab = get_current_tab();
 
@@ -695,7 +695,7 @@ FILDEF void push_editor_camera_transform ()
     translate(tab.camera.x, tab.camera.y);
 }
 
-FILDEF void pop_editor_camera_transform ()
+TEINAPI void pop_editor_camera_transform ()
 {
     pop_matrix(Matrix_Mode::PROJECTION);
     pop_matrix(Matrix_Mode::MODELVIEW);
@@ -703,7 +703,7 @@ FILDEF void pop_editor_camera_transform ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF int save_changes_prompt (Tab& tab)
+TEINAPI int save_changes_prompt (Tab& tab)
 {
     // Prompts user to save changes before permanently losing a level/map.
     // If there are no unsaved changes then the prompt is not presented.
@@ -729,7 +729,7 @@ FILDEF int save_changes_prompt (Tab& tab)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void backup_tab (Tab& tab)
+TEINAPI void backup_tab (Tab& tab)
 {
     switch (tab.type)
     {
@@ -740,7 +740,7 @@ FILDEF void backup_tab (Tab& tab)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool is_current_tab_empty ()
+TEINAPI bool is_current_tab_empty ()
 {
     if (!are_there_any_tabs()) return false;
     const Tab& tab = get_current_tab();
@@ -754,7 +754,7 @@ FILDEF bool is_current_tab_empty ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void editor_select_all ()
+TEINAPI void editor_select_all ()
 {
     if (!are_there_any_tabs()) return;
     Tab& tab = get_current_tab();
@@ -765,7 +765,7 @@ FILDEF void editor_select_all ()
     }
 }
 
-FILDEF void editor_paste ()
+TEINAPI void editor_paste ()
 {
     if (!are_there_any_tabs()) return;
     Tab& tab = get_current_tab();
@@ -778,7 +778,7 @@ FILDEF void editor_paste ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool save_prompt_all_editor_tabs ()
+TEINAPI bool save_prompt_all_editor_tabs ()
 {
     // Go through all tabs and make sure that they get saved if the user wants.
     for (auto& t: editor.tabs)
@@ -794,7 +794,7 @@ FILDEF bool save_prompt_all_editor_tabs ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void open_recently_closed_tab ()
+TEINAPI void open_recently_closed_tab ()
 {
     if (editor.closed_tabs.empty()) return;
     std::string name(editor.closed_tabs.back());
@@ -810,7 +810,7 @@ FILDEF void open_recently_closed_tab ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void save_restore_files ()
+TEINAPI void save_restore_files ()
 {
     for (size_t i=0; i<editor.tabs.size(); ++i)
     {

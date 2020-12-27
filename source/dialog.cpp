@@ -13,13 +13,13 @@ static constexpr size_t DIALOG_BUFFER_SIZE = UINT16_MAX+1;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF u32 internal__dialog_cooldown_callback (u32 interval, void* user_data)
+TEINAPI u32 internal__dialog_cooldown_callback (u32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_COOLDOWN, NULL, NULL);
     return 0;
 }
 
-FILDEF void internal__set_dialog_cooldown ()
+TEINAPI void internal__set_dialog_cooldown ()
 {
     editor.cooldown_timer = SDL_AddTimer(60, internal__dialog_cooldown_callback, NULL);
     if (!editor.cooldown_timer)
@@ -31,7 +31,7 @@ FILDEF void internal__set_dialog_cooldown ()
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-STDDEF std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect)
+TEINAPI std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect)
 {
     // NOTE: Used to prevent dialog box clicks from carrying into the editor.
     editor.dialog_box = true;
@@ -114,7 +114,7 @@ STDDEF std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect)
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-STDDEF std::string save_dialog (Dialog_Type type)
+TEINAPI std::string save_dialog (Dialog_Type type)
 {
     ASSERT(type != Dialog_Type::LVL_CSV);
 
@@ -172,7 +172,7 @@ STDDEF std::string save_dialog (Dialog_Type type)
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-STDDEF std::vector<std::string> path_dialog (bool multiselect)
+TEINAPI std::vector<std::string> path_dialog (bool multiselect)
 {
     // NOTE: Used to prevent dialog box clicks from carrying into the editor.
     editor.dialog_box = true;

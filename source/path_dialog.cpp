@@ -14,13 +14,13 @@ static std::string temp_game_path;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void open_path ()
+TEINAPI void open_path ()
 {
     temp_game_path = editor_settings.game_path;
     show_window("WINPATH");
 }
 
-FILDEF void do_path ()
+TEINAPI void do_path ()
 {
     quad p1, p2;
 
@@ -115,7 +115,7 @@ FILDEF void do_path ()
     end_panel();
 }
 
-FILDEF void okay_path ()
+TEINAPI void okay_path ()
 {
     temp_game_path = fix_path_slashes(temp_game_path);
     editor_settings.game_path = temp_game_path;
@@ -129,7 +129,7 @@ FILDEF void okay_path ()
     }
 }
 
-FILDEF void cancel_path ()
+TEINAPI void cancel_path ()
 {
     temp_game_path.clear();
     hide_window("WINPATH");
@@ -137,7 +137,7 @@ FILDEF void cancel_path ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_path_events ()
+TEINAPI void handle_path_events ()
 {
     if (!is_window_focused("WINPATH")) return;
 

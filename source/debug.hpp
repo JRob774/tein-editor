@@ -16,28 +16,28 @@
 /* -------------------------------------------------------------------------- */
 
 // Used to handle indentation of debug messages to the log.
-FILDEF void begin_debug_section (const char* name = NULL);
-FILDEF void end_debug_section   ();
+TEINAPI void begin_debug_section (const char* name = NULL);
+TEINAPI void end_debug_section   ();
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void quit_debug_system ();
+TEINAPI void quit_debug_system ();
 
 /* -------------------------------------------------------------------------- */
 
 #if defined(BUILD_DEBUG) /*****************************************************/
 
-FILDEF void begin_debug_timer         (const char* name);
-FILDEF void end_debug_timer           ();
-FILDEF void clear_debug_timer_results ();
-FILDEF void dump_debug_timer_results  ();
+TEINAPI void begin_debug_timer         (const char* name);
+TEINAPI void end_debug_timer           ();
+TEINAPI void clear_debug_timer_results ();
+TEINAPI void dump_debug_timer_results  ();
 
 #else /************************************************************************/
 
-FILDEF void begin_debug_timer         (const char* name) { /* Nothing */ }
-FILDEF void end_debug_timer           ()                 { /* Nothing */ }
-FILDEF void clear_debug_timer_results ()                 { /* Nothing */ }
-FILDEF void dump_debug_timer_results  ()                 { /* Nothing */ }
+TEINAPI void begin_debug_timer         (const char* name) { /* Nothing */ }
+TEINAPI void end_debug_timer           ()                 { /* Nothing */ }
+TEINAPI void clear_debug_timer_results ()                 { /* Nothing */ }
+TEINAPI void dump_debug_timer_results  ()                 { /* Nothing */ }
 
 #endif /* BUILD_DEBUG *********************************************************/
 

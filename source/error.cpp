@@ -19,7 +19,7 @@ static FILE* error_log;
 
 // Unhandled exception dump taken from here <https://stackoverflow.com/a/700108>
 #if defined(PLATFORM_WIN32)
-FILDEF LONG WINAPI internal__unhandled_exception_filter (struct _EXCEPTION_POINTERS* info)
+TEINAPI LONG WINAPI internal__unhandled_exception_filter (struct _EXCEPTION_POINTERS* info)
 {
     show_alert("Error", "Fatal exception occurred!\nCreating crash dump!",
         ALERT_TYPE_ERROR, ALERT_BUTTON_OK);
@@ -50,7 +50,7 @@ FILDEF LONG WINAPI internal__unhandled_exception_filter (struct _EXCEPTION_POINT
 }
 #endif
 
-STDDEF void internal__log_error (const char* file, int line, Error_Level level, const char* format, ...)
+TEINAPI void internal__log_error (const char* file, int line, Error_Level level, const char* format, ...)
 {
     // We only open the error log once the first error occurs.
     if (!error_log)
@@ -106,7 +106,7 @@ STDDEF void internal__log_error (const char* file, int line, Error_Level level, 
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-FILDEF bool init_error_system ()
+TEINAPI bool init_error_system ()
 {
     SetUnhandledExceptionFilter(&internal__unhandled_exception_filter);
     return true;
@@ -115,7 +115,7 @@ FILDEF bool init_error_system ()
 #error init_error_system not implemented on the current platform!
 #endif
 
-FILDEF void quit_error_system ()
+TEINAPI void quit_error_system ()
 {
     // This condition is important because, for some reason, calling
     // fclose(NULL) results in a long hang-time during program exit.

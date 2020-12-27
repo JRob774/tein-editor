@@ -99,8 +99,8 @@ struct Key_Binding
     int alt_code;
 };
 
-FILDEF bool operator== (const Key_Binding& a, const Key_Binding& b);
-FILDEF bool operator!= (const Key_Binding& a, const Key_Binding& b);
+TEINAPI bool operator== (const Key_Binding& a, const Key_Binding& b);
+TEINAPI bool operator!= (const Key_Binding& a, const Key_Binding& b);
 
 /* -------------------------------------------------------------------------- */
 
@@ -108,21 +108,21 @@ static std::map<std::string, Key_Binding> key_bindings;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_editor_key_bindings    ();
-FILDEF void restore_editor_key_bindings ();
+TEINAPI bool load_editor_key_bindings    ();
+TEINAPI void restore_editor_key_bindings ();
 
-FILDEF void handle_key_binding_events   ();
+TEINAPI void handle_key_binding_events   ();
 
-FILDEF const Key_Binding& get_key_binding (std::string name);
+TEINAPI const Key_Binding& get_key_binding (std::string name);
 
-FILDEF std::string get_key_binding_main_string (const Key_Binding& kb);
-FILDEF std::string get_key_binding_main_string (std::string      name);
-FILDEF std::string get_key_binding_alt_string  (const Key_Binding& kb);
-FILDEF std::string get_key_binding_alt_string  (std::string      name);
+TEINAPI std::string get_key_binding_main_string (const Key_Binding& kb);
+TEINAPI std::string get_key_binding_main_string (std::string      name);
+TEINAPI std::string get_key_binding_alt_string  (const Key_Binding& kb);
+TEINAPI std::string get_key_binding_alt_string  (std::string      name);
 
-FILDEF bool is_key_binding_active   (std::string name);
-FILDEF bool is_key_mod_state_active (int          mod);
-FILDEF bool is_key_code_active      (int         code);
+TEINAPI bool is_key_binding_active   (std::string name);
+TEINAPI bool is_key_mod_state_active (int          mod);
+TEINAPI bool is_key_code_active      (int         code);
 
 /* -------------------------------------------------------------------------- */
 

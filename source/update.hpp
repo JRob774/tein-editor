@@ -11,12 +11,12 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void check_for_updates        ();
-FILDEF void open_update_window_timed ();
-FILDEF void open_update_window       ();
-FILDEF void do_update                ();
-FILDEF void handle_update_events     ();
-FILDEF bool are_there_updates        ();
+TEINAPI void check_for_updates        ();
+TEINAPI void open_update_window_timed ();
+TEINAPI void open_update_window       ();
+TEINAPI void do_update                ();
+TEINAPI void handle_update_events     ();
+TEINAPI bool are_there_updates        ();
 
 /* -------------------------------------------------------------------------- */
 

@@ -158,58 +158,58 @@ static Level_Editor level_editor;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_level_editor ();
-FILDEF void do_level_editor   ();
+TEINAPI void init_level_editor ();
+TEINAPI void do_level_editor   ();
 
-FILDEF void handle_level_editor_events ();
+TEINAPI void handle_level_editor_events ();
 
-FILDEF bool mouse_inside_level_editor_viewport ();
+TEINAPI bool mouse_inside_level_editor_viewport ();
 
-FILDEF void new_level_history_state (Level_History_Action action);
+TEINAPI void new_level_history_state (Level_History_Action action);
 
-FILDEF void add_to_history_normal_state (Level_History_Info info);
-FILDEF void add_to_history_clear_state  (Level_History_Info info);
+TEINAPI void add_to_history_normal_state (Level_History_Info info);
+TEINAPI void add_to_history_clear_state  (Level_History_Info info);
 
-FILDEF bool are_all_layers_inactive ();
+TEINAPI bool are_all_layers_inactive ();
 
-FILDEF bool are_any_select_boxes_visible ();
-FILDEF void get_ordered_select_bounds    (const Select_Bounds& bounds, int* l, int* t, int* r, int* b);
-FILDEF void get_total_select_boundary    (int* l, int* t, int* r, int* b);
+TEINAPI bool are_any_select_boxes_visible ();
+TEINAPI void get_ordered_select_bounds    (const Select_Bounds& bounds, int* l, int* t, int* r, int* b);
+TEINAPI void get_total_select_boundary    (int* l, int* t, int* r, int* b);
 
-FILDEF void load_level_tab (std::string file_name);
+TEINAPI void load_level_tab (std::string file_name);
 
-FILDEF bool le_save            (Tab& level);
-FILDEF bool le_save_as         ();
-FILDEF void le_clear_select    ();
-FILDEF void le_deselect        ();
-FILDEF void le_cursor_deselect ();
-FILDEF void le_select_all      ();
-FILDEF void le_copy            ();
-FILDEF void le_cut             ();
-FILDEF void le_paste           ();
+TEINAPI bool le_save            (Tab& level);
+TEINAPI bool le_save_as         ();
+TEINAPI void le_clear_select    ();
+TEINAPI void le_deselect        ();
+TEINAPI void le_cursor_deselect ();
+TEINAPI void le_select_all      ();
+TEINAPI void le_copy            ();
+TEINAPI void le_cut             ();
+TEINAPI void le_paste           ();
 
-FILDEF void flip_level_h ();
-FILDEF void flip_level_v ();
+TEINAPI void flip_level_h ();
+TEINAPI void flip_level_v ();
 
-FILDEF void level_has_unsaved_changes ();
+TEINAPI void level_has_unsaved_changes ();
 
-FILDEF void le_undo ();
-FILDEF void le_redo ();
+TEINAPI void le_undo ();
+TEINAPI void le_redo ();
 
-FILDEF void le_history_begin ();
-FILDEF void le_history_end   ();
+TEINAPI void le_history_begin ();
+TEINAPI void le_history_end   ();
 
-FILDEF void le_resize      ();
-FILDEF void le_resize_okay ();
+TEINAPI void le_resize      ();
+TEINAPI void le_resize_okay ();
 
-FILDEF void le_load_prev_level ();
-FILDEF void le_load_next_level ();
+TEINAPI void le_load_prev_level ();
+TEINAPI void le_load_next_level ();
 
-FILDEF void level_drop_file (Tab* tab, std::string file_name);
+TEINAPI void level_drop_file (Tab* tab, std::string file_name);
 
-FILDEF void backup_level_tab (const Level& level, const std::string& file_name);
+TEINAPI void backup_level_tab (const Level& level, const std::string& file_name);
 
-FILDEF bool is_current_level_empty ();
+TEINAPI bool is_current_level_empty ();
 
 /* -------------------------------------------------------------------------- */
 

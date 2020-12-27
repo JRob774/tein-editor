@@ -86,30 +86,30 @@ static Texture_Atlas resource_small;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool init_resource_manager ();
-FILDEF void get_resource_location ();
+TEINAPI bool init_resource_manager ();
+TEINAPI void get_resource_location ();
 
-FILDEF bool            load_texture_resource (std::string file_name, Texture& tex, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
-FILDEF bool            load_atlas_resource   (std::string file_name, Texture_Atlas& atlas);
-FILDEF bool            load_font_resource    (std::string file_name, Font& fnt, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
-FILDEF Shader          load_shader_resource  (std::string file_name);
-FILDEF std::vector<u8> load_binary_resource  (std::string file_name);
-FILDEF SDL_Surface*    load_surface_resource (std::string file_name);
-FILDEF std::string     load_string_resource  (std::string file_name);
+TEINAPI bool            load_texture_resource (std::string file_name, Texture& tex, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
+TEINAPI bool            load_atlas_resource   (std::string file_name, Texture_Atlas& atlas);
+TEINAPI bool            load_font_resource    (std::string file_name, Font& fnt, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
+TEINAPI Shader          load_shader_resource  (std::string file_name);
+TEINAPI std::vector<u8> load_binary_resource  (std::string file_name);
+TEINAPI SDL_Surface*    load_surface_resource (std::string file_name);
+TEINAPI std::string     load_string_resource  (std::string file_name);
 
-FILDEF bool load_editor_resources ();
-FILDEF void free_editor_resources ();
+TEINAPI bool load_editor_resources ();
+TEINAPI void free_editor_resources ();
 
-FILDEF std::string build_resource_string (std::string str);
+TEINAPI std::string build_resource_string (std::string str);
 
-FILDEF void update_editor_font      ();
-FILDEF bool is_editor_font_opensans ();
+TEINAPI void update_editor_font      ();
+TEINAPI bool is_editor_font_opensans ();
 
-FILDEF Font& get_editor_regular_font ();
-FILDEF Font& get_editor_bold_font    ();
+TEINAPI Font& get_editor_regular_font ();
+TEINAPI Font& get_editor_bold_font    ();
 
-FILDEF Texture_Atlas& get_editor_atlas_large ();
-FILDEF Texture_Atlas& get_editor_atlas_small ();
+TEINAPI Texture_Atlas& get_editor_atlas_large ();
+TEINAPI Texture_Atlas& get_editor_atlas_small ();
 
 /* -------------------------------------------------------------------------- */
 

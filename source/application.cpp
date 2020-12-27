@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__dump_debug_application_info ()
+TEINAPI void internal__dump_debug_application_info ()
 {
     int num_display_modes = SDL_GetNumVideoDisplays();
     int num_video_drivers = SDL_GetNumVideoDrivers();
@@ -46,7 +46,7 @@ FILDEF void internal__dump_debug_application_info ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_application (int argc, char** argv)
+TEINAPI void init_application (int argc, char** argv)
 {
     begin_debug_timer("init_application");
 
@@ -168,7 +168,7 @@ FILDEF void init_application (int argc, char** argv)
     dump_debug_timer_results();
 }
 
-FILDEF void quit_application ()
+TEINAPI void quit_application ()
 {
     LOG_DEBUG("quit_application()");
 
@@ -189,7 +189,7 @@ FILDEF void quit_application ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_application ()
+TEINAPI void do_application ()
 {
     clear_debug_timer_results();
     defer { dump_debug_timer_results(); };
@@ -321,7 +321,7 @@ FILDEF void do_application ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool handle_application_events ()
+TEINAPI bool handle_application_events ()
 {
     // We wait for events so we don't waste CPU and GPU power.
     if (!SDL_WaitEvent(&main_event))

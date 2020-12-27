@@ -32,7 +32,7 @@ static quad layer_panel_bounds;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__do_layer_button (UI_Flag flags, int layer, const char* name, const char* info)
+TEINAPI bool internal__do_layer_button (UI_Flag flags, int layer, const char* name, const char* info)
 {
     const quad& clip = (flags & UI_INACTIVE) ? CLIP_CROSS : CLIP_EYE;
 
@@ -82,7 +82,7 @@ FILDEF bool internal__do_layer_button (UI_Flag flags, int layer, const char* nam
     return result;
 }
 
-FILDEF void internal__toggle_layer (Level_Layer layer)
+TEINAPI void internal__toggle_layer (Level_Layer layer)
 {
     if (current_tab_is_level())
     {
@@ -92,7 +92,7 @@ FILDEF void internal__toggle_layer (Level_Layer layer)
     }
 }
 
-FILDEF void internal__toggle_layer_action (Level_Layer layer)
+TEINAPI void internal__toggle_layer_action (Level_Layer layer)
 {
     if (current_tab_is_level())
     {
@@ -112,7 +112,7 @@ FILDEF void internal__toggle_layer_action (Level_Layer layer)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_layer_panel ()
+TEINAPI void init_layer_panel ()
 {
     layer_panel_scroll_offset   = 0;
     layer_panel_bounds          = {};
@@ -122,7 +122,7 @@ FILDEF void init_layer_panel ()
     layer_panel_panel_height    = 0;
 }
 
-FILDEF void do_layer_panel (bool scrollbar)
+TEINAPI void do_layer_panel (bool scrollbar)
 {
     if (!is_layer_panel_present()) return;
 
@@ -198,46 +198,46 @@ FILDEF void do_layer_panel (bool scrollbar)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float get_layer_panel_height ()
+TEINAPI float get_layer_panel_height ()
 {
     return ceilf((layer_panel_content_height + 1 + 2 + (LAYER_PANEL_INNER_PAD * 2)));
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool layer_panel_needs_scrollbar ()
+TEINAPI bool layer_panel_needs_scrollbar ()
 {
     return ((current_tab_is_level()) ? (layer_panel_content_height > layer_panel_panel_height) : false);
 }
 
-FILDEF bool is_layer_panel_present ()
+TEINAPI bool is_layer_panel_present ()
 {
     return current_tab_is_level();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void toggle_layer_active ()
+TEINAPI void toggle_layer_active ()
 {
     internal__toggle_layer_action(LEVEL_LAYER_ACTIVE);
 }
 
-FILDEF void toggle_layer_tag ()
+TEINAPI void toggle_layer_tag ()
 {
     internal__toggle_layer_action(LEVEL_LAYER_TAG);
 }
 
-FILDEF void toggle_layer_overlay ()
+TEINAPI void toggle_layer_overlay ()
 {
     internal__toggle_layer_action(LEVEL_LAYER_OVERLAY);
 }
 
-FILDEF void toggle_layer_back1 ()
+TEINAPI void toggle_layer_back1 ()
 {
     internal__toggle_layer_action(LEVEL_LAYER_BACK1);
 }
 
-FILDEF void toggle_layer_back2 ()
+TEINAPI void toggle_layer_back2 ()
 {
     internal__toggle_layer_action(LEVEL_LAYER_BACK2);
 }

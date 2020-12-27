@@ -1,11 +1,7 @@
 #pragma once
 
 // We use static linkage for faster compilation times as we use unity/jumbo build.
-// #define TEINAPI static
-
-#define STDDEF static        // @Temporary: Rename this!
-#define INLDEF static inline // @Temporary: Remove this!
-#define FILDEF static inline // @Temporary: Remove this!
+#define TEINAPI static
 
 #define JOIN( a, b) JOIN2(a, b)
 #define JOIN2(a, b) JOIN1(a, b)
@@ -77,57 +73,57 @@ struct quad
     union { float h, y2; };
 };
 
-STDDEF std::vector<u8> read_binary_file (std::string file_name);
-STDDEF std::string     read_entire_file (std::string file_name);
+TEINAPI std::vector<u8> read_binary_file (std::string file_name);
+TEINAPI std::string     read_entire_file (std::string file_name);
 
-STDDEF std::string get_executable_path ();
+TEINAPI std::string get_executable_path ();
 
-FILDEF size_t get_size_of_file (std::string file_name);
-FILDEF size_t get_size_of_file (FILE*       file);
+TEINAPI size_t get_size_of_file (std::string file_name);
+TEINAPI size_t get_size_of_file (FILE*       file);
 
-FILDEF bool does_file_exist (std::string file_name);
-FILDEF bool does_path_exist (std::string path_name);
+TEINAPI bool does_file_exist (std::string file_name);
+TEINAPI bool does_path_exist (std::string path_name);
 
-STDDEF void list_path_content (std::string path_name, std::vector<std::string>& content, bool recursive = false);
-STDDEF void list_path_files   (std::string path_name, std::vector<std::string>& files,   bool recursive = false);
+TEINAPI void list_path_content (std::string path_name, std::vector<std::string>& content, bool recursive = false);
+TEINAPI void list_path_files   (std::string path_name, std::vector<std::string>& files,   bool recursive = false);
 
-FILDEF bool create_path (std::string path_name);
+TEINAPI bool create_path (std::string path_name);
 
-FILDEF bool is_path_absolute (std::string path_name);
+TEINAPI bool is_path_absolute (std::string path_name);
 
-FILDEF bool is_file (std::string file_name);
-FILDEF bool is_path (std::string path_name);
+TEINAPI bool is_file (std::string file_name);
+TEINAPI bool is_path (std::string path_name);
 
-FILDEF u64 last_file_write_time (std::string file_name);
+TEINAPI u64 last_file_write_time (std::string file_name);
 
-FILDEF int compare_file_write_times (u64 a, u64 b);
+TEINAPI int compare_file_write_times (u64 a, u64 b);
 
-FILDEF std::string make_path_absolute (std::string path_name);
-FILDEF std::string fix_path_slashes   (std::string path_name);
+TEINAPI std::string make_path_absolute (std::string path_name);
+TEINAPI std::string fix_path_slashes   (std::string path_name);
 
-FILDEF std::string strip_file_path         (std::string file_name);
-FILDEF std::string strip_file_ext          (std::string file_name);
-FILDEF std::string strip_file_name         (std::string file_name);
-FILDEF std::string strip_file_path_and_ext (std::string file_name);
+TEINAPI std::string strip_file_path         (std::string file_name);
+TEINAPI std::string strip_file_ext          (std::string file_name);
+TEINAPI std::string strip_file_name         (std::string file_name);
+TEINAPI std::string strip_file_path_and_ext (std::string file_name);
 
-FILDEF void tokenize_string (const std::string& str, const char* delims,
+TEINAPI void tokenize_string (const std::string& str, const char* delims,
                              std::vector<std::string>& tokens);
 
-INLDEF std::string format_string   (const char* format, ...);
-INLDEF std::string format_string_v (const char* format, va_list args);
+TEINAPI std::string format_string   (const char* format, ...);
+TEINAPI std::string format_string_v (const char* format, va_list args);
 
-FILDEF vec2 get_mouse_pos ();
+TEINAPI vec2 get_mouse_pos ();
 
-INLDEF std::string format_time (const char* format);
+TEINAPI std::string format_time (const char* format);
 
-FILDEF unsigned int get_thread_id ();
+TEINAPI unsigned int get_thread_id ();
 
-FILDEF bool point_in_bounds_xyxy (vec2 p, quad q);
-FILDEF bool point_in_bounds_xywh (vec2 p, quad q);
+TEINAPI bool point_in_bounds_xyxy (vec2 p, quad q);
+TEINAPI bool point_in_bounds_xywh (vec2 p, quad q);
 
-FILDEF bool insensitive_compare (const std::string& a, const std::string& b);
+TEINAPI bool insensitive_compare (const std::string& a, const std::string& b);
 
-FILDEF bool string_replace (std::string& str, const std::string& from, const std::string& to);
+TEINAPI bool string_replace (std::string& str, const std::string& from, const std::string& to);
 
-FILDEF bool run_executable (std::string exe);
-FILDEF void load_webpage   (std::string url);
+TEINAPI bool run_executable (std::string exe);
+TEINAPI void load_webpage   (std::string url);

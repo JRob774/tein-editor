@@ -24,7 +24,7 @@ constexpr Level_Layer LEVEL_IO_ORDER[LEVEL_LAYER_TOTAL]
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__load_level (FILE* file, Level& level)
+TEINAPI bool internal__load_level (FILE* file, Level& level)
 {
     fread(&level.header.version, sizeof(s32), 1, file);
     fread(&level.header.width  , sizeof(s32), 1, file);
@@ -60,7 +60,7 @@ FILDEF bool internal__load_level (FILE* file, Level& level)
     return true;
 }
 
-FILDEF void internal__save_level (FILE* file, const Level& level)
+TEINAPI void internal__save_level (FILE* file, const Level& level)
 {
     s32 version = SDL_SwapBE32(level.header.version);
     s32 width   = SDL_SwapBE32(level.header.width  );
@@ -85,7 +85,7 @@ FILDEF void internal__save_level (FILE* file, const Level& level)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool load_level (Level& level, std::string file_name)
+TEINAPI bool load_level (Level& level, std::string file_name)
 {
     // We don't make the path absolute or anything becuase if that is needed
     // then it should be handled by a higher-level than this internal system.
@@ -103,7 +103,7 @@ STDDEF bool load_level (Level& level, std::string file_name)
     else                             return internal__load_level(file, level);
 }
 
-STDDEF bool save_level (const Level& level, std::string file_name)
+TEINAPI bool save_level (const Level& level, std::string file_name)
 {
     // We don't make the path absolute or anything becuase if that is needed
     // then it should be handled by a higher-level than this internal system.
@@ -122,7 +122,7 @@ STDDEF bool save_level (const Level& level, std::string file_name)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool load_restore_level (Tab& tab, std::string file_name)
+TEINAPI bool load_restore_level (Tab& tab, std::string file_name)
 {
     FILE* file = fopen(file_name.c_str(), "rb");
     if (!file)
@@ -149,7 +149,7 @@ STDDEF bool load_restore_level (Tab& tab, std::string file_name)
     return true;
 }
 
-STDDEF bool save_restore_level (const Tab& tab, std::string file_name)
+TEINAPI bool save_restore_level (const Tab& tab, std::string file_name)
 {
     FILE* file = fopen(file_name.c_str(), "wb");
     if (!file)
@@ -177,7 +177,7 @@ STDDEF bool save_restore_level (const Tab& tab, std::string file_name)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool create_blank_level (Level& level, int w, int h)
+TEINAPI bool create_blank_level (Level& level, int w, int h)
 {
     level.header.version = 1;
     level.header.width   = w;

@@ -125,7 +125,7 @@ static std::map<std::string, Key_Binding> cached_editor_hotkeys;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__next_section (vec2& cursor)
+TEINAPI void internal__next_section (vec2& cursor)
 {
     cursor.x  = 0;
     cursor.y += PREFERENCES_SECTION_H;
@@ -133,7 +133,7 @@ FILDEF void internal__next_section (vec2& cursor)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_settings_label (float w, const char* key)
+TEINAPI void internal__do_settings_label (float w, const char* key)
 {
     do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_SETTINGS_NAMES.at(key));
 
@@ -142,13 +142,13 @@ FILDEF void internal__do_settings_label (float w, const char* key)
     advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
 }
 
-FILDEF void internal__do_half_settings_label (float w, const char* key)
+TEINAPI void internal__do_half_settings_label (float w, const char* key)
 {
     do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_SETTINGS_NAMES.at(key));
     advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
 }
 
-FILDEF void internal__do_half_separator (vec2& cursor)
+TEINAPI void internal__do_half_separator (vec2& cursor)
 {
     advance_panel_cursor((PREFERENCES_INNER_XPAD/2)+1);
     do_separator(PREFERENCES_SECTION_H);
@@ -156,7 +156,7 @@ FILDEF void internal__do_half_separator (vec2& cursor)
     advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
 }
 
-FILDEF void internal__do_hotkeys_label (float w, const char* key)
+TEINAPI void internal__do_hotkeys_label (float w, const char* key)
 {
     do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_HOTKEYS_NAMES.at(key));
 
@@ -167,7 +167,7 @@ FILDEF void internal__do_hotkeys_label (float w, const char* key)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__begin_settings_area (const char* title, vec2& cursor)
+TEINAPI void internal__begin_settings_area (const char* title, vec2& cursor)
 {
     float w = get_viewport().w;
     float h = PREFERENCES_SECTION_H;
@@ -185,7 +185,7 @@ FILDEF void internal__begin_settings_area (const char* title, vec2& cursor)
     cursor.x = 0;
 }
 
-FILDEF void internal__end_settings_area ()
+TEINAPI void internal__end_settings_area ()
 {
     set_panel_cursor_dir(UI_DIR_DOWN);
     advance_panel_cursor(PREFERENCES_INNER_YPAD);
@@ -194,7 +194,7 @@ FILDEF void internal__end_settings_area ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_settings_color_swatch (vec2& cursor, float sw, float sh, vec4& color)
+TEINAPI void internal__do_settings_color_swatch (vec2& cursor, float sw, float sh, vec4& color)
 {
     // If we were presses we want to open the color picker with our color.
     if (preferences_mouse_pressed && mouse_in_ui_bounds_xywh(cursor.x, cursor.y, sw, sh))
@@ -237,7 +237,7 @@ FILDEF void internal__do_settings_color_swatch (vec2& cursor, float sw, float sh
     advance_panel_cursor(sw);
 }
 
-FILDEF void internal__do_color_setting_row (vec2& cursor, float w, const char* key1, const char* key2, vec4& c1, vec4& c2)
+TEINAPI void internal__do_color_setting_row (vec2& cursor, float w, const char* key1, const char* key2, vec4& c1, vec4& c2)
 {
     float lw1 = w-1;
     float lw2 = w;
@@ -253,7 +253,7 @@ FILDEF void internal__do_color_setting_row (vec2& cursor, float w, const char* k
     internal__next_section(cursor);
 }
 
-FILDEF void internal__do_hotkey_label_titles (vec2& cursor)
+TEINAPI void internal__do_hotkey_label_titles (vec2& cursor)
 {
     float vw = get_viewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
     float sh = PREFERENCES_SECTION_H+(PREFERENCES_INNER_YPAD*2);
@@ -286,7 +286,7 @@ FILDEF void internal__do_hotkey_label_titles (vec2& cursor)
     ++cursor.y;
 }
 
-FILDEF void internal__do_hotkey_rebind (vec2& cursor, const char* key)
+TEINAPI void internal__do_hotkey_rebind (vec2& cursor, const char* key)
 {
     float vw = get_viewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
     float sh = PREFERENCES_SECTION_H;
@@ -316,7 +316,7 @@ FILDEF void internal__do_hotkey_rebind (vec2& cursor, const char* key)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__save_settings ()
+TEINAPI void internal__save_settings ()
 {
     std::string file_name(make_path_absolute(SETTINGS_FILE_NAME));
     FILE* file = fopen(file_name.c_str(), "w");
@@ -413,7 +413,7 @@ FILDEF void internal__save_settings ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_preferences_settings ()
+TEINAPI void internal__do_preferences_settings ()
 {
     float vw = get_viewport().w;
     float vh = get_viewport().h;
@@ -612,7 +612,7 @@ FILDEF void internal__do_preferences_settings ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_preferences_hotkeys ()
+TEINAPI void internal__do_preferences_hotkeys ()
 {
     float vw = get_viewport().w;
     float vh = get_viewport().h;
@@ -698,7 +698,7 @@ FILDEF void internal__do_preferences_hotkeys ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_preferences_menu ()
+TEINAPI void init_preferences_menu ()
 {
     cached_editor_settings = editor_settings;
     cached_editor_hotkeys  = key_bindings;
@@ -706,7 +706,7 @@ FILDEF void init_preferences_menu ()
     color_picker_mouse_pressed = false;
 }
 
-FILDEF void do_preferences_menu ()
+TEINAPI void do_preferences_menu ()
 {
     quad p1, p2;
 
@@ -800,7 +800,7 @@ FILDEF void do_preferences_menu ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_preferences_menu_events ()
+TEINAPI void handle_preferences_menu_events ()
 {
     // Check if there was a mouse press for the color swatch settings.
     preferences_mouse_pressed = false;
@@ -832,7 +832,7 @@ FILDEF void handle_preferences_menu_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void restore_preferences ()
+TEINAPI void restore_preferences ()
 {
     switch (preferences_tab)
     {
@@ -841,7 +841,7 @@ FILDEF void restore_preferences ()
     }
 }
 
-FILDEF void cancel_preferences ()
+TEINAPI void cancel_preferences ()
 {
     // We only want to shot this prompt if the user actually made any changes to preferences.
     if (editor_settings != cached_editor_settings || key_bindings != cached_editor_hotkeys)
@@ -867,7 +867,7 @@ FILDEF void cancel_preferences ()
     hide_window("WINPREFERENCES");
 }
 
-FILDEF void save_preferences ()
+TEINAPI void save_preferences ()
 {
     // No point saving unless there were changes.
     if (editor_settings != cached_editor_settings ||

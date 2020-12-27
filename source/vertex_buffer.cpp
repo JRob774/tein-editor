@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void create_vertex_buffer (Vertex_Buffer& buffer)
+TEINAPI void create_vertex_buffer (Vertex_Buffer& buffer)
 {
     glGenVertexArrays(1, &buffer.vao);
     glBindVertexArray(buffer.vao);
@@ -26,7 +26,7 @@ FILDEF void create_vertex_buffer (Vertex_Buffer& buffer)
     glEnableClientState(GL_COLOR_ARRAY        );
 }
 
-FILDEF void free_vertex_buffer (Vertex_Buffer& buffer)
+TEINAPI void free_vertex_buffer (Vertex_Buffer& buffer)
 {
     glDeleteVertexArrays(1, &buffer.vao);
     glDeleteBuffers(1, &buffer.vbo);
@@ -36,12 +36,12 @@ FILDEF void free_vertex_buffer (Vertex_Buffer& buffer)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void put_buffer_vertex (Vertex_Buffer& buffer, Vertex v)
+TEINAPI void put_buffer_vertex (Vertex_Buffer& buffer, Vertex v)
 {
     buffer.verts.push_back(v);
 }
 
-FILDEF void draw_vertex_buffer (Vertex_Buffer& buffer, Buffer_Mode mode)
+TEINAPI void draw_vertex_buffer (Vertex_Buffer& buffer, Buffer_Mode mode)
 {
     if (buffer.verts.empty()) return;
 
@@ -56,7 +56,7 @@ FILDEF void draw_vertex_buffer (Vertex_Buffer& buffer, Buffer_Mode mode)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void clear_vertex_buffer (Vertex_Buffer& buffer)
+TEINAPI void clear_vertex_buffer (Vertex_Buffer& buffer)
 {
     buffer.verts.clear();
 }

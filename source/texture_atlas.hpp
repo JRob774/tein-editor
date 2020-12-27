@@ -21,11 +21,11 @@ struct Texture_Atlas
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_texture_atlas_from_file (Texture_Atlas& atlas, std::string            file_name);
-FILDEF bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vector<u8>& file_data);
-FILDEF void free_texture_atlas           (Texture_Atlas& atlas);
+TEINAPI bool load_texture_atlas_from_file (Texture_Atlas& atlas, std::string            file_name);
+TEINAPI bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vector<u8>& file_data);
+TEINAPI void free_texture_atlas           (Texture_Atlas& atlas);
 
-FILDEF quad& get_atlas_clip (Texture_Atlas& atlas, s32 key);
+TEINAPI quad& get_atlas_clip (Texture_Atlas& atlas, s32 key);
 
 /* -------------------------------------------------------------------------- */
 

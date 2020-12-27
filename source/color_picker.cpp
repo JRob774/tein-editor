@@ -44,7 +44,7 @@ static vec4  cached_color_picker_color;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float& channel, Channel_Type type)
+TEINAPI void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float& channel, Channel_Type type)
 {
     float xpad = COLOR_PICKER_XPAD;
     float ypad = COLOR_PICKER_YPAD;
@@ -129,7 +129,7 @@ FILDEF void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float&
     cursor.x += cw + (xpad*3);
 }
 
-FILDEF void internal__do_color_preview (vec2& cursor, vec4 c, float size)
+TEINAPI void internal__do_color_preview (vec2& cursor, vec4 c, float size)
 {
     const Texture& tex = (static_cast<int>(size) % 14 == 0) ? resource_checker_14 : resource_checker_16;
 
@@ -159,7 +159,7 @@ FILDEF void internal__do_color_preview (vec2& cursor, vec4 c, float size)
     end_draw();
 }
 
-FILDEF void internal__do_swatch_panel (vec2& cursor)
+TEINAPI void internal__do_swatch_panel (vec2& cursor)
 {
     ASSERT(current_color_picker_color);
 
@@ -194,7 +194,7 @@ FILDEF void internal__do_swatch_panel (vec2& cursor)
     end_panel();
 }
 
-FILDEF void internal__do_alpha_channel (vec2& cursor, vec4& c)
+TEINAPI void internal__do_alpha_channel (vec2& cursor, vec4& c)
 {
     float xpad = COLOR_PICKER_XPAD;
     float ypad = COLOR_PICKER_YPAD;
@@ -297,7 +297,7 @@ FILDEF void internal__do_alpha_channel (vec2& cursor, vec4& c)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__okay_color ()
+TEINAPI void internal__okay_color ()
 {
     // Special checks for background and tile grid color because of the defaulting.
     if (current_color_picker_color == &editor_settings.background_color)
@@ -312,7 +312,7 @@ FILDEF void internal__okay_color ()
     hide_window("WINCOLOR");
 }
 
-FILDEF void internal__save_color_swatch ()
+TEINAPI void internal__save_color_swatch ()
 {
     ASSERT(current_color_picker_color);
 
@@ -320,7 +320,7 @@ FILDEF void internal__save_color_swatch ()
     color_picker_swatches.push_back(*current_color_picker_color);
 }
 
-FILDEF void internal__cancel_color ()
+TEINAPI void internal__cancel_color ()
 {
     ASSERT(current_color_picker_color);
     *current_color_picker_color = cached_color_picker_color;
@@ -330,7 +330,7 @@ FILDEF void internal__cancel_color ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_color_picker ()
+TEINAPI void init_color_picker ()
 {
     current_color_picker_color = NULL;
     // Add some empty swatches to the color picker on start-up.
@@ -340,7 +340,7 @@ FILDEF void init_color_picker ()
     }
 }
 
-FILDEF void open_color_picker (vec4* color)
+TEINAPI void open_color_picker (vec4* color)
 {
     raise_window("WINCOLOR");
 
@@ -358,7 +358,7 @@ FILDEF void open_color_picker (vec4* color)
     }
 }
 
-FILDEF void do_color_picker ()
+TEINAPI void do_color_picker ()
 {
     if (is_window_hidden("WINCOLOR")) return;
 
@@ -441,14 +441,14 @@ FILDEF void do_color_picker ()
     end_panel();
 }
 
-FILDEF void cancel_color_picker ()
+TEINAPI void cancel_color_picker ()
 {
     internal__cancel_color();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_color_picker_events ()
+TEINAPI void handle_color_picker_events ()
 {
     color_picker_mouse_pressed = false;
 

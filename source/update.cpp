@@ -34,24 +34,24 @@ static float update_dialog_scroll_offset;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF u32 internal__update_show_callback (u32 interval, void* user_data)
+TEINAPI u32 internal__update_show_callback (u32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_SHOW_UPDATE, NULL, NULL);
     return 0;
 }
 
-FILDEF void internal__update_dialog_update ()
+TEINAPI void internal__update_dialog_update ()
 {
     load_webpage(DOWNLOAD_PAGE);
     hide_window("WINUPDATE");
 }
 
-FILDEF void internal__update_dialog_cancel ()
+TEINAPI void internal__update_dialog_cancel ()
 {
     hide_window("WINUPDATE");
 }
 
-FILDEF size_t internal__curl_write_callback (const char* in, size_t size, size_t num, std::string* out)
+TEINAPI size_t internal__curl_write_callback (const char* in, size_t size, size_t num, std::string* out)
 {
     size_t total_bytes = size * num;
     out->append(in, total_bytes);
@@ -61,7 +61,7 @@ FILDEF size_t internal__curl_write_callback (const char* in, size_t size, size_t
 /* -------------------------------------------------------------------------- */
 
 // Example Curl GET <https://gist.github.com/connormanning/41efa6075515019e499c>
-FILDEF void check_for_updates ()
+TEINAPI void check_for_updates ()
 {
     LOG_DEBUG("Checking for new releases...");
 
@@ -116,7 +116,7 @@ FILDEF void check_for_updates ()
     }
 }
 
-FILDEF void open_update_window_timed ()
+TEINAPI void open_update_window_timed ()
 {
     // Looked weird showing immediately so we put it on a timer.
     u32 interval = static_cast<u32>((UPDATE_DIALOG_WAIT_TIME * 1000));
@@ -124,7 +124,7 @@ FILDEF void open_update_window_timed ()
     if (!update_timer) open_update_window(); // Just show it immediately.
 }
 
-FILDEF void open_update_window ()
+TEINAPI void open_update_window ()
 {
     update_title = update_json["name"].get<std::string>();
     update_body  = update_json["body"].get<std::string>();
@@ -137,7 +137,7 @@ FILDEF void open_update_window ()
     show_window("WINUPDATE");
 }
 
-FILDEF void do_update ()
+TEINAPI void do_update ()
 {
     quad p1, p2;
 
@@ -256,7 +256,7 @@ FILDEF void do_update ()
     set_font_point_size(get_editor_bold_font(), SMALL_FONT_POINT_SIZE);
 }
 
-FILDEF void handle_update_events ()
+TEINAPI void handle_update_events ()
 {
     if (main_event.type == SDL_USEREVENT)
     {
@@ -281,7 +281,7 @@ FILDEF void handle_update_events ()
     }
 }
 
-FILDEF bool are_there_updates ()
+TEINAPI bool are_there_updates ()
 {
     return there_is_an_update;
 }

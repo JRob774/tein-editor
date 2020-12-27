@@ -11,14 +11,14 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void open_new   ();
-FILDEF void do_new     ();
-FILDEF void cancel_new ();
+TEINAPI void open_new   ();
+TEINAPI void do_new     ();
+TEINAPI void cancel_new ();
 
-FILDEF void handle_new_events ();
+TEINAPI void handle_new_events ();
 
-FILDEF int get_new_w ();
-FILDEF int get_new_h ();
+TEINAPI int get_new_w ();
+TEINAPI int get_new_h ();
 
 /* -------------------------------------------------------------------------- */
 

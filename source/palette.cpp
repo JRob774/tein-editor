@@ -20,7 +20,7 @@ static std::map<std::string, vec4> palette_main_lookup;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_palette_lookup ()
+TEINAPI void init_palette_lookup ()
 {
     constexpr const char* PATH_STEAM_X86 = "C:/Program Files (x86)/Steam/steamapps/common/theendisnigh/";
     constexpr const char* PATH_STEAM_X64 = "C:/Program Files/Steam/steamapps/common/theendisnigh/";
@@ -132,7 +132,7 @@ FILDEF void init_palette_lookup ()
     }
 }
 
-FILDEF vec4 get_tileset_main_color (std::string tileset)
+TEINAPI vec4 get_tileset_main_color (std::string tileset)
 {
     if (tileset != "..")
     {

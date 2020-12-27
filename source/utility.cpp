@@ -1,5 +1,5 @@
 #if defined(PLATFORM_WIN32)
-FILDEF HWND internal__win32_get_window_handle (SDL_Window* window)
+TEINAPI HWND internal__win32_get_window_handle (SDL_Window* window)
 {
     SDL_SysWMinfo win_info = {};
     SDL_VERSION(&win_info.version);
@@ -12,7 +12,7 @@ FILDEF HWND internal__win32_get_window_handle (SDL_Window* window)
 }
 #endif
 
-STDDEF std::vector<u8> read_binary_file (std::string file_name)
+TEINAPI std::vector<u8> read_binary_file (std::string file_name)
 {
     std::ifstream file(file_name, std::ios::binary);
     std::vector<u8> content;
@@ -21,7 +21,7 @@ STDDEF std::vector<u8> read_binary_file (std::string file_name)
     return content;
 }
 
-STDDEF std::string read_entire_file (std::string file_name)
+TEINAPI std::string read_entire_file (std::string file_name)
 {
     std::ifstream file(file_name);
     std::stringstream stream;
@@ -30,7 +30,7 @@ STDDEF std::string read_entire_file (std::string file_name)
 }
 
 #if defined(PLATFORM_WIN32)
-STDDEF std::string get_executable_path ()
+TEINAPI std::string get_executable_path ()
 {
     constexpr size_t EXECUTABLE_BUFFER_SIZE = MAX_PATH+1;
     char temp_buffer[EXECUTABLE_BUFFER_SIZE] = {};
@@ -48,7 +48,7 @@ STDDEF std::string get_executable_path ()
 #error get_executable_path not implemented on the current platform!
 #endif
 
-FILDEF size_t get_size_of_file (std::string file_name)
+TEINAPI size_t get_size_of_file (std::string file_name)
 {
     FILE* file = fopen(file_name.c_str(), "rb");
     if (!file) return 0;
@@ -56,7 +56,7 @@ FILDEF size_t get_size_of_file (std::string file_name)
     fseek(file, 0L, SEEK_END);
     return ftell(file);
 }
-FILDEF size_t get_size_of_file (FILE* file)
+TEINAPI size_t get_size_of_file (FILE* file)
 {
     if (!file) return 0;
     fseek(file, 0L, SEEK_END);
@@ -66,7 +66,7 @@ FILDEF size_t get_size_of_file (FILE* file)
 }
 
 #if defined(PLATFORM_WIN32)
-FILDEF bool does_file_exist (std::string file_name)
+TEINAPI bool does_file_exist (std::string file_name)
 {
     DWORD attributes = GetFileAttributesA(file_name.c_str());
     return ((attributes != INVALID_FILE_ATTRIBUTES) &&
@@ -77,7 +77,7 @@ FILDEF bool does_file_exist (std::string file_name)
 #endif
 
 #if defined(PLATFORM_WIN32)
-FILDEF bool does_path_exist (std::string path_name)
+TEINAPI bool does_path_exist (std::string path_name)
 {
     DWORD attributes = GetFileAttributesA(path_name.c_str());
     return ((attributes != INVALID_FILE_ATTRIBUTES) &&
@@ -88,7 +88,7 @@ FILDEF bool does_path_exist (std::string path_name)
 #endif
 
 #if defined(PLATFORM_WIN32)
-STDDEF void list_path_content (std::string path_name, std::vector<std::string>& content, bool recursive)
+TEINAPI void list_path_content (std::string path_name, std::vector<std::string>& content, bool recursive)
 {
     // Clean the path in case there are trailing slashes.
     path_name = fix_path_slashes(path_name);
@@ -125,7 +125,7 @@ STDDEF void list_path_content (std::string path_name, std::vector<std::string>& 
 #endif
 
 #if defined(PLATFORM_WIN32)
-STDDEF void list_path_files (std::string path_name, std::vector<std::string>& files, bool recursive)
+TEINAPI void list_path_files (std::string path_name, std::vector<std::string>& files, bool recursive)
 {
     // Clean the path in case there are trailing slashes.
     path_name = fix_path_slashes(path_name);
@@ -160,7 +160,7 @@ STDDEF void list_path_files (std::string path_name, std::vector<std::string>& fi
 #endif
 
 #if defined(PLATFORM_WIN32)
-FILDEF bool create_path (std::string path_name)
+TEINAPI bool create_path (std::string path_name)
 {
     std::vector<std::string> paths;
     tokenize_string(path_name, "\\/", paths);
@@ -189,7 +189,7 @@ FILDEF bool create_path (std::string path_name)
 #endif
 
 #if defined(PLATFORM_WIN32)
-FILDEF bool is_path_absolute (std::string path_name)
+TEINAPI bool is_path_absolute (std::string path_name)
 {
     return !PathIsRelativeA(path_name.c_str());
 }
@@ -199,18 +199,18 @@ FILDEF bool is_path_absolute (std::string path_name)
 
 // Aliases of the previous functions because the naming makes better sense in context.
 
-FILDEF bool is_file (std::string file_name)
+TEINAPI bool is_file (std::string file_name)
 {
     return does_file_exist(file_name);
 }
 
-FILDEF bool is_path (std::string path_name)
+TEINAPI bool is_path (std::string path_name)
 {
     return does_path_exist(path_name);
 }
 
 #if defined(PLATFORM_WIN32)
-FILDEF u64 last_file_write_time (std::string file_name)
+TEINAPI u64 last_file_write_time (std::string file_name)
 {
     WIN32_FILE_ATTRIBUTE_DATA attributes;
     ULARGE_INTEGER write_time = {};
@@ -226,7 +226,7 @@ FILDEF u64 last_file_write_time (std::string file_name)
 #endif
 
 #if defined(PLATFORM_WIN32)
-FILDEF int compare_file_write_times (u64 a, u64 b)
+TEINAPI int compare_file_write_times (u64 a, u64 b)
 {
     ULARGE_INTEGER a2, b2;
     FILETIME a3, b3;
@@ -245,19 +245,19 @@ FILDEF int compare_file_write_times (u64 a, u64 b)
 #error compare_file_write_times not implemented on the current platform!
 #endif
 
-FILDEF std::string make_path_absolute (std::string path_name)
+TEINAPI std::string make_path_absolute (std::string path_name)
 {
     if (!is_path_absolute(path_name)) path_name.insert(0, get_executable_path());
     return path_name;
 }
 
-FILDEF std::string fix_path_slashes (std::string path_name)
+TEINAPI std::string fix_path_slashes (std::string path_name)
 {
     std::replace(path_name.begin(), path_name.end(), '\\', '/');
     return path_name;
 }
 
-FILDEF std::string strip_file_path (std::string file_name)
+TEINAPI std::string strip_file_path (std::string file_name)
 {
     file_name = fix_path_slashes(file_name);
     size_t last_slash = file_name.rfind('/');
@@ -269,7 +269,7 @@ FILDEF std::string strip_file_path (std::string file_name)
     return file_name;
 }
 
-FILDEF std::string strip_file_ext (std::string file_name)
+TEINAPI std::string strip_file_ext (std::string file_name)
 {
     file_name = fix_path_slashes(file_name);
     size_t last_dot = file_name.rfind('.');
@@ -281,7 +281,7 @@ FILDEF std::string strip_file_ext (std::string file_name)
     return file_name;
 }
 
-FILDEF std::string strip_file_name (std::string file_name)
+TEINAPI std::string strip_file_name (std::string file_name)
 {
     file_name = fix_path_slashes(file_name);
     size_t last_slash = file_name.rfind('/');
@@ -292,12 +292,12 @@ FILDEF std::string strip_file_name (std::string file_name)
     return file_name;
 }
 
-FILDEF std::string strip_file_path_and_ext (std::string file_name)
+TEINAPI std::string strip_file_path_and_ext (std::string file_name)
 {
     return strip_file_ext(strip_file_path(file_name));
 }
 
-FILDEF void tokenize_string (const std::string& str, const char* delims,
+TEINAPI void tokenize_string (const std::string& str, const char* delims,
                              std::vector<std::string>& tokens)
 {
     size_t prev = 0;
@@ -314,7 +314,7 @@ FILDEF void tokenize_string (const std::string& str, const char* delims,
     }
 }
 
-INLDEF std::string format_string (const char* format, ...)
+TEINAPI std::string format_string (const char* format, ...)
 {
     va_list args;
 
@@ -324,7 +324,7 @@ INLDEF std::string format_string (const char* format, ...)
     return format_string_v(format, args);
 }
 
-INLDEF std::string format_string_v (const char* format, va_list args)
+TEINAPI std::string format_string_v (const char* format, va_list args)
 {
     std::string str;
     int size = vsnprintf(NULL, 0, format, args) + 1;
@@ -338,14 +338,14 @@ INLDEF std::string format_string_v (const char* format, va_list args)
     return str;
 }
 
-FILDEF vec2 get_mouse_pos ()
+TEINAPI vec2 get_mouse_pos ()
 {
     int imx, imy;
     SDL_GetMouseState(&imx, &imy);
     return vec2(imx,imy);
 }
 
-INLDEF std::string format_time (const char* format)
+TEINAPI std::string format_time (const char* format)
 {
     time_t     raw_time = time(NULL);
     struct tm* cur_time = localtime(&raw_time);
@@ -371,7 +371,7 @@ INLDEF std::string format_time (const char* format)
 }
 
 #if defined(PLATFORM_WIN32)
-FILDEF unsigned int get_thread_id ()
+TEINAPI unsigned int get_thread_id ()
 {
     return GetCurrentThreadId();
 }
@@ -379,17 +379,17 @@ FILDEF unsigned int get_thread_id ()
 #error get_thread_id not implemented on the current platform!
 #endif
 
-FILDEF bool point_in_bounds_xyxy (vec2 p, quad q)
+TEINAPI bool point_in_bounds_xyxy (vec2 p, quad q)
 {
     return (p.x >= q.x1 && p.y >= q.y1 && p.x <= q.x2 && p.y <= q.y2);
 }
 
-FILDEF bool point_in_bounds_xywh (vec2 p, quad q)
+TEINAPI bool point_in_bounds_xywh (vec2 p, quad q)
 {
     return (p.x >= q.x && p.y >= q.y && p.x < (q.x+q.w) && p.y < (q.y+q.h));
 }
 
-FILDEF bool insensitive_compare (const std::string& a, const std::string& b)
+TEINAPI bool insensitive_compare (const std::string& a, const std::string& b)
 {
     if (a.length() != b.length()) return false;
     for (std::string::size_type i=0; i<a.length(); ++i)
@@ -399,7 +399,7 @@ FILDEF bool insensitive_compare (const std::string& a, const std::string& b)
     return true;
 }
 
-FILDEF bool string_replace (std::string& str, const std::string& from, const std::string& to)
+TEINAPI bool string_replace (std::string& str, const std::string& from, const std::string& to)
 {
     std::string::size_type start_pos = str.find(from);
     if (start_pos == std::string::npos) return false;
@@ -408,7 +408,7 @@ FILDEF bool string_replace (std::string& str, const std::string& from, const std
 }
 
 #if defined(PLATFORM_WIN32)
-FILDEF bool run_executable (std::string exe)
+TEINAPI bool run_executable (std::string exe)
 {
     PROCESS_INFORMATION process_info = {};
     STARTUPINFOA        startup_info = {};
@@ -432,7 +432,7 @@ FILDEF bool run_executable (std::string exe)
 #endif
 
 #if defined(PLATFORM_WIN32)
-FILDEF void load_webpage (std::string url)
+TEINAPI void load_webpage (std::string url)
 {
     ShellExecuteA(NULL, NULL, url.c_str(), NULL, NULL, SW_SHOW);
 }

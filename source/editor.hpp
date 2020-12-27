@@ -71,57 +71,57 @@ static Editor editor;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_editor (int argc, char** argv);
-FILDEF void quit_editor ();
+TEINAPI void init_editor (int argc, char** argv);
+TEINAPI void quit_editor ();
 
-FILDEF void do_editor ();
+TEINAPI void do_editor ();
 
-FILDEF void handle_editor_events ();
+TEINAPI void handle_editor_events ();
 
-FILDEF void update_backup_timer ();
+TEINAPI void update_backup_timer ();
 
-FILDEF void set_current_tab    (size_t index);
-FILDEF Tab& get_current_tab    ();
-FILDEF Tab& get_tab_at_index   (size_t index);
-FILDEF bool are_there_any_tabs ();
+TEINAPI void set_current_tab    (size_t index);
+TEINAPI Tab& get_current_tab    ();
+TEINAPI Tab& get_tab_at_index   (size_t index);
+TEINAPI bool are_there_any_tabs ();
 
-FILDEF void increment_tab ();
-FILDEF void decrement_tab ();
+TEINAPI void increment_tab ();
+TEINAPI void decrement_tab ();
 
-FILDEF void set_main_window_subtitle_for_tab (const std::string& subtitle);
+TEINAPI void set_main_window_subtitle_for_tab (const std::string& subtitle);
 
-FILDEF bool are_there_any_level_tabs ();
-FILDEF bool are_there_any_map_tabs   ();
+TEINAPI bool are_there_any_level_tabs ();
+TEINAPI bool are_there_any_map_tabs   ();
 
-FILDEF void create_new_level_tab_and_focus (int w = DEFAULT_LEVEL_WIDTH, int h = DEFAULT_LEVEL_HEIGHT);
-FILDEF void create_new_map_tab_and_focus   ();
+TEINAPI void create_new_level_tab_and_focus (int w = DEFAULT_LEVEL_WIDTH, int h = DEFAULT_LEVEL_HEIGHT);
+TEINAPI void create_new_map_tab_and_focus   ();
 
-FILDEF bool current_tab_is_level ();
-FILDEF bool current_tab_is_map   ();
+TEINAPI bool current_tab_is_level ();
+TEINAPI bool current_tab_is_map   ();
 
-FILDEF void close_tab         (size_t index);
-FILDEF void close_current_tab ();
-FILDEF void close_all_tabs    ();
+TEINAPI void close_tab         (size_t index);
+TEINAPI void close_current_tab ();
+TEINAPI void close_all_tabs    ();
 
-FILDEF size_t get_tab_index_with_this_file_name (std::string file_name);
+TEINAPI size_t get_tab_index_with_this_file_name (std::string file_name);
 
-FILDEF void push_editor_camera_transform ();
-FILDEF void pop_editor_camera_transform  ();
+TEINAPI void push_editor_camera_transform ();
+TEINAPI void pop_editor_camera_transform  ();
 
-FILDEF int save_changes_prompt (Tab& tab);
+TEINAPI int save_changes_prompt (Tab& tab);
 
-FILDEF void backup_tab (Tab& tab);
+TEINAPI void backup_tab (Tab& tab);
 
-FILDEF bool is_current_tab_empty ();
+TEINAPI bool is_current_tab_empty ();
 
-FILDEF void editor_select_all ();
-FILDEF void editor_paste      ();
+TEINAPI void editor_select_all ();
+TEINAPI void editor_paste      ();
 
-FILDEF bool save_prompt_all_editor_tabs ();
+TEINAPI bool save_prompt_all_editor_tabs ();
 
-FILDEF void open_recently_closed_tab ();
+TEINAPI void open_recently_closed_tab ();
 
-FILDEF void save_restore_files ();
+TEINAPI void save_restore_files ();
 
 /* -------------------------------------------------------------------------- */
 

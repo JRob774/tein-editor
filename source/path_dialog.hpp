@@ -11,12 +11,12 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void open_path   ();
-FILDEF void do_path     ();
-FILDEF void okay_path   ();
-FILDEF void cancel_path ();
+TEINAPI void open_path   ();
+TEINAPI void do_path     ();
+TEINAPI void okay_path   ();
+TEINAPI void cancel_path ();
 
-FILDEF void handle_path_events ();
+TEINAPI void handle_path_events ();
 
 /* -------------------------------------------------------------------------- */
 

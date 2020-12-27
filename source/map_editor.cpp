@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__mouse_inside_map_editor_viewport ()
+TEINAPI bool internal__mouse_inside_map_editor_viewport ()
 {
     vec2 m = map_editor.mouse;
     quad v = map_editor.viewport;
@@ -23,7 +23,7 @@ FILDEF bool internal__mouse_inside_map_editor_viewport ()
     return ((m.x>=v.x) && (m.y>=v.y) && (m.x<=(v.x+v.w)) && (m.y<=(v.y+v.h)));
 }
 
-FILDEF std::string internal__get_tileset (std::string lvl)
+TEINAPI std::string internal__get_tileset (std::string lvl)
 {
     if (lvl == "..") return lvl;
     if (lvl.empty()) return "";
@@ -33,7 +33,7 @@ FILDEF std::string internal__get_tileset (std::string lvl)
     return lvl.substr(0, end);
 }
 
-FILDEF vec4 internal__get_node_text_color (vec4 bg)
+TEINAPI vec4 internal__get_node_text_color (vec4 bg)
 {
     if (map_editor.text_color_map.count(bg)) return map_editor.text_color_map.at(bg);
 
@@ -51,12 +51,12 @@ FILDEF vec4 internal__get_node_text_color (vec4 bg)
     return map_editor.text_color_map.at(bg2);
 }
 
-FILDEF vec4 internal__get_node_shadow_color (vec4 bg)
+TEINAPI vec4 internal__get_node_shadow_color (vec4 bg)
 {
     return ((internal__get_node_text_color(bg) == vec4(1,1,1,1)) ? vec4(0,0,0,1) : vec4(1,1,1,1));
 }
 
-FILDEF vec2 internal__mouse_to_node_position ()
+TEINAPI vec2 internal__mouse_to_node_position ()
 {
     vec2 m = map_editor.mouse_world;
 
@@ -66,7 +66,7 @@ FILDEF vec2 internal__mouse_to_node_position ()
     return m;
 }
 
-FILDEF ivec2 internal__mouse_to_node_position_int ()
+TEINAPI ivec2 internal__mouse_to_node_position_int ()
 {
     vec2 m = map_editor.mouse_world;
 
@@ -76,13 +76,13 @@ FILDEF ivec2 internal__mouse_to_node_position_int ()
     return ivec2(static_cast<int>(m.x), static_cast<int>(m.y));
 }
 
-FILDEF u32 internal__map_cursor_blink_callback (u32 interval, void* user_data)
+TEINAPI u32 internal__map_cursor_blink_callback (u32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
     return interval;
 }
 
-FILDEF void internal__init_map_editor_cursor ()
+TEINAPI void internal__init_map_editor_cursor ()
 {
     map_editor.cursor_visible = true;
     map_editor.cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__map_cursor_blink_callback, NULL);
@@ -92,7 +92,7 @@ FILDEF void internal__init_map_editor_cursor ()
     }
 }
 
-FILDEF void internal__quit_map_editor_cursor ()
+TEINAPI void internal__quit_map_editor_cursor ()
 {
     if (map_editor.cursor_blink_timer)
     {
@@ -101,7 +101,7 @@ FILDEF void internal__quit_map_editor_cursor ()
     }
 }
 
-FILDEF void internal__create_new_active_node ()
+TEINAPI void internal__create_new_active_node ()
 {
     if (!current_tab_is_map()) return;
 
@@ -115,7 +115,7 @@ FILDEF void internal__create_new_active_node ()
     SDL_StartTextInput();
 }
 
-FILDEF bool internal__remove_active_node_with_no_content ()
+TEINAPI bool internal__remove_active_node_with_no_content ()
 {
     if (!current_tab_is_map()) return false;
 
@@ -135,7 +135,7 @@ FILDEF bool internal__remove_active_node_with_no_content ()
     return false;
 }
 
-FILDEF void internal__deselect_active_node ()
+TEINAPI void internal__deselect_active_node ()
 {
     if (!current_tab_is_map()) return;
 
@@ -168,19 +168,19 @@ FILDEF void internal__deselect_active_node ()
     SDL_StopTextInput();
 }
 
-FILDEF bool internal__is_text_select_active ()
+TEINAPI bool internal__is_text_select_active ()
 {
     if (!current_tab_is_map()) return false;
     const Tab& tab = get_current_tab();
     return (tab.map_node_info.cursor != tab.map_node_info.select);
 }
 
-FILDEF bool internal__map_clipboard_empty ()
+TEINAPI bool internal__map_clipboard_empty ()
 {
     return (map_editor.clipboard.empty());
 }
 
-FILDEF void internal__map_copy ()
+TEINAPI void internal__map_copy ()
 {
     if (!current_tab_is_map    ()) return;
     if (!map_select_box_present()) return;
@@ -216,7 +216,7 @@ FILDEF void internal__map_copy ()
     }
 }
 
-FILDEF void internal__draw_map_clipboard ()
+TEINAPI void internal__draw_map_clipboard ()
 {
     Tab& tab = get_current_tab();
 
@@ -296,7 +296,7 @@ FILDEF void internal__draw_map_clipboard ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_map_editor ()
+TEINAPI void init_map_editor ()
 {
     map_editor.mouse_world = vec2(0,0);
     map_editor.mouse       = vec2(0,0);
@@ -309,7 +309,7 @@ FILDEF void init_map_editor ()
     map_editor.viewport = { 0,0,0,0 };
 }
 
-FILDEF void do_map_editor ()
+TEINAPI void do_map_editor ()
 {
     set_cursor(Cursor::ARROW);
 
@@ -637,7 +637,7 @@ FILDEF void do_map_editor ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_map_editor_events ()
+TEINAPI void handle_map_editor_events ()
 {
     if (!current_tab_is_map() || !is_window_focused("WINMAIN")) return;
 
@@ -991,7 +991,7 @@ FILDEF void handle_map_editor_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void load_map_tab (std::string file_name)
+TEINAPI void load_map_tab (std::string file_name)
 {
     // If there is just one tab and it is completely empty with no changes
     // then we close this tab before opening the new world map(s) in editor.
@@ -1026,7 +1026,7 @@ FILDEF void load_map_tab (std::string file_name)
     need_to_scroll_next_update();
 }
 
-FILDEF bool save_map_tab (Tab& tab)
+TEINAPI bool save_map_tab (Tab& tab)
 {
     // If the current file already has a name (has been saved before) then we
     // just do a normal Save to that file. Otherwise, we perform a Save As.
@@ -1046,7 +1046,7 @@ FILDEF bool save_map_tab (Tab& tab)
     return true;
 }
 
-FILDEF void save_map_tab_as ()
+TEINAPI void save_map_tab_as ()
 {
     std::string file_name = save_dialog(Dialog_Type::CSV);
     if (file_name.empty()) return;
@@ -1063,7 +1063,7 @@ FILDEF void save_map_tab_as ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void map_drop_file (Tab* tab, std::string file_name)
+TEINAPI void map_drop_file (Tab* tab, std::string file_name)
 {
     file_name = fix_path_slashes(file_name);
 
@@ -1102,7 +1102,7 @@ FILDEF void map_drop_file (Tab* tab, std::string file_name)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void backup_map_tab (const Tab& tab, const std::string& file_name)
+TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
 {
     // Determine how many backups the user wants saved for a given map.
     int backup_count = editor_settings.backup_count;
@@ -1171,7 +1171,7 @@ FILDEF void backup_map_tab (const Tab& tab, const std::string& file_name)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool is_current_map_empty ()
+TEINAPI bool is_current_map_empty ()
 {
     if (are_there_any_map_tabs())
     {
@@ -1186,7 +1186,7 @@ FILDEF bool is_current_map_empty ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float get_min_map_bounds_x ()
+TEINAPI float get_min_map_bounds_x ()
 {
     float x = 0;
     if (current_tab_is_map())
@@ -1213,7 +1213,7 @@ FILDEF float get_min_map_bounds_x ()
     return (x * MAP_NODE_W);
 }
 
-FILDEF float get_min_map_bounds_y ()
+TEINAPI float get_min_map_bounds_y ()
 {
     float y = 0;
     if (current_tab_is_map())
@@ -1240,7 +1240,7 @@ FILDEF float get_min_map_bounds_y ()
     return (y * MAP_NODE_H);
 }
 
-FILDEF float get_max_map_bounds_x ()
+TEINAPI float get_max_map_bounds_x ()
 {
     float x = 0;
     if (current_tab_is_map())
@@ -1263,7 +1263,7 @@ FILDEF float get_max_map_bounds_x ()
     return (x * MAP_NODE_W);
 }
 
-FILDEF float get_max_map_bounds_y ()
+TEINAPI float get_max_map_bounds_y ()
 {
     float y = 0;
     if (current_tab_is_map())
@@ -1288,7 +1288,7 @@ FILDEF float get_max_map_bounds_y ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void me_cut ()
+TEINAPI void me_cut ()
 {
     if (!current_tab_is_map() || !map_select_box_present()) return;
 
@@ -1301,7 +1301,7 @@ FILDEF void me_cut ()
     }
 }
 
-FILDEF void me_copy ()
+TEINAPI void me_copy ()
 {
     if (!current_tab_is_map() || !map_select_box_present()) return;
 
@@ -1314,7 +1314,7 @@ FILDEF void me_copy ()
     }
 }
 
-FILDEF void me_paste ()
+TEINAPI void me_paste ()
 {
     if (!current_tab_is_map() || internal__map_clipboard_empty()) return;
 
@@ -1348,7 +1348,7 @@ FILDEF void me_paste ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void me_deselect ()
+TEINAPI void me_deselect ()
 {
     if (!current_tab_is_map() || !map_select_box_present()) return;
 
@@ -1358,7 +1358,7 @@ FILDEF void me_deselect ()
     tab.map_select.b = ivec2(0,0);
 }
 
-FILDEF void me_clear_select ()
+TEINAPI void me_clear_select ()
 {
     if (!current_tab_is_map() || !map_select_box_present()) return;
 
@@ -1387,7 +1387,7 @@ FILDEF void me_clear_select ()
     me_deselect();
 }
 
-FILDEF void me_select_all ()
+TEINAPI void me_select_all ()
 {
     if (!current_tab_is_map()) return;
 
@@ -1409,7 +1409,7 @@ FILDEF void me_select_all ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void me_undo ()
+TEINAPI void me_undo ()
 {
     Tab& tab = get_current_tab();
     // There is no history or we are already at the beginning.
@@ -1419,7 +1419,7 @@ FILDEF void me_undo ()
     internal__deselect_active_node();
 }
 
-FILDEF void me_redo ()
+TEINAPI void me_redo ()
 {
     Tab& tab = get_current_tab();
     // There is no history or we are already at the end.
@@ -1432,14 +1432,14 @@ FILDEF void me_redo ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void me_history_begin ()
+TEINAPI void me_history_begin ()
 {
     Tab& tab = get_current_tab();
     while (tab.map_history.current_position > 0) me_undo();
     tab.unsaved_changes = true;
 }
 
-FILDEF void me_history_end ()
+TEINAPI void me_history_end ()
 {
     Tab& tab = get_current_tab();
     int maximum = static_cast<int>(tab.map_history.state.size())-1;
@@ -1449,7 +1449,7 @@ FILDEF void me_history_end ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void new_map_history_state (Map& map)
+TEINAPI void new_map_history_state (Map& map)
 {
     if (!current_tab_is_map()) return;
     Tab& tab = get_current_tab();
@@ -1471,14 +1471,14 @@ FILDEF void new_map_history_state (Map& map)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool map_select_box_present ()
+TEINAPI bool map_select_box_present ()
 {
     if (!current_tab_is_map()) return false;
     Map_Select s = get_current_tab().map_select;
     return (s.a != s.b);
 }
 
-FILDEF void get_map_select_bounds (int* l, int* t, int* r, int* b)
+TEINAPI void get_map_select_bounds (int* l, int* t, int* r, int* b)
 {
     if (l) *l = 0;
     if (t) *t = 0;

@@ -44,7 +44,7 @@ static GPAK_Pack_Data gpak_pack_data;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__handle_gpak_error (GPAK_Error error)
+TEINAPI void internal__handle_gpak_error (GPAK_Error error)
 {
     switch (error)
     {
@@ -56,7 +56,7 @@ FILDEF void internal__handle_gpak_error (GPAK_Error error)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF int internal__gpak_unpack_thread_main (void* user_data)
+TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
 {
     GPAK_Unpack_Data* args = reinterpret_cast<GPAK_Unpack_Data*>(user_data);
 
@@ -142,7 +142,7 @@ STDDEF int internal__gpak_unpack_thread_main (void* user_data)
     return EXIT_SUCCESS;
 }
 
-STDDEF int internal__gpak_pack_thread_main (void* user_data)
+TEINAPI int internal__gpak_pack_thread_main (void* user_data)
 {
     GPAK_Pack_Data* args = reinterpret_cast<GPAK_Pack_Data*>(user_data);
 
@@ -253,7 +253,7 @@ STDDEF int internal__gpak_pack_thread_main (void* user_data)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void gpak_unpack (std::string file_name, bool overwrite)
+TEINAPI void gpak_unpack (std::string file_name, bool overwrite)
 {
     gpak_unpack_data.file_name = file_name;
     gpak_unpack_data.overwrite = overwrite;
@@ -273,7 +273,7 @@ FILDEF void gpak_unpack (std::string file_name, bool overwrite)
     show_window("WINUNPACK");
 }
 
-FILDEF void gpak_pack (std::string file_name, std::vector<std::string> paths)
+TEINAPI void gpak_pack (std::string file_name, std::vector<std::string> paths)
 {
     gpak_pack_data.file_name = file_name;
     gpak_pack_data.paths     = paths;
@@ -295,29 +295,29 @@ FILDEF void gpak_pack (std::string file_name, std::vector<std::string> paths)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float gpak_unpack_progress ()
+TEINAPI float gpak_unpack_progress ()
 {
     return gpak_unpack_data.progress.load();
 }
-FILDEF float gpak_pack_progress ()
+TEINAPI float gpak_pack_progress ()
 {
     return gpak_pack_data.progress.load();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool is_gpak_unpack_complete ()
+TEINAPI bool is_gpak_unpack_complete ()
 {
     return gpak_unpack_data.complete.load();
 }
-FILDEF bool is_gpak_pack_complete ()
+TEINAPI bool is_gpak_pack_complete ()
 {
     return gpak_pack_data.complete.load();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_unpack ()
+TEINAPI void do_unpack ()
 {
     if (is_window_hidden("WINUNPACK")) return;
 
@@ -387,7 +387,7 @@ FILDEF void do_unpack ()
     }
 }
 
-FILDEF void do_pack ()
+TEINAPI void do_pack ()
 {
     if (is_window_hidden("WINPACK")) return;
 
@@ -459,7 +459,7 @@ FILDEF void do_pack ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void cancel_unpack ()
+TEINAPI void cancel_unpack ()
 {
     gpak_unpack_data.complete.store(true);
     gpak_unpack_data.cancel.store(true);
@@ -467,7 +467,7 @@ FILDEF void cancel_unpack ()
     hide_window("WINUNPACK");
 }
 
-FILDEF void cancel_pack ()
+TEINAPI void cancel_pack ()
 {
     gpak_pack_data.complete.store(true);
     gpak_pack_data.cancel.store(true);

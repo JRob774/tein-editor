@@ -93,7 +93,7 @@ static const std::map<std::string, int> KEY_MOD_MAP
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__key_binding_active (const Key_Binding& kb)
+TEINAPI bool internal__key_binding_active (const Key_Binding& kb)
 {
     // Not all key bindings necessarily have a key code so we assign a
     // default value of true. However, key mods should always be checked
@@ -114,7 +114,7 @@ FILDEF bool internal__key_binding_active (const Key_Binding& kb)
     return (code_active && mod_active) || (kb.has_alt && (alt_code_active && alt_mod_active));
 }
 
-FILDEF std::string internal__get_key_binding_string (int code, int mod)
+TEINAPI std::string internal__get_key_binding_string (int code, int mod)
 {
     std::string str;
     if (mod)
@@ -135,7 +135,7 @@ FILDEF std::string internal__get_key_binding_string (int code, int mod)
     return str;
 }
 
-FILDEF void internal__add_key_binding (const GonObject& gon, const GonObject& gon_fallback, const char* name, KB_Action action)
+TEINAPI void internal__add_key_binding (const GonObject& gon, const GonObject& gon_fallback, const char* name, KB_Action action)
 {
     // Assign both to zero in case there are no values.
     int code = 0, alt_code = 0;
@@ -230,7 +230,7 @@ FILDEF void internal__add_key_binding (const GonObject& gon, const GonObject& go
     key_bindings.insert(KB_Pair(name, kb));
 }
 
-FILDEF void internal__load_editor_key_bindings (const GonObject& a, const GonObject& b)
+TEINAPI void internal__load_editor_key_bindings (const GonObject& a, const GonObject& b)
 {
     key_bindings.clear();
 
@@ -301,7 +301,7 @@ FILDEF void internal__load_editor_key_bindings (const GonObject& a, const GonObj
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool operator== (const Key_Binding& a, const Key_Binding& b)
+TEINAPI bool operator== (const Key_Binding& a, const Key_Binding& b)
 {
     return ((a.action   == b.action  ) &&
             (a.code     == b.code    ) &&
@@ -310,14 +310,14 @@ FILDEF bool operator== (const Key_Binding& a, const Key_Binding& b)
             (a.alt_mod  == b.alt_mod ));
 }
 
-FILDEF bool operator!= (const Key_Binding& a, const Key_Binding& b)
+TEINAPI bool operator!= (const Key_Binding& a, const Key_Binding& b)
 {
     return !(a == b);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_editor_key_bindings ()
+TEINAPI bool load_editor_key_bindings ()
 {
     GonObject gon;
     try
@@ -357,7 +357,7 @@ FILDEF bool load_editor_key_bindings ()
     return true;
 }
 
-FILDEF void restore_editor_key_bindings ()
+TEINAPI void restore_editor_key_bindings ()
 {
     // Load the fallback/default editor key bindings so they can be restored.
     GonObject gon = GonObject::LoadFromBuffer(KEY_BINDINGS_FALLBACK);
@@ -366,7 +366,7 @@ FILDEF void restore_editor_key_bindings ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_key_binding_events ()
+TEINAPI void handle_key_binding_events ()
 {
     if (!text_box_is_active() || is_window_focused("WINMAIN"))
     {
@@ -389,38 +389,38 @@ FILDEF void handle_key_binding_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF const Key_Binding& get_key_binding (std::string name)
+TEINAPI const Key_Binding& get_key_binding (std::string name)
 {
     return key_bindings[name];
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF std::string get_key_binding_main_string (const Key_Binding& kb)
+TEINAPI std::string get_key_binding_main_string (const Key_Binding& kb)
 {
     return internal__get_key_binding_string(kb.code, kb.mod);
 }
 
-FILDEF std::string get_key_binding_main_string (std::string name)
+TEINAPI std::string get_key_binding_main_string (std::string name)
 {
     return get_key_binding_main_string(get_key_binding(name));
 }
 
-FILDEF std::string get_key_binding_alt_string (const Key_Binding& kb)
+TEINAPI std::string get_key_binding_alt_string (const Key_Binding& kb)
 {
     // There is no alternative key binding for this particular key.
     if (!kb.alt_code && !kb.alt_mod) return std::string();
     return internal__get_key_binding_string(kb.alt_code, kb.alt_mod);
 }
 
-FILDEF std::string get_key_binding_alt_string (std::string name)
+TEINAPI std::string get_key_binding_alt_string (std::string name)
 {
     return get_key_binding_alt_string(get_key_binding(name));
 }
 
 /* -------------------------------------------------------------------------- */
 
-INLDEF bool is_key_binding_active (std::string name)
+TEINAPI bool is_key_binding_active (std::string name)
 {
     if (text_box_is_active() || !is_window_focused("WINMAIN")) return false;
 
@@ -434,7 +434,7 @@ INLDEF bool is_key_binding_active (std::string name)
     return internal__key_binding_active(key_bindings.at(name));
 }
 
-FILDEF bool is_key_mod_state_active (int mod)
+TEINAPI bool is_key_mod_state_active (int mod)
 {
     if (text_box_is_active() | !is_window_focused("WINMAIN")) return false;
 
@@ -449,7 +449,7 @@ FILDEF bool is_key_mod_state_active (int mod)
     return (curr_mod == mod);
 }
 
-FILDEF bool is_key_code_active (int code)
+TEINAPI bool is_key_code_active (int code)
 {
     int key_count; // So we know the length of the returned array.
     const u8* key_state = SDL_GetKeyboardState(&key_count);

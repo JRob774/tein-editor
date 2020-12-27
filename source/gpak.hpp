@@ -31,20 +31,20 @@ struct GPAK_Entry
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void gpak_unpack (std::string file_name, bool overwrite);
-FILDEF void gpak_pack   (std::string file_name, std::vector<std::string> paths);
+TEINAPI void gpak_unpack (std::string file_name, bool overwrite);
+TEINAPI void gpak_pack   (std::string file_name, std::vector<std::string> paths);
 
-FILDEF float gpak_unpack_progress ();
-FILDEF float gpak_pack_progress   ();
+TEINAPI float gpak_unpack_progress ();
+TEINAPI float gpak_pack_progress   ();
 
-FILDEF bool is_gpak_unpack_complete ();
-FILDEF bool is_gpak_pack_complete   ();
+TEINAPI bool is_gpak_unpack_complete ();
+TEINAPI bool is_gpak_pack_complete   ();
 
-FILDEF void do_unpack ();
-FILDEF void do_pack   ();
+TEINAPI void do_unpack ();
+TEINAPI void do_pack   ();
 
-FILDEF void cancel_unpack ();
-FILDEF void cancel_pack   ();
+TEINAPI void cancel_unpack ();
+TEINAPI void cancel_pack   ();
 
 /* -------------------------------------------------------------------------- */
 

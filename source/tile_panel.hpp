@@ -25,44 +25,44 @@ static constexpr Tile_Category TILE_CATEGORY_TOTAL   = 6;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool init_tile_panel ();
-FILDEF void do_tile_panel   (bool scrollbar);
+TEINAPI bool init_tile_panel ();
+TEINAPI void do_tile_panel   (bool scrollbar);
 
-FILDEF bool tile_panel_needs_scrollbar ();
+TEINAPI bool tile_panel_needs_scrollbar ();
 
-FILDEF void handle_tile_panel_events ();
+TEINAPI void handle_tile_panel_events ();
 
-FILDEF float get_tile_panel_height ();
+TEINAPI float get_tile_panel_height ();
 
-FILDEF void reload_tile_graphics ();
+TEINAPI void reload_tile_graphics ();
 
-FILDEF Tile_Category get_selected_category ();
-FILDEF Tile_ID       get_selected_tile     ();
-FILDEF Level_Layer   get_selected_layer    ();
+TEINAPI Tile_Category get_selected_category ();
+TEINAPI Tile_ID       get_selected_tile     ();
+TEINAPI Level_Layer   get_selected_layer    ();
 
-FILDEF Level_Layer category_to_layer (Tile_Category category);
+TEINAPI Level_Layer category_to_layer (Tile_Category category);
 
-STDDEF void select_next_active_group ();
-STDDEF void select_prev_active_group ();
+TEINAPI void select_next_active_group ();
+TEINAPI void select_prev_active_group ();
 
-FILDEF void reset_selected_group ();
+TEINAPI void reset_selected_group ();
 
-FILDEF void increment_selected_tile     ();
-FILDEF void decrement_selected_tile     ();
-FILDEF void increment_selected_group    ();
-FILDEF void decrement_selected_group    ();
-FILDEF void increment_selected_category ();
-FILDEF void decrement_selected_category ();
+TEINAPI void increment_selected_tile     ();
+TEINAPI void decrement_selected_tile     ();
+TEINAPI void increment_selected_group    ();
+TEINAPI void decrement_selected_group    ();
+TEINAPI void increment_selected_category ();
+TEINAPI void decrement_selected_category ();
 
-FILDEF Tile_ID get_tile_horizontal_flip (Tile_ID id);
-FILDEF Tile_ID get_tile_vertical_flip   (Tile_ID id);
+TEINAPI Tile_ID get_tile_horizontal_flip (Tile_ID id);
+TEINAPI Tile_ID get_tile_vertical_flip   (Tile_ID id);
 
-FILDEF void jump_to_category_basic   ();
-FILDEF void jump_to_category_tag     ();
-FILDEF void jump_to_category_overlay ();
-FILDEF void jump_to_category_entity  ();
-FILDEF void jump_to_category_back1   ();
-FILDEF void jump_to_category_back2   ();
+TEINAPI void jump_to_category_basic   ();
+TEINAPI void jump_to_category_tag     ();
+TEINAPI void jump_to_category_overlay ();
+TEINAPI void jump_to_category_entity  ();
+TEINAPI void jump_to_category_back1   ();
+TEINAPI void jump_to_category_back2   ();
 
 /* -------------------------------------------------------------------------- */
 

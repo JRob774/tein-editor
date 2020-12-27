@@ -11,8 +11,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_palette_lookup    ();
-FILDEF vec4 get_tileset_main_color (std::string tileset);
+TEINAPI void init_palette_lookup    ();
+TEINAPI vec4 get_tileset_main_color (std::string tileset);
 
 /* -------------------------------------------------------------------------- */
 

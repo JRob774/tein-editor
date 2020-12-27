@@ -54,7 +54,7 @@ static bool settings_loaded;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF vec4 internal__get_settings_color (const GonObject& gon, std::string name, vec4 default_value, bool* did_default = NULL)
+TEINAPI vec4 internal__get_settings_color (const GonObject& gon, std::string name, vec4 default_value, bool* did_default = NULL)
 {
     if (did_default) *did_default = true;
 
@@ -78,7 +78,7 @@ FILDEF vec4 internal__get_settings_color (const GonObject& gon, std::string name
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool operator== (const Settings& a, const Settings& b)
+TEINAPI bool operator== (const Settings& a, const Settings& b)
 {
     return (a.game_path                  == b.game_path                  &&
             a.background_color_defaulted == b.background_color_defaulted &&
@@ -100,14 +100,14 @@ FILDEF bool operator== (const Settings& a, const Settings& b)
             a.tile_grid_color            == b.tile_grid_color);
 }
 
-FILDEF bool operator!= (const Settings& a, const Settings& b)
+TEINAPI bool operator!= (const Settings& a, const Settings& b)
 {
     return !(a == b);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void update_systems_that_rely_on_settings (bool tile_graphics_changed)
+TEINAPI void update_systems_that_rely_on_settings (bool tile_graphics_changed)
 {
     update_backup_timer();
     update_editor_font ();
@@ -121,7 +121,7 @@ FILDEF void update_systems_that_rely_on_settings (bool tile_graphics_changed)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_editor_settings ()
+TEINAPI bool load_editor_settings ()
 {
     GonObject gon;
     try
@@ -187,7 +187,7 @@ FILDEF bool load_editor_settings ()
     return true;
 }
 
-FILDEF void restore_editor_settings ()
+TEINAPI void restore_editor_settings ()
 {
     bool tile_graphics_changed = (editor_settings.tile_graphics != SETTINGS_DEFAULT_TILE_GRAPHICS);
 

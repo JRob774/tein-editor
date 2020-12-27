@@ -22,12 +22,12 @@ static bool      main_running;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_application (int argc, char** argv);
-FILDEF void quit_application ();
+TEINAPI void init_application (int argc, char** argv);
+TEINAPI void quit_application ();
 
-FILDEF void do_application ();
+TEINAPI void do_application ();
 
-FILDEF bool handle_application_events ();
+TEINAPI bool handle_application_events ();
 
 /* -------------------------------------------------------------------------- */
 

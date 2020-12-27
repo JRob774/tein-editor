@@ -10,8 +10,7 @@
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-STDDEF int show_alert (std::string title, std::string msg, int type,
-                       int buttons, std::string window)
+TEINAPI int show_alert (std::string title, std::string msg, int type, int buttons, std::string window)
 {
     // NOTE: We don't allow hidden windows because it causes program hang.
     HWND hwnd = NULL;

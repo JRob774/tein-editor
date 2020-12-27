@@ -47,8 +47,8 @@ struct Level
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool load_level         (      Level& level, std::string file_name);
-STDDEF bool save_level         (const Level& level, std::string file_name);
+TEINAPI bool load_level         (      Level& level, std::string file_name);
+TEINAPI bool save_level         (const Level& level, std::string file_name);
 
 // A custom file format. Exactly the same as the default level format except
 // the first part of the file until zero is the name of the level. This is
@@ -57,13 +57,10 @@ STDDEF bool save_level         (const Level& level, std::string file_name);
 
 struct Tab; // Defined in <editor.hpp>
 
-STDDEF bool load_restore_level (      Tab&   tab,   std::string file_name);
-STDDEF bool save_restore_level (const Tab&   tab,   std::string file_name);
+TEINAPI bool load_restore_level (      Tab&   tab,   std::string file_name);
+TEINAPI bool save_restore_level (const Tab&   tab,   std::string file_name);
 
-
-
-FILDEF bool create_blank_level (Level& level, int w = DEFAULT_LEVEL_WIDTH,
-                                              int h = DEFAULT_LEVEL_HEIGHT);
+TEINAPI bool create_blank_level (Level& level, int w = DEFAULT_LEVEL_WIDTH, int h = DEFAULT_LEVEL_HEIGHT);
 
 /* -------------------------------------------------------------------------- */
 

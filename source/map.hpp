@@ -23,8 +23,8 @@ typedef std::vector<Map_Node> Map;
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool load_map         (      Tab& tab, std::string file_name);
-STDDEF bool save_map         (const Tab& tab, std::string file_name);
+TEINAPI bool load_map         (      Tab& tab, std::string file_name);
+TEINAPI bool save_map         (const Tab& tab, std::string file_name);
 
 // A custom file format. Exactly the same as the default world format except
 // the first part of the file until zero is the name of the level. This is
@@ -33,15 +33,15 @@ STDDEF bool save_map         (const Tab& tab, std::string file_name);
 
 struct Tab; // Defined in <editor.hpp>
 
-STDDEF bool load_restore_map (      Tab& tab, std::string file_name);
-STDDEF bool save_restore_map (const Tab& tab, std::string file_name);
+TEINAPI bool load_restore_map (      Tab& tab, std::string file_name);
+TEINAPI bool save_restore_map (const Tab& tab, std::string file_name);
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF int  get_map_x_pos    (const Map& map);
-FILDEF int  get_map_y_pos    (const Map& map);
-FILDEF int  get_map_width    (const Map& map);
-FILDEF int  get_map_height   (const Map& map);
+TEINAPI int  get_map_x_pos    (const Map& map);
+TEINAPI int  get_map_y_pos    (const Map& map);
+TEINAPI int  get_map_width    (const Map& map);
+TEINAPI int  get_map_height   (const Map& map);
 
 /* -------------------------------------------------------------------------- */
 

@@ -25,13 +25,13 @@ struct Texture
     vec4   color;
 };
 
-STDDEF bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_data, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
-FILDEF bool load_texture_from_file (Texture& tex, std::string            file_name, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
+TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_data, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
+TEINAPI bool load_texture_from_file (Texture& tex, std::string            file_name, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
 
-FILDEF void free_texture (Texture& tex);
+TEINAPI void free_texture (Texture& tex);
 
 // RGBA ordering of pixel components is expected when using create_texture().
-STDDEF bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
+TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
 
 /* -------------------------------------------------------------------------- */
 

@@ -69,8 +69,8 @@ struct Settings
     vec4      tile_grid_color;
 };
 
-FILDEF bool operator== (const Settings& a, const Settings& b);
-FILDEF bool operator!= (const Settings& a, const Settings& b);
+TEINAPI bool operator== (const Settings& a, const Settings& b);
+TEINAPI bool operator!= (const Settings& a, const Settings& b);
 
 /* -------------------------------------------------------------------------- */
 
@@ -78,12 +78,12 @@ static Settings editor_settings;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void update_systems_that_rely_on_settings (bool tile_graphics_changed);
+TEINAPI void update_systems_that_rely_on_settings (bool tile_graphics_changed);
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool    load_editor_settings ();
-FILDEF void restore_editor_settings ();
+TEINAPI bool    load_editor_settings ();
+TEINAPI void restore_editor_settings ();
 
 /* -------------------------------------------------------------------------- */
 

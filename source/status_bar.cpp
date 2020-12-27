@@ -16,7 +16,7 @@ static std::string status_bar_pushed_message;
 
 /* -------------------------------------------------------------------------- */
 
-INLDEF void push_status_bar_message (const char* fmt, ...)
+TEINAPI void push_status_bar_message (const char* fmt, ...)
 {
     va_list args;
 
@@ -25,7 +25,7 @@ INLDEF void push_status_bar_message (const char* fmt, ...)
     va_end(args);
 }
 
-FILDEF void do_status_bar ()
+TEINAPI void do_status_bar ()
 {
     // If there is a message that has been pushed we display that, if
     // not then we just display a default message for the status bar.

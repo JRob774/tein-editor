@@ -47,7 +47,7 @@ static constexpr const char* HB_INFO_UPDATE      = "There is a new update availa
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_hotbar ()
+TEINAPI void do_hotbar ()
 {
     vec2 cursor(0,0);
 
@@ -205,14 +205,14 @@ FILDEF void do_hotbar ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_new ()
+TEINAPI void hb_new ()
 {
     open_new();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_load ()
+TEINAPI void hb_load ()
 {
     std::vector<std::string> file_names = open_dialog(Dialog_Type::LVL_CSV);
     if (!file_names.empty())
@@ -228,7 +228,7 @@ FILDEF void hb_load ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_save ()
+TEINAPI void hb_save ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -239,7 +239,7 @@ FILDEF void hb_save ()
     }
 }
 
-FILDEF void hb_save_as ()
+TEINAPI void hb_save_as ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -252,7 +252,7 @@ FILDEF void hb_save_as ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_undo_action ()
+TEINAPI void hb_undo_action ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -263,7 +263,7 @@ FILDEF void hb_undo_action ()
     }
 }
 
-FILDEF void hb_redo_action ()
+TEINAPI void hb_redo_action ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -276,7 +276,7 @@ FILDEF void hb_redo_action ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_history_begin ()
+TEINAPI void hb_history_begin ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -287,7 +287,7 @@ FILDEF void hb_history_begin ()
     }
 }
 
-FILDEF void hb_history_end ()
+TEINAPI void hb_history_end ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -300,7 +300,7 @@ FILDEF void hb_history_end ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_zoom_out ()
+TEINAPI void hb_zoom_out ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -322,7 +322,7 @@ FILDEF void hb_zoom_out ()
     }
 }
 
-FILDEF void hb_zoom_in ()
+TEINAPI void hb_zoom_in ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -346,7 +346,7 @@ FILDEF void hb_zoom_in ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_gpak_unpack ()
+TEINAPI void hb_gpak_unpack ()
 {
     std::vector<std::string> files = open_dialog(Dialog_Type::GPAK, false);
     if (!files.empty())
@@ -362,7 +362,7 @@ FILDEF void hb_gpak_unpack ()
     }
 }
 
-FILDEF void hb_gpak_pack ()
+TEINAPI void hb_gpak_pack ()
 {
     std::vector<std::string> paths = path_dialog();
     if (!paths.empty())
@@ -377,7 +377,7 @@ FILDEF void hb_gpak_pack ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_run_game ()
+TEINAPI void hb_run_game ()
 {
     constexpr const char* EXE_STEAM_X86 = "C:/Program Files (x86)/Steam/steamapps/common/theendisnigh/TheEndIsNigh.exe";
     constexpr const char* EXE_STEAM_X64 = "C:/Program Files/Steam/steamapps/common/theendisnigh/TheEndIsNigh.exe";
@@ -431,7 +431,7 @@ FILDEF void hb_run_game ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void hb_preferences ()
+TEINAPI void hb_preferences ()
 {
     if (is_window_hidden("WINPREFERENCES"))
     {
@@ -444,7 +444,7 @@ FILDEF void hb_preferences ()
     }
 }
 
-FILDEF void hb_about ()
+TEINAPI void hb_about ()
 {
     if (is_window_hidden("WINABOUT"))
     {
@@ -456,17 +456,17 @@ FILDEF void hb_about ()
     }
 }
 
-FILDEF void hb_help ()
+TEINAPI void hb_help ()
 {
     load_webpage("http://glaielgames.com/teinworkshop/moddermanual/");
 }
 
-FILDEF void hb_bug_report ()
+TEINAPI void hb_bug_report ()
 {
     load_webpage("https://itch.io/t/822898/bug-reports");
 }
 
-FILDEF void hb_update ()
+TEINAPI void hb_update ()
 {
     open_update_window();
 }

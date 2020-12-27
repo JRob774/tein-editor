@@ -24,7 +24,7 @@ static bool        cursors_loaded;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__load_cursor (Cursor cursor, const char* file_name, int x, int y)
+TEINAPI bool internal__load_cursor (Cursor cursor, const char* file_name, int x, int y)
 {
     SDL_Surface* surface = load_surface_resource(file_name);
     if (!surface)
@@ -60,7 +60,7 @@ FILDEF bool internal__load_cursor (Cursor cursor, const char* file_name, int x, 
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_editor_cursors ()
+TEINAPI bool load_editor_cursors ()
 {
     // We have a special case for the beam cursor as we want a specific
     // version based on whether a light or dark UI is currently loaded.
@@ -107,7 +107,7 @@ FILDEF bool load_editor_cursors ()
     return true;
 }
 
-FILDEF void free_editor_cursors ()
+TEINAPI void free_editor_cursors ()
 {
     for (int i=0; i<static_cast<int>(Cursor::Total); ++i)
     {
@@ -121,7 +121,7 @@ FILDEF void free_editor_cursors ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_cursor (Cursor cursor)
+TEINAPI void set_cursor (Cursor cursor)
 {
     if (cursors_enabled && cursors_loaded && current_cursor != cursor && cursors[static_cast<int>(cursor)])
     {
@@ -130,14 +130,14 @@ FILDEF void set_cursor (Cursor cursor)
     }
 }
 
-FILDEF Cursor get_cursor ()
+TEINAPI Cursor get_cursor ()
 {
     return ((cursors_enabled && cursors_loaded) ? current_cursor : Cursor::ARROW);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool custom_cursors_enabled ()
+TEINAPI bool custom_cursors_enabled ()
 {
     return cursors_enabled;
 }

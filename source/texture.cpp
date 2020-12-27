@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_data, Texture_Wrap wrap)
+TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_data, Texture_Wrap wrap)
 {
     const stbi_uc* buffer = &file_data[0];
     int size = static_cast<int>(file_data.size());
@@ -26,7 +26,7 @@ FILDEF bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_da
     return create_texture(tex, w, h, bpp, raw_data, wrap);
 }
 
-FILDEF bool load_texture_from_file (Texture& tex, std::string file_name, Texture_Wrap wrap)
+TEINAPI bool load_texture_from_file (Texture& tex, std::string file_name, Texture_Wrap wrap)
 {
     // Build an absolute path to the file based on the executable location.
     file_name = make_path_absolute(file_name);
@@ -43,12 +43,12 @@ FILDEF bool load_texture_from_file (Texture& tex, std::string file_name, Texture
     return create_texture(tex, w, h, bpp, raw_data, wrap);
 }
 
-FILDEF void free_texture (Texture& tex)
+TEINAPI void free_texture (Texture& tex)
 {
     glDeleteTextures(1, &tex.handle);
 }
 
-STDDEF bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Texture_Wrap wrap)
+TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Texture_Wrap wrap)
 {
     // Bytes-per-pixel needs to be one of these otherwise we can't use.
     ASSERT(bpp == 1 || bpp == 2 || bpp == 3 || bpp == 4);

@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void push_editor_event (Editor_Event id, void* data1, void* data2)
+TEINAPI void push_editor_event (Editor_Event id, void* data1, void* data2)
 {
     SDL_Event event;
     SDL_zero(event);

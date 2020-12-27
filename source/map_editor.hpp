@@ -76,44 +76,44 @@ static Map_Editor map_editor;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void init_map_editor ();
-FILDEF void do_map_editor   ();
+TEINAPI void init_map_editor ();
+TEINAPI void do_map_editor   ();
 
-FILDEF void handle_map_editor_events ();
+TEINAPI void handle_map_editor_events ();
 
-FILDEF void load_map_tab    (std::string file_name);
-FILDEF bool save_map_tab    (Tab& tab);
-FILDEF void save_map_tab_as ();
+TEINAPI void load_map_tab    (std::string file_name);
+TEINAPI bool save_map_tab    (Tab& tab);
+TEINAPI void save_map_tab_as ();
 
-FILDEF void map_drop_file (Tab* tab, std::string file_name);
+TEINAPI void map_drop_file (Tab* tab, std::string file_name);
 
-FILDEF void backup_map_tab (const Tab& tab, const std::string& file_name);
+TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name);
 
-FILDEF bool is_current_map_empty ();
+TEINAPI bool is_current_map_empty ();
 
-FILDEF float get_min_map_bounds_x ();
-FILDEF float get_min_map_bounds_y ();
-FILDEF float get_max_map_bounds_x ();
-FILDEF float get_max_map_bounds_y ();
+TEINAPI float get_min_map_bounds_x ();
+TEINAPI float get_min_map_bounds_y ();
+TEINAPI float get_max_map_bounds_x ();
+TEINAPI float get_max_map_bounds_y ();
 
-FILDEF void me_cut   ();
-FILDEF void me_copy  ();
-FILDEF void me_paste ();
+TEINAPI void me_cut   ();
+TEINAPI void me_copy  ();
+TEINAPI void me_paste ();
 
-FILDEF void me_deselect     ();
-FILDEF void me_clear_select ();
-FILDEF void me_select_all   ();
+TEINAPI void me_deselect     ();
+TEINAPI void me_clear_select ();
+TEINAPI void me_select_all   ();
 
-FILDEF void me_undo ();
-FILDEF void me_redo ();
+TEINAPI void me_undo ();
+TEINAPI void me_redo ();
 
-FILDEF void me_history_begin ();
-FILDEF void me_history_end   ();
+TEINAPI void me_history_begin ();
+TEINAPI void me_history_end   ();
 
-FILDEF void new_map_history_state (Map& map);
+TEINAPI void new_map_history_state (Map& map);
 
-FILDEF bool map_select_box_present ();
-FILDEF void get_map_select_bounds  (int* l, int* t, int* r, int* b);
+TEINAPI bool map_select_box_present ();
+TEINAPI void get_map_select_bounds  (int* l, int* t, int* r, int* b);
 
 /* -------------------------------------------------------------------------- */
 

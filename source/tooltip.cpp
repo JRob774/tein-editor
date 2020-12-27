@@ -22,13 +22,13 @@ static SDL_TimerID tooltip_timer;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF u32 internal__tooltip_callback (u32 interval, void* user_data)
+TEINAPI u32 internal__tooltip_callback (u32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_SHOW_TOOLTIP, NULL, NULL);
     return 0;
 }
 
-FILDEF void internal__reset_tooltip ()
+TEINAPI void internal__reset_tooltip ()
 {
     tooltip_name = "";
     tooltip_desc = "";
@@ -38,7 +38,7 @@ FILDEF void internal__reset_tooltip ()
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void set_current_tooltip (std::string name, std::string desc)
+TEINAPI void set_current_tooltip (std::string name, std::string desc)
 {
     // This is how we know we are still hovered over the tooltip item and don't need to hide it.
     if (tooltip_name == name && tooltip_desc == desc)
@@ -65,7 +65,7 @@ STDDEF void set_current_tooltip (std::string name, std::string desc)
     tooltip_set_this_update = true;
 }
 
-FILDEF void do_tooltip ()
+TEINAPI void do_tooltip ()
 {
     if (!editor_settings.show_tooltips) return;
 
@@ -138,7 +138,7 @@ FILDEF void do_tooltip ()
     }
 }
 
-FILDEF void handle_tooltip_events ()
+TEINAPI void handle_tooltip_events ()
 {
     tooltip_set_this_update = false;
 

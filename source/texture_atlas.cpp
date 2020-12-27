@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon)
+TEINAPI bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon)
 {
     std::string texture_file(gon["texture"].String());
     if (!load_texture_resource(texture_file, atlas.texture))
@@ -37,12 +37,12 @@ FILDEF bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_texture_atlas_from_file (Texture_Atlas& atlas, std::string file_name)
+TEINAPI bool load_texture_atlas_from_file (Texture_Atlas& atlas, std::string file_name)
 {
     file_name = make_path_absolute(file_name);
     return internal__create_texture_atlas(atlas, GonObject::Load(file_name));
 }
-FILDEF bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vector<u8>& file_data)
+TEINAPI bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vector<u8>& file_data)
 {
     std::string buffer(file_data.begin(), file_data.end());
     return internal__create_texture_atlas(atlas, GonObject::LoadFromBuffer(buffer));
@@ -50,7 +50,7 @@ FILDEF bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vecto
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void free_texture_atlas (Texture_Atlas& atlas)
+TEINAPI void free_texture_atlas (Texture_Atlas& atlas)
 {
     free_texture(atlas.texture);
     atlas.clips.clear();
@@ -58,7 +58,7 @@ FILDEF void free_texture_atlas (Texture_Atlas& atlas)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF quad& get_atlas_clip (Texture_Atlas& atlas, s32 key)
+TEINAPI quad& get_atlas_clip (Texture_Atlas& atlas, s32 key)
 {
     return atlas.clips[key];
 }

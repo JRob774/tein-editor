@@ -25,7 +25,7 @@ static std::vector<std::string> debug_timer_results;
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void internal__log_debug (const char* format, ...)
+TEINAPI void internal__log_debug (const char* format, ...)
 {
     // We only open the debug log once the first debug occurs.
     if (!debug_log)
@@ -69,20 +69,20 @@ STDDEF void internal__log_debug (const char* format, ...)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void begin_debug_section (const char* name)
+TEINAPI void begin_debug_section (const char* name)
 {
     if (name) LOG_DEBUG("%s", name);
     current_debug_section++;
 }
 
-FILDEF void end_debug_section ()
+TEINAPI void end_debug_section ()
 {
     if (current_debug_section > 0) current_debug_section--;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void quit_debug_system ()
+TEINAPI void quit_debug_system ()
 {
     // This condition is important because, for some reason, calling
     // fclose(NULL) results in a long hang-time during program exit.
@@ -97,7 +97,7 @@ FILDEF void quit_debug_system ()
 
 #if defined(BUILD_DEBUG) /*****************************************************/
 
-FILDEF void begin_debug_timer (const char* name)
+TEINAPI void begin_debug_timer (const char* name)
 {
     Debug_Timer timer = {};
     timer.start_counter = SDL_GetPerformanceCounter();
@@ -105,7 +105,7 @@ FILDEF void begin_debug_timer (const char* name)
     debug_timers.push(timer);
 }
 
-FILDEF void end_debug_timer ()
+TEINAPI void end_debug_timer ()
 {
     Debug_Timer timer = debug_timers.top();
     debug_timers.pop();
@@ -120,12 +120,12 @@ FILDEF void end_debug_timer ()
     debug_timer_results.push_back(str);
 }
 
-FILDEF void clear_debug_timer_results ()
+TEINAPI void clear_debug_timer_results ()
 {
     debug_timer_results.clear();
 }
 
-FILDEF void dump_debug_timer_results  ()
+TEINAPI void dump_debug_timer_results  ()
 {
     if (!debug_timer_results.empty())
     {

@@ -27,22 +27,22 @@ static constexpr float WINDOW_BORDER = 4.0f;
 typedef u32 Window_ID;
 struct      Window;
 
-FILDEF bool init_window ();
-FILDEF void quit_window ();
+TEINAPI bool init_window ();
+TEINAPI void quit_window ();
 
-FILDEF void handle_window_events ();
+TEINAPI void handle_window_events ();
 
-INLDEF void set_main_window_subtitle (std::string subtitle);
+TEINAPI void set_main_window_subtitle (std::string subtitle);
 
-FILDEF void show_main_window ();
+TEINAPI void show_main_window ();
 
-FILDEF Window&     get_focused_window      (                );
-FILDEF Window&     get_window              (std::string name);
-FILDEF Window&     get_window_from_id      (Window_ID     id);
-FILDEF Window_ID   get_window_id           (std::string name);
-FILDEF std::string get_window_name_from_id (Window_ID     id);
+TEINAPI Window&     get_focused_window      (                );
+TEINAPI Window&     get_window              (std::string name);
+TEINAPI Window&     get_window_from_id      (Window_ID     id);
+TEINAPI Window_ID   get_window_id           (std::string name);
+TEINAPI std::string get_window_name_from_id (Window_ID     id);
 
-FILDEF bool is_a_window_resizing ();
+TEINAPI bool is_a_window_resizing ();
 
 /******************************************************************************/
 
@@ -68,22 +68,21 @@ struct Window
     float height;
 };
 
-STDDEF bool create_window (std::string name, std::string title, int x, int y, int w, int h,
-                           int min_w = 0, int min_h = 0, u32 flags = 0);
+TEINAPI bool create_window (std::string name, std::string title, int x, int y, int w, int h, int min_w = 0, int min_h = 0, u32 flags = 0);
 
-FILDEF bool is_window_hidden  (std::string name);
-FILDEF bool is_window_focused (std::string name);
+TEINAPI bool is_window_hidden  (std::string name);
+TEINAPI bool is_window_focused (std::string name);
 
-FILDEF void show_window  (std::string name);
-FILDEF void raise_window (std::string name);
-FILDEF void hide_window  (std::string name);
+TEINAPI void show_window  (std::string name);
+TEINAPI void raise_window (std::string name);
+TEINAPI void hide_window  (std::string name);
 
-FILDEF void set_window_title    (std::string name, std::string title);
-FILDEF void set_window_min_size (std::string name, int w, int h);
-FILDEF void set_window_max_size (std::string name, int w, int h);
-FILDEF void set_window_pos      (std::string name, int x, int y);
-FILDEF void set_window_size     (std::string name, int w, int h);
-FILDEF void set_window_child    (std::string name);
+TEINAPI void set_window_title    (std::string name, std::string title);
+TEINAPI void set_window_min_size (std::string name, int w, int h);
+TEINAPI void set_window_max_size (std::string name, int w, int h);
+TEINAPI void set_window_pos      (std::string name, int x, int y);
+TEINAPI void set_window_size     (std::string name, int w, int h);
+TEINAPI void set_window_child    (std::string name);
 
 /******************************************************************************/
 

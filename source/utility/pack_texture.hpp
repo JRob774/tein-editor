@@ -11,7 +11,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_tile_padding (u8* in, u8* out, int w, int h, int xpad, int ypad, int padding)
+TEINAPI void internal__do_tile_padding (u8* in, u8* out, int w, int h, int xpad, int ypad, int padding)
 {
     constexpr int BPP = 4;
 
@@ -62,7 +62,7 @@ FILDEF void internal__do_tile_padding (u8* in, u8* out, int w, int h, int xpad, 
     }
 }
 
-FILDEF void internal__pack_textures (std::string in, std::string out)
+TEINAPI void internal__pack_textures (std::string in, std::string out)
 {
     constexpr int PADDING = 12;
     constexpr int BPP = 4;
@@ -103,7 +103,7 @@ FILDEF void internal__pack_textures (std::string in, std::string out)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void pack_textures ()
+TEINAPI void pack_textures ()
 {
     if (main_event.type == SDL_KEYDOWN)
     {

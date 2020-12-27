@@ -20,7 +20,7 @@ static std::map<std::string, std::vector<u8>> gpak_resource_lookup;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool init_resource_manager ()
+TEINAPI bool init_resource_manager ()
 {
     std::string gpak_file_name(make_path_absolute(RESOURCE_GPAK));
     if (!does_file_exist(gpak_file_name)) return true;
@@ -60,7 +60,7 @@ FILDEF bool init_resource_manager ()
     return true;
 }
 
-FILDEF void get_resource_location ()
+TEINAPI void get_resource_location ()
 {
     std::string resource_location_file(get_executable_path() + RESOURCE_LOCATION);
     if (does_file_exist(resource_location_file))
@@ -77,42 +77,42 @@ FILDEF void get_resource_location ()
 // We attempt to load resources from file first, but if they don't exist
 // then we fall-back to loading them from the editor's GPAK file instead.
 
-FILDEF bool load_texture_resource (std::string file_name, Texture& tex, Texture_Wrap wrap)
+TEINAPI bool load_texture_resource (std::string file_name, Texture& tex, Texture_Wrap wrap)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return load_texture_from_file(tex, abs_file_name, wrap);
     else return load_texture_from_data(tex, gpak_resource_lookup[file_name], wrap);
 }
 
-FILDEF bool load_atlas_resource (std::string file_name, Texture_Atlas& atlas)
+TEINAPI bool load_atlas_resource (std::string file_name, Texture_Atlas& atlas)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return load_texture_atlas_from_file(atlas, abs_file_name);
     else return load_texture_atlas_from_data(atlas, gpak_resource_lookup[file_name]);
 }
 
-FILDEF bool load_font_resource (std::string file_name, Font& fnt, std::vector<int> pt, float csz)
+TEINAPI bool load_font_resource (std::string file_name, Font& fnt, std::vector<int> pt, float csz)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return load_font_from_file(fnt, abs_file_name, pt, csz);
     else return load_font_from_data(fnt, gpak_resource_lookup[file_name], pt, csz);
 }
 
-FILDEF Shader load_shader_resource (std::string file_name)
+TEINAPI Shader load_shader_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return load_shader_from_file(abs_file_name);
     else return load_shader_from_data(gpak_resource_lookup[file_name]);
 }
 
-FILDEF std::vector<u8> load_binary_resource (std::string file_name)
+TEINAPI std::vector<u8> load_binary_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return read_binary_file(abs_file_name);
     else return gpak_resource_lookup[file_name];
 }
 
-FILDEF SDL_Surface* load_surface_resource (std::string file_name)
+TEINAPI SDL_Surface* load_surface_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return SDL_LoadBMP(abs_file_name.c_str());
@@ -120,7 +120,7 @@ FILDEF SDL_Surface* load_surface_resource (std::string file_name)
         static_cast<int>(gpak_resource_lookup[file_name].size())), true);
 }
 
-FILDEF std::string load_string_resource (std::string file_name)
+TEINAPI std::string load_string_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
     if (does_file_exist(abs_file_name)) return read_entire_file(abs_file_name);
@@ -130,7 +130,7 @@ FILDEF std::string load_string_resource (std::string file_name)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_editor_resources ()
+TEINAPI bool load_editor_resources ()
 {
     if (!load_texture_resource("textures/editor_ui/tools.png", resource_icons))
     {
@@ -189,7 +189,7 @@ FILDEF bool load_editor_resources ()
     return true;
 }
 
-FILDEF void free_editor_resources ()
+TEINAPI void free_editor_resources ()
 {
     free_font         (resource_font_mono_dyslexic);
     free_font         (resource_font_bold_sans);
@@ -207,43 +207,43 @@ FILDEF void free_editor_resources ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF std::string build_resource_string (std::string str)
+TEINAPI std::string build_resource_string (std::string str)
 {
     return (is_path_absolute(str)) ? str : (resource_location + str);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void update_editor_font ()
+TEINAPI void update_editor_font ()
 {
     current_editor_font = editor_settings.font_face;
 }
 
-FILDEF bool is_editor_font_opensans ()
+TEINAPI bool is_editor_font_opensans ()
 {
     return (current_editor_font != "OpenDyslexic");
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Font& get_editor_regular_font ()
+TEINAPI Font& get_editor_regular_font ()
 {
     return (is_editor_font_opensans()) ? resource_font_regular_sans : resource_font_regular_dyslexic;
 }
 
-FILDEF Font& get_editor_bold_font ()
+TEINAPI Font& get_editor_bold_font ()
 {
     return (is_editor_font_opensans()) ? resource_font_bold_sans : resource_font_bold_dyslexic;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Texture_Atlas& get_editor_atlas_large ()
+TEINAPI Texture_Atlas& get_editor_atlas_large ()
 {
     return resource_large;
 }
 
-FILDEF Texture_Atlas& get_editor_atlas_small ()
+TEINAPI Texture_Atlas& get_editor_atlas_small ()
 {
     return resource_small;
 }

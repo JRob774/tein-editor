@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_about ()
+TEINAPI void do_about ()
 {
     set_ui_font(&get_editor_regular_font());
 
@@ -46,7 +46,7 @@ FILDEF void do_about ()
     end_panel();
 }
 
-FILDEF void handle_about_events ()
+TEINAPI void handle_about_events ()
 {
     if (!is_window_focused("WINABOUT")) return;
 

@@ -26,7 +26,7 @@ static Tab_Type current_tab_type = Tab_Type::LEVEL;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__okay_new ()
+TEINAPI void internal__okay_new ()
 {
     if (current_new_width < MINIMUM_LEVEL_WIDTH || current_new_height < MINIMUM_LEVEL_HEIGHT)
     {
@@ -46,7 +46,7 @@ FILDEF void internal__okay_new ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void open_new ()
+TEINAPI void open_new ()
 {
     current_new_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
     current_new_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
@@ -57,7 +57,7 @@ FILDEF void open_new ()
     show_window("WINNEW");
 }
 
-FILDEF void do_new ()
+TEINAPI void do_new ()
 {
     quad p1, p2;
 
@@ -175,14 +175,14 @@ FILDEF void do_new ()
     end_panel();
 }
 
-FILDEF void cancel_new ()
+TEINAPI void cancel_new ()
 {
     hide_window("WINNEW");
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_new_events ()
+TEINAPI void handle_new_events ()
 {
     if (is_window_focused("WINNEW"))
     {
@@ -202,12 +202,12 @@ FILDEF void handle_new_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF int get_new_w ()
+TEINAPI int get_new_w ()
 {
     return current_new_width;
 }
 
-FILDEF int get_new_h ()
+TEINAPI int get_new_h ()
 {
     return current_new_height;
 }

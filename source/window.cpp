@@ -20,7 +20,7 @@ static bool     from_manual_resize; // Hack used to solve a stupid flashing wind
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__are_any_subwindows_open ()
+TEINAPI bool internal__are_any_subwindows_open ()
 {
     for (auto it: windows)
     {
@@ -29,7 +29,7 @@ FILDEF bool internal__are_any_subwindows_open ()
     return false;
 }
 
-FILDEF void internal__push_quit_event ()
+TEINAPI void internal__push_quit_event ()
 {
     SDL_Event e;
     SDL_zero(e);
@@ -43,7 +43,7 @@ FILDEF void internal__push_quit_event ()
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF int internal__resize_window (void* main_window_thread_id, SDL_Event* event)
+TEINAPI int internal__resize_window (void* main_window_thread_id, SDL_Event* event)
 {
     // We only care about window resizing events, ignore everything else!
     if (event->type == SDL_WINDOWEVENT)
@@ -90,7 +90,7 @@ STDDEF int internal__resize_window (void* main_window_thread_id, SDL_Event* even
 /* -------------------------------------------------------------------------- */
 
 #if defined(PLATFORM_WIN32)
-FILDEF void internal__load_window_state ()
+TEINAPI void internal__load_window_state ()
 {
     HKEY key;
     LSTATUS ret = RegOpenKeyExA(HKEY_CURRENT_USER, WINDOW_STATE_KEY_NAME, 0, KEY_READ, &key);
@@ -144,7 +144,7 @@ FILDEF void internal__load_window_state ()
 #endif
 
 #if defined(PLATFORM_WIN32)
-FILDEF void internal__save_window_state ()
+TEINAPI void internal__save_window_state ()
 {
     DWORD disp;
     HKEY  key;
@@ -192,8 +192,7 @@ FILDEF void internal__save_window_state ()
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool create_window (std::string name, std::string title, int x, int y,
-                           int w, int h, int min_w, int min_h, u32 flags)
+TEINAPI bool create_window (std::string name, std::string title, int x, int y, int w, int h, int min_w, int min_h, u32 flags)
 {
     if (windows.find(name) != windows.end())
     {
@@ -246,63 +245,63 @@ STDDEF bool create_window (std::string name, std::string title, int x, int y,
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool is_window_hidden (std::string name)
+TEINAPI bool is_window_hidden (std::string name)
 {
     return (SDL_GetWindowFlags(windows.at(name).window) & SDL_WINDOW_HIDDEN);
 }
 
-FILDEF bool is_window_focused (std::string name)
+TEINAPI bool is_window_focused (std::string name)
 {
     return windows.at(name).focus;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void show_window (std::string name)
+TEINAPI void show_window (std::string name)
 {
     set_window_pos(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     SDL_ShowWindow(windows.at(name).window);
 }
 
-FILDEF void raise_window (std::string name)
+TEINAPI void raise_window (std::string name)
 {
     SDL_RaiseWindow(windows.at(name).window);
 }
 
-FILDEF void hide_window (std::string name)
+TEINAPI void hide_window (std::string name)
 {
     SDL_HideWindow(windows.at(name).window);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_window_title (std::string name, std::string title)
+TEINAPI void set_window_title (std::string name, std::string title)
 {
     SDL_SetWindowTitle(windows.at(name).window, title.c_str());
 }
 
-FILDEF void set_window_min_size (std::string name, int w, int h)
+TEINAPI void set_window_min_size (std::string name, int w, int h)
 {
     SDL_SetWindowMinimumSize(windows.at(name).window, w, h);
 }
 
-FILDEF void set_window_max_size (std::string name, int w, int h)
+TEINAPI void set_window_max_size (std::string name, int w, int h)
 {
     SDL_SetWindowMaximumSize(windows.at(name).window, w, h);
 }
 
-FILDEF void set_window_pos (std::string name, int x, int y)
+TEINAPI void set_window_pos (std::string name, int x, int y)
 {
     SDL_SetWindowPosition(windows.at(name).window, x, y);
 }
 
-FILDEF void set_window_size (std::string name, int w, int h)
+TEINAPI void set_window_size (std::string name, int w, int h)
 {
     SDL_SetWindowSize(windows.at(name).window, w, h);
 }
 
 #if defined(PLATFORM_WIN32)
-FILDEF void set_window_child (std::string name)
+TEINAPI void set_window_child (std::string name)
 {
     HWND hwnd = internal__win32_get_window_handle(get_window(name).window);
     LONG old = GetWindowLongA(hwnd, GWL_EXSTYLE);
@@ -315,7 +314,7 @@ FILDEF void set_window_child (std::string name)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool init_window ()
+TEINAPI bool init_window ()
 {
     // The SDL docs say that event watchers can potentially be called on a
     // separate thread this means that, if this is the case, the redraw on
@@ -361,7 +360,7 @@ FILDEF bool init_window ()
     return true;
 }
 
-FILDEF void quit_window ()
+TEINAPI void quit_window ()
 {
     // Note: We remove this so when we SDL_RestoreWindow in internal__save_window_state
     // we don't end up invoking the resize handler function internal__resize_window.
@@ -376,7 +375,7 @@ FILDEF void quit_window ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_window_events ()
+TEINAPI void handle_window_events ()
 {
     if (main_event.type != SDL_WINDOWEVENT) return;
 
@@ -455,7 +454,7 @@ FILDEF void handle_window_events ()
 
 /* -------------------------------------------------------------------------- */
 
-INLDEF void set_main_window_subtitle (std::string subtitle)
+TEINAPI void set_main_window_subtitle (std::string subtitle)
 {
     #if defined(BUILD_DEBUG)
     std::string main_title(format_string("[DEBUG] %s (%d.%d.%d)",
@@ -476,7 +475,7 @@ INLDEF void set_main_window_subtitle (std::string subtitle)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void show_main_window ()
+TEINAPI void show_main_window ()
 {
     internal__load_window_state();
     SDL_ShowWindow(windows.at("WINMAIN").window);
@@ -484,30 +483,30 @@ FILDEF void show_main_window ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Window& get_focused_window ()
+TEINAPI Window& get_focused_window ()
 {
     for (auto& it: windows) if (it.second.focus) return it.second;
     return windows.at("WINMAIN");
 }
 
-FILDEF Window& get_window (std::string name)
+TEINAPI Window& get_window (std::string name)
 {
     ASSERT(windows.find(name) != windows.end());
     return windows.at(name);
 }
 
-FILDEF Window& get_window_from_id (Window_ID id)
+TEINAPI Window& get_window_from_id (Window_ID id)
 {
     for (auto& it: windows) if (it.second.id == id) return it.second;
     return windows.at("WINMAIN");
 }
 
-FILDEF Window_ID get_window_id (std::string name)
+TEINAPI Window_ID get_window_id (std::string name)
 {
     return windows.at(name).id;
 }
 
-FILDEF std::string get_window_name_from_id (Window_ID id)
+TEINAPI std::string get_window_name_from_id (Window_ID id)
 {
     for (auto& it: windows) if (it.second.id == id) return it.first;
     return std::string();
@@ -515,7 +514,7 @@ FILDEF std::string get_window_name_from_id (Window_ID id)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool is_a_window_resizing ()
+TEINAPI bool is_a_window_resizing ()
 {
     return window_resizing;
 }

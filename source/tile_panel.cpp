@@ -51,14 +51,14 @@ static Tile_Panel tile_panel;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__is_category_active (Tile_Category category)
+TEINAPI bool internal__is_category_active (Tile_Category category)
 {
     if (!current_tab_is_level()) return false;
     const Tab& tab = get_current_tab();
     return tab.tile_layer_active[category_to_layer(category)];
 }
 
-FILDEF float internal__do_tile_panel_category (vec2& cursor, Tile_Category category_index, std::vector<Tile_Group>& category)
+TEINAPI float internal__do_tile_panel_category (vec2& cursor, Tile_Category category_index, std::vector<Tile_Group>& category)
 {
     // Determine how many rows of entities are present in the category.
     float items = static_cast<float>(category.size());
@@ -188,7 +188,7 @@ FILDEF float internal__do_tile_panel_category (vec2& cursor, Tile_Category categ
     return h;
 }
 
-FILDEF void internal__load_flip_data (const GonObject& data, std::vector<Tile_Flip_Map>& flip)
+TEINAPI void internal__load_flip_data (const GonObject& data, std::vector<Tile_Flip_Map>& flip)
 {
     for (int i=0; i<static_cast<int>(data.children_array.size()); ++i)
     {
@@ -199,7 +199,7 @@ FILDEF void internal__load_flip_data (const GonObject& data, std::vector<Tile_Fl
     }
 }
 
-FILDEF float internal__calculate_tile_panel_height ()
+TEINAPI float internal__calculate_tile_panel_height ()
 {
     float height = TILE_PANEL_INNER_PAD;
     for (auto& it: tile_panel.category)
@@ -217,7 +217,7 @@ FILDEF float internal__calculate_tile_panel_height ()
     return height;
 }
 
-FILDEF void internal__set_category_as_active (Tile_Category category)
+TEINAPI void internal__set_category_as_active (Tile_Category category)
 {
     int old_selected_category = tile_panel.selected_category;
     int old_selected_group = tile_panel.selected_group;
@@ -244,7 +244,7 @@ FILDEF void internal__set_category_as_active (Tile_Category category)
     }
 }
 
-FILDEF void internal__jump_to_category (Tile_Category category)
+TEINAPI void internal__jump_to_category (Tile_Category category)
 {
     if (current_tab_is_level())
     {
@@ -260,7 +260,7 @@ FILDEF void internal__jump_to_category (Tile_Category category)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool init_tile_panel ()
+TEINAPI bool init_tile_panel ()
 {
     tile_panel.flip_map_horz.clear();
     tile_panel.flip_map_vert.clear();
@@ -318,7 +318,7 @@ FILDEF bool init_tile_panel ()
     return true;
 }
 
-FILDEF void do_tile_panel (bool scrollbar)
+TEINAPI void do_tile_panel (bool scrollbar)
 {
     set_ui_font(&get_editor_regular_font());
 
@@ -353,14 +353,14 @@ FILDEF void do_tile_panel (bool scrollbar)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool tile_panel_needs_scrollbar ()
+TEINAPI bool tile_panel_needs_scrollbar ()
 {
     return (tile_panel.content_height > tile_panel.bounds.h);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_tile_panel_events ()
+TEINAPI void handle_tile_panel_events ()
 {
     if (current_tab_is_level())
     {
@@ -407,14 +407,14 @@ FILDEF void handle_tile_panel_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float get_tile_panel_height ()
+TEINAPI float get_tile_panel_height ()
 {
     return (tile_panel.bounds.h + 1);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void reload_tile_graphics ()
+TEINAPI void reload_tile_graphics ()
 {
     free_texture_atlas(resource_large);
     free_texture_atlas(resource_small);
@@ -433,26 +433,26 @@ FILDEF void reload_tile_graphics ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Tile_Category get_selected_category ()
+TEINAPI Tile_Category get_selected_category ()
 {
     return tile_panel.selected_category;
 }
 
-FILDEF Tile_ID get_selected_tile ()
+TEINAPI Tile_ID get_selected_tile ()
 {
     const auto& category = tile_panel.category[tile_panel.selected_category];
     const auto& group = category[tile_panel.selected_group];
     return group.tile[group.selected_index];
 }
 
-FILDEF Level_Layer get_selected_layer ()
+TEINAPI Level_Layer get_selected_layer ()
 {
     return category_to_layer(tile_panel.selected_category);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Level_Layer category_to_layer (Tile_Category category)
+TEINAPI Level_Layer category_to_layer (Tile_Category category)
 {
     switch (category)
     {
@@ -468,7 +468,7 @@ FILDEF Level_Layer category_to_layer (Tile_Category category)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void select_next_active_group ()
+TEINAPI void select_next_active_group ()
 {
     if (!are_all_layers_inactive())
     {
@@ -484,7 +484,7 @@ STDDEF void select_next_active_group ()
     }
 }
 
-STDDEF void select_prev_active_group ()
+TEINAPI void select_prev_active_group ()
 {
     if (!are_all_layers_inactive())
     {
@@ -502,7 +502,7 @@ STDDEF void select_prev_active_group ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void reset_selected_group ()
+TEINAPI void reset_selected_group ()
 {
     tile_panel.selected_category = 0;
     select_next_active_group();
@@ -510,7 +510,7 @@ FILDEF void reset_selected_group ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void increment_selected_tile ()
+TEINAPI void increment_selected_tile ()
 {
     if (!current_tab_is_level()) return;
 
@@ -536,7 +536,7 @@ FILDEF void increment_selected_tile ()
     }
 }
 
-FILDEF void decrement_selected_tile ()
+TEINAPI void decrement_selected_tile ()
 {
     if (!current_tab_is_level()) return;
 
@@ -564,7 +564,7 @@ FILDEF void decrement_selected_tile ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void increment_selected_group ()
+TEINAPI void increment_selected_group ()
 {
     if (!current_tab_is_level()) return;
 
@@ -590,7 +590,7 @@ FILDEF void increment_selected_group ()
     }
 }
 
-FILDEF void decrement_selected_group ()
+TEINAPI void decrement_selected_group ()
 {
     if (!current_tab_is_level()) return;
 
@@ -618,7 +618,7 @@ FILDEF void decrement_selected_group ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void increment_selected_category ()
+TEINAPI void increment_selected_category ()
 {
     if (!current_tab_is_level()) return;
 
@@ -647,7 +647,7 @@ FILDEF void increment_selected_category ()
     }
 }
 
-FILDEF void decrement_selected_category ()
+TEINAPI void decrement_selected_category ()
 {
     if (!current_tab_is_level()) return;
 
@@ -678,7 +678,7 @@ FILDEF void decrement_selected_category ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Tile_ID get_tile_horizontal_flip (Tile_ID id)
+TEINAPI Tile_ID get_tile_horizontal_flip (Tile_ID id)
 {
     if (id)
     {
@@ -690,7 +690,7 @@ FILDEF Tile_ID get_tile_horizontal_flip (Tile_ID id)
     }
     return id;
 }
-FILDEF Tile_ID get_tile_vertical_flip (Tile_ID id)
+TEINAPI Tile_ID get_tile_vertical_flip (Tile_ID id)
 {
     if (id)
     {
@@ -705,32 +705,32 @@ FILDEF Tile_ID get_tile_vertical_flip (Tile_ID id)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void jump_to_category_basic ()
+TEINAPI void jump_to_category_basic ()
 {
     internal__jump_to_category(TILE_CATEGORY_BASIC);
 }
 
-FILDEF void jump_to_category_tag ()
+TEINAPI void jump_to_category_tag ()
 {
     internal__jump_to_category(TILE_CATEGORY_TAG);
 }
 
-FILDEF void jump_to_category_overlay ()
+TEINAPI void jump_to_category_overlay ()
 {
     internal__jump_to_category(TILE_CATEGORY_OVERLAY);
 }
 
-FILDEF void jump_to_category_entity ()
+TEINAPI void jump_to_category_entity ()
 {
     internal__jump_to_category(TILE_CATEGORY_ENTITY);
 }
 
-FILDEF void jump_to_category_back1 ()
+TEINAPI void jump_to_category_back1 ()
 {
     internal__jump_to_category(TILE_CATEGORY_BACK1);
 }
 
-FILDEF void jump_to_category_back2 ()
+TEINAPI void jump_to_category_back2 ()
 {
     internal__jump_to_category(TILE_CATEGORY_BACK2);
 }

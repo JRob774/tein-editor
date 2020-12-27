@@ -9,7 +9,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF GLuint internal__compile_shader (const GLchar* source, GLenum type)
+TEINAPI GLuint internal__compile_shader (const GLchar* source, GLenum type)
 {
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, NULL);
@@ -36,7 +36,7 @@ FILDEF GLuint internal__compile_shader (const GLchar* source, GLenum type)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF Shader load_shader_from_source (std::string source)
+TEINAPI Shader load_shader_from_source (std::string source)
 {
     std::string vert_src(source);
     std::string frag_src(source);
@@ -92,7 +92,7 @@ STDDEF Shader load_shader_from_source (std::string source)
     return program;
 }
 
-FILDEF Shader load_shader_from_file (std::string file_name)
+TEINAPI Shader load_shader_from_file (std::string file_name)
 {
     // Build an absolute path to the file based on the executable location.
     file_name = make_path_absolute(file_name);
@@ -112,13 +112,13 @@ FILDEF Shader load_shader_from_file (std::string file_name)
     return shader;
 }
 
-FILDEF Shader load_shader_from_data (const std::vector<u8>& file_data)
+TEINAPI Shader load_shader_from_data (const std::vector<u8>& file_data)
 {
     std::string source(file_data.begin(), file_data.end());
     return load_shader_from_source(source);
 }
 
-FILDEF void free_shader (Shader program)
+TEINAPI void free_shader (Shader program)
 {
     glDeleteProgram(program);
 }

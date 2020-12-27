@@ -22,9 +22,7 @@ static constexpr u32 EDITOR_EVENT_GPAK_PROGRESS = 5;
 static constexpr u32 EDITOR_EVENT_SHOW_TOOLTIP  = 6;
 static constexpr u32 EDITOR_EVENT_SHOW_UPDATE   = 7;
 
-FILDEF void push_editor_event (Editor_Event id,
-                               void* data1,
-                               void* data2);
+TEINAPI void push_editor_event (Editor_Event id, void* data1, void* data2);
 
 /* -------------------------------------------------------------------------- */
 

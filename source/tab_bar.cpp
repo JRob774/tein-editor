@@ -23,7 +23,7 @@ static bool can_scroll_in_tab_bar = false;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool current)
+TEINAPI bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool current)
 {
     bool should_close = false;
 
@@ -80,7 +80,7 @@ FILDEF bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool 
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_tab_bar_events ()
+TEINAPI void handle_tab_bar_events ()
 {
     switch (main_event.type)
     {
@@ -97,7 +97,7 @@ FILDEF void handle_tab_bar_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_tab_bar ()
+TEINAPI void do_tab_bar ()
 {
     float x = get_toolbar_w() + 1;
     float y = 0;
@@ -212,7 +212,7 @@ FILDEF void do_tab_bar ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void maybe_scroll_tab_bar ()
+TEINAPI void maybe_scroll_tab_bar ()
 {
     if (editor.current_tab < starting_tab_offset) starting_tab_offset = editor.current_tab;
     while (editor.current_tab >= std::min(editor.tabs.size(), starting_tab_offset+max_number_of_tabs))
@@ -223,7 +223,7 @@ FILDEF void maybe_scroll_tab_bar ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void move_tab_left ()
+TEINAPI void move_tab_left ()
 {
     if (are_there_any_tabs())
     {
@@ -241,7 +241,7 @@ FILDEF void move_tab_left ()
     }
 }
 
-FILDEF void move_tab_right ()
+TEINAPI void move_tab_right ()
 {
     if (are_there_any_tabs())
     {
@@ -261,14 +261,14 @@ FILDEF void move_tab_right ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void need_to_scroll_next_update ()
+TEINAPI void need_to_scroll_next_update ()
 {
     need_to_scroll_tab_bar = true;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool mouse_is_over_tab_bar ()
+TEINAPI bool mouse_is_over_tab_bar ()
 {
     return can_scroll_in_tab_bar;
 }

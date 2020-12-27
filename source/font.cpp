@@ -14,7 +14,7 @@ static constexpr float FONT_GLYPH_CACHE_PADS = 6;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__set_font_point_size (Font& fnt, int pt)
+TEINAPI bool internal__set_font_point_size (Font& fnt, int pt)
 {
     // We use the current display's DPI to determine the point size.
     float hdpi, vdpi;
@@ -38,7 +38,7 @@ FILDEF bool internal__set_font_point_size (Font& fnt, int pt)
     return true;
 }
 
-STDDEF bool internal__create_font (Font& fnt, int pt, float csz)
+TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
 {
     // Make sure the glyph cache size is within the GL texture bounds.
     // If not we set it to that size and log a low-priority error.
@@ -144,7 +144,7 @@ STDDEF bool internal__create_font (Font& fnt, int pt, float csz)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, std::vector<int> pt, float csz)
+TEINAPI bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, std::vector<int> pt, float csz)
 {
     ASSERT(pt.size());
 
@@ -168,7 +168,7 @@ FILDEF bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, st
     return true;
 }
 
-FILDEF bool load_font_from_file (Font& fnt, std::string file_name, std::vector<int> pt, float csz)
+TEINAPI bool load_font_from_file (Font& fnt, std::string file_name, std::vector<int> pt, float csz)
 {
     ASSERT(pt.size());
 
@@ -192,7 +192,7 @@ FILDEF bool load_font_from_file (Font& fnt, std::string file_name, std::vector<i
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void free_font (Font& fnt)
+TEINAPI void free_font (Font& fnt)
 {
     for (auto cache: fnt.cache) free_texture(cache.second);
 
@@ -208,7 +208,7 @@ FILDEF void free_font (Font& fnt)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float get_font_kerning (const Font& fnt, int c, int& i, int& p)
+TEINAPI float get_font_kerning (const Font& fnt, int c, int& i, int& p)
 {
     FT_Vector kern = {};
     i = FT_Get_Char_Index(fnt.face, c);
@@ -220,12 +220,12 @@ FILDEF float get_font_kerning (const Font& fnt, int c, int& i, int& p)
     return static_cast<float>(kern.x >> 6);
 }
 
-FILDEF float get_font_tab_width (const Font& fnt)
+TEINAPI float get_font_tab_width (const Font& fnt)
 {
     return (fnt.glyphs.at(fnt.current_pt_size).at(32).advance * TAB_LENGTH_IN_SPACES);
 }
 
-FILDEF float get_glyph_advance (const Font& fnt, int c, int& i, int& p)
+TEINAPI float get_glyph_advance (const Font& fnt, int c, int& i, int& p)
 {
     auto& glyphs = fnt.glyphs.at(fnt.current_pt_size);
     if (c >= 0 && c < TOTAL_GLYPH_COUNT)
@@ -237,7 +237,7 @@ FILDEF float get_glyph_advance (const Font& fnt, int c, int& i, int& p)
 
 /* -------------------------------------------------------------------------- */
 
-INLDEF float get_text_width (const Font& fnt, std::string text)
+TEINAPI float get_text_width (const Font& fnt, std::string text)
 {
     float max_width = 0;
     float width = 0;
@@ -265,7 +265,7 @@ INLDEF float get_text_width (const Font& fnt, std::string text)
     return std::max(max_width, width);
 }
 
-INLDEF float get_text_height (const Font& fnt, std::string text)
+TEINAPI float get_text_height (const Font& fnt, std::string text)
 {
     if (text.empty()) return 0.0f;
     float height = fnt.line_gap.at(fnt.current_pt_size);
@@ -278,19 +278,19 @@ INLDEF float get_text_height (const Font& fnt, std::string text)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float get_text_width_scaled (const Font& fnt, std::string text)
+TEINAPI float get_text_width_scaled (const Font& fnt, std::string text)
 {
     return (get_text_width(fnt, text) * get_font_draw_scale());
 }
 
-FILDEF float get_text_height_scaled (const Font& fnt, std::string text)
+TEINAPI float get_text_height_scaled (const Font& fnt, std::string text)
 {
     return (get_text_height(fnt, text) * get_font_draw_scale());
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_font_point_size (Font& fnt, int pt)
+TEINAPI void set_font_point_size (Font& fnt, int pt)
 {
     ASSERT(fnt.glyphs.find(pt) != fnt.glyphs.end());
     internal__set_font_point_size(fnt, pt);

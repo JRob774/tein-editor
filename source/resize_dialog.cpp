@@ -36,7 +36,7 @@ static const quad* se_clip     = &CLIP_RESIZE_SE;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__calculate_dir_clips ()
+TEINAPI void internal__calculate_dir_clips ()
 {
     switch (resize_dialog_dir)
     {
@@ -153,7 +153,7 @@ FILDEF void internal__calculate_dir_clips ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_resize_alignment (vec2& cursor)
+TEINAPI void internal__do_resize_alignment (vec2& cursor)
 {
     // Do the long horizontal separator first.
     float w = get_viewport().w - (RESIZE_XPAD*2);
@@ -206,7 +206,7 @@ FILDEF void internal__do_resize_alignment (vec2& cursor)
     }
 }
 
-FILDEF void internal__okay_resize ()
+TEINAPI void internal__okay_resize ()
 {
     if (current_resize_width < MINIMUM_LEVEL_WIDTH || current_resize_height < MINIMUM_LEVEL_HEIGHT)
     {
@@ -221,7 +221,7 @@ FILDEF void internal__okay_resize ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void open_resize (int lw, int lh)
+TEINAPI void open_resize (int lw, int lh)
 {
     set_window_pos("WINRESIZE", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED);
 
@@ -234,7 +234,7 @@ FILDEF void open_resize (int lw, int lh)
     show_window("WINRESIZE");
 }
 
-FILDEF void do_resize ()
+TEINAPI void do_resize ()
 {
     quad p1, p2;
 
@@ -327,14 +327,14 @@ FILDEF void do_resize ()
     end_panel();
 }
 
-FILDEF void cancel_resize ()
+TEINAPI void cancel_resize ()
 {
     hide_window("WINRESIZE");
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void handle_resize_events ()
+TEINAPI void handle_resize_events ()
 {
     if (!is_window_focused("WINRESIZE")) return;
 
@@ -353,41 +353,41 @@ FILDEF void handle_resize_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF int get_resize_w ()
+TEINAPI int get_resize_w ()
 {
     return current_resize_width;
 }
 
-FILDEF int get_resize_h ()
+TEINAPI int get_resize_h ()
 {
     return current_resize_height;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF Resize_Dir get_resize_dir ()
+TEINAPI Resize_Dir get_resize_dir ()
 {
     return resize_dialog_dir;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool resize_dir_is_north (Resize_Dir dir)
+TEINAPI bool resize_dir_is_north (Resize_Dir dir)
 {
     return (dir == Resize_Dir::NW || dir == Resize_Dir::N || dir == Resize_Dir::NE);
 }
 
-FILDEF bool resize_dir_is_east (Resize_Dir dir)
+TEINAPI bool resize_dir_is_east (Resize_Dir dir)
 {
     return (dir == Resize_Dir::NE || dir == Resize_Dir::E || dir == Resize_Dir::SE);
 }
 
-FILDEF bool resize_dir_is_south (Resize_Dir dir)
+TEINAPI bool resize_dir_is_south (Resize_Dir dir)
 {
     return (dir == Resize_Dir::SW || dir == Resize_Dir::S || dir == Resize_Dir::SE);
 }
 
-FILDEF bool resize_dir_is_west (Resize_Dir dir)
+TEINAPI bool resize_dir_is_west (Resize_Dir dir)
 {
     return (dir == Resize_Dir::NW || dir == Resize_Dir::W || dir == Resize_Dir::SW);
 }

@@ -101,28 +101,28 @@ static bool        ui_cursor_visible;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF u32 internal__cursor_blink_callback (u32 interval, void* user_data)
+TEINAPI u32 internal__cursor_blink_callback (u32 interval, void* user_data)
 {
     push_editor_event(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
     return interval;
 }
 
-FILDEF bool internal__is_hot ()
+TEINAPI bool internal__is_hot ()
 {
     return (ui_current_id == ui_hot_id);
 }
 
-FILDEF bool internal__is_hit ()
+TEINAPI bool internal__is_hit ()
 {
     return (ui_current_id == ui_hit_id);
 }
 
-FILDEF bool internal__is_file_path (char c)
+TEINAPI bool internal__is_file_path (char c)
 {
     return (std::string("<>\"|?*").find(c) == std::string::npos);
 }
 
-FILDEF quad internal__get_clipped_bounds (float x, float y, float w, float h)
+TEINAPI quad internal__get_clipped_bounds (float x, float y, float w, float h)
 {
     // Clip the widget's bounds to be within the panel's visible area.
     // This stops the user being able to click on invisible portions.
@@ -140,7 +140,7 @@ FILDEF quad internal__get_clipped_bounds (float x, float y, float w, float h)
     return clipped_bounds;
 }
 
-FILDEF quad internal__get_clipped_bounds (quad& p)
+TEINAPI quad internal__get_clipped_bounds (quad& p)
 {
     // Clip the widget's bounds to be within the panel's visible area.
     // This stops the user being able to click on invisible portions.
@@ -158,7 +158,7 @@ FILDEF quad internal__get_clipped_bounds (quad& p)
     return clipped_bounds;
 }
 
-FILDEF bool internal__handle_widget (float x, float y, float w, float h, bool locked)
+TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool locked)
 {
     bool result = false;
 
@@ -208,24 +208,24 @@ FILDEF bool internal__handle_widget (float x, float y, float w, float h, bool lo
     return result;
 }
 
-FILDEF bool internal__handle_widget (quad b, bool locked)
+TEINAPI bool internal__handle_widget (quad b, bool locked)
 {
     return internal__handle_widget(b.x, b.y, b.w, b.h, locked);
 }
 
-FILDEF vec2& internal__get_cursor_ref (Panel& panel)
+TEINAPI vec2& internal__get_cursor_ref (Panel& panel)
 {
     ASSERT(panel.cursor);
     return *panel.cursor;
 }
 
-FILDEF vec2 internal__get_cursor (Panel& panel)
+TEINAPI vec2 internal__get_cursor (Panel& panel)
 {
     ASSERT(panel.cursor);
     return *panel.cursor;
 }
 
-FILDEF vec2 internal__get_relative_cursor (Panel& panel)
+TEINAPI vec2 internal__get_relative_cursor (Panel& panel)
 {
     vec2 cur = internal__get_cursor(panel);
 
@@ -235,7 +235,7 @@ FILDEF vec2 internal__get_relative_cursor (Panel& panel)
     return cur;
 }
 
-FILDEF void internal__draw_separator (vec2 cursor, UI_Dir dir, float w, float h, vec4 color)
+TEINAPI void internal__draw_separator (vec2 cursor, UI_Dir dir, float w, float h, vec4 color)
 {
     float x1 = cursor.x;
     float y1 = cursor.y;
@@ -254,7 +254,7 @@ FILDEF void internal__draw_separator (vec2 cursor, UI_Dir dir, float w, float h,
     draw_line(x1, y1, x2, y2);
 }
 
-FILDEF void internal__advance_ui_cursor_start (Panel& panel, float w, float h)
+TEINAPI void internal__advance_ui_cursor_start (Panel& panel, float w, float h)
 {
     if (!panel.cursor_advance_enabled) return;
 
@@ -267,7 +267,7 @@ FILDEF void internal__advance_ui_cursor_start (Panel& panel, float w, float h)
     }
 }
 
-FILDEF void internal__advance_ui_cursor_end (Panel& panel, float w, float h)
+TEINAPI void internal__advance_ui_cursor_end (Panel& panel, float w, float h)
 {
     if (!panel.cursor_advance_enabled) return;
 
@@ -280,7 +280,7 @@ FILDEF void internal__advance_ui_cursor_end (Panel& panel, float w, float h)
     }
 }
 
-FILDEF void internal__align_text (UI_Align horz, UI_Align vert, float& x, float& y, float tw, float th, float w, float h)
+TEINAPI void internal__align_text (UI_Align horz, UI_Align vert, float& x, float& y, float tw, float th, float w, float h)
 {
     // Determine how to place the text based on alignment.
     switch (horz)
@@ -297,17 +297,17 @@ FILDEF void internal__align_text (UI_Align horz, UI_Align vert, float& x, float&
     }
 }
 
-FILDEF bool internal__is_ui_mouse_down ()
+TEINAPI bool internal__is_ui_mouse_down ()
 {
     return (get_render_target()->focus) ? ui_mouse_down : false;
 }
 
-FILDEF bool internal__is_ui_mouse_r_down ()
+TEINAPI bool internal__is_ui_mouse_r_down ()
 {
     return (get_render_target()->focus) ? ui_mouse_r_down : false;
 }
 
-STDDEF std::string internal__do_markdown_formatting (std::vector<std::string>& lines, float w)
+TEINAPI std::string internal__do_markdown_formatting (std::vector<std::string>& lines, float w)
 {
     Font& fnt = get_editor_regular_font();
 
@@ -370,7 +370,7 @@ STDDEF std::string internal__do_markdown_formatting (std::vector<std::string>& l
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool init_ui_system ()
+TEINAPI bool init_ui_system ()
 {
     ui_hot_id = UI_INVALID_ID;
     ui_hit_id = UI_INVALID_ID;
@@ -403,7 +403,7 @@ FILDEF bool init_ui_system ()
     return true;
 }
 
-FILDEF void load_ui_theme ()
+TEINAPI void load_ui_theme ()
 {
     std::string theme = editor_settings.ui_theme;
     if (theme == "dark")
@@ -450,7 +450,7 @@ FILDEF void load_ui_theme ()
     }
 }
 
-FILDEF void reset_ui_state ()
+TEINAPI void reset_ui_state ()
 {
     // Reset the internal UI ID back to the beginning for a new update/cycle.
     ui_current_id = 0;
@@ -469,7 +469,7 @@ FILDEF void reset_ui_state ()
     ui_mouse_r_up   = false;
 }
 
-FILDEF void handle_ui_events ()
+TEINAPI void handle_ui_events ()
 {
     bool prev_down = ui_mouse_down;
     bool prev_up = ui_mouse_up;
@@ -553,21 +553,21 @@ FILDEF void handle_ui_events ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool is_ui_light ()
+TEINAPI bool is_ui_light ()
 {
     return ui_is_light;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF vec2 ui_get_relative_mouse ()
+TEINAPI vec2 ui_get_relative_mouse ()
 {
     return ui_mouse_relative;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h)
+TEINAPI bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h)
 {
     quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
     vec2 mouse = get_mouse_pos();
@@ -575,38 +575,38 @@ FILDEF bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h)
     return point_in_bounds_xyxy(mouse, clipped_bounds);
 }
 
-FILDEF bool mouse_in_ui_bounds_xywh (quad b)
+TEINAPI bool mouse_in_ui_bounds_xywh (quad b)
 {
     return mouse_in_ui_bounds_xywh(b.x, b.y, b.w, b.h);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_ui_texture (Texture* tex)
+TEINAPI void set_ui_texture (Texture* tex)
 {
     ui_texture = tex;
 }
 
-FILDEF void set_ui_font (Font* fnt)
+TEINAPI void set_ui_font (Font* fnt)
 {
     ui_font = fnt;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool is_there_a_hot_ui_element ()
+TEINAPI bool is_there_a_hot_ui_element ()
 {
     return (ui_hot_id != UI_INVALID_ID);
 }
 
-FILDEF bool is_there_a_hit_ui_element ()
+TEINAPI bool is_there_a_hit_ui_element ()
 {
     return (ui_hit_id != UI_INVALID_ID);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void deselect_active_text_box (std::string& text, std::string default_text)
+TEINAPI void deselect_active_text_box (std::string& text, std::string default_text)
 {
     // If specified and the text box is empty on exit then we assign
     // the content of the text box to be the passed in default value.
@@ -614,7 +614,7 @@ FILDEF void deselect_active_text_box (std::string& text, std::string default_tex
     deselect_active_text_box();
 }
 
-FILDEF void deselect_active_text_box ()
+TEINAPI void deselect_active_text_box ()
 {
     if (ui_cursor_blink_timer)
     {
@@ -630,26 +630,26 @@ FILDEF void deselect_active_text_box ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool text_box_is_active ()
+TEINAPI bool text_box_is_active ()
 {
     return (ui_active_text_box != UI_INVALID_ID);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool hotkey_is_active ()
+TEINAPI bool hotkey_is_active ()
 {
     return (ui_active_hotkey_rebind != UI_INVALID_ID);
 }
 
-FILDEF void deselect_active_hotkey_rebind ()
+TEINAPI void deselect_active_hotkey_rebind ()
 {
     ui_active_hotkey_rebind = UI_INVALID_ID;
 }
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec4 c)
+TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec4 c)
 {
     Panel panel;
 
@@ -710,14 +710,14 @@ STDDEF void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec4
     fill_quad(0, 0, panel.viewport.w, panel.viewport.h);
 }
 
-FILDEF void begin_panel (quad bounds, UI_Flag flags, vec4 c)
+TEINAPI void begin_panel (quad bounds, UI_Flag flags, vec4 c)
 {
     begin_panel(bounds.x, bounds.y, bounds.w, bounds.h, flags, c);
 }
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flags, std::string info)
+TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flags, std::string info)
 {
     Panel& parent = ui_panels.top();
 
@@ -767,7 +767,7 @@ STDDEF bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flags
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void end_panel ()
+TEINAPI void end_panel ()
 {
     ui_panels.pop();
 
@@ -779,43 +779,43 @@ STDDEF void end_panel ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float get_panel_w ()
+TEINAPI float get_panel_w ()
 {
     return ui_panels.top().absolute_bounds.w;
 }
 
-FILDEF float get_panel_h ()
+TEINAPI float get_panel_h ()
 {
     return ui_panels.top().absolute_bounds.h;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF vec2 get_panel_offset ()
+TEINAPI vec2 get_panel_offset ()
 {
     return ui_panels.top().relative_offset;
 }
 
-FILDEF vec2 get_panel_cursor ()
+TEINAPI vec2 get_panel_cursor ()
 {
     return internal__get_cursor(ui_panels.top());
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void disable_panel_cursor_advance ()
+TEINAPI void disable_panel_cursor_advance ()
 {
     ui_panels.top().cursor_advance_enabled = false;
 }
 
-FILDEF void enable_panel_cursor_advance ()
+TEINAPI void enable_panel_cursor_advance ()
 {
     ui_panels.top().cursor_advance_enabled = true;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void advance_panel_cursor (float advance)
+TEINAPI void advance_panel_cursor (float advance)
 {
     internal__advance_ui_cursor_start(ui_panels.top(), advance, advance);
     internal__advance_ui_cursor_end(ui_panels.top(), advance, advance);
@@ -823,31 +823,31 @@ FILDEF void advance_panel_cursor (float advance)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_panel_cursor (vec2* cursor)
+TEINAPI void set_panel_cursor (vec2* cursor)
 {
     ui_panels.top().cursor = cursor;
 }
 
-FILDEF void set_panel_cursor_dir (UI_Dir dir)
+TEINAPI void set_panel_cursor_dir (UI_Dir dir)
 {
     ui_panels.top().cursor_dir = dir;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void set_panel_flags (UI_Flag flags)
+TEINAPI void set_panel_flags (UI_Flag flags)
 {
     ui_panels.top().flags = flags;
 }
 
-FILDEF UI_Flag get_panel_flags ()
+TEINAPI UI_Flag get_panel_flags ()
 {
     return ui_panels.top().flags;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF float calculate_button_txt_width (std::string text)
+TEINAPI float calculate_button_txt_width (std::string text)
 {
     // Important to return ceiled value otherwise the next button using the
     // cursor to position itself might overlap the previous button by 1px.
@@ -858,7 +858,7 @@ FILDEF float calculate_button_txt_width (std::string text)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
+TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_texture);
@@ -954,7 +954,7 @@ STDDEF bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, co
     return result;
 }
 
-STDDEF bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, std::string text, std::string info, std::string kb, std::string name)
+TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, std::string text, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_font);
@@ -1051,7 +1051,7 @@ STDDEF bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, st
     return result;
 }
 
-FILDEF bool do_button_txt (UI_Action action, float h, UI_Flag flags, std::string text, std::string info, std::string kb, std::string name)
+TEINAPI bool do_button_txt (UI_Action action, float h, UI_Flag flags, std::string text, std::string info, std::string kb, std::string name)
 {
     // Important to return ceiled value otherwise the next button using the
     // cursor to position itself might overlap the previous button by 1px.
@@ -1062,7 +1062,7 @@ FILDEF bool do_button_txt (UI_Action action, float h, UI_Flag flags, std::string
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, vec4 bg)
+TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, vec4 bg)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_font);
@@ -1154,7 +1154,7 @@ STDDEF void do_label (UI_Align horz, UI_Align vert, float w, float h, std::strin
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 }
 
-FILDEF void do_label (UI_Align horz, UI_Align vert, float h, std::string text, vec4 bg)
+TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, vec4 bg)
 {
     // Important to return ceiled value otherwise the next label using the
     // cursor to position itself might overlap the previous label by 1px.
@@ -1165,7 +1165,7 @@ FILDEF void do_label (UI_Align horz, UI_Align vert, float h, std::string text, v
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, vec4 bg)
+TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, vec4 bg)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_font);
@@ -1291,7 +1291,7 @@ STDDEF void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, 
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void do_markdown (float w, float h, std::string text)
+TEINAPI void do_markdown (float w, float h, std::string text)
 {
     Font& fnt = get_editor_regular_font();
 
@@ -1347,7 +1347,7 @@ STDDEF void do_markdown (float w, float h, std::string text)
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 }
 
-STDDEF float get_markdown_h (float w, std::string text)
+TEINAPI float get_markdown_h (float w, std::string text)
 {
     Font& fnt = get_editor_regular_font();
 
@@ -1361,7 +1361,7 @@ STDDEF float get_markdown_h (float w, std::string text)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void do_text_box (float w, float h, UI_Flag flags, std::string& text, std::string default_text, UI_Align halign)
+TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, std::string default_text, UI_Align halign)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_font);
@@ -1746,7 +1746,7 @@ STDDEF void do_text_box (float w, float h, UI_Flag flags, std::string& text, std
     ++ui_current_id;
 }
 
-STDDEF void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& text, float label_w, std::string label, std::string default_text, UI_Align halign)
+TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& text, float label_w, std::string label, std::string default_text, UI_Align halign)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_font);
@@ -1775,7 +1775,7 @@ STDDEF void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& t
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding& kb)
+TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding& kb)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_font);
@@ -1905,7 +1905,7 @@ STDDEF void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding&
     ++ui_current_id;
 }
 
-STDDEF void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding& kb)
+TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding& kb)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_font);
@@ -2040,7 +2040,7 @@ STDDEF void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding& 
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void do_icon (float w, float h, Texture& tex, const quad* clip)
+TEINAPI void do_icon (float w, float h, Texture& tex, const quad* clip)
 {
     UI_ID flags = ui_panels.top().flags;
 
@@ -2080,7 +2080,7 @@ STDDEF void do_icon (float w, float h, Texture& tex, const quad* clip)
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 }
 
-FILDEF void do_quad (float w, float h, vec4 color)
+TEINAPI void do_quad (float w, float h, vec4 color)
 {
     UI_ID flags = ui_panels.top().flags;
 
@@ -2101,7 +2101,7 @@ FILDEF void do_quad (float w, float h, vec4 color)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_separator (float size)
+TEINAPI void do_separator (float size)
 {
     float w = (ui_panels.top().cursor_dir == UI_DIR_RIGHT || ui_panels.top().cursor_dir == UI_DIR_LEFT) ? 0 : size;
     float h = (ui_panels.top().cursor_dir == UI_DIR_UP    || ui_panels.top().cursor_dir == UI_DIR_DOWN) ? 0 : size;
@@ -2113,12 +2113,12 @@ FILDEF void do_separator (float size)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_scrollbar (quad bounds, float content_height, float& scroll_offset)
+TEINAPI void do_scrollbar (quad bounds, float content_height, float& scroll_offset)
 {
     do_scrollbar(bounds.x, bounds.y, bounds.w, bounds.h, content_height, scroll_offset);
 }
 
-STDDEF void do_scrollbar (float x, float y, float w, float h, float content_height, float& scroll_offset)
+TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_height, float& scroll_offset)
 {
     // Allows scrollbars to be outside the panel they are scrolling.
     set_viewport(0, 0, get_render_target_w(), get_render_target_h());
@@ -2217,7 +2217,7 @@ STDDEF void do_scrollbar (float x, float y, float w, float h, float content_heig
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, vec4 cl, vec4 cr)
+TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, vec4 cl, vec4 cr)
 {
     Panel panel;
 
@@ -2282,14 +2282,14 @@ STDDEF void begin_panel_gradient (float x, float y, float w, float h, UI_Flag fl
     end_draw();
 }
 
-FILDEF void begin_panel_gradient (quad bounds, UI_Flag flags, vec4 cl, vec4 cr)
+TEINAPI void begin_panel_gradient (quad bounds, UI_Flag flags, vec4 cl, vec4 cr)
 {
     begin_panel_gradient(bounds.x, bounds.y, bounds.w, bounds.h, flags, cl, cr);
 }
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_Flag flags, std::string info)
+TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_Flag flags, std::string info)
 {
     Panel& parent = ui_panels.top();
 
@@ -2350,7 +2350,7 @@ STDDEF bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_F
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
+TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
     ASSERT(ui_texture);

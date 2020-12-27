@@ -18,7 +18,7 @@ static constexpr float TEXTURE_ATLAS_H_SMALL = 1024;
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF void internal__generate_texture_atlas (std::string output_name, std::string path, float w, float h)
+TEINAPI void internal__generate_texture_atlas (std::string output_name, std::string path, float w, float h)
 {
     // This is some old code ported over to here so I'm not sure how good it is.
     // Doesn't really matter though as it is not being shipped with the release.
@@ -185,7 +185,7 @@ STDDEF void internal__generate_texture_atlas (std::string output_name, std::stri
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void generate_texture_atlases ()
+TEINAPI void generate_texture_atlases ()
 {
     if (main_event.type == SDL_KEYDOWN)
     {

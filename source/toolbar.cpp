@@ -36,7 +36,7 @@ static           float toolbar_width = TOOLBAR_WIDTH;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_level_toolbar ()
+TEINAPI void internal__do_level_toolbar ()
 {
     vec2 cursor(TOOLBAR_INNER_PAD, TOOLBAR_INNER_PAD);
 
@@ -139,7 +139,7 @@ FILDEF void internal__do_level_toolbar ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void internal__do_map_toolbar ()
+TEINAPI void internal__do_map_toolbar ()
 {
     vec2 cursor(TOOLBAR_INNER_PAD, TOOLBAR_INNER_PAD);
 
@@ -181,7 +181,7 @@ FILDEF void internal__do_map_toolbar ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_toolbar ()
+TEINAPI void do_toolbar ()
 {
     if (are_there_any_tabs())
     {
@@ -190,14 +190,14 @@ FILDEF void do_toolbar ()
     }
 }
 
-FILDEF float get_toolbar_w ()
+TEINAPI float get_toolbar_w ()
 {
     return ((are_there_any_tabs()) ? toolbar_width : 0);
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_set_tool_to_brush ()
+TEINAPI void tb_set_tool_to_brush ()
 {
     if (!current_tab_is_level()) return;
 
@@ -218,7 +218,7 @@ FILDEF void tb_set_tool_to_brush ()
     level_editor.tool_type = Tool_Type::BRUSH;
 }
 
-FILDEF void tb_set_tool_to_fill ()
+TEINAPI void tb_set_tool_to_fill ()
 {
     if (!current_tab_is_level()) return;
 
@@ -239,7 +239,7 @@ FILDEF void tb_set_tool_to_fill ()
     level_editor.tool_type = Tool_Type::FILL;
 }
 
-FILDEF void tb_set_tool_to_select ()
+TEINAPI void tb_set_tool_to_select ()
 {
     if (!current_tab_is_level()) return;
 
@@ -259,24 +259,24 @@ FILDEF void tb_set_tool_to_select ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_toggle_grid ()
+TEINAPI void tb_toggle_grid ()
 {
     if (current_tab_is_level()) editor.grid_visible = !editor.grid_visible;
 }
 
-FILDEF void tb_toggle_bounds ()
+TEINAPI void tb_toggle_bounds ()
 {
     if (current_tab_is_level()) level_editor.bounds_visible = !level_editor.bounds_visible;
 }
 
-FILDEF void tb_toggle_layer_trans ()
+TEINAPI void tb_toggle_layer_trans ()
 {
     if (current_tab_is_level()) level_editor.layer_transparency = !level_editor.layer_transparency;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_reset_camera ()
+TEINAPI void tb_reset_camera ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -297,31 +297,31 @@ FILDEF void tb_reset_camera ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_flip_level_h ()
+TEINAPI void tb_flip_level_h ()
 {
     if (current_tab_is_level()) flip_level_h();
 }
 
-FILDEF void tb_flip_level_v ()
+TEINAPI void tb_flip_level_v ()
 {
     if (current_tab_is_level()) flip_level_v();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_toggle_mirror_h ()
+TEINAPI void tb_toggle_mirror_h ()
 {
     if (current_tab_is_level()) level_editor.mirror_h = !level_editor.mirror_h;
 }
 
-FILDEF void tb_toggle_mirror_v ()
+TEINAPI void tb_toggle_mirror_v ()
 {
     if (current_tab_is_level()) level_editor.mirror_v = !level_editor.mirror_v;
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_cut ()
+TEINAPI void tb_cut ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -333,7 +333,7 @@ FILDEF void tb_cut ()
     }
 }
 
-FILDEF void tb_copy ()
+TEINAPI void tb_copy ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -347,7 +347,7 @@ FILDEF void tb_copy ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_deselect ()
+TEINAPI void tb_deselect ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -359,7 +359,7 @@ FILDEF void tb_deselect ()
     }
 }
 
-FILDEF void tb_clear_select ()
+TEINAPI void tb_clear_select ()
 {
     if (!are_there_any_tabs()) return;
 
@@ -373,19 +373,19 @@ FILDEF void tb_clear_select ()
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_resize ()
+TEINAPI void tb_resize ()
 {
     if (current_tab_is_level()) le_resize();
 }
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void tb_toggle_entity ()
+TEINAPI void tb_toggle_entity ()
 {
     if (current_tab_is_level()) level_editor.large_tiles = !level_editor.large_tiles;
 }
 
-FILDEF void tb_toggle_guides ()
+TEINAPI void tb_toggle_guides ()
 {
     if (current_tab_is_level()) level_editor.entity_guides = !level_editor.entity_guides;
 }

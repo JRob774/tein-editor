@@ -10,7 +10,7 @@
 /* -------------------------------------------------------------------------- */
 
 // CSV parsing taken from here <https://stackoverflow.com/a/30338543>
-FILDEF std::vector<std::vector<std::string>> internal__read_csv (std::istream& in)
+TEINAPI std::vector<std::vector<std::string>> internal__read_csv (std::istream& in)
 {
     enum class CSVState
     {
@@ -82,7 +82,7 @@ FILDEF std::vector<std::vector<std::string>> internal__read_csv (std::istream& i
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool internal__load_map (Tab& tab, std::istream&& stream)
+TEINAPI bool internal__load_map (Tab& tab, std::istream&& stream)
 {
     // Convert raw CSV values into our internal map format.
     auto csv = internal__read_csv(stream);
@@ -102,7 +102,7 @@ FILDEF bool internal__load_map (Tab& tab, std::istream&& stream)
     return true;
 }
 
-FILDEF bool internal__save_map (const Tab& tab, FILE* file)
+TEINAPI bool internal__save_map (const Tab& tab, FILE* file)
 {
     // If the map is empty just save an empty file.
     if (tab.map.empty()) return true;
@@ -151,7 +151,7 @@ FILDEF bool internal__save_map (const Tab& tab, FILE* file)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool load_map (Tab& tab, std::string file_name)
+TEINAPI bool load_map (Tab& tab, std::string file_name)
 {
     // We don't make the path absolute or anything becuase if that is needed
     // then it should be handled by a higher-level than this internal system.
@@ -164,7 +164,7 @@ STDDEF bool load_map (Tab& tab, std::string file_name)
     return internal__load_map(tab, std::ifstream(file_name));
 }
 
-STDDEF bool save_map (const Tab& tab, std::string file_name)
+TEINAPI bool save_map (const Tab& tab, std::string file_name)
 {
     // We don't make the path absolute or anything becuase if that is needed
     // then it should be handled by a higher-level than this internal system.
@@ -182,7 +182,7 @@ STDDEF bool save_map (const Tab& tab, std::string file_name)
 
 /* -------------------------------------------------------------------------- */
 
-STDDEF bool load_restore_map (Tab& tab, std::string file_name)
+TEINAPI bool load_restore_map (Tab& tab, std::string file_name)
 {
     std::string data(read_entire_file(file_name));
 
@@ -200,7 +200,7 @@ STDDEF bool load_restore_map (Tab& tab, std::string file_name)
     return internal__load_map(tab, std::istringstream(data.substr(map_name.length()+1)));
 }
 
-STDDEF bool save_restore_map (const Tab& tab, std::string file_name)
+TEINAPI bool save_restore_map (const Tab& tab, std::string file_name)
 {
     FILE* file = fopen(file_name.c_str(), "wb");
     if (!file)
@@ -227,7 +227,7 @@ STDDEF bool save_restore_map (const Tab& tab, std::string file_name)
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF int get_map_x_pos (const Map& map)
+TEINAPI int get_map_x_pos (const Map& map)
 {
     if (map.empty()) return 0;
     int min_x = INT_MAX;
@@ -238,7 +238,7 @@ FILDEF int get_map_x_pos (const Map& map)
     return min_x;
 }
 
-FILDEF int get_map_y_pos (const Map& map)
+TEINAPI int get_map_y_pos (const Map& map)
 {
     if (map.empty()) return 0;
     int min_y = INT_MAX;
@@ -249,7 +249,7 @@ FILDEF int get_map_y_pos (const Map& map)
     return min_y;
 }
 
-FILDEF int get_map_width (const Map& map)
+TEINAPI int get_map_width (const Map& map)
 {
     if (map.empty()) return 1;
     int min_x = INT_MAX, max_x = INT_MIN;
@@ -261,7 +261,7 @@ FILDEF int get_map_width (const Map& map)
     return abs(max_x-min_x)+1;
 }
 
-FILDEF int get_map_height (const Map& map)
+TEINAPI int get_map_height (const Map& map)
 {
     if (map.empty()) return 1;
     int min_y = INT_MAX, max_y = INT_MIN;

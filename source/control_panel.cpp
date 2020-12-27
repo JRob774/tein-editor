@@ -13,7 +13,7 @@ static quad control_panel_bounds;
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF void do_control_panel ()
+TEINAPI void do_control_panel ()
 {
     control_panel_bounds.w = CONTROL_PANEL_WIDTH + CONTROL_PANEL_SCROLLBAR_WIDTH;
     control_panel_bounds.h = get_viewport().h;
@@ -37,7 +37,7 @@ FILDEF void do_control_panel ()
     }
 }
 
-FILDEF float get_control_panel_w ()
+TEINAPI float get_control_panel_w ()
 {
     return ((current_tab_is_level()) ? control_panel_bounds.w : 0);
 }

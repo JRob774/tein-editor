@@ -52,20 +52,20 @@ struct Font
 
 /* -------------------------------------------------------------------------- */
 
-FILDEF bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
-FILDEF bool load_font_from_file (Font& fnt, std::string            file_name, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
-FILDEF void free_font           (Font& fnt);
+TEINAPI bool load_font_from_data (Font& fnt, const std::vector<u8>& file_data, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
+TEINAPI bool load_font_from_file (Font& fnt, std::string            file_name, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
+TEINAPI void free_font           (Font& fnt);
 
-FILDEF float get_font_kerning   (const Font& fnt, int c, int& i, int& p);
-FILDEF float get_font_tab_width (const Font& fnt);
-FILDEF float get_glyph_advance  (const Font& fnt, int c, int& i, int& p);
+TEINAPI float get_font_kerning   (const Font& fnt, int c, int& i, int& p);
+TEINAPI float get_font_tab_width (const Font& fnt);
+TEINAPI float get_glyph_advance  (const Font& fnt, int c, int& i, int& p);
 
-INLDEF float get_text_width  (const Font& fnt, std::string text);
-INLDEF float get_text_height (const Font& fnt, std::string text);
+TEINAPI float get_text_width  (const Font& fnt, std::string text);
+TEINAPI float get_text_height (const Font& fnt, std::string text);
 
-FILDEF float get_text_width_scaled (const Font& fnt, std::string text);
-FILDEF float get_text_width_scaled (const Font& fnt, std::string text);
+TEINAPI float get_text_width_scaled (const Font& fnt, std::string text);
+TEINAPI float get_text_width_scaled (const Font& fnt, std::string text);
 
-FILDEF void set_font_point_size (Font& fnt, int pt);
+TEINAPI void set_font_point_size (Font& fnt, int pt);
 
 /* -------------------------------------------------------------------------- */
