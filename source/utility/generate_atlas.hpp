@@ -47,7 +47,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         return;
     }
 
-    defer
+    Defer
     {
         for (size_t i=0; i<surface_count; ++i)
         {
@@ -95,7 +95,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         LOG_ERROR(ERR_MIN, "Failed to allocate atlas packing nodes!");
         return;
     }
-    defer { cstd_free(nodes); };
+    Defer { cstd_free(nodes); };
 
     int rect_count = static_cast<int>(surface_count);
     stbrp_rect* rects = cstd_malloc(stbrp_rect, rect_count);
@@ -104,7 +104,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         LOG_ERROR(ERR_MIN, "Failed to allocate atlas packing rects!");
         return;
     }
-    defer { cstd_free(rects); };
+    Defer { cstd_free(rects); };
 
     // We need to store the size of each texture into the rects so that stb
     // can know the dimensions when packing the rects into a texture atlas.
@@ -129,7 +129,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         LOG_ERROR(ERR_MIN, "Failed to create final atlas surface! (%s)", SDL_GetError());
         return;
     }
-    defer { SDL_FreeSurface(atlas_surface); atlas_surface = NULL; };
+    Defer { SDL_FreeSurface(atlas_surface); atlas_surface = NULL; };
 
     std::string output_txt_name(build_resource_string(output_name) + ".txt");
     FILE* file = fopen(output_txt_name.c_str(), "w");
@@ -138,7 +138,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         LOG_ERROR(ERR_MIN, "Failed to create atlas lookup GON!");
         return;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     fprintf(file, "texture \"%s\"\n", std::string(output_name + ".png").c_str());
     fprintf(file, "clips\n[\n");

@@ -99,7 +99,7 @@ TEINAPI void internal__load_window_state ()
         // We don't bother logging an error because it isn't that important...
         return;
     }
-    defer { RegCloseKey(key); };
+    Defer { RegCloseKey(key); };
 
     DWORD dwX, dwY, dwW, dwH, dwMaximized, dwDisplayIndex;
     DWORD len = sizeof(DWORD);
@@ -155,7 +155,7 @@ TEINAPI void internal__save_window_state ()
         // We don't bother logging an error because it isn't that important...
         return;
     }
-    defer { RegCloseKey(key); };
+    Defer { RegCloseKey(key); };
 
     SDL_Window* win = windows.at("WINMAIN").window;
 

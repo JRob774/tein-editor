@@ -21,7 +21,7 @@ TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<u8>& file_d
         LOG_ERROR(ERR_MIN, "Failed to load texture from data!");
         return false;
     }
-    defer { stbi_image_free(raw_data); };
+    Defer { stbi_image_free(raw_data); };
 
     return create_texture(tex, w, h, bpp, raw_data, wrap);
 }
@@ -38,7 +38,7 @@ TEINAPI bool load_texture_from_file (Texture& tex, std::string file_name, Textur
         LOG_ERROR(ERR_MIN, "Failed to load texture '%s'!", file_name.c_str());
         return false;
     }
-    defer { stbi_image_free(raw_data); };
+    Defer { stbi_image_free(raw_data); };
 
     return create_texture(tex, w, h, bpp, raw_data, wrap);
 }

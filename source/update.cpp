@@ -71,7 +71,7 @@ TEINAPI void check_for_updates ()
         LOG_ERROR(ERR_MIN, "Failed to initialize Curl!");
         return;
     }
-    defer { curl_easy_cleanup(curl); };
+    Defer { curl_easy_cleanup(curl); };
 
     curl_easy_setopt(curl, CURLOPT_USERAGENT,      GITHUB_API_USER_AGENT);
     curl_easy_setopt(curl, CURLOPT_URL,            GITHUB_API_URL       );

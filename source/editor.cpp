@@ -99,7 +99,7 @@ TEINAPI void internal__load_session_tabs ()
             // We don't bother logging an error because it isn't that important...
             return;
         }
-        defer { RegCloseKey(key); };
+        Defer { RegCloseKey(key); };
 
         constexpr DWORD VALUE_NAME_LEN = 32767; // Docs say that is the max size of a registry value name.
         char value_name[VALUE_NAME_LEN] = {};
@@ -142,7 +142,7 @@ TEINAPI void internal__load_session_tabs ()
             // We don't bother logging an error because it isn't that important...
             return;
         }
-        defer { RegCloseKey(key); };
+        Defer { RegCloseKey(key); };
 
         DWORD buffer_length = MAX_PATH;
         char buffer[MAX_PATH] = {};
@@ -173,7 +173,7 @@ TEINAPI void internal__save_session_tabs ()
             // We don't bother logging an error because it isn't that important...
             return;
         }
-        defer { RegCloseKey(key); };
+        Defer { RegCloseKey(key); };
 
         int index = 0;
         for (auto& tab: editor.tabs)
@@ -195,7 +195,7 @@ TEINAPI void internal__save_session_tabs ()
             // We don't bother logging an error because it isn't that important...
             return;
         }
-        defer { RegCloseKey(key); };
+        Defer { RegCloseKey(key); };
 
         if (are_there_any_tabs())
         {
@@ -338,7 +338,7 @@ TEINAPI void handle_editor_events ()
     if (!are_there_any_tabs()) return;
 
     push_editor_camera_transform();
-    defer { pop_editor_camera_transform(); };
+    Defer { pop_editor_camera_transform(); };
 
     tab = &get_current_tab();
 

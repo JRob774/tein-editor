@@ -69,7 +69,7 @@ TEINAPI int internal__gpak_unpack_thread_main (void* user_data)
         args->error.store(GPAK_Error::READ);
         return EXIT_FAILURE;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     std::vector<GPAK_Entry> entries;
     u32 entry_count;
@@ -159,7 +159,7 @@ TEINAPI int internal__gpak_pack_thread_main (void* user_data)
         args->error.store(GPAK_Error::WRITE);
         return EXIT_FAILURE;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     std::vector<std::string> files;
     std::vector<std::string> stripped_files;

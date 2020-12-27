@@ -192,7 +192,7 @@ TEINAPI void quit_application ()
 TEINAPI void do_application ()
 {
     clear_debug_timer_results();
-    defer { dump_debug_timer_results(); };
+    Defer { dump_debug_timer_results(); };
 
     set_render_target(&get_window("WINMAIN"));
     set_viewport(0, 0, get_render_target_w(), get_render_target_h());

@@ -26,7 +26,7 @@ TEINAPI void internal__do_tile_padding (u8* in, u8* out, int w, int h, int xpad,
         LOG_ERROR(ERR_MIN, "Failed to allocate output padding buffer!");
         return;
     }
-    defer { cstd_free(buffer); };
+    Defer { cstd_free(buffer); };
 
     for (int j=0,k=0; j<h; ++j,++k)
     {
@@ -79,7 +79,7 @@ TEINAPI void internal__pack_textures (std::string in, std::string out)
             LOG_ERROR(ERR_MIN, "Failed to pad tile image \"%s\"", f.c_str());
             continue;
         }
-        defer { stbi_image_free(in_pixels); };
+        Defer { stbi_image_free(in_pixels); };
 
         int xpad = PADDING*2;
         int ypad = PADDING*2;
@@ -90,7 +90,7 @@ TEINAPI void internal__pack_textures (std::string in, std::string out)
             LOG_ERROR(ERR_MIN, "Failed to allocate padded tile image \"%s\"", f.c_str());
             continue;
         }
-        defer { cstd_free(out_pixels); };
+        Defer { cstd_free(out_pixels); };
 
         internal__do_tile_padding(in_pixels, out_pixels, w,h, xpad,ypad, PADDING);
 

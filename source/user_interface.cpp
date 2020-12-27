@@ -876,7 +876,7 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
 
     // We scissor the contents to avoid image overspill.
     begin_scissor(cur.x, cur.y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
@@ -973,7 +973,7 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     // Locked buttons cannot be interacted with.
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
@@ -1081,7 +1081,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     set_draw_color(bg); // Draw the label's background.
     fill_quad(cur.x, cur.y, cur.x + w, cur.y + h);
@@ -1177,7 +1177,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     set_draw_color(bg); // Draw the label's background.
     fill_quad(cur.x, cur.y, cur.x + w, cur.y + h);
@@ -1306,7 +1306,7 @@ TEINAPI void do_markdown (float w, float h, std::string text)
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     std::vector<std::string> lines;
     tokenize_string(text, "\r\n", lines);
@@ -1614,7 +1614,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
                                         char* clipboard_text = SDL_GetClipboardText();
                                         if (clipboard_text)
                                         {
-                                            defer { SDL_free(clipboard_text); }; // Docs say we need to free!
+                                            Defer { SDL_free(clipboard_text); }; // Docs say we need to free!
 
                                             bool add_text = true;
                                             std::string t(clipboard_text);
@@ -2053,7 +2053,7 @@ TEINAPI void do_icon (float w, float h, Texture& tex, const quad* clip)
 
     // We scissor the contents to avoid image overspill.
     begin_scissor(cur.x, cur.y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     vec4 front  = (ui_is_light) ? vec4(.4f,.4f,.4f, 1) : vec4(.73f,.73f,.73f, 1);
     vec4 shadow = (ui_is_light) ? vec4(.9f,.9f,.9f, 1) : vec4(.16f,.16f,.16f, 1);
@@ -2122,14 +2122,14 @@ TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_hei
 {
     // Allows scrollbars to be outside the panel they are scrolling.
     set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-    defer { set_viewport(ui_panels.top().viewport); };
+    Defer { set_viewport(ui_panels.top().viewport); };
 
     x += ui_panels.top().viewport.x;
     y += ui_panels.top().viewport.y;
 
     // We scissor the contents to avoid any overspill.
     begin_scissor(x, y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     constexpr float PAD = 1;
 
@@ -2368,7 +2368,7 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
 
     // We scissor the contents to avoid image overspill.
     begin_scissor(cur.x, cur.y, w, h);
-    defer { end_scissor(); };
+    Defer { end_scissor(); };
 
     // Locked buttons cannot be interacted with.
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);

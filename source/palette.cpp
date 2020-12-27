@@ -62,7 +62,7 @@ TEINAPI void init_palette_lookup ()
                 FILE* file = fopen(file_name.c_str(), "rb");
                 if (file)
                 {
-                    defer { fclose(file); };
+                    Defer { fclose(file); };
 
                     u32 entry_count;
                     fread(&entry_count, sizeof(u32), 1, file);
@@ -112,7 +112,7 @@ TEINAPI void init_palette_lookup ()
         LOG_ERROR(ERR_MIN, "Failed to load palette data for the map editor!");
         return;
     }
-    defer { stbi_image_free(palette); };
+    Defer { stbi_image_free(palette); };
 
     std::string buffer(tileset_data.begin(), tileset_data.end());
     GonObject gon = GonObject::LoadFromBuffer(buffer);

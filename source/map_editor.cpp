@@ -887,7 +887,7 @@ TEINAPI void handle_map_editor_events ()
                                 char* text = SDL_GetClipboardText();
                                 if (text)
                                 {
-                                    defer { SDL_free(text); }; // Docs say we need to free.
+                                    Defer { SDL_free(text); }; // Docs say we need to free.
                                     if (internal__is_text_select_active())
                                     {
                                         size_t begin = std::min(tab.map_node_info.cursor, tab.map_node_info.select);

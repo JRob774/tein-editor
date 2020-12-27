@@ -32,7 +32,7 @@ TEINAPI bool internal__load_cursor (Cursor cursor, const char* file_name, int x,
         LOG_ERROR(ERR_MIN, "Failed to load cursor file '%s'!", file_name);
         return false;
     }
-    defer { SDL_FreeSurface(surface); };
+    Defer { SDL_FreeSurface(surface); };
 
     // We need to color key the loaded surface because it is a bitmap so it
     // does not have any alpha transparency by default (our key is white).

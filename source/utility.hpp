@@ -3,33 +3,38 @@
 // We use static linkage for faster compilation times as we use unity/jumbo build.
 #define TEINAPI static
 
-#define JOIN( a, b) JOIN2(a, b)
-#define JOIN2(a, b) JOIN1(a, b)
-#define JOIN1(a, b) a##b
+// C++ implementation of defer functionality. This can be used to defer blocks of
+// code to be executed during exit of the current scope. Useful for freeing any
+// resources that have been allocated without worrying about multiple paths or
+// having to deal with C++'s RAII model for implementing this kind of behaviour.
+
+#define DeferJoin( a, b) DeferJoin2(a, b)
+#define DeferJoin2(a, b) DeferJoin1(a, b)
+#define DeferJoin1(a, b) a##b
 
 #ifdef __COUNTER__
-#define defer \
-const auto& JOIN(defer, __COUNTER__) = Defer_Help__() + [&]()
+#define Defer \
+const auto& DeferJoin(defer, __COUNTER__) = DeferHelp() + [&]()
 #else
-#define defer \
-const auto& JOIN(defer,    __LINE__) = Defer_Help__() + [&]()
+#define Defer \
+const auto& DeferJoin(defer,    __LINE__) = DeferHelp() + [&]()
 #endif
 
 template<typename T>
-struct Defer__
+struct DeferType
 {
     T lambda;
 
-               Defer__ (T lambda): lambda(lambda) { /* Nothing! */ }
-              ~Defer__ ()                         {    lambda();   }
+    DeferType (T lambda): lambda(lambda) { /* Nothing! */ }
+   ~DeferType ()                         {    lambda();   }
 
-               Defer__ (const Defer__& object) = delete;
-    Defer__& operator= (const Defer__& object) = delete;
+               DeferType (const DeferType& d) = delete;
+    DeferType& operator= (const DeferType& d) = delete;
 };
-struct Defer_Help__
+struct DeferHelp
 {
     template<typename T>
-    Defer__<T> operator+ (T type) { return type; }
+    DeferType<T> operator+ (T type) { return type; }
 };
 
 #define cstd_malloc( t,     sz) (t*)malloc ((sz)     *sizeof(t))

@@ -498,7 +498,7 @@ TEINAPI void draw_texture (const Texture& tex, float x, float y, const quad* cli
     glBindTexture(GL_TEXTURE_2D, tex.handle);
     glEnable(GL_TEXTURE_2D);
 
-    defer { glDisable(GL_TEXTURE_2D); };
+    Defer { glDisable(GL_TEXTURE_2D); };
 
     glUseProgram(textured_shader);
     internal__set_texture0_uniform(textured_shader, GL_TEXTURE0);
@@ -546,7 +546,7 @@ TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
     glBindTexture(GL_TEXTURE_2D, fnt.cache.at(fnt.current_pt_size).handle);
     glEnable(GL_TEXTURE_2D);
 
-    defer { glDisable(GL_TEXTURE_2D); };
+    Defer { glDisable(GL_TEXTURE_2D); };
 
     glUseProgram(text_shader);
     internal__set_texture0_uniform(text_shader, GL_TEXTURE0);

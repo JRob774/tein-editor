@@ -325,7 +325,7 @@ TEINAPI void internal__save_settings ()
         LOG_ERROR(ERR_MED, "Failed to save settings data!");
         return;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     vec4 c;
 

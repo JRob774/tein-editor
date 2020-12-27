@@ -175,7 +175,7 @@ TEINAPI bool save_map (const Tab& tab, std::string file_name)
         LOG_ERROR(ERR_MED, "Failed to save level file '%s'!", file_name.c_str());
         return false;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     return internal__save_map(tab, file);
 }
@@ -208,7 +208,7 @@ TEINAPI bool save_restore_map (const Tab& tab, std::string file_name)
         LOG_ERROR(ERR_MED, "Failed to save restore file '%s'!", file_name.c_str());
         return false;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     // Write the name of the map + null-terminator for later restoration.
     if (tab.name.empty())

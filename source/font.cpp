@@ -63,7 +63,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
         LOG_ERROR(ERR_MIN, "Failed to create glyph buffer!");
         return false;
     }
-    defer { cstd_free(buffer); };
+    Defer { cstd_free(buffer); };
 
     fnt.has_kerning = FT_HAS_KERNING(fnt.face);
     fnt.color       = vec4(1,1,1,1);

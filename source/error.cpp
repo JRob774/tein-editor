@@ -29,7 +29,7 @@ TEINAPI LONG WINAPI internal__unhandled_exception_filter (struct _EXCEPTION_POIN
         CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (file != INVALID_HANDLE_VALUE)
     {
-        defer { CloseHandle(file); };
+        Defer { CloseHandle(file); };
 
         MINIDUMP_EXCEPTION_INFORMATION mini_dump_info = {};
         mini_dump_info.ThreadId          = GetCurrentThreadId();

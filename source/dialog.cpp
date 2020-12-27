@@ -36,7 +36,7 @@ TEINAPI std::vector<std::string> open_dialog (Dialog_Type type, bool multiselect
     // NOTE: Used to prevent dialog box clicks from carrying into the editor.
     editor.dialog_box = true;
 
-    defer { internal__set_dialog_cooldown(); };
+    Defer { internal__set_dialog_cooldown(); };
 
     const char* filter = NULL;
     const char* title  = NULL;
@@ -121,7 +121,7 @@ TEINAPI std::string save_dialog (Dialog_Type type)
     // NOTE: Used to prevent dialog box clicks from carrying into the editor.
     editor.dialog_box = true;
 
-    defer { internal__set_dialog_cooldown(); };
+    Defer { internal__set_dialog_cooldown(); };
 
     const char* filter = NULL;
     const char* title  = NULL;
@@ -177,7 +177,7 @@ TEINAPI std::vector<std::string> path_dialog (bool multiselect)
     // NOTE: Used to prevent dialog box clicks from carrying into the editor.
     editor.dialog_box = true;
 
-    defer { internal__set_dialog_cooldown(); };
+    Defer { internal__set_dialog_cooldown(); };
 
     std::vector<std::string> paths;
 
@@ -187,7 +187,7 @@ TEINAPI std::vector<std::string> path_dialog (bool multiselect)
         LOG_ERROR(ERR_MED, "Failed to create the folder dialog!");
         return paths;
     }
-    defer { file_dialog->Release(); };
+    Defer { file_dialog->Release(); };
 
     DWORD options;
     if (!SUCCEEDED(file_dialog->GetOptions(&options)))
@@ -212,7 +212,7 @@ TEINAPI std::vector<std::string> path_dialog (bool multiselect)
         LOG_ERROR(ERR_MED, "Failed to create shell item array!");
         return paths;
     }
-    defer { shell_item_array->Release(); };
+    Defer { shell_item_array->Release(); };
 
     LPWSTR result     = NULL;
     DWORD  item_count = 0;

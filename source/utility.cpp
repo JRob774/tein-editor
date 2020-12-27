@@ -52,7 +52,7 @@ TEINAPI size_t get_size_of_file (std::string file_name)
 {
     FILE* file = fopen(file_name.c_str(), "rb");
     if (!file) return 0;
-    defer { fclose(file); };
+    Defer { fclose(file); };
     fseek(file, 0L, SEEK_END);
     return ftell(file);
 }
@@ -100,7 +100,7 @@ TEINAPI void list_path_content (std::string path_name, std::vector<std::string>&
     WIN32_FIND_DATAA find_data = {};
 
     HANDLE find_file = FindFirstFileA(find_path.c_str(), &find_data);
-    defer { FindClose(find_file); };
+    Defer { FindClose(find_file); };
 
     if (find_file != INVALID_HANDLE_VALUE)
     {
@@ -137,7 +137,7 @@ TEINAPI void list_path_files (std::string path_name, std::vector<std::string>& f
     WIN32_FIND_DATAA find_data = {};
 
     HANDLE find_file = FindFirstFileA(find_path.c_str(), &find_data);
-    defer { FindClose(find_file); };
+    Defer { FindClose(find_file); };
 
     if (find_file != INVALID_HANDLE_VALUE)
     {
@@ -319,7 +319,7 @@ TEINAPI std::string format_string (const char* format, ...)
     va_list args;
 
             va_start(args, format);
-    defer { va_end  (args); };
+    Defer { va_end  (args); };
 
     return format_string_v(format, args);
 }
@@ -366,7 +366,7 @@ TEINAPI std::string format_time (const char* format)
     }
     while (!result);
 
-    defer { cstd_free(buffer); };
+    Defer { cstd_free(buffer); };
     return std::string(buffer);
 }
 

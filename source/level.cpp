@@ -96,7 +96,7 @@ TEINAPI bool load_level (Level& level, std::string file_name)
         LOG_ERROR(ERR_MED, "Failed to load level file '%s'!", file_name.c_str());
         return false;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     // If the level is empty/blank we just create a blank default level.
     if (get_size_of_file(file) == 0) return create_blank_level(level);
@@ -114,7 +114,7 @@ TEINAPI bool save_level (const Level& level, std::string file_name)
         LOG_ERROR(ERR_MED, "Failed to save level file '%s'!", file_name.c_str());
         return false;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     internal__save_level(file, level);
     return true;
@@ -130,7 +130,7 @@ TEINAPI bool load_restore_level (Tab& tab, std::string file_name)
         LOG_ERROR(ERR_MED, "Failed to load restore file '%s'!", file_name.c_str());
         return false;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     // Read until the null-terminator to get the name of the level.
     std::string level_name;
@@ -157,7 +157,7 @@ TEINAPI bool save_restore_level (const Tab& tab, std::string file_name)
         LOG_ERROR(ERR_MED, "Failed to save restore file '%s'!", file_name.c_str());
         return false;
     }
-    defer { fclose(file); };
+    Defer { fclose(file); };
 
     // Write the name of the level + null-terminator for later restoration.
     if (tab.name.empty())

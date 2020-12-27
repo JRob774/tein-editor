@@ -32,7 +32,7 @@ TEINAPI bool init_resource_manager ()
         LOG_ERROR(ERR_MED, "Failed to load editor GPAK!");
         return true;
     }
-    defer { fclose(gpak); };
+    Defer { fclose(gpak); };
 
     std::vector<GPAK_Entry> entries;
     u32 entry_count;
