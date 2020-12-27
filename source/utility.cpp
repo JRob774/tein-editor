@@ -35,10 +35,10 @@ TEINAPI std::string ReadEntireFile (std::string fileName)
 #if defined(PLATFORM_WIN32)
 TEINAPI std::string GetExecutablePath ()
 {
-    constexpr size_t EXECUTABLE_BUFFER_SIZE = MAX_PATH+1;
-    char tempBuffer[EXECUTABLE_BUFFER_SIZE] = {};
+    constexpr size_t ExecutableBufferSize = MAX_PATH+1;
+    char tempBuffer[ExecutableBufferSize] = {};
 
-    GetModuleFileNameA(NULL, tempBuffer, EXECUTABLE_BUFFER_SIZE);
+    GetModuleFileNameA(NULL, tempBuffer, ExecutableBufferSize);
     std::string path(FixPathSlashes(tempBuffer));
 
     // Get rid of the actual executable so it's just the path.
@@ -432,7 +432,7 @@ TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType typ
 
     // We don't allow hidden windows because it causes program hang.
     HWND hwnd = (!window.empty() && !is_window_hidden(window)) ? Internal::Win32GetWindowHandle(get_window(window).window) : NULL;
-    int ret = MessageBoxA(hwnd, msg.c_str(), title.c_str(), (type|buttons));
+    int ret = MessageBoxA(hwnd, msg.c_str(), title.c_str(), flags);
 
     // Convert the result into a platform-agnostic value for use in the program.
     AlertResult result = ALERT_RESULT_INVALID;
