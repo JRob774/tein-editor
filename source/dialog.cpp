@@ -63,7 +63,7 @@ TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
     char fileBuffer[gDialogBufferSize] = {};
 
     OPENFILENAMEA openFileName = {};
-    openFileName.hwndOwner = Internal::Win32GetWindowHandle(get_window("WINMAIN").window);
+    openFileName.hwndOwner = Internal::Win32GetWindowHandle(GetWindowFromName("WINMAIN").window);
     openFileName.lStructSize  = sizeof(openFileName);
     openFileName.nFilterIndex = 2;
     openFileName.lpstrFilter = filter;
@@ -161,7 +161,7 @@ TEINAPI std::string SaveDialog (DialogType type)
     char fileBuffer[gDialogBufferSize] = {};
 
     OPENFILENAMEA openFileName = {};
-    openFileName.hwndOwner = Internal::Win32GetWindowHandle(get_window("WINMAIN").window);
+    openFileName.hwndOwner = Internal::Win32GetWindowHandle(GetWindowFromName("WINMAIN").window);
     openFileName.lStructSize = sizeof(openFileName);
     openFileName.nFilterIndex = 2;
     openFileName.lpstrFilter = filter;

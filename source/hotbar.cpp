@@ -52,7 +52,7 @@ TEINAPI void do_hotbar ()
     Vec2 cursor(0,0);
 
     // Height for the toolbar buttons.
-    float bh = HOTBAR_HEIGHT - WINDOW_BORDER;
+    float bh = HOTBAR_HEIGHT - gWindowBorder;
 
     set_ui_texture(&resource_icons);
     set_ui_font(&get_editor_regular_font());
@@ -432,26 +432,26 @@ TEINAPI void hb_run_game ()
 
 TEINAPI void hb_preferences ()
 {
-    if (is_window_hidden("WINPREFERENCES"))
+    if (IsWindowHidden("WINPREFERENCES"))
     {
         init_preferences_menu(); // Load current settings.
-        show_window("WINPREFERENCES");
+        ShowWindow("WINPREFERENCES");
     }
     else
     {
-        raise_window("WINPREFERENCES");
+        RaiseWindow("WINPREFERENCES");
     }
 }
 
 TEINAPI void hb_about ()
 {
-    if (is_window_hidden("WINABOUT"))
+    if (IsWindowHidden("WINABOUT"))
     {
-        show_window("WINABOUT");
+        ShowWindow("WINABOUT");
     }
     else
     {
-        raise_window("WINABOUT");
+        RaiseWindow("WINABOUT");
     }
 }
 

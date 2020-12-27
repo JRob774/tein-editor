@@ -43,12 +43,12 @@ TEINAPI U32 internal__update_show_callback (U32 interval, void* user_data)
 TEINAPI void internal__update_dialog_update ()
 {
     LoadWebpage(DOWNLOAD_PAGE);
-    hide_window("WINUPDATE");
+    HideWindow("WINUPDATE");
 }
 
 TEINAPI void internal__update_dialog_cancel ()
 {
-    hide_window("WINUPDATE");
+    HideWindow("WINUPDATE");
 }
 
 TEINAPI size_t internal__curl_write_callback (const char* in, size_t size, size_t num, std::string* out)
@@ -134,17 +134,17 @@ TEINAPI void open_update_window ()
 
     update_dialog_scroll_offset = 0;
 
-    show_window("WINUPDATE");
+    ShowWindow("WINUPDATE");
 }
 
 TEINAPI void do_update ()
 {
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
@@ -154,10 +154,10 @@ TEINAPI void do_update ()
     float vh = get_viewport().h;
 
     float bw = roundf(vw / 2);
-    float bh = bb - WINDOW_BORDER;
+    float bh = bb - gWindowBorder;
 
     // Bottom buttons for okaying or cancelling the path dialog.
-    Vec2 btn_cursor(0, WINDOW_BORDER);
+    Vec2 btn_cursor(0, gWindowBorder);
     begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -266,7 +266,7 @@ TEINAPI void handle_update_events ()
         }
     }
 
-    if (!is_window_focused("WINUPDATE")) return;
+    if (!IsWindowFocused("WINUPDATE")) return;
 
     if (main_event.type == SDL_KEYDOWN)
     {

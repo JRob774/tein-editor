@@ -40,7 +40,7 @@ TEINAPI void internal__okay_new ()
         case (Tab_Type::MAP  ): create_new_map_tab_and_focus  ();                         break;
     }
 
-    hide_window("WINNEW");
+    HideWindow("WINNEW");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -53,17 +53,17 @@ TEINAPI void open_new ()
     // Default to level because people make more levels than they do maps.
     current_tab_type = Tab_Type::LEVEL;
 
-    show_window("WINNEW");
+    ShowWindow("WINNEW");
 }
 
 TEINAPI void do_new ()
 {
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -77,7 +77,7 @@ TEINAPI void do_new ()
     float vh = get_viewport().h;
 
     float bw = roundf(vw / 2);
-    float bh = nvfh - WINDOW_BORDER;
+    float bh = nvfh - gWindowBorder;
 
     // Top tabs for switching type of file to create.
     cursor = Vec2(0,0);
@@ -103,7 +103,7 @@ TEINAPI void do_new ()
     end_panel();
 
     // Bottom buttons for okaying or cancelling the resize.
-    cursor = Vec2(0, WINDOW_BORDER);
+    cursor = Vec2(0, gWindowBorder);
     begin_panel(0, vh-nvfh, vw, nvfh, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -176,14 +176,14 @@ TEINAPI void do_new ()
 
 TEINAPI void cancel_new ()
 {
-    hide_window("WINNEW");
+    HideWindow("WINNEW");
 }
 
 /* -------------------------------------------------------------------------- */
 
 TEINAPI void handle_new_events ()
 {
-    if (is_window_focused("WINNEW"))
+    if (IsWindowFocused("WINNEW"))
     {
         if (!text_box_is_active())
         {

@@ -270,7 +270,7 @@ TEINAPI void gpak_unpack (std::string file_name, bool overwrite)
     }
     SDL_DetachThread(gpak_unpack_thread);
 
-    show_window("WINUNPACK");
+    ShowWindow("WINUNPACK");
 }
 
 TEINAPI void gpak_pack (std::string file_name, std::vector<std::string> paths)
@@ -290,7 +290,7 @@ TEINAPI void gpak_pack (std::string file_name, std::vector<std::string> paths)
     }
     SDL_DetachThread(gpak_pack_thread);
 
-    show_window("WINPACK");
+    ShowWindow("WINPACK");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -319,14 +319,14 @@ TEINAPI bool is_gpak_pack_complete ()
 
 TEINAPI void do_unpack ()
 {
-    if (is_window_hidden("WINUNPACK")) return;
+    if (IsWindowHidden("WINUNPACK")) return;
 
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -383,20 +383,20 @@ TEINAPI void do_unpack ()
     if (is_gpak_unpack_complete())
     {
         internal__handle_gpak_error(gpak_unpack_data.error.load());
-        hide_window("WINUNPACK");
+        HideWindow("WINUNPACK");
     }
 }
 
 TEINAPI void do_pack ()
 {
-    if (is_window_hidden("WINPACK")) return;
+    if (IsWindowHidden("WINPACK")) return;
 
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -453,7 +453,7 @@ TEINAPI void do_pack ()
     if (is_gpak_pack_complete())
     {
         internal__handle_gpak_error(gpak_pack_data.error.load());
-        hide_window("WINPACK");
+        HideWindow("WINPACK");
     }
 }
 
@@ -464,7 +464,7 @@ TEINAPI void cancel_unpack ()
     gpak_unpack_data.complete.store(true);
     gpak_unpack_data.cancel.store(true);
 
-    hide_window("WINUNPACK");
+    HideWindow("WINUNPACK");
 }
 
 TEINAPI void cancel_pack ()
@@ -472,7 +472,7 @@ TEINAPI void cancel_pack ()
     gpak_pack_data.complete.store(true);
     gpak_pack_data.cancel.store(true);
 
-    hide_window("WINPACK");
+    HideWindow("WINPACK");
 }
 
 /* -------------------------------------------------------------------------- */

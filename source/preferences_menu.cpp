@@ -710,10 +710,10 @@ TEINAPI void do_preferences_menu ()
 {
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -727,10 +727,10 @@ TEINAPI void do_preferences_menu ()
     float vh = get_viewport().h;
 
     float tw = roundf(vw / 2);
-    float th = pvfh - WINDOW_BORDER;
+    float th = pvfh - gWindowBorder;
 
     float bw = roundf(vw / 3);
-    float bh = pvfh - WINDOW_BORDER;
+    float bh = pvfh - gWindowBorder;
 
     // Top tabs for switching from the settings and key bindings menu.
     cursor = Vec2(0,0);
@@ -756,7 +756,7 @@ TEINAPI void do_preferences_menu ()
     end_panel();
 
     // Bottom buttons for saving and exiting or cancelling changes.
-    cursor = Vec2(0, WINDOW_BORDER);
+    cursor = Vec2(0, gWindowBorder);
     begin_panel(0, vh-pvfh, vw, pvfh, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -805,7 +805,7 @@ TEINAPI void handle_preferences_menu_events ()
     // Check if there was a mouse press for the color swatch settings.
     preferences_mouse_pressed = false;
 
-    if (!is_window_focused("WINPREFERENCES")) return;
+    if (!IsWindowFocused("WINPREFERENCES")) return;
 
     switch (main_event.type)
     {
@@ -863,8 +863,8 @@ TEINAPI void cancel_preferences ()
 
     update_systems_that_rely_on_settings(tile_graphics_changed);
 
-    hide_window("WINCOLOR");
-    hide_window("WINPREFERENCES");
+    HideWindow("WINCOLOR");
+    HideWindow("WINPREFERENCES");
 }
 
 TEINAPI void save_preferences ()
@@ -876,8 +876,8 @@ TEINAPI void save_preferences ()
         internal__save_settings();
     }
 
-    hide_window("WINCOLOR");
-    hide_window("WINPREFERENCES");
+    HideWindow("WINCOLOR");
+    HideWindow("WINPREFERENCES");
 }
 
 /* -------------------------------------------------------------------------- */

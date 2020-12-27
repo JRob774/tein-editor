@@ -78,8 +78,8 @@
 #include "debug.hpp"
 #include "error.hpp"
 #include "dialog.hpp"
-
 #include "custom_events.hpp"
+
 #include "window.hpp"
 #include "cursor.hpp"
 #include "key_bindings.hpp"

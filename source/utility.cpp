@@ -432,7 +432,7 @@ TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType typ
     }
 
     // We don't allow hidden windows because it causes program hang.
-    HWND hwnd = (!window.empty() && !is_window_hidden(window)) ? Internal::Win32GetWindowHandle(get_window(window).window) : NULL;
+    HWND hwnd = (!window.empty() && !IsWindowHidden(window)) ? Internal::Win32GetWindowHandle(GetWindowFromName(window).window) : NULL;
     int ret = MessageBoxA(hwnd, msg.c_str(), title.c_str(), flags);
 
     // Convert the result into a platform-agnostic value for use in the program.

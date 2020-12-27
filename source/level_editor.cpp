@@ -608,7 +608,7 @@ TEINAPI void internal__draw_cursor (int x, int y, Tile_ID id)
 TEINAPI void internal__draw_mirrored_cursor ()
 {
     // No need to draw if we do not have focus.
-    if (!is_window_focused("WINMAIN")) return;
+    if (!IsWindowFocused("WINMAIN")) return;
 
     bool both = (level_editor.mirror_h && level_editor.mirror_v);
 
@@ -785,7 +785,7 @@ TEINAPI void internal__draw_mirrored_clipboard ()
 {
     bool both = (level_editor.mirror_h && level_editor.mirror_v);
 
-    if (!is_window_focused("WINMAIN")) return;
+    if (!IsWindowFocused("WINMAIN")) return;
 
                                internal__draw_clipboard_highlight(UI_DIR_RIGHT, UI_DIR_UP  );
     if (level_editor.mirror_h) internal__draw_clipboard_highlight(UI_DIR_LEFT,  UI_DIR_UP  );
@@ -966,7 +966,7 @@ TEINAPI void do_level_editor ()
 
     // If we're in the level editor viewport then the cursor can be one of
     // the custom tool cursors based on what our current tool currently is.
-    if (mouse_inside_level_editor_viewport() && is_window_focused("WINMAIN"))
+    if (mouse_inside_level_editor_viewport() && IsWindowFocused("WINMAIN"))
     {
         switch (level_editor.tool_type)
         {
@@ -1080,7 +1080,7 @@ TEINAPI void do_level_editor ()
     // for pasting is currently being pressed or not (by default this is CTRL).
     if (!are_all_layers_inactive())
     {
-        if (!is_a_window_resizing() && mouse_inside_level_editor_viewport())
+        if (!IsAWindowResizing() && mouse_inside_level_editor_viewport())
         {
             if (!internal__clipboard_empty() && is_key_mod_state_active(get_key_binding(KB_PASTE).mod))
             {
@@ -1332,7 +1332,7 @@ TEINAPI void handle_level_editor_events ()
     // We set the tool state to idle here so that if the user was doing
     // an action and then opened another window with a hotkey, when they
     // return the action will not continue due to the tool being active.
-    if (!is_window_focused("WINMAIN"))
+    if (!IsWindowFocused("WINMAIN"))
     {
         level_editor.tool_state = Tool_State::IDLE;
         return;

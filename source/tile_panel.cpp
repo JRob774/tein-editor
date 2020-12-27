@@ -250,7 +250,7 @@ TEINAPI void internal__jump_to_category (Tile_Category category)
     {
         if (!are_all_layers_inactive())
         {
-            if (is_window_focused("WINMAIN"))
+            if (IsWindowFocused("WINMAIN"))
             {
                 internal__set_category_as_active(category);
             }
@@ -366,7 +366,7 @@ TEINAPI void handle_tile_panel_events ()
     {
         if (!are_all_layers_inactive())
         {
-            if (is_window_focused("WINMAIN"))
+            if (IsWindowFocused("WINMAIN"))
             {
                 switch (main_event.type)
                 {

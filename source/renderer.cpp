@@ -89,7 +89,7 @@ TEINAPI void internal__dump_opengl_debug_info ()
 
 TEINAPI bool init_renderer ()
 {
-    gl_context = SDL_GL_CreateContext(get_window("WINMAIN").window);
+    gl_context = SDL_GL_CreateContext(GetWindowFromName("WINMAIN").window);
     if (!gl_context)
     {
         LogError(ERR_MIN, "Failed to create GL context! (%s)", SDL_GetError());
@@ -135,7 +135,7 @@ TEINAPI bool init_renderer ()
     }
 
     // By default we render to the main window.
-    set_render_target(&get_window("WINMAIN"));
+    set_render_target(&GetWindowFromName("WINMAIN"));
 
     set_viewport(0, 0, get_render_target_w(), get_render_target_h());
 

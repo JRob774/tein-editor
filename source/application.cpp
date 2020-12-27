@@ -98,38 +98,38 @@ TEINAPI void init_application (int argc, char** argv)
 
     if (!init_resource_manager()) { LogError(ERR_MAX, "Failed to setup the resource manager!"); return; }
     if (!init_ui_system       ()) { LogError(ERR_MAX, "Failed to setup the UI system!"       ); return; }
-    if (!init_window          ()) { LogError(ERR_MAX, "Failed to setup the window system!"   ); return; }
+    if (!InitWindow           ()) { LogError(ERR_MAX, "Failed to setup the window system!"   ); return; }
 
-    if (!create_window("WINPREFERENCES", "Preferences"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!" ); return; }
-    if (!create_window("WINCOLOR"      , "Color Picker"    , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create color picker window!"); return; }
-    if (!create_window("WINNEW"        , "New"             , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create new window!"         ); return; }
-    if (!create_window("WINRESIZE"     , "Resize"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create resize window!"      ); return; }
-    if (!create_window("WINABOUT"      , "About"           , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440, 96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create about window!"       ); return; }
-    if (!create_window("WINUNPACK"     , "Unpack"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
-    if (!create_window("WINPACK"       , "Pack"            , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
-    if (!create_window("WINPATH"       , "Locate Game"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"        ); return; }
-    if (!create_window("WINUPDATE"     , "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"      ); return; }
+    if (!RegisterWindow("WINPREFERENCES", "Preferences"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!" ); return; }
+    if (!RegisterWindow("WINCOLOR"      , "Color Picker"    , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create color picker window!"); return; }
+    if (!RegisterWindow("WINNEW"        , "New"             , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create new window!"         ); return; }
+    if (!RegisterWindow("WINRESIZE"     , "Resize"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create resize window!"      ); return; }
+    if (!RegisterWindow("WINABOUT"      , "About"           , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440, 96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create about window!"       ); return; }
+    if (!RegisterWindow("WINUNPACK"     , "Unpack"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
+    if (!RegisterWindow("WINPACK"       , "Pack"            , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
+    if (!RegisterWindow("WINPATH"       , "Locate Game"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"        ); return; }
+    if (!RegisterWindow("WINUPDATE"     , "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"      ); return; }
 
-    get_window("WINPREFERENCES"). close_callback = []() { cancel_preferences    (); };
-    get_window("WINCOLOR"      ). close_callback = []() { cancel_color_picker   (); };
-    get_window("WINNEW"        ). close_callback = []() { cancel_new            (); };
-    get_window("WINRESIZE"     ). close_callback = []() { cancel_resize         (); };
-    get_window("WINABOUT"      ). close_callback = []() { hide_window("WINABOUT" ); };
-    get_window("WINUNPACK"     ). close_callback = []() { cancel_unpack         (); };
-    get_window("WINPACK"       ). close_callback = []() { cancel_pack           (); };
-    get_window("WINPATH"       ). close_callback = []() { cancel_path           (); };
-    get_window("WINUPDATE"     ). close_callback = []() { hide_window("WINUPDATE"); };
-    get_window("WINMAIN"       ).resize_callback = []() { do_application        (); };
+    GetWindowFromName("WINPREFERENCES"). closeCallback = []() { cancel_preferences   (); };
+    GetWindowFromName("WINCOLOR"      ). closeCallback = []() { cancel_color_picker  (); };
+    GetWindowFromName("WINNEW"        ). closeCallback = []() { cancel_new           (); };
+    GetWindowFromName("WINRESIZE"     ). closeCallback = []() { cancel_resize        (); };
+    GetWindowFromName("WINABOUT"      ). closeCallback = []() { HideWindow("WINABOUT" ); };
+    GetWindowFromName("WINUNPACK"     ). closeCallback = []() { cancel_unpack        (); };
+    GetWindowFromName("WINPACK"       ). closeCallback = []() { cancel_pack          (); };
+    GetWindowFromName("WINPATH"       ). closeCallback = []() { cancel_path          (); };
+    GetWindowFromName("WINUPDATE"     ). closeCallback = []() { HideWindow("WINUPDATE"); };
+    GetWindowFromName("WINMAIN"       ).resizeCallback = []() { do_application       (); };
 
-    set_window_child("WINPREFERENCES");
-    set_window_child("WINCOLOR");
-    set_window_child("WINNEW");
-    set_window_child("WINRESIZE");
-    set_window_child("WINABOUT");
-    set_window_child("WINUNPACK");
-    set_window_child("WINPACK");
-    set_window_child("WINPATH");
-    set_window_child("WINUPDATE");
+    SetWindowChild("WINPREFERENCES");
+    SetWindowChild("WINCOLOR");
+    SetWindowChild("WINNEW");
+    SetWindowChild("WINRESIZE");
+    SetWindowChild("WINABOUT");
+    SetWindowChild("WINUNPACK");
+    SetWindowChild("WINPACK");
+    SetWindowChild("WINPATH");
+    SetWindowChild("WINUPDATE");
 
     if (!init_renderer           ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
     if (!load_editor_settings    ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
@@ -150,7 +150,7 @@ TEINAPI void init_application (int argc, char** argv)
     //
     // We don't bother showing if any of the setup functions resulted in
     // a fatal failure as it would look ugly to briefly flash the window.
-    if (main_running) show_main_window();
+    if (main_running) ShowMainWindow();
 
     // We do this so we do an extra redraw on start-up making sure certain
     // things end up being initialized/setup. This fixes the scrollbars
@@ -178,7 +178,7 @@ TEINAPI void quit_application ()
     free_editor_resources();
 
     quit_renderer();
-    quit_window();
+    QuitWindow();
 
     QuitDebugSystem();
     QuitErrorSystem();
@@ -194,17 +194,17 @@ TEINAPI void do_application ()
     ClearDebugTimerResult();
     Defer { DumpDebugTimerResult(); };
 
-    set_render_target(&get_window("WINMAIN"));
+    set_render_target(&GetWindowFromName("WINMAIN"));
     set_viewport(0, 0, get_render_target_w(), get_render_target_h());
 
     render_clear(ui_color_medium);
 
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
@@ -230,81 +230,81 @@ TEINAPI void do_application ()
 
     render_present();
 
-    if (!is_window_hidden("WINPREFERENCES"))
+    if (!IsWindowHidden("WINPREFERENCES"))
     {
-        set_render_target(&get_window("WINPREFERENCES"));
+        set_render_target(&GetWindowFromName("WINPREFERENCES"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_preferences_menu();
         render_present();
     }
 
-    if (!is_window_hidden("WINCOLOR"))
+    if (!IsWindowHidden("WINCOLOR"))
     {
-        set_render_target(&get_window("WINCOLOR"));
+        set_render_target(&GetWindowFromName("WINCOLOR"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_color_picker();
         render_present();
     }
 
-    if (!is_window_hidden("WINABOUT"))
+    if (!IsWindowHidden("WINABOUT"))
     {
-        set_render_target(&get_window("WINABOUT"));
+        set_render_target(&GetWindowFromName("WINABOUT"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_about();
         render_present();
     }
 
-    if (!is_window_hidden("WINNEW"))
+    if (!IsWindowHidden("WINNEW"))
     {
-        set_render_target(&get_window("WINNEW"));
+        set_render_target(&GetWindowFromName("WINNEW"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_new();
         render_present();
     }
 
-    if (!is_window_hidden("WINRESIZE"))
+    if (!IsWindowHidden("WINRESIZE"))
     {
-        set_render_target(&get_window("WINRESIZE"));
+        set_render_target(&GetWindowFromName("WINRESIZE"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_resize();
         render_present();
     }
 
-    if (!is_window_hidden("WINUNPACK"))
+    if (!IsWindowHidden("WINUNPACK"))
     {
-        set_render_target(&get_window("WINUNPACK"));
+        set_render_target(&GetWindowFromName("WINUNPACK"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_unpack();
         render_present();
     }
 
-    if (!is_window_hidden("WINPACK"))
+    if (!IsWindowHidden("WINPACK"))
     {
-        set_render_target(&get_window("WINPACK"));
+        set_render_target(&GetWindowFromName("WINPACK"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_pack();
         render_present();
     }
 
-    if (!is_window_hidden("WINPATH"))
+    if (!IsWindowHidden("WINPATH"))
     {
-        set_render_target(&get_window("WINPATH"));
+        set_render_target(&GetWindowFromName("WINPATH"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_path();
         render_present();
     }
 
-    if (!is_window_hidden("WINUPDATE"))
+    if (!IsWindowHidden("WINUPDATE"))
     {
-        set_render_target(&get_window("WINUPDATE"));
+        set_render_target(&GetWindowFromName("WINUPDATE"));
         set_viewport(0, 0, get_render_target_w(), get_render_target_h());
         render_clear(ui_color_medium);
         do_update();
@@ -346,7 +346,7 @@ TEINAPI bool handle_application_events ()
         pack_textures();
         #endif
 
-        handle_window_events();
+        HandleWindowEvents();
         handle_key_binding_events();
         handle_ui_events();
         handle_tile_panel_events();

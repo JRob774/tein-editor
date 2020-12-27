@@ -54,7 +54,7 @@ TEINAPI void do_status_bar ()
 
     // Get the mouse position.
     int mx = 0, my = 0;
-    if (is_window_focused("WINMAIN"))
+    if (IsWindowFocused("WINMAIN"))
     {
         if (current_tab_is_level())
         {

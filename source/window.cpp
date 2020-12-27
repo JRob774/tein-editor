@@ -1,207 +1,373 @@
-/*******************************************************************************
- * Window manager for creating and handling multiple different app windows.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr const char* gWindowStateKeyName = "Software\\TheEndEditor\\WindowPlacement";
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static std::vector<std::string> gRestoreList;
+static std::map<std::string, Window> gWindows;
 
-/* -------------------------------------------------------------------------- */
+static unsigned int gMainThreadID;
+static bool gWindowResizing;
+static bool gFromManualResize; // Hack used to solve a stupid flashing window bug with the New/Resize window.
 
-static constexpr const char* WINDOW_STATE_KEY_NAME = "Software\\TheEndEditor\\WindowPlacement";
-
-static std::vector<std::string> restore_list;
-static std::map<std::string, Window> windows;
-
-static unsigned int main_thread_id;
-static bool        window_resizing;
-static bool     from_manual_resize; // Hack used to solve a stupid flashing window bug with the New/Resize window.
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool internal__are_any_subwindows_open ()
+namespace Internal
 {
-    for (auto it: windows)
+    TEINAPI bool AreAnySubWindowsOpen ()
     {
-        if (it.first != "WINMAIN" && !is_window_hidden(it.first)) return true;
+        for (auto [name,window]: gWindows) if (name != "WINMAIN" && !IsWindowHidden(name)) return true;
+        return false;
     }
-    return false;
-}
 
-TEINAPI void internal__push_quit_event ()
-{
-    SDL_Event e;
-    SDL_zero(e);
-
-    e.type           = SDL_QUIT;
-    e.quit.type      = SDL_QUIT;
-    e.quit.timestamp = SDL_GetTicks();
-
-    SDL_PushEvent(&e);
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI int internal__resize_window (void* main_window_thread_id, SDL_Event* event)
-{
-    // We only care about window resizing events, ignore everything else!
-    if (event->type == SDL_WINDOWEVENT)
+    TEINAPI void PushQuitEvent ()
     {
-        if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED ||
-            event->window.event == SDL_WINDOWEVENT_RESIZED)
+        SDL_Event e;
+        SDL_zero(e);
+        e.type = SDL_QUIT;
+        e.quit.type = SDL_QUIT;
+        e.quit.timestamp = SDL_GetTicks();
+        SDL_PushEvent(&e);
+    }
+
+    TEINAPI int ResizeWindow (void* mainWindowThreadID, SDL_Event* event)
+    {
+        // We only care about window resizing events, ignore everything else!
+        if (event->type == SDL_WINDOWEVENT)
         {
-            Window& window = get_window_from_id(event->window.windowID);
-
-            float old_width  = window.width;
-            float old_height = window.height;
-            window.width     = static_cast<float>(event->window.data1);
-            window.height    = static_cast<float>(event->window.data2);
-
-            // If not on main thread leave early as it would be unsafe otherwise.
-            // See the top of the init_window() function for a clear explanation.
-            if (*reinterpret_cast<unsigned int*>(main_window_thread_id) == GetThreadID())
+            if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
             {
-                // Force a redraw on resize, which looks nicer than the usual glitchy
-                // looking screen content when a program's window is usually resized.
-                window_resizing = true;
-                if (!from_manual_resize)
+                Window& window = GetWindowFromID(event->window.windowID);
+
+                float oldWidth = window.width;
+                float oldHeight = window.height;
+
+                window.width = static_cast<float>(event->window.data1);
+                window.height = static_cast<float>(event->window.data2);
+
+                // If not on main thread leave early as it would be unsafe otherwise.
+                // See the top of the init_window() function for a clear explanation.
+                if (*reinterpret_cast<unsigned int*>(mainWindowThreadID) == GetThreadID())
                 {
-                    if (window.resize_callback)
+                    // Force a redraw on resize, which looks nicer than the usual glitchy
+                    // looking screen content when a program's window is usually resized.
+                    gWindowResizing = true;
+                    if (!gFromManualResize)
                     {
-                        if (old_width != event->window.data1 || old_height != event->window.data2)
+                        if (window.resizeCallback)
                         {
-                            window.resize_callback();
+                            if (oldWidth != event->window.data1 || oldHeight != event->window.data2)
+                            {
+                                window.resizeCallback();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        gFromManualResize = false;
+                    }
+
+                    gWindowResizing = false;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    #if defined(PLATFORM_WIN32)
+    TEINAPI void LoadWindowState ()
+    {
+        HKEY key;
+        LSTATUS ret = RegOpenKeyExA(HKEY_CURRENT_USER, gWindowStateKeyName, 0, KEY_READ, &key);
+        if (ret != ERROR_SUCCESS)
+        {
+            // We don't bother logging an error because it isn't that important...
+            return;
+        }
+        Defer { RegCloseKey(key); };
+
+        DWORD dwX, dwY, dwW, dwH, dwMaximized, dwDisplayIndex;
+        DWORD len = sizeof(DWORD);
+
+        // We return so we don't set potentially invalid data as the window state.
+        if (RegQueryValueExA(key, "dwBoundsX"     , 0, 0, reinterpret_cast<BYTE*>(&dwX           ), &len) != ERROR_SUCCESS) return;
+        if (RegQueryValueExA(key, "dwBoundsY"     , 0, 0, reinterpret_cast<BYTE*>(&dwY           ), &len) != ERROR_SUCCESS) return;
+        if (RegQueryValueExA(key, "dwBoundsW"     , 0, 0, reinterpret_cast<BYTE*>(&dwW           ), &len) != ERROR_SUCCESS) return;
+        if (RegQueryValueExA(key, "dwBoundsH"     , 0, 0, reinterpret_cast<BYTE*>(&dwH           ), &len) != ERROR_SUCCESS) return;
+        if (RegQueryValueExA(key, "dwMaximized"   , 0, 0, reinterpret_cast<BYTE*>(&dwMaximized   ), &len) != ERROR_SUCCESS) return;
+        if (RegQueryValueExA(key, "dwDisplayIndex", 0, 0, reinterpret_cast<BYTE*>(&dwDisplayIndex), &len) != ERROR_SUCCESS) return;
+
+        int x = dwX;
+        int y = dwY;
+        int w = dwW;
+        int h = dwH;
+
+        SDL_Window* win = gWindows.at("WINMAIN").window;
+        SDL_Rect displayBounds;
+        if (SDL_GetDisplayBounds(dwDisplayIndex, &displayBounds) < 0)
+        {
+            // We don't bother logging an error because it isn't that important...
+            return;
+        }
+
+        // Make sure the window is not out of bounds at all.
+        if ( x    <  displayBounds.x) x = displayBounds.x;
+        if ( y    <  displayBounds.y) y = displayBounds.y;
+        if ((y+h) >= displayBounds.h) y = displayBounds.h - h;
+        if ((x+w) >= displayBounds.w) x = displayBounds.w - w;
+
+        SetWindowSize("WINMAIN", w, h);
+        SetWindowPos("WINMAIN", x, y);
+
+        if (dwMaximized)
+        {
+            SDL_MaximizeWindow(win);
+        }
+    }
+    #endif // PLATFORM_WIN32
+
+    #if defined(PLATFORM_WIN32)
+    TEINAPI void SaveWindowState ()
+    {
+        DWORD disp;
+        HKEY key;
+        LSTATUS ret = RegCreateKeyExA(HKEY_CURRENT_USER, gWindowStateKeyName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &key, &disp);
+        if (ret != ERROR_SUCCESS)
+        {
+            // We don't bother logging an error because it isn't that important...
+            return;
+        }
+        Defer { RegCloseKey(key); };
+
+        SDL_Window* win = gWindows.at("WINMAIN").window;
+
+        int x = gMainWindowX;
+        int y = gMainWindowY;
+        int w = gMainWindowBaseW;
+        int h = gMainWindowBaseH;
+        int maximized = SDL_GetWindowFlags(win) & SDL_WINDOW_MAXIMIZED;
+        int displayIndex = SDL_GetWindowDisplayIndex(win);
+
+        // We do restore window so we ge the actual window pos and size.
+        SDL_RestoreWindow(win);
+
+        SDL_GetWindowPosition(win, &x,&y);
+        SDL_GetWindowSize(win, &w,&h);
+
+        DWORD dwX = x;
+        DWORD dwY = y;
+        DWORD dwW = w;
+        DWORD dwH = h;
+        DWORD dwMaximized = maximized;
+        DWORD dwDisplayIndex = displayIndex;
+
+        RegSetValueExA(key, "dwBoundsX"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwX           ), sizeof(dwX           ));
+        RegSetValueExA(key, "dwBoundsY"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwY           ), sizeof(dwY           ));
+        RegSetValueExA(key, "dwBoundsW"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwW           ), sizeof(dwW           ));
+        RegSetValueExA(key, "dwBoundsH"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwH           ), sizeof(dwH           ));
+        RegSetValueExA(key, "dwMaximized"   , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwMaximized   ), sizeof(dwMaximized   ));
+        RegSetValueExA(key, "dwDisplayIndex", 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwDisplayIndex), sizeof(dwDisplayIndex));
+    }
+    #endif // PLATFORM_WIN32
+}
+
+//
+// GLOBAL WINDOW FUNCTIONALITY
+//
+
+TEINAPI bool InitWindow ()
+{
+    // The SDL docs say that event watchers can potentially be called on a
+    // separate thread this means that, if this is the case, the redraw on
+    // resize is potentially unstable. As a result, we pass in the ID for
+    // the main thread and then when in the resize handler check to see if
+    // its thread ID is the same -- if it is then we can redraw safely.
+    gMainThreadID = GetThreadID();
+
+    // The SDL docs say that this should be done before creation of the window!
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+
+    #if defined(BUILD_DEBUG)
+    std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    #else
+    std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    #endif // BUILD_DEBUG
+
+    if (!RegisterWindow("WINMAIN", mainTitle, gMainWindowX,gMainWindowY,gMainWindowBaseW,gMainWindowBaseH,gMainWindowMinW,gMainWindowMinH,gMainWindowFlags))
+    {
+        LogError(ERR_MAX, "Failed to create the main application window!");
+        return false;
+    }
+
+    GetWindowFromName("WINMAIN").closeCallback = [](){ Internal::PushQuitEvent(); };
+
+    // This is a useful feature of SDL's that will allow us to redraw our
+    // screen whilst it is being resized, which is much more aesthetically
+    // appealing when compared to the usual garbage visuals on a resize.
+    SDL_AddEventWatch(Internal::ResizeWindow, &gMainThreadID);
+
+    return true;
+}
+
+TEINAPI void QuitWindow ()
+{
+    // Note: We remove this so when we SDL_RestoreWindow in Internal::SaveWindowState
+    // we don't end up invoking the resize handler function Internal::ResizeWindow.
+    SDL_DelEventWatch(Internal::ResizeWindow, &gMainThreadID);
+    HideWindow("WINMAIN");
+    Internal::SaveWindowState();
+    for (auto [name,window]: gWindows) SDL_DestroyWindow(window.window);
+    gWindows.clear();
+}
+
+TEINAPI void HandleWindowEvents ()
+{
+    if (main_event.type != SDL_WINDOWEVENT) return;
+
+    std::string windowName = GetWindowNameFromID(main_event.window.windowID);
+    Window& window = GetWindowFromID(main_event.window.windowID);
+
+    switch (main_event.window.event)
+    {
+        case (SDL_WINDOWEVENT_FOCUS_GAINED):
+        {
+            // Special case for the main window to ensure all sub-windows stay on top of it.
+            if (windowName == "WINMAIN" && Internal::AreAnySubWindowsOpen())
+            {
+                for (auto [name,unused]: gWindows)
+                {
+                    if (name != "WINMAIN") RaiseWindow(name);
+                }
+            }
+            else
+            {
+                window.focus = true;
+            }
+        } break;
+        case (SDL_WINDOWEVENT_FOCUS_LOST):
+        {
+            window.focus = false;
+        } break;
+
+        case (SDL_WINDOWEVENT_MINIMIZED):
+        {
+            if (windowName == "WINMAIN")
+            {
+                for (auto [name,unused]: gWindows)
+                {
+                    if (name != "WINMAIN" && !IsWindowHidden(name))
+                    {
+                        gRestoreList.push_back(name);
+                        HideWindow(name);
+                    }
+                }
+            }
+        } break;
+        case (SDL_WINDOWEVENT_RESTORED):
+        {
+            if (windowName == "WINMAIN")
+            {
+                for (auto [name,unused]: gWindows)
+                {
+                    if (name != "WINMAIN")
+                    {
+                        if (std::find(gRestoreList.begin(), gRestoreList.end(), name) != gRestoreList.end())
+                        {
+                            ShowWindow(name);
                         }
                     }
                 }
-                else
-                {
-                    from_manual_resize = false;
-                }
-                window_resizing = false;
+                gRestoreList.clear();
             }
-        }
-    }
+        } break;
 
-    return 0;
-}
+        case (SDL_WINDOWEVENT_CLOSE):
+        {
+            if (window.closeCallback) window.closeCallback();
+        } break;
 
-/* -------------------------------------------------------------------------- */
-
-#if defined(PLATFORM_WIN32)
-TEINAPI void internal__load_window_state ()
-{
-    HKEY key;
-    LSTATUS ret = RegOpenKeyExA(HKEY_CURRENT_USER, WINDOW_STATE_KEY_NAME, 0, KEY_READ, &key);
-    if (ret != ERROR_SUCCESS)
-    {
-        // We don't bother logging an error because it isn't that important...
-        return;
-    }
-    Defer { RegCloseKey(key); };
-
-    DWORD dwX, dwY, dwW, dwH, dwMaximized, dwDisplayIndex;
-    DWORD len = sizeof(DWORD);
-
-    // We return so we don't set potentially invalid data as the window state.
-    if (RegQueryValueExA(key, "dwBoundsX"     , 0, 0, reinterpret_cast<BYTE*>(&dwX           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwBoundsY"     , 0, 0, reinterpret_cast<BYTE*>(&dwY           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwBoundsW"     , 0, 0, reinterpret_cast<BYTE*>(&dwW           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwBoundsH"     , 0, 0, reinterpret_cast<BYTE*>(&dwH           ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwMaximized"   , 0, 0, reinterpret_cast<BYTE*>(&dwMaximized   ), &len) != ERROR_SUCCESS) return;
-    if (RegQueryValueExA(key, "dwDisplayIndex", 0, 0, reinterpret_cast<BYTE*>(&dwDisplayIndex), &len) != ERROR_SUCCESS) return;
-
-    int x = dwX;
-    int y = dwY;
-    int w = dwW;
-    int h = dwH;
-
-    SDL_Window* win = windows.at("WINMAIN").window;
-    SDL_Rect display_bounds;
-    if (SDL_GetDisplayBounds(dwDisplayIndex, &display_bounds) < 0)
-    {
-        // We don't bother logging an error because it isn't that important...
-        return;
-    }
-
-    // Make sure the window is not out of bounds at all.
-    if ( x    <  display_bounds.x) x = display_bounds.x;
-    if ( y    <  display_bounds.y) y = display_bounds.y;
-    if ((y+h) >= display_bounds.h) y = display_bounds.h - h;
-    if ((x+w) >= display_bounds.w) x = display_bounds.w - w;
-
-    set_window_size("WINMAIN", w, h);
-    set_window_pos("WINMAIN", x, y);
-
-    if (dwMaximized)
-    {
-        SDL_MaximizeWindow(win);
+        case (SDL_WINDOWEVENT_ENTER):
+        {
+            window.mouse = true;
+        } break;
+        case (SDL_WINDOWEVENT_LEAVE):
+        {
+            window.mouse = false;
+        } break;
     }
 }
-#else
-#error internal__load_window_state not implemented on the current platform!
-#endif
 
-#if defined(PLATFORM_WIN32)
-TEINAPI void internal__save_window_state ()
+TEINAPI void SetMainWindowSubtitle (std::string subtitle)
 {
-    DWORD disp;
-    HKEY  key;
-    LSTATUS ret = RegCreateKeyExA(HKEY_CURRENT_USER, WINDOW_STATE_KEY_NAME, 0,
-        NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &key, &disp);
-    if (ret != ERROR_SUCCESS)
+    #if defined(BUILD_DEBUG)
+    std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    #else
+    std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    #endif // BUILD_DEBUG
+
+    if (!subtitle.empty())
     {
-        // We don't bother logging an error because it isn't that important...
-        return;
+        mainTitle += " | ";
+        mainTitle += subtitle;
     }
-    Defer { RegCloseKey(key); };
 
-    SDL_Window* win = windows.at("WINMAIN").window;
-
-    int x             = MAIN_WINDOW_X;
-    int y             = MAIN_WINDOW_Y;
-    int w             = MAIN_WINDOW_BASE_W;
-    int h             = MAIN_WINDOW_BASE_H;
-    int maximized     = SDL_GetWindowFlags(win)&SDL_WINDOW_MAXIMIZED;
-    int display_index = SDL_GetWindowDisplayIndex(win);
-
-    // We do restore window so we ge the actual window pos and size.
-    SDL_RestoreWindow(win);
-
-    SDL_GetWindowPosition(win, &x,&y);
-    SDL_GetWindowSize(win, &w,&h);
-
-    DWORD dwX            = x;
-    DWORD dwY            = y;
-    DWORD dwW            = w;
-    DWORD dwH            = h;
-    DWORD dwMaximized    = maximized;
-    DWORD dwDisplayIndex = display_index;
-
-    RegSetValueExA(key, "dwBoundsX"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwX           ), sizeof(dwX           ));
-    RegSetValueExA(key, "dwBoundsY"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwY           ), sizeof(dwY           ));
-    RegSetValueExA(key, "dwBoundsW"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwW           ), sizeof(dwW           ));
-    RegSetValueExA(key, "dwBoundsH"     , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwH           ), sizeof(dwH           ));
-    RegSetValueExA(key, "dwMaximized"   , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwMaximized   ), sizeof(dwMaximized   ));
-    RegSetValueExA(key, "dwDisplayIndex", 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwDisplayIndex), sizeof(dwDisplayIndex));
+    SDL_SetWindowTitle(gWindows.at("WINMAIN").window, mainTitle.c_str());
 }
-#else
-#error internal__save_window_state not implemented on the current platform!
-#endif
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool create_window (std::string name, std::string title, int x, int y, int w, int h, int min_w, int min_h, U32 flags)
+TEINAPI void ShowMainWindow ()
 {
-    if (windows.find(name) != windows.end())
+    Internal::LoadWindowState();
+    SDL_ShowWindow(gWindows.at("WINMAIN").window);
+}
+
+TEINAPI Window& GetFocusedWindow ()
+{
+    for (auto& [name,window]: gWindows) if (window.focus) return window;
+    return gWindows.at("WINMAIN");
+}
+
+TEINAPI Window& GetWindowFromName (std::string name)
+{
+    assert(gWindows.find(name) != gWindows.end());
+    return gWindows.at(name);
+}
+TEINAPI Window& GetWindowFromID (WindowID id)
+{
+    for (auto& [name,window]: gWindows) if (window.id == id) return window;
+    return gWindows.at("WINMAIN");
+}
+
+TEINAPI WindowID GetWindowIDFromName (std::string name)
+{
+    return gWindows.at(name).id;
+}
+TEINAPI std::string GetWindowNameFromID (WindowID id)
+{
+    for (auto& [name,window]: gWindows) if (window.id == id) return name;
+    return std::string();
+}
+
+TEINAPI bool IsAWindowResizing ()
+{
+    return gWindowResizing;
+}
+
+//
+// INDIVIDUAL WINDOW FUNCTIONALITY
+//
+
+TEINAPI bool RegisterWindow (std::string name, std::string title, int x, int y, int w, int h, int minW, int minH, U32 flags)
+{
+    if (gWindows.find(name) != gWindows.end())
     {
         LogError(ERR_MAX, "Window with name \"%s\" already exists!", name.c_str());
         return false;
     }
 
-    windows.insert(std::pair<std::string, Window>(name, Window()));
-    Window& window = windows.at(name);
+    gWindows.insert({ name, Window() });
+    Window& window = gWindows.at(name);
 
     // These are the required flags for all of our application sub-windows.
     flags |= (SDL_WINDOW_HIDDEN|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_OPENGL);
@@ -220,20 +386,17 @@ TEINAPI bool create_window (std::string name, std::string title, int x, int y, i
     }
 
     // Only set a minimum size if both values are a valid size.
-    if (min_w && min_h)
-    {
-        set_window_min_size(name, min_w, min_h);
-    }
+    if (minW && minH) SetWindowMinSize(name, minW, minH);
 
     // We use SDL_GetWindowSize to cache the final size of a window in case
     // any flags such as SDL_WINDOW_MAXIMIZED were used on window creation.
-    int final_width;
-    int final_height;
+    int finalWidth;
+    int finalHeight;
 
-    SDL_GetWindowSize(window.window, &final_width, &final_height);
+    SDL_GetWindowSize(window.window, &finalWidth, &finalHeight);
 
-    window.width = static_cast<float>(final_width);
-    window.height = static_cast<float>(final_height);
+    window.width = static_cast<float>(finalWidth);
+    window.height = static_cast<float>(finalHeight);
 
     // Default to false and it will get handled by the window event system.
     window.focus = false;
@@ -243,302 +406,57 @@ TEINAPI bool create_window (std::string name, std::string title, int x, int y, i
     return true;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool is_window_hidden (std::string name)
+TEINAPI bool IsWindowHidden (std::string name)
 {
-    return (SDL_GetWindowFlags(windows.at(name).window) & SDL_WINDOW_HIDDEN);
+    return (SDL_GetWindowFlags(gWindows.at(name).window) & SDL_WINDOW_HIDDEN);
+}
+TEINAPI bool IsWindowFocused (std::string name)
+{
+    return gWindows.at(name).focus;
 }
 
-TEINAPI bool is_window_focused (std::string name)
+TEINAPI void ShowWindow (std::string name)
 {
-    return windows.at(name).focus;
+    SetWindowPos(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    SDL_ShowWindow(gWindows.at(name).window);
+}
+TEINAPI void RaiseWindow (std::string name)
+{
+    SDL_RaiseWindow(gWindows.at(name).window);
+}
+TEINAPI void HideWindow (std::string name)
+{
+    SDL_HideWindow(gWindows.at(name).window);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void show_window (std::string name)
+TEINAPI void SetWindowTitle (std::string name, std::string title)
 {
-    set_window_pos(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    SDL_ShowWindow(windows.at(name).window);
+    SDL_SetWindowTitle(gWindows.at(name).window, title.c_str());
 }
 
-TEINAPI void raise_window (std::string name)
+TEINAPI void SetWindowMinSize (std::string name, int w, int h)
 {
-    SDL_RaiseWindow(windows.at(name).window);
+    SDL_SetWindowMinimumSize(gWindows.at(name).window, w, h);
+}
+TEINAPI void SetWindowMaxSize (std::string name, int w, int h)
+{
+    SDL_SetWindowMaximumSize(gWindows.at(name).window, w, h);
 }
 
-TEINAPI void hide_window (std::string name)
+TEINAPI void SetWindowPos (std::string name, int x, int y)
 {
-    SDL_HideWindow(windows.at(name).window);
+    SDL_SetWindowPosition(gWindows.at(name).window, x, y);
 }
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_window_title (std::string name, std::string title)
+TEINAPI void SetWindowSize (std::string name, int w, int h)
 {
-    SDL_SetWindowTitle(windows.at(name).window, title.c_str());
-}
-
-TEINAPI void set_window_min_size (std::string name, int w, int h)
-{
-    SDL_SetWindowMinimumSize(windows.at(name).window, w, h);
-}
-
-TEINAPI void set_window_max_size (std::string name, int w, int h)
-{
-    SDL_SetWindowMaximumSize(windows.at(name).window, w, h);
-}
-
-TEINAPI void set_window_pos (std::string name, int x, int y)
-{
-    SDL_SetWindowPosition(windows.at(name).window, x, y);
-}
-
-TEINAPI void set_window_size (std::string name, int w, int h)
-{
-    SDL_SetWindowSize(windows.at(name).window, w, h);
+    SDL_SetWindowSize(gWindows.at(name).window, w, h);
 }
 
 #if defined(PLATFORM_WIN32)
-TEINAPI void set_window_child (std::string name)
+TEINAPI void SetWindowChild (std::string name)
 {
-    HWND hwnd = Internal::Win32GetWindowHandle(get_window(name).window);
+    HWND hwnd = Internal::Win32GetWindowHandle(GetWindowFromName(name).window);
     LONG old = GetWindowLongA(hwnd, GWL_EXSTYLE);
-
     SetWindowLongA(hwnd, GWL_EXSTYLE, old|WS_EX_TOOLWINDOW);
 }
-#else
-#error set_window_child not implemented on the current platform!
-#endif
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool init_window ()
-{
-    // The SDL docs say that event watchers can potentially be called on a
-    // separate thread this means that, if this is the case, the redraw on
-    // resize is potentially unstable. As a result, we pass in the ID for
-    // the main thread and then when in the resize handler check to see if
-    // its thread ID is the same -- if it is then we can redraw safely.
-    main_thread_id = GetThreadID();
-
-    // The SDL docs say that this should be done before creation of the window!
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,                                            8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,                                              0);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,                                      1);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,                                   3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,                                   0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-
-    #if defined(BUILD_DEBUG)
-    std::string main_title(FormatString("[DEBUG] %s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
-    #else
-    std::string main_title(FormatString("%s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
-    #endif // BUILD_DEBUG
-
-    if (!create_window("WINMAIN", main_title,
-        MAIN_WINDOW_X,MAIN_WINDOW_Y,MAIN_WINDOW_BASE_W,MAIN_WINDOW_BASE_H,
-        MAIN_WINDOW_MIN_W,MAIN_WINDOW_MIN_H, MAIN_WINDOW_FLAGS))
-    {
-        LogError(ERR_MAX, "Failed to create the main application window!");
-        return false;
-    }
-
-    get_window("WINMAIN").close_callback = []()
-    {
-        internal__push_quit_event();
-    };
-
-    // This is a useful feature of SDL's that will allow us to redraw our
-    // screen whilst it is being resized, which is much more aesthetically
-    // appealing when compared to the usual garbage visuals on a resize.
-    SDL_AddEventWatch(internal__resize_window, &main_thread_id);
-
-    return true;
-}
-
-TEINAPI void quit_window ()
-{
-    // Note: We remove this so when we SDL_RestoreWindow in internal__save_window_state
-    // we don't end up invoking the resize handler function internal__resize_window.
-    SDL_DelEventWatch(internal__resize_window, &main_thread_id);
-
-    hide_window("WINMAIN");
-    internal__save_window_state();
-
-    for (auto it: windows) SDL_DestroyWindow(it.second.window);
-    windows.clear();
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void handle_window_events ()
-{
-    if (main_event.type != SDL_WINDOWEVENT) return;
-
-    std::string window_name = get_window_name_from_id(main_event.window.windowID);
-    Window& window = get_window_from_id(main_event.window.windowID);
-
-    switch (main_event.window.event)
-    {
-        case (SDL_WINDOWEVENT_FOCUS_GAINED):
-        {
-            // Special case for the main window to ensure all sub-windows stay on top of it.
-            if (window_name == "WINMAIN" && internal__are_any_subwindows_open())
-            {
-                for (auto it: windows)
-                {
-                    if (it.first != "WINMAIN") raise_window(it.first);
-                }
-            }
-            else
-            {
-                window.focus = true;
-            }
-        } break;
-        case (SDL_WINDOWEVENT_FOCUS_LOST):
-        {
-            window.focus = false;
-        } break;
-
-        case (SDL_WINDOWEVENT_MINIMIZED):
-        {
-            if (window_name == "WINMAIN")
-            {
-                for (auto it: windows)
-                {
-                    if (it.first != "WINMAIN" && !is_window_hidden(it.first))
-                    {
-                        restore_list.push_back(it.first);
-                        hide_window(it.first);
-                    }
-                }
-            }
-        } break;
-        case (SDL_WINDOWEVENT_RESTORED):
-        {
-            if (window_name == "WINMAIN")
-            {
-                for (auto it: windows)
-                {
-                    if (it.first != "WINMAIN")
-                    {
-                        if (std::find(restore_list.begin(), restore_list.end(), it.first) != restore_list.end())
-                        {
-                            show_window(it.first);
-                        }
-                    }
-                }
-                restore_list.clear();
-            }
-        } break;
-
-        case (SDL_WINDOWEVENT_CLOSE):
-        {
-            if (window.close_callback) window.close_callback();
-        } break;
-
-        case (SDL_WINDOWEVENT_ENTER):
-        {
-            window.mouse = true;
-        } break;
-        case (SDL_WINDOWEVENT_LEAVE):
-        {
-            window.mouse = false;
-        } break;
-    }
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_main_window_subtitle (std::string subtitle)
-{
-    #if defined(BUILD_DEBUG)
-    std::string main_title(FormatString("[DEBUG] %s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
-    #else
-    std::string main_title(FormatString("%s (%d.%d.%d)", MAIN_WINDOW_TITLE, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
-    #endif
-
-    if (!subtitle.empty())
-    {
-        main_title += " | ";
-        main_title += subtitle;
-    }
-
-    SDL_SetWindowTitle(windows.at("WINMAIN").window, main_title.c_str());
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void show_main_window ()
-{
-    internal__load_window_state();
-    SDL_ShowWindow(windows.at("WINMAIN").window);
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Window& get_focused_window ()
-{
-    for (auto& it: windows) if (it.second.focus) return it.second;
-    return windows.at("WINMAIN");
-}
-
-TEINAPI Window& get_window (std::string name)
-{
-    assert(windows.find(name) != windows.end());
-    return windows.at(name);
-}
-
-TEINAPI Window& get_window_from_id (Window_ID id)
-{
-    for (auto& it: windows) if (it.second.id == id) return it.second;
-    return windows.at("WINMAIN");
-}
-
-TEINAPI Window_ID get_window_id (std::string name)
-{
-    return windows.at(name).id;
-}
-
-TEINAPI std::string get_window_name_from_id (Window_ID id)
-{
-    for (auto& it: windows) if (it.second.id == id) return it.first;
-    return std::string();
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool is_a_window_resizing ()
-{
-    return window_resizing;
-}
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/
+#endif // PLATFORM_WIN32

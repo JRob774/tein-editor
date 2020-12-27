@@ -325,7 +325,7 @@ TEINAPI void handle_editor_events ()
 
     if (main_event.type == SDL_DROPFILE)
     {
-        if (get_window_id("WINMAIN") == main_event.drop.windowID)
+        if (GetWindowIDFromName("WINMAIN") == main_event.drop.windowID)
         {
             std::string file(main_event.drop.file);
             std::string ext(file.substr(file.find_last_of(".")));
@@ -540,7 +540,7 @@ TEINAPI void decrement_tab ()
 
 TEINAPI void set_main_window_subtitle_for_tab (const std::string& subtitle)
 {
-    set_main_window_subtitle((subtitle.empty()) ? "Untitled" : subtitle);
+    SetMainWindowSubtitle((subtitle.empty()) ? "Untitled" : subtitle);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -629,7 +629,7 @@ TEINAPI void close_tab (size_t index)
         if (editor.tabs.empty())
         {
             editor.current_tab = INVALID_TAB;
-            set_main_window_subtitle("");
+            SetMainWindowSubtitle("");
         }
         else
         {

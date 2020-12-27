@@ -215,14 +215,14 @@ TEINAPI void internal__okay_resize ()
     }
 
     le_resize_okay();
-    hide_window("WINRESIZE");
+    HideWindow("WINRESIZE");
 }
 
 /* -------------------------------------------------------------------------- */
 
 TEINAPI void open_resize (int lw, int lh)
 {
-    set_window_pos("WINRESIZE", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED);
+    SetWindowPos("WINRESIZE", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED);
 
     if (lw > 0) current_resize_width = lw;
     if (lh > 0) current_resize_height = lh;
@@ -230,17 +230,17 @@ TEINAPI void open_resize (int lw, int lh)
     resize_dialog_dir = Resize_Dir::CENTER;
     internal__calculate_dir_clips();
 
-    show_window("WINRESIZE");
+    ShowWindow("WINRESIZE");
 }
 
 TEINAPI void do_resize ()
 {
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -252,10 +252,10 @@ TEINAPI void do_resize ()
     float vh = get_viewport().h;
 
     float bw = roundf(vw / 2);
-    float bh = bb - WINDOW_BORDER;
+    float bh = bb - gWindowBorder;
 
     // Bottom buttons for okaying or cancelling the resize.
-    Vec2 btn_cursor(0, WINDOW_BORDER);
+    Vec2 btn_cursor(0, gWindowBorder);
     begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -328,14 +328,14 @@ TEINAPI void do_resize ()
 
 TEINAPI void cancel_resize ()
 {
-    hide_window("WINRESIZE");
+    HideWindow("WINRESIZE");
 }
 
 /* -------------------------------------------------------------------------- */
 
 TEINAPI void handle_resize_events ()
 {
-    if (!is_window_focused("WINRESIZE")) return;
+    if (!IsWindowFocused("WINRESIZE")) return;
 
     if (!text_box_is_active())
     {

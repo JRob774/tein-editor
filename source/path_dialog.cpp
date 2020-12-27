@@ -17,17 +17,17 @@ static std::string temp_game_path;
 TEINAPI void open_path ()
 {
     temp_game_path = editor_settings.game_path;
-    show_window("WINPATH");
+    ShowWindow("WINPATH");
 }
 
 TEINAPI void do_path ()
 {
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -39,10 +39,10 @@ TEINAPI void do_path ()
     float vh = get_viewport().h;
 
     float bw = roundf(vw / 2);
-    float bh = bb - WINDOW_BORDER;
+    float bh = bb - gWindowBorder;
 
     // Bottom buttons for okaying or cancelling the path dialog.
-    Vec2 btn_cursor(0, WINDOW_BORDER);
+    Vec2 btn_cursor(0, gWindowBorder);
     begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -121,7 +121,7 @@ TEINAPI void okay_path ()
     editor_settings.game_path = temp_game_path;
 
     save_preferences();
-    hide_window("WINPATH");
+    HideWindow("WINPATH");
 
     if (!RunExecutable(editor_settings.game_path))
     {
@@ -132,14 +132,14 @@ TEINAPI void okay_path ()
 TEINAPI void cancel_path ()
 {
     temp_game_path.clear();
-    hide_window("WINPATH");
+    HideWindow("WINPATH");
 }
 
 /* -------------------------------------------------------------------------- */
 
 TEINAPI void handle_path_events ()
 {
-    if (!is_window_focused("WINPATH")) return;
+    if (!IsWindowFocused("WINPATH")) return;
 
     if (!text_box_is_active())
     {

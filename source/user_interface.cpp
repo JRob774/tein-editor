@@ -80,7 +80,7 @@ static bool ui_is_light;
 
 // We also store the active window ID at the time of the tab press so that the
 // system does not move from window-to-window when the user presseses tab.
-static Window_ID ui_text_box_tab_window_id;
+static WindowID ui_text_box_tab_window_id;
 static bool      ui_make_next_text_box_active;
 static bool      ui_tab_handled;
 
@@ -163,7 +163,7 @@ TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool l
     bool result = false;
 
     // Don't bother handling widgets during resize to avoid ugly redraw stuff.
-    if (!is_a_window_resizing())
+    if (!IsAWindowResizing())
     {
         if (get_render_target()->focus && get_render_target()->mouse)
         {
@@ -536,7 +536,7 @@ TEINAPI void handle_ui_events ()
             if (main_event.key.keysym.sym == SDLK_TAB)
             {
                 ui_make_next_text_box_active = true;
-                ui_text_box_tab_window_id = get_focused_window().id;
+                ui_text_box_tab_window_id = GetFocusedWindow().id;
             }
         }
     }
@@ -1226,7 +1226,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to hyperlinks. Could be cleaned.
-            if (current_tab_is_level() && mouse_inside_level_editor_viewport() && is_window_focused("WINMAIN"))
+            if (current_tab_is_level() && mouse_inside_level_editor_viewport() && IsWindowFocused("WINMAIN"))
             {
                 switch (level_editor.tool_type)
                 {
@@ -1431,7 +1431,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to text boxes. Could be cleaned.
-            if (current_tab_is_level() && mouse_inside_level_editor_viewport() && is_window_focused("WINMAIN"))
+            if (current_tab_is_level() && mouse_inside_level_editor_viewport() && IsWindowFocused("WINMAIN"))
             {
                 switch (level_editor.tool_type)
                 {

@@ -367,7 +367,7 @@ TEINAPI void do_map_editor ()
     bool draw_clipboard = false;
     if (!tab.map_node_info.active)
     {
-        if (!is_a_window_resizing() && internal__mouse_inside_map_editor_viewport())
+        if (!IsAWindowResizing() && internal__mouse_inside_map_editor_viewport())
         {
             if (!internal__map_clipboard_empty() && is_key_mod_state_active(get_key_binding(KB_PASTE).mod))
             {
@@ -409,7 +409,7 @@ TEINAPI void do_map_editor ()
                     push_status_bar_message(node.lvl.c_str());
                     mouse_over_node = true;
 
-                    if (is_window_focused("WINMAIN"))
+                    if (IsWindowFocused("WINMAIN"))
                     {
                         bg.r += ((1-bg.r)*.4f);
                         bg.g += ((1-bg.g)*.4f);
@@ -491,7 +491,7 @@ TEINAPI void do_map_editor ()
     {
         if (!mouse_over_node && internal__mouse_inside_map_editor_viewport())
         {
-            if (is_window_focused("WINMAIN"))
+            if (IsWindowFocused("WINMAIN"))
             {
                 Vec2 m = internal__mouse_to_node_position();
                 m.x *= MAP_NODE_W;
@@ -606,7 +606,7 @@ TEINAPI void do_map_editor ()
     // DRAW CLIPBOARD
     if (!tab.map_node_info.active)
     {
-        if (!is_a_window_resizing() && internal__mouse_inside_map_editor_viewport())
+        if (!IsAWindowResizing() && internal__mouse_inside_map_editor_viewport())
         {
             if (!internal__map_clipboard_empty() && is_key_mod_state_active(get_key_binding(KB_PASTE).mod))
             {
@@ -639,7 +639,7 @@ TEINAPI void do_map_editor ()
 
 TEINAPI void handle_map_editor_events ()
 {
-    if (!current_tab_is_map() || !is_window_focused("WINMAIN")) return;
+    if (!current_tab_is_map() || !IsWindowFocused("WINMAIN")) return;
 
     Tab& tab = get_current_tab();
 

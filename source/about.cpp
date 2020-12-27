@@ -13,7 +13,7 @@ TEINAPI void do_about ()
 {
     set_ui_font(&get_editor_regular_font());
 
-    begin_panel(WINDOW_BORDER,WINDOW_BORDER,get_viewport().w-(WINDOW_BORDER*2),get_viewport().h-(WINDOW_BORDER*2), UI_NONE, ui_color_ex_dark);
+    begin_panel(gWindowBorder,gWindowBorder,get_viewport().w-(gWindowBorder*2),get_viewport().h-(gWindowBorder*2), UI_NONE, ui_color_ex_dark);
     begin_panel(1,1,get_viewport().w-2,get_viewport().h-2, UI_NONE, ui_color_medium);
 
     constexpr float XPAD = 4;
@@ -48,14 +48,14 @@ TEINAPI void do_about ()
 
 TEINAPI void handle_about_events ()
 {
-    if (!is_window_focused("WINABOUT")) return;
+    if (!IsWindowFocused("WINABOUT")) return;
 
     if (main_event.type == SDL_KEYDOWN)
     {
         if (main_event.key.keysym.sym == SDLK_ESCAPE ||
             main_event.key.keysym.sym == SDLK_RETURN)
         {
-            hide_window("WINABOUT");
+            HideWindow("WINABOUT");
         }
     }
 }

@@ -309,7 +309,7 @@ TEINAPI void internal__okay_color ()
         editor_settings.tile_grid_color_defaulted = false;
     }
 
-    hide_window("WINCOLOR");
+    HideWindow("WINCOLOR");
 }
 
 TEINAPI void internal__save_color_swatch ()
@@ -325,7 +325,7 @@ TEINAPI void internal__cancel_color ()
     assert(current_color_picker_color);
     *current_color_picker_color = cached_color_picker_color;
 
-    hide_window("WINCOLOR");
+    HideWindow("WINCOLOR");
 }
 
 /* -------------------------------------------------------------------------- */
@@ -342,7 +342,7 @@ TEINAPI void init_color_picker ()
 
 TEINAPI void open_color_picker (Vec4* color)
 {
-    raise_window("WINCOLOR");
+    RaiseWindow("WINCOLOR");
 
     color_picker_active_channel = Channel_Type::INVALID;
     color_picker_mouse_pressed = false;
@@ -352,22 +352,22 @@ TEINAPI void open_color_picker (Vec4* color)
     current_color_picker_color = color;
     cached_color_picker_color = *color;
 
-    if (is_window_hidden("WINCOLOR"))
+    if (IsWindowHidden("WINCOLOR"))
     {
-        show_window("WINCOLOR");
+        ShowWindow("WINCOLOR");
     }
 }
 
 TEINAPI void do_color_picker ()
 {
-    if (is_window_hidden("WINCOLOR")) return;
+    if (IsWindowHidden("WINCOLOR")) return;
 
     Quad p1, p2;
 
-    p1.x = WINDOW_BORDER;
-    p1.y = WINDOW_BORDER;
-    p1.w = get_viewport().w - (WINDOW_BORDER * 2);
-    p1.h = get_viewport().h - (WINDOW_BORDER * 2);
+    p1.x = gWindowBorder;
+    p1.y = gWindowBorder;
+    p1.w = get_viewport().w - (gWindowBorder * 2);
+    p1.h = get_viewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -379,10 +379,10 @@ TEINAPI void do_color_picker ()
     float vh = get_viewport().h;
 
     float bw = roundf(vw / 3);
-    float bh = bb - WINDOW_BORDER;
+    float bh = bb - gWindowBorder;
 
     // Bottom buttons for okaying or cancelling the color picker.
-    Vec2 btn_cursor(0, WINDOW_BORDER);
+    Vec2 btn_cursor(0, gWindowBorder);
     begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -452,7 +452,7 @@ TEINAPI void handle_color_picker_events ()
 {
     color_picker_mouse_pressed = false;
 
-    if (!is_window_focused("WINCOLOR")) return;
+    if (!IsWindowFocused("WINCOLOR")) return;
 
     // Determine if the mouse was pressed this update/cycle.
     switch (main_event.type)
