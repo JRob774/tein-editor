@@ -16,6 +16,34 @@
 
 /* -------------------------------------------------------------------------- */
 
+#define STRINGIFY( x) STRINGIFY1(x)
+#define STRINGIFY1(x) #x
+
+/* -------------------------------------------------------------------------- */
+
+#define JOIN( a, b) JOIN2(a, b)
+#define JOIN2(a, b) JOIN1(a, b)
+#define JOIN1(a, b) a##b
+
+/* -------------------------------------------------------------------------- */
+
+#define CAST(t, x) ((t)(x))
+
+/* -------------------------------------------------------------------------- */
+
+#define PERSISTENT static
+#define INTERNAL   static
+#define GLOBAL     static
+#define SHARED     static
+
+/* -------------------------------------------------------------------------- */
+
+#define STDDEF INTERNAL
+#define INLDEF INTERNAL inline
+#define FILDEF INTERNAL inline
+
+/* -------------------------------------------------------------------------- */
+
 #ifdef __COUNTER__
 #define defer \
 const auto& JOIN(defer, __COUNTER__) = Defer_Help__() + [&]()

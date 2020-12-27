@@ -1,8 +1,13 @@
 #pragma once
 
-#include <compiler.h>
-#include <platform.h>
-#include <standard.h>
+#define PLATFORM_WIN32 1
+
+// We do not intend on using the secure CRT.
+#if defined(_MSC_VER)
+#ifndef _CRT_SECURE_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+#endif
 
 #if defined(PLATFORM_WIN32)
 #include <windows.h>
@@ -33,9 +38,9 @@
 #include <stack>
 
 #include <external.hpp>
-#include <version.hpp>
 
 #include <utility.hpp>
+#include <version.hpp>
 #include <alert.hpp>
 #include <debug.hpp>
 #include <error.hpp>
