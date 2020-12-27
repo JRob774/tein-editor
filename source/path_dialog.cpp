@@ -104,7 +104,7 @@ TEINAPI void do_path ()
 
     if (do_button_txt(NULL, BUTTON_W,btnh, UI_SINGLE, "Search"))
     {
-        auto result = open_dialog(Dialog_Type::EXE, false);
+        auto result = OpenDialog(DialogType::EXE, false);
         if (!result.empty())
         {
             temp_game_path = result.at(0);

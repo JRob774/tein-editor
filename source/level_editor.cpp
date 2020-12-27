@@ -1695,7 +1695,7 @@ TEINAPI bool le_save (Tab& tab)
     // just do a normal Save to that file. Otherwise, we perform a Save As.
     if (tab.name.empty())
     {
-        std::string file_name = save_dialog(Dialog_Type::LVL);
+        std::string file_name = SaveDialog(DialogType::LVL);
         if (file_name.empty()) return false;
         tab.name = file_name;
     }
@@ -1711,7 +1711,7 @@ TEINAPI bool le_save (Tab& tab)
 
 TEINAPI bool le_save_as ()
 {
-    std::string file_name = save_dialog(Dialog_Type::LVL);
+    std::string file_name = SaveDialog(DialogType::LVL);
     if (file_name.empty()) return false;
 
     Tab& tab = get_current_tab();

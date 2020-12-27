@@ -214,7 +214,7 @@ TEINAPI void hb_new ()
 
 TEINAPI void hb_load ()
 {
-    std::vector<std::string> file_names = open_dialog(Dialog_Type::LVL_CSV);
+    std::vector<std::string> file_names = OpenDialog(DialogType::LVL_CSV);
     if (!file_names.empty())
     {
         for (auto file: file_names)
@@ -348,7 +348,7 @@ TEINAPI void hb_zoom_in ()
 
 TEINAPI void hb_gpak_unpack ()
 {
-    std::vector<std::string> files = open_dialog(Dialog_Type::GPAK, false);
+    std::vector<std::string> files = OpenDialog(DialogType::GPAK, false);
     if (!files.empty())
     {
         bool should_overwrite = true;
@@ -363,10 +363,10 @@ TEINAPI void hb_gpak_unpack ()
 
 TEINAPI void hb_gpak_pack ()
 {
-    std::vector<std::string> paths = path_dialog();
+    std::vector<std::string> paths = PathDialog();
     if (!paths.empty())
     {
-        std::string file = save_dialog(Dialog_Type::GPAK);
+        std::string file = SaveDialog(DialogType::GPAK);
         if (!file.empty())
         {
             gpak_pack(file, paths);

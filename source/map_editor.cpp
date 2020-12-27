@@ -1032,7 +1032,7 @@ TEINAPI bool save_map_tab (Tab& tab)
     // just do a normal Save to that file. Otherwise, we perform a Save As.
     if (tab.name.empty())
     {
-        std::string file_name = save_dialog(Dialog_Type::CSV);
+        std::string file_name = SaveDialog(DialogType::CSV);
         if (file_name.empty()) return false;
         tab.name = file_name;
     }
@@ -1048,7 +1048,7 @@ TEINAPI bool save_map_tab (Tab& tab)
 
 TEINAPI void save_map_tab_as ()
 {
-    std::string file_name = save_dialog(Dialog_Type::CSV);
+    std::string file_name = SaveDialog(DialogType::CSV);
     if (file_name.empty()) return;
 
     Tab& tab = get_current_tab();
