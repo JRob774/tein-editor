@@ -16,7 +16,7 @@ set Architecture=amd64
 if %Architecture%==x86   ( set LibArch=x86 )
 if %Architecture%==amd64 ( set LibArch=x64 )
 
-set IncludeDirs=-I ..\source -I ..\source\depends\libcurl\include -I ..\source\depends\libfreetype\include -I ..\source\depends\libglad -I ..\source\depends\libglm -I ..\source\depends\libgon -I ..\source\depends\libjson -I ..\source\depends\libsdl2\include -I ..\source\depends\libstb
+set IncludeDirs=-I ..\source\depends\libcurl\include -I ..\source\depends\libfreetype\include -I ..\source\depends\libglad -I ..\source\depends\libglm -I ..\source\depends\libgon -I ..\source\depends\libjson -I ..\source\depends\libsdl2\include -I ..\source\depends\libstb
 set LibraryDirs=-libpath:..\source\depends\libcurl\library\%LibArch% -libpath:..\source\depends\libfreetype\library\%LibArch% -libpath:..\source\depends\libsdl2\library\%LibArch%
 
 set Defines=
