@@ -1,0 +1,112 @@
+Release v1.0.13 on Nov, 18th 2020
+---------------------------------------------------------
+- Fixed an issue with the editor crashing due to drawing the map clipboard.
+- Fixed an issue with resetting the map editor camera with an empty map.
+- Some internal improvements to general systems and rendering.
+
+
+Release v1.0.12 on Oct, 12th 2020
+---------------------------------------------------------
+- Fixed an issue with the editor freezing during level/map file backup.
+- Fixed an issue with the small corner tile graphics being incorrect.
+
+
+Release v1.0.11 on Aug, 23rd 2020
+---------------------------------------------------------
+- Fixed a bug with certain tiles flipping incorrectly.
+
+
+Release v1.0.10 on Jun, 08th 2020
+---------------------------------------------------------
+- Added a Bug Report button to the hotbar which redirects to the bug report page.
+- Downloading a new update will now redirect to the editor's itch.io page.
+
+
+Release v1.0.09 on May, 14th 2020
+---------------------------------------------------------
+- Fixed a bug with camera panning not working after cancelling a GPAK Pack operation.
+- Fixed a bug with markdown word-wrap formatting causing an infinite loop.
+
+
+Release v1.0.08 on May, 09th 2020
+---------------------------------------------------------
+- Fixed a bug with not being able to set custom hotkeys correctly.
+- Fixed a bug with the open tab not matching the displayed path.
+- Fixed a bug with the tab bar not focusing when closing the current tab.
+- Fixed a bug with the tab bar not scrolling when opening multiple tabs.
+- Fixed a bug with the previous session's selected tab not being visible.
+- Fixed a bug with CSV files not saving correctly.
+- Attempting to open another instance of an already opened level/map will focus on the existing tab.
+- Improved the overall scrolling and feel of the editor tab bar.
+- Improved the feel of copying data in the world map editor.
+- Improved aspects of the renderer's performance.
+- Added a clipboard preview to the world map editor.
+- Added the ability to scroll through tabs using the mousewheel.
+
+
+Release v1.0.07 on Nov, 19th 2019
+---------------------------------------------------------
+- Open LVL/CSV dialog now defaults to LVL extension.
+
+
+Release v1.0.06 on Nov, 14th 2019
+---------------------------------------------------------
+- Currently selected tab is remembered after exit.
+- Reopen recently closed tabs using CTRL+SHIFT+T.
+- Right-click in the map editor now deselects.
+- Fixed a bug with select boxes with multiple tabs.
+- Fixed a bug with text selection in the map editor.
+- Fixed a bug with multiple tabs in the map editor.
+- Fixed a bug with saving data in the map editor.
+
+
+Release v1.0.05 on Nov, 10th 2019
+---------------------------------------------------------
+- Map editor now uses OpenDyslexic font if selected.
+- Fixed a bug with editor window sub-title not updating correctly when incrementing/decrementing tab.
+- Fixed a bug with Next/Previous Level commands not working with levels dropped onto the editor.
+- Fixed a crash issue related to tooltip text rendering.
+
+
+Release v1.0.04 on Nov, 06th 2019
+---------------------------------------------------------
+- Window size and position is remembered after exit.
+- Opened level/map tabs are remembered after exit.
+- Fixed a new performance issue with text rendering.
+
+
+Release v1.0.03 on Nov, 05th 2019
+---------------------------------------------------------
+- Added dump creation in the case of a fatal exception.
+- Can now zoom out further when in the map editor.
+- Fixed an issue with editing text in the map editor.
+- The editor will now alert the user of new releases.
+
+
+Release v1.0.02 on Oct, 29th 2019
+---------------------------------------------------------
+- Added the ability to edit CSV files (the world map) using the editor.
+- Cut-off UI labels will display their text in a tooltip if hovered over.
+- Added more default locations to look for The End is Nigh executable.
+- User can now search for the actual exe instead of the path.
+- Changelog hyperlink now links to the specific version section.
+- GPAK Pack and Unpack buttons moved from the toolbar to the hotbar.
+- Hotbar buttons change to icons if the window is too small.
+- Decreased the minimum possible window width.
+- Fixed issues with opening, loading, and closing empty tabs.
+- New editor icon, designed by Radley McTuneston.
+
+
+Release v1.0.01 on Oct, 19th 2019
+---------------------------------------------------------
+- Sub-windows no longer appear in taskbar or ALT+TAB list.
+- Changed the maximum level size to be 2840x2840.
+- Changelog accessible via the About window.
+- Can now run the game from the editor.
+- Fixed About window text being cut-off when using OpenDyslexic.
+- Fixed hotkey text being cut-off when using OpenDyslexic.
+
+
+Release v1.0.00 on Oct, 17th 2019
+---------------------------------------------------------
+- Initial release.
