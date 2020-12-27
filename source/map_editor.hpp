@@ -25,8 +25,8 @@ struct Map_History
 
 struct Map_Select
 {
-    ivec2 a; // Start
-    ivec2 b; // End
+    IVec2 a; // Start
+    IVec2 b; // End
 };
 
 typedef std::vector<Map_Node> Map_Clipboard;
@@ -35,8 +35,8 @@ struct Map_Node_Info
 {
     std::string cached_lvl_text;
 
-    ivec2     pressed_node_pos;
-    ivec2     active_pos;
+    IVec2     pressed_node_pos;
+    IVec2     active_pos;
     Map_Node* active;
 
     size_t cursor;
@@ -48,7 +48,7 @@ struct Map_Editor
 {
     struct Color_Map_Compare
     {
-        inline bool operator() (const vec4& lhs, const vec4& rhs) const
+        inline bool operator() (const Vec4& lhs, const Vec4& rhs) const
         {
             return ((lhs.x+lhs.y+lhs.z+lhs.w) < (rhs.x+rhs.y+rhs.z+rhs.w));
         }
@@ -56,9 +56,9 @@ struct Map_Editor
 
     Map_Clipboard clipboard;
 
-    vec2 mouse_world;
-    vec2 mouse;
-    vec2 mouse_tile;
+    Vec2 mouse_world;
+    Vec2 mouse;
+    Vec2 mouse_tile;
 
     bool pressed;
     bool left_pressed;
@@ -69,7 +69,7 @@ struct Map_Editor
     quad bounds;
     quad viewport;
 
-    std::map<vec4,vec4, Color_Map_Compare> text_color_map;
+    std::map<Vec4,Vec4, Color_Map_Compare> text_color_map;
 };
 
 static Map_Editor map_editor;

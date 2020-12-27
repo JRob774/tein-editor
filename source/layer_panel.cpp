@@ -11,7 +11,7 @@
 
 static constexpr const char* TILE_LAYER_INFO  = "Toggle this tile layer's visibility (invisible layers can't be interacted with).";
 
-static const vec4 LAYER_COLORS[LEVEL_LAYER_TOTAL]
+static const Vec4 LAYER_COLORS[LEVEL_LAYER_TOTAL]
 {
 { .75f, .38f, .38f, 1 }, // Tag
 { .44f, .51f, .72f, 1 }, // Overlay
@@ -37,7 +37,7 @@ TEINAPI bool internal__do_layer_button (UI_Flag flags, int layer, const char* na
     const quad& clip = (flags & UI_INACTIVE) ? CLIP_CROSS : CLIP_EYE;
 
     constexpr float PAD = 5;
-    vec2 cursor(PAD, 0);
+    Vec2 cursor(PAD, 0);
 
     float bw = get_panel_w();
     float bh = LAYER_PANEL_BUTTON_H;
@@ -131,7 +131,7 @@ TEINAPI void do_layer_panel (bool scrollbar)
     layer_panel_bounds.w = get_panel_w();
     layer_panel_bounds.h = get_panel_h() - get_tile_panel_height();
 
-    vec2 cursor(0,0);
+    Vec2 cursor(0,0);
 
     set_ui_texture(&resource_icons);
     set_ui_font(&get_editor_regular_font());

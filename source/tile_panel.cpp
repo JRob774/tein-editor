@@ -58,7 +58,7 @@ TEINAPI bool internal__is_category_active (Tile_Category category)
     return tab.tile_layer_active[category_to_layer(category)];
 }
 
-TEINAPI float internal__do_tile_panel_category (vec2& cursor, Tile_Category category_index, std::vector<Tile_Group>& category)
+TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category category_index, std::vector<Tile_Group>& category)
 {
     // Determine how many rows of entities are present in the category.
     float items = static_cast<float>(category.size());
@@ -75,7 +75,7 @@ TEINAPI float internal__do_tile_panel_category (vec2& cursor, Tile_Category cate
 
     bool is_active = internal__is_category_active(category_index);
 
-    vec2 label_cur(0,0);
+    Vec2 label_cur(0,0);
     begin_panel(x, y, w, h, (is_active) ? UI_NONE : UI_INACTIVE);
 
     set_panel_cursor(&label_cur);
@@ -103,7 +103,7 @@ TEINAPI float internal__do_tile_panel_category (vec2& cursor, Tile_Category cate
     w = (CONTROL_PANEL_WIDTH - category_pad);
     h = (rows * TILE_PANEL_ITEM_SIZE) + category_pad + total_item_pad;
 
-    vec2 cur(TILE_PANEL_INNER_PAD, TILE_PANEL_INNER_PAD);
+    Vec2 cur(TILE_PANEL_INNER_PAD, TILE_PANEL_INNER_PAD);
     begin_panel(x, y, w, h, UI_NONE, ui_color_med_dark);
 
     set_draw_color(ui_color_ex_dark); // The outline/border for the category.
@@ -112,11 +112,11 @@ TEINAPI float internal__do_tile_panel_category (vec2& cursor, Tile_Category cate
     Texture_Atlas& atlas = get_editor_atlas_small();
 
     set_tile_batch_texture(atlas.texture);
-    set_tile_batch_color((is_active) ? vec4(1,1,1,1) : vec4(1,1,1,TILE_PANEL_INACTIVE_A));
+    set_tile_batch_color((is_active) ? Vec4(1,1,1,1) : Vec4(1,1,1,TILE_PANEL_INACTIVE_A));
 
     for (size_t i=0; i<category.size(); ++i)
     {
-        vec2 tile_cursor = cur;
+        Vec2 tile_cursor = cur;
         tile_cursor.y += get_panel_offset().y;
 
         const Tile_Group& tile_group = category[i];
@@ -322,7 +322,7 @@ TEINAPI void do_tile_panel (bool scrollbar)
 {
     set_ui_font(&get_editor_regular_font());
 
-    vec2 cursor(TILE_PANEL_INNER_PAD, 0);
+    Vec2 cursor(TILE_PANEL_INNER_PAD, 0);
     tile_panel.bounds = { 0, 0, get_panel_w(), get_panel_h() };
     if (is_layer_panel_present())
     {

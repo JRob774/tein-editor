@@ -67,7 +67,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
     memset(buffer, 0, sizeof(U8)*cache_bytes); // We don't want the buffer filled with garbage data!
 
     fnt.has_kerning = FT_HAS_KERNING(fnt.face);
-    fnt.color       = vec4(1,1,1,1);
+    fnt.color       = Vec4(1,1,1,1);
     fnt.line_gap.insert({ pt, static_cast<float>(fnt.face->size->metrics.height >> 6) });
 
     // Go through glyph-by-glyph and bake all of the bitmaps to the final
@@ -79,7 +79,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
 
     FT_GlyphSlot slot = fnt.face->glyph;
     FT_Bitmap* bitmap = &slot->bitmap;
-    vec2       cursor = vec2(0,0);
+    Vec2       cursor = Vec2(0,0);
 
     fnt.glyphs.insert(std::pair<int, std::vector<Font_Glyph>>(pt,
         std::vector<Font_Glyph>(TOTAL_GLYPH_COUNT)));

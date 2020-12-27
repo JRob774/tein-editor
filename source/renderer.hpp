@@ -21,11 +21,11 @@ struct Font;    // Defined in <font.hpp>
 TEINAPI bool init_renderer ();
 TEINAPI void quit_renderer ();
 
-TEINAPI void render_clear   (vec4 clear);
+TEINAPI void render_clear   (Vec4 clear);
 TEINAPI void render_present ();
 
-TEINAPI vec2 screen_to_world (vec2 screen);
-TEINAPI vec2 world_to_screen (vec2 world);
+TEINAPI Vec2 screen_to_world (Vec2 screen);
+TEINAPI Vec2 world_to_screen (Vec2 world);
 
 TEINAPI float get_max_texture_size ();
 
@@ -42,7 +42,7 @@ TEINAPI void set_viewport (quad v);
 TEINAPI quad get_viewport ();
 
 TEINAPI void set_draw_color (float r, float g, float b, float a);
-TEINAPI void set_draw_color (vec4 color);
+TEINAPI void set_draw_color (Vec4 color);
 
 TEINAPI void set_line_width (float width);
 
@@ -71,7 +71,7 @@ TEINAPI void draw_text    (const Font&    fnt, float x, float y, std::string tex
 TEINAPI void begin_draw (Buffer_Mode mode);
 TEINAPI void end_draw   ();
 
-TEINAPI void put_vertex (float x, float y, vec4 color);
+TEINAPI void put_vertex (float x, float y, Vec4 color);
 
 TEINAPI void push_matrix (Matrix_Mode mode);
 TEINAPI void pop_matrix  (Matrix_Mode mode);
@@ -82,8 +82,8 @@ TEINAPI void scale     (float x, float y);
 
 TEINAPI void set_tile_batch_texture (Texture& tex);
 TEINAPI void set_text_batch_font    (Font&    fnt);
-TEINAPI void set_tile_batch_color   (vec4 color);
-TEINAPI void set_text_batch_color   (vec4 color);
+TEINAPI void set_tile_batch_color   (Vec4 color);
+TEINAPI void set_text_batch_color   (Vec4 color);
 
 TEINAPI void draw_batched_tile  (float x, float y, const quad* clip);
 TEINAPI void draw_batched_text  (float x, float y, std::string text);

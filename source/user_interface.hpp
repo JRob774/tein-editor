@@ -14,15 +14,15 @@
 // These colors are filled with the appropriate values based on whether the
 // user would prefer to use the dark or light theme for the level editor.
 
-static vec4 ui_color_black;
-static vec4 ui_color_ex_dark;
-static vec4 ui_color_dark;
-static vec4 ui_color_med_dark;
-static vec4 ui_color_medium;
-static vec4 ui_color_med_light;
-static vec4 ui_color_light;
-static vec4 ui_color_ex_light;
-static vec4 ui_color_white;
+static Vec4 ui_color_black;
+static Vec4 ui_color_ex_dark;
+static Vec4 ui_color_dark;
+static Vec4 ui_color_med_dark;
+static Vec4 ui_color_medium;
+static Vec4 ui_color_med_light;
+static Vec4 ui_color_light;
+static Vec4 ui_color_ex_light;
+static Vec4 ui_color_white;
 
 /* -------------------------------------------------------------------------- */
 
@@ -75,7 +75,7 @@ TEINAPI void handle_ui_events ();
 
 TEINAPI bool is_ui_light ();
 
-TEINAPI vec2 ui_get_relative_mouse ();
+TEINAPI Vec2 ui_get_relative_mouse ();
 
 TEINAPI bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h);
 TEINAPI bool mouse_in_ui_bounds_xywh (quad b);
@@ -94,8 +94,8 @@ TEINAPI bool text_box_is_active ();
 TEINAPI bool hotkey_is_active              ();
 TEINAPI void deselect_active_hotkey_rebind ();
 
-TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec4 c = vec4(0,0,0,0));
-TEINAPI void begin_panel (quad bounds, UI_Flag flags, vec4 c = vec4(0,0,0,0));
+TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, Vec4 c = Vec4(0,0,0,0));
+TEINAPI void begin_panel (quad bounds, UI_Flag flags, Vec4 c = Vec4(0,0,0,0));
 
 TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flags, std::string info = "");
 
@@ -104,15 +104,15 @@ TEINAPI void end_panel ();
 TEINAPI float get_panel_w ();
 TEINAPI float get_panel_h ();
 
-TEINAPI vec2 get_panel_offset ();
-TEINAPI vec2 get_panel_cursor ();
+TEINAPI Vec2 get_panel_offset ();
+TEINAPI Vec2 get_panel_cursor ();
 
 TEINAPI void disable_panel_cursor_advance ();
 TEINAPI void enable_panel_cursor_advance  ();
 
 TEINAPI void advance_panel_cursor (float advance);
 
-TEINAPI void set_panel_cursor     (vec2*  cursor);
+TEINAPI void set_panel_cursor     (Vec2*  cursor);
 TEINAPI void set_panel_cursor_dir (UI_Dir    dir);
 
 TEINAPI void    set_panel_flags (UI_Flag flags);
@@ -124,10 +124,10 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
 TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, std::string text,        std::string info = "", std::string kb = "", std::string name = "");
 TEINAPI bool do_button_txt (UI_Action action,          float h, UI_Flag flags, std::string text,        std::string info = "", std::string kb = "", std::string name = "");
 
-TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, vec4 bg = vec4(0,0,0,0));
-TEINAPI void do_label (UI_Align horz, UI_Align vert,          float h, std::string text, vec4 bg = vec4(0,0,0,0));
+TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, Vec4 bg = Vec4(0,0,0,0));
+TEINAPI void do_label (UI_Align horz, UI_Align vert,          float h, std::string text, Vec4 bg = Vec4(0,0,0,0));
 
-TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, vec4 bg = vec4(0,0,0,0));
+TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, Vec4 bg = Vec4(0,0,0,0));
 
 // Doesn't care about the current UI font and uses the current editor font instead.
 TEINAPI void  do_markdown    (float w, float h, std::string text);
@@ -140,15 +140,15 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding
 TEINAPI void do_hotkey_rebind_alt  (float w, float h, UI_Flag flags, Key_Binding& kb);
 
 TEINAPI void do_icon (float w, float h, Texture& tex, const quad* clip = NULL);
-TEINAPI void do_quad (float w, float h, vec4 color);
+TEINAPI void do_quad (float w, float h, Vec4 color);
 
 TEINAPI void do_separator (float size);
 
 TEINAPI void do_scrollbar (quad bounds,                        float content_height, float& scroll_offset);
 TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_height, float& scroll_offset);
 
-TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, vec4 cl = vec4(0,0,0,0), vec4 cr = vec4(0,0,0,0));
-TEINAPI void begin_panel_gradient (quad bounds,                        UI_Flag flags, vec4 cl = vec4(0,0,0,0), vec4 cr = vec4(0,0,0,0));
+TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, Vec4 cl = Vec4(0,0,0,0), Vec4 cr = Vec4(0,0,0,0));
+TEINAPI void begin_panel_gradient (quad bounds,                        UI_Flag flags, Vec4 cl = Vec4(0,0,0,0), Vec4 cr = Vec4(0,0,0,0));
 
 TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_Flag flags, std::string info = "");
 

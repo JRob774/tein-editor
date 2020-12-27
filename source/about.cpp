@@ -19,7 +19,7 @@ TEINAPI void do_about ()
     constexpr float XPAD = 4;
     constexpr float YPAD = 4;
 
-    vec2 cursor(XPAD, YPAD);
+    Vec2 cursor(XPAD, YPAD);
 
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);

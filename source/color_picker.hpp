@@ -12,7 +12,7 @@
 /* -------------------------------------------------------------------------- */
 
 TEINAPI void   init_color_picker ();
-TEINAPI void   open_color_picker (vec4* color);
+TEINAPI void   open_color_picker (Vec4* color);
 TEINAPI void     do_color_picker ();
 TEINAPI void cancel_color_picker ();
 

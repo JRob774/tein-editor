@@ -18,7 +18,7 @@ struct Tab; // Defined in <editor.hpp>
 
 struct Tool_Fill
 {
-    std::vector<vec2> frontier;
+    std::vector<Vec2> frontier;
     std::vector<bool> searched;
 
     Level_Layer layer;
@@ -26,7 +26,7 @@ struct Tool_Fill
     Tile_ID find_id;
     Tile_ID replace_id;
 
-    vec2 start;
+    Vec2 start;
 
     bool inside_select;
 };
@@ -136,9 +136,9 @@ struct Level_Editor
 
     std::vector<Level_Clipboard> clipboard;
 
-    vec2 mouse_world;
-    vec2 mouse;
-    vec2 mouse_tile;
+    Vec2 mouse_world;
+    Vec2 mouse;
+    Vec2 mouse_tile;
 
     bool bounds_visible;
     bool layer_transparency;

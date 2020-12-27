@@ -583,7 +583,7 @@ TEINAPI void create_new_map_tab_and_focus ()
     tab.map_history.current_position = -1;
     new_map_history_state(tab.map);
 
-    tab.map_node_info.active_pos = ivec2(0,0);
+    tab.map_node_info.active_pos = IVec2(0,0);
     tab.map_node_info.active     = NULL;
     tab.map_node_info.cursor     = 0;
     tab.map_node_info.select     = 0;

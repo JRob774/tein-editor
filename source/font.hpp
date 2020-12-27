@@ -23,7 +23,7 @@ static FT_Library freetype;
 
 struct Font_Glyph
 {
-    vec2  bearing;
+    Vec2  bearing;
     quad  bounds;
     float advance;
 };
@@ -42,7 +42,7 @@ struct Font
     std::map<int, Texture> cache;
 
     bool has_kerning;
-    vec4 color;
+    Vec4 color;
 
     std::map<int, float> line_gap;
 

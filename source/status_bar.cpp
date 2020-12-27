@@ -35,7 +35,7 @@ TEINAPI void do_status_bar ()
         message = status_bar_pushed_message;
     }
 
-    vec2 cursor(STATUS_BAR_INNER_PAD, 0);
+    Vec2 cursor(STATUS_BAR_INNER_PAD, 0);
 
     float x = get_toolbar_w() + 1;
     float y = get_viewport().h - STATUS_BAR_HEIGHT;

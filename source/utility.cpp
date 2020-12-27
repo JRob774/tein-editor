@@ -338,11 +338,11 @@ TEINAPI std::string format_string_v (const char* format, va_list args)
     return str;
 }
 
-TEINAPI vec2 get_mouse_pos ()
+TEINAPI Vec2 get_mouse_pos ()
 {
     int imx, imy;
     SDL_GetMouseState(&imx, &imy);
-    return vec2(imx,imy);
+    return Vec2(imx,imy);
 }
 
 TEINAPI std::string format_time (const char* format)
@@ -379,12 +379,12 @@ TEINAPI unsigned int get_thread_id ()
 #error get_thread_id not implemented on the current platform!
 #endif
 
-TEINAPI bool point_in_bounds_xyxy (vec2 p, quad q)
+TEINAPI bool point_in_bounds_xyxy (Vec2 p, quad q)
 {
     return (p.x >= q.x1 && p.y >= q.y1 && p.x <= q.x2 && p.y <= q.y2);
 }
 
-TEINAPI bool point_in_bounds_xywh (vec2 p, quad q)
+TEINAPI bool point_in_bounds_xywh (Vec2 p, quad q)
 {
     return (p.x >= q.x && p.y >= q.y && p.x < (q.x+q.w) && p.y < (q.y+q.h));
 }

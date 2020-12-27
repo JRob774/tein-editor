@@ -38,7 +38,7 @@ static           float toolbar_width = TOOLBAR_WIDTH;
 
 TEINAPI void internal__do_level_toolbar ()
 {
-    vec2 cursor(TOOLBAR_INNER_PAD, TOOLBAR_INNER_PAD);
+    Vec2 cursor(TOOLBAR_INNER_PAD, TOOLBAR_INNER_PAD);
 
     // Dimensions for the toolbar buttons.
     float bw = TOOLBAR_WIDTH - (TOOLBAR_INNER_PAD * 2);
@@ -141,7 +141,7 @@ TEINAPI void internal__do_level_toolbar ()
 
 TEINAPI void internal__do_map_toolbar ()
 {
-    vec2 cursor(TOOLBAR_INNER_PAD, TOOLBAR_INNER_PAD);
+    Vec2 cursor(TOOLBAR_INNER_PAD, TOOLBAR_INNER_PAD);
 
     // Dimensions for the toolbar buttons.
     float bw = TOOLBAR_WIDTH - (TOOLBAR_INNER_PAD * 2);

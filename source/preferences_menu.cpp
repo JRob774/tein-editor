@@ -125,7 +125,7 @@ static std::map<std::string, Key_Binding> cached_editor_hotkeys;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void internal__next_section (vec2& cursor)
+TEINAPI void internal__next_section (Vec2& cursor)
 {
     cursor.x  = 0;
     cursor.y += PREFERENCES_SECTION_H;
@@ -148,7 +148,7 @@ TEINAPI void internal__do_half_settings_label (float w, const char* key)
     advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
 }
 
-TEINAPI void internal__do_half_separator (vec2& cursor)
+TEINAPI void internal__do_half_separator (Vec2& cursor)
 {
     advance_panel_cursor((PREFERENCES_INNER_XPAD/2)+1);
     do_separator(PREFERENCES_SECTION_H);
@@ -167,7 +167,7 @@ TEINAPI void internal__do_hotkeys_label (float w, const char* key)
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void internal__begin_settings_area (const char* title, vec2& cursor)
+TEINAPI void internal__begin_settings_area (const char* title, Vec2& cursor)
 {
     float w = get_viewport().w;
     float h = PREFERENCES_SECTION_H;
@@ -194,7 +194,7 @@ TEINAPI void internal__end_settings_area ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void internal__do_settings_color_swatch (vec2& cursor, float sw, float sh, vec4& color)
+TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float sh, Vec4& color)
 {
     // If we were presses we want to open the color picker with our color.
     if (preferences_mouse_pressed && mouse_in_ui_bounds_xywh(cursor.x, cursor.y, sw, sh))
@@ -223,8 +223,8 @@ TEINAPI void internal__do_settings_color_swatch (vec2& cursor, float sw, float s
     quad clip = { 0, 0, tw, th };
     draw_texture(tex, tx, ty, &clip);
 
-    vec4 max(color.r, color.g, color.b,       1);
-    vec4 min(color.r, color.g, color.b, color.a);
+    Vec4 max(color.r, color.g, color.b,       1);
+    Vec4 min(color.r, color.g, color.b, color.a);
 
     begin_draw(Buffer_Mode::TRIANGLE_STRIP);
     put_vertex(x1, y2, min); // BL
@@ -237,7 +237,7 @@ TEINAPI void internal__do_settings_color_swatch (vec2& cursor, float sw, float s
     advance_panel_cursor(sw);
 }
 
-TEINAPI void internal__do_color_setting_row (vec2& cursor, float w, const char* key1, const char* key2, vec4& c1, vec4& c2)
+TEINAPI void internal__do_color_setting_row (Vec2& cursor, float w, const char* key1, const char* key2, Vec4& c1, Vec4& c2)
 {
     float lw1 = w-1;
     float lw2 = w;
@@ -253,7 +253,7 @@ TEINAPI void internal__do_color_setting_row (vec2& cursor, float w, const char* 
     internal__next_section(cursor);
 }
 
-TEINAPI void internal__do_hotkey_label_titles (vec2& cursor)
+TEINAPI void internal__do_hotkey_label_titles (Vec2& cursor)
 {
     float vw = get_viewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
     float sh = PREFERENCES_SECTION_H+(PREFERENCES_INNER_YPAD*2);
@@ -286,7 +286,7 @@ TEINAPI void internal__do_hotkey_label_titles (vec2& cursor)
     ++cursor.y;
 }
 
-TEINAPI void internal__do_hotkey_rebind (vec2& cursor, const char* key)
+TEINAPI void internal__do_hotkey_rebind (Vec2& cursor, const char* key)
 {
     float vw = get_viewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
     float sh = PREFERENCES_SECTION_H;
@@ -327,7 +327,7 @@ TEINAPI void internal__save_settings ()
     }
     Defer { fclose(file); };
 
-    vec4 c;
+    Vec4 c;
 
     if (!editor_settings.game_path.empty())
     {
@@ -434,7 +434,7 @@ TEINAPI void internal__do_preferences_settings ()
     float bw = roundf(sw / 2);
     float th = sh-(PREFERENCES_TEXT_BOX_INSET*2);
 
-    vec2 cursor(0,0);
+    Vec2 cursor(0,0);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
     set_panel_cursor(&cursor);
@@ -619,7 +619,7 @@ TEINAPI void internal__do_preferences_hotkeys ()
 
     begin_panel(0, 0, vw, vh, UI_NONE);
 
-    vec2 cursor(0,0);
+    Vec2 cursor(0,0);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
     set_panel_cursor(&cursor);
@@ -719,7 +719,7 @@ TEINAPI void do_preferences_menu ()
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
-    vec2 cursor;
+    Vec2 cursor;
 
     float pvfh = PREFERENCES_V_FRAME_H;
 
@@ -733,7 +733,7 @@ TEINAPI void do_preferences_menu ()
     float bh = pvfh - WINDOW_BORDER;
 
     // Top tabs for switching from the settings and key bindings menu.
-    cursor = vec2(0,0);
+    cursor = Vec2(0,0);
     begin_panel(0, 0, vw, pvfh, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -756,7 +756,7 @@ TEINAPI void do_preferences_menu ()
     end_panel();
 
     // Bottom buttons for saving and exiting or cancelling changes.
-    cursor = vec2(0, WINDOW_BORDER);
+    cursor = Vec2(0, WINDOW_BORDER);
     begin_panel(0, vh-pvfh, vw, pvfh, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);

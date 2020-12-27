@@ -49,7 +49,7 @@ static constexpr const char* HB_INFO_UPDATE      = "There is a new update availa
 
 TEINAPI void do_hotbar ()
 {
-    vec2 cursor(0,0);
+    Vec2 cursor(0,0);
 
     // Height for the toolbar buttons.
     float bh = HOTBAR_HEIGHT - WINDOW_BORDER;

@@ -21,10 +21,10 @@ static constexpr bool        SETTINGS_DEFAULT_UNLIMITED_BACKUPS   = false;
 static constexpr int         SETTINGS_DEFAULT_BACKUP_COUNT        = 5;
 static constexpr bool        SETTINGS_DEFAULT_AUTO_BACKUP         = true;
 static constexpr int         SETTINGS_DEFAULT_BACKUP_INTERVAL     = 180;
-static           const vec4  SETTINGS_DEFAULT_SELECT_COLOR        = { .94f, .0f, 1.0f, .25f };
-static           const vec4  SETTINGS_DEFAULT_OUT_OF_BOUNDS_COLOR = { .25f, .1f,  .1f, .40f };
-static           const vec4  SETTINGS_DEFAULT_CURSOR_COLOR        = { .20f, .9f,  .2f, .40f };
-static           const vec4  SETTINGS_DEFAULT_MIRROR_LINE_COLOR   = { .80f, .2f,  .2f, .80f };
+static           const Vec4  SETTINGS_DEFAULT_SELECT_COLOR        = { .94f, .0f, 1.0f, .25f };
+static           const Vec4  SETTINGS_DEFAULT_OUT_OF_BOUNDS_COLOR = { .25f, .1f,  .1f, .40f };
+static           const Vec4  SETTINGS_DEFAULT_CURSOR_COLOR        = { .20f, .9f,  .2f, .40f };
+static           const Vec4  SETTINGS_DEFAULT_MIRROR_LINE_COLOR   = { .80f, .2f,  .2f, .80f };
 
 /* -------------------------------------------------------------------------- */
 
@@ -54,7 +54,7 @@ static bool settings_loaded;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI vec4 internal__get_settings_color (const GonObject& gon, std::string name, vec4 default_value, bool* did_default = NULL)
+TEINAPI Vec4 internal__get_settings_color (const GonObject& gon, std::string name, Vec4 default_value, bool* did_default = NULL)
 {
     if (did_default) *did_default = true;
 
@@ -64,7 +64,7 @@ TEINAPI vec4 internal__get_settings_color (const GonObject& gon, std::string nam
         return default_value;
     }
 
-    vec4 color;
+    Vec4 color;
 
     color.r = static_cast<float>(gon[name][0].Number(1));
     color.g = static_cast<float>(gon[name][1].Number(1));
@@ -173,8 +173,8 @@ TEINAPI bool load_editor_settings ()
     update_systems_that_rely_on_settings(true);
 
     // Load the colors afterwards because some of them depend on the UI theme.
-    vec4 default_background_color = ui_color_light;
-    vec4 default_tile_grid_color  = is_ui_light() ? ui_color_black : ui_color_ex_dark;
+    Vec4 default_background_color = ui_color_light;
+    Vec4 default_tile_grid_color  = is_ui_light() ? ui_color_black : ui_color_ex_dark;
 
     editor_settings.background_color    = internal__get_settings_color(gon, SETTING_BACKGROUND_COLOR,    default_background_color,            &editor_settings.background_color_defaulted);
     editor_settings.select_color        = internal__get_settings_color(gon, SETTING_SELECT_COLOR,        SETTINGS_DEFAULT_SELECT_COLOR                                                   );
@@ -205,8 +205,8 @@ TEINAPI void restore_editor_settings ()
     update_systems_that_rely_on_settings(tile_graphics_changed);
 
     // Restore the colors afterwards because some of them depend on the UI theme.
-    vec4 default_background_color = ui_color_light;
-    vec4 default_tile_grid_color = is_ui_light() ? ui_color_black : ui_color_ex_dark;
+    Vec4 default_background_color = ui_color_light;
+    Vec4 default_tile_grid_color = is_ui_light() ? ui_color_black : ui_color_ex_dark;
 
     editor_settings.background_color    = default_background_color;
     editor_settings.select_color        = SETTINGS_DEFAULT_SELECT_COLOR;

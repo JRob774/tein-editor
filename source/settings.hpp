@@ -61,12 +61,12 @@ struct Settings
     bool          auto_backup;
     int       backup_interval;
     // EDITOR COLORS
-    vec4     background_color;
-    vec4         select_color;
-    vec4  out_of_bounds_color;
-    vec4         cursor_color;
-    vec4    mirror_line_color;
-    vec4      tile_grid_color;
+    Vec4     background_color;
+    Vec4         select_color;
+    Vec4  out_of_bounds_color;
+    Vec4         cursor_color;
+    Vec4    mirror_line_color;
+    Vec4      tile_grid_color;
 };
 
 TEINAPI bool operator== (const Settings& a, const Settings& b);

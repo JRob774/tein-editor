@@ -22,7 +22,7 @@ struct Texture
     GLuint handle;
     float  w;
     float  h;
-    vec4   color;
+    Vec4   color;
 };
 
 TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<U8>& file_data, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);

@@ -9,8 +9,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-static const vec4 GPAK_PROGRESS_BAR_MIN_COLOR = { .2f,.5f,.2f, 1 };
-static const vec4 GPAK_PROGRESS_BAR_MAX_COLOR = { .2f,.9f,.2f, 1 };
+static const Vec4 GPAK_PROGRESS_BAR_MIN_COLOR = { .2f,.5f,.2f, 1 };
+static const Vec4 GPAK_PROGRESS_BAR_MAX_COLOR = { .2f,.9f,.2f, 1 };
 
 static SDL_Thread* gpak_unpack_thread;
 static SDL_Thread* gpak_pack_thread;
@@ -345,7 +345,7 @@ TEINAPI void do_unpack ()
     constexpr float XPAD = 8;
     constexpr float YPAD = 4;
 
-    vec2 cursor(XPAD, YPAD);
+    Vec2 cursor(XPAD, YPAD);
 
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);
@@ -415,7 +415,7 @@ TEINAPI void do_pack ()
     constexpr float XPAD = 8;
     constexpr float YPAD = 4;
 
-    vec2 cursor(XPAD, YPAD);
+    Vec2 cursor(XPAD, YPAD);
 
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);

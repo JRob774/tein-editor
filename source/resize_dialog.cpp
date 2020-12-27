@@ -153,7 +153,7 @@ TEINAPI void internal__calculate_dir_clips ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void internal__do_resize_alignment (vec2& cursor)
+TEINAPI void internal__do_resize_alignment (Vec2& cursor)
 {
     // Do the long horizontal separator first.
     float w = get_viewport().w - (RESIZE_XPAD*2);
@@ -256,7 +256,7 @@ TEINAPI void do_resize ()
     float bh = bb - WINDOW_BORDER;
 
     // Bottom buttons for okaying or cancelling the resize.
-    vec2 btn_cursor(0, WINDOW_BORDER);
+    Vec2 btn_cursor(0, WINDOW_BORDER);
     begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -281,7 +281,7 @@ TEINAPI void do_resize ()
 
     begin_panel(p2, UI_NONE, ui_color_medium);
 
-    vec2 cursor(RESIZE_XPAD, RESIZE_YPAD);
+    Vec2 cursor(RESIZE_XPAD, RESIZE_YPAD);
 
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);

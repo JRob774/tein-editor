@@ -9,24 +9,24 @@
 
 /* -------------------------------------------------------------------------- */
 
-static const vec4 UI_D_COLOR_BLACK     = {  .00f,  .00f, 0.00f, 1 };
-static const vec4 UI_D_COLOR_EX_DARK   = {  .20f,  .20f, 0.20f, 1 };
-static const vec4 UI_D_COLOR_DARK      = {  .20f,  .20f, 0.20f, 1 };
-static const vec4 UI_D_COLOR_MED_DARK  = {  .25f,  .25f, 0.25f, 1 };
-static const vec4 UI_D_COLOR_MEDIUM    = {  .33f,  .33f, 0.33f, 1 };
-static const vec4 UI_D_COLOR_MED_LIGHT = {  .43f,  .43f, 0.43f, 1 };
-static const vec4 UI_D_COLOR_LIGHT     = {  .60f,  .60f, 0.60f, 1 };
-static const vec4 UI_D_COLOR_EX_LIGHT  = {  .90f,  .90f, 0.90f, 1 };
-static const vec4 UI_D_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
-static const vec4 UI_L_COLOR_BLACK     = {  .15f,  .15f,  .15f, 1 };
-static const vec4 UI_L_COLOR_EX_DARK   = {  .35f,  .35f,  .35f, 1 };
-static const vec4 UI_L_COLOR_DARK      = {  .55f,  .55f,  .55f, 1 };
-static const vec4 UI_L_COLOR_MED_DARK  = {  .70f,  .70f,  .70f, 1 };
-static const vec4 UI_L_COLOR_MEDIUM    = {  .80f,  .80f,  .80f, 1 };
-static const vec4 UI_L_COLOR_MED_LIGHT = {  .93f,  .93f,  .93f, 1 };
-static const vec4 UI_L_COLOR_LIGHT     = {  .93f,  .93f,  .93f, 1 };
-static const vec4 UI_L_COLOR_EX_LIGHT  = {  .96f,  .96f,  .96f, 1 };
-static const vec4 UI_L_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
+static const Vec4 UI_D_COLOR_BLACK     = {  .00f,  .00f, 0.00f, 1 };
+static const Vec4 UI_D_COLOR_EX_DARK   = {  .20f,  .20f, 0.20f, 1 };
+static const Vec4 UI_D_COLOR_DARK      = {  .20f,  .20f, 0.20f, 1 };
+static const Vec4 UI_D_COLOR_MED_DARK  = {  .25f,  .25f, 0.25f, 1 };
+static const Vec4 UI_D_COLOR_MEDIUM    = {  .33f,  .33f, 0.33f, 1 };
+static const Vec4 UI_D_COLOR_MED_LIGHT = {  .43f,  .43f, 0.43f, 1 };
+static const Vec4 UI_D_COLOR_LIGHT     = {  .60f,  .60f, 0.60f, 1 };
+static const Vec4 UI_D_COLOR_EX_LIGHT  = {  .90f,  .90f, 0.90f, 1 };
+static const Vec4 UI_D_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
+static const Vec4 UI_L_COLOR_BLACK     = {  .15f,  .15f,  .15f, 1 };
+static const Vec4 UI_L_COLOR_EX_DARK   = {  .35f,  .35f,  .35f, 1 };
+static const Vec4 UI_L_COLOR_DARK      = {  .55f,  .55f,  .55f, 1 };
+static const Vec4 UI_L_COLOR_MED_DARK  = {  .70f,  .70f,  .70f, 1 };
+static const Vec4 UI_L_COLOR_MEDIUM    = {  .80f,  .80f,  .80f, 1 };
+static const Vec4 UI_L_COLOR_MED_LIGHT = {  .93f,  .93f,  .93f, 1 };
+static const Vec4 UI_L_COLOR_LIGHT     = {  .93f,  .93f,  .93f, 1 };
+static const Vec4 UI_L_COLOR_EX_LIGHT  = {  .96f,  .96f,  .96f, 1 };
+static const Vec4 UI_L_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
 
 /* -------------------------------------------------------------------------- */
 
@@ -34,11 +34,11 @@ struct Panel
 {
     quad absolute_bounds; // Panel position and size on the window.
     quad viewport;        // Viewport clipped inside parent.
-    vec2 relative_offset; // Panel position relative to its viewport.
+    Vec2 relative_offset; // Panel position relative to its viewport.
 
     UI_Flag flags;        // Flags that get applied to a panel's content.
 
-    vec2*  cursor;
+    Vec2*  cursor;
     UI_Dir cursor_dir;
 
     bool cursor_advance_enabled;
@@ -68,7 +68,7 @@ static UI_ID ui_active_hotkey_rebind;
 static Texture* ui_texture;
 static Font*    ui_font;
 
-static vec2 ui_mouse_relative;
+static Vec2 ui_mouse_relative;
 
 static bool ui_mouse_up;
 static bool ui_mouse_down;
@@ -168,7 +168,7 @@ TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool l
         if (get_render_target()->focus && get_render_target()->mouse)
         {
             quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
-            vec2 mouse = get_mouse_pos();
+            Vec2 mouse = get_mouse_pos();
 
             // Determine the hot and active states for the global UI context.
             bool inside = point_in_bounds_xyxy(mouse, clipped_bounds);
@@ -213,21 +213,21 @@ TEINAPI bool internal__handle_widget (quad b, bool locked)
     return internal__handle_widget(b.x, b.y, b.w, b.h, locked);
 }
 
-TEINAPI vec2& internal__get_cursor_ref (Panel& panel)
+TEINAPI Vec2& internal__get_cursor_ref (Panel& panel)
 {
     assert(panel.cursor);
     return *panel.cursor;
 }
 
-TEINAPI vec2 internal__get_cursor (Panel& panel)
+TEINAPI Vec2 internal__get_cursor (Panel& panel)
 {
     assert(panel.cursor);
     return *panel.cursor;
 }
 
-TEINAPI vec2 internal__get_relative_cursor (Panel& panel)
+TEINAPI Vec2 internal__get_relative_cursor (Panel& panel)
 {
-    vec2 cur = internal__get_cursor(panel);
+    Vec2 cur = internal__get_cursor(panel);
 
     cur.x += panel.relative_offset.x;
     cur.y += panel.relative_offset.y;
@@ -235,7 +235,7 @@ TEINAPI vec2 internal__get_relative_cursor (Panel& panel)
     return cur;
 }
 
-TEINAPI void internal__draw_separator (vec2 cursor, UI_Dir dir, float w, float h, vec4 color)
+TEINAPI void internal__draw_separator (Vec2 cursor, UI_Dir dir, float w, float h, Vec4 color)
 {
     float x1 = cursor.x;
     float y1 = cursor.y;
@@ -258,7 +258,7 @@ TEINAPI void internal__advance_ui_cursor_start (Panel& panel, float w, float h)
 {
     if (!panel.cursor_advance_enabled) return;
 
-    vec2& cur = internal__get_cursor_ref(panel);
+    Vec2& cur = internal__get_cursor_ref(panel);
 
     switch (panel.cursor_dir)
     {
@@ -271,7 +271,7 @@ TEINAPI void internal__advance_ui_cursor_end (Panel& panel, float w, float h)
 {
     if (!panel.cursor_advance_enabled) return;
 
-    vec2& cur = internal__get_cursor_ref(panel);
+    Vec2& cur = internal__get_cursor_ref(panel);
 
     switch (panel.cursor_dir)
     {
@@ -386,7 +386,7 @@ TEINAPI bool init_ui_system ()
     ui_texture = NULL;
     ui_font    = NULL;
 
-    ui_mouse_relative = vec2(0,0);
+    ui_mouse_relative = Vec2(0,0);
 
     ui_mouse_up     = false;
     ui_mouse_down   = false;
@@ -437,8 +437,8 @@ TEINAPI void load_ui_theme ()
     load_editor_cursors();
 
     // These colors, if default, also depend on the UI theme.
-    vec4 default_background_color = ui_color_light;
-    vec4 default_tile_grid_color = is_ui_light() ? ui_color_black : ui_color_ex_dark;
+    Vec4 default_background_color = ui_color_light;
+    Vec4 default_tile_grid_color = is_ui_light() ? ui_color_black : ui_color_ex_dark;
 
     if (editor_settings.background_color_defaulted)
     {
@@ -461,7 +461,7 @@ TEINAPI void reset_ui_state ()
     // We do this during every event otherwise we can end up with some weird
     // values provided by SDL_GetRelativeMouseState, so we just cache here.
     int imx, imy; SDL_GetRelativeMouseState(&imx, &imy);
-    ui_mouse_relative = ivec2(imx, imy);
+    ui_mouse_relative = IVec2(imx, imy);
 
     ui_mouse_down   = false;
     ui_mouse_up     = false;
@@ -560,7 +560,7 @@ TEINAPI bool is_ui_light ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI vec2 ui_get_relative_mouse ()
+TEINAPI Vec2 ui_get_relative_mouse ()
 {
     return ui_mouse_relative;
 }
@@ -570,7 +570,7 @@ TEINAPI vec2 ui_get_relative_mouse ()
 TEINAPI bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h)
 {
     quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
-    vec2 mouse = get_mouse_pos();
+    Vec2 mouse = get_mouse_pos();
 
     return point_in_bounds_xyxy(mouse, clipped_bounds);
 }
@@ -649,7 +649,7 @@ TEINAPI void deselect_active_hotkey_rebind ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec4 c)
+TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, Vec4 c)
 {
     Panel panel;
 
@@ -660,11 +660,11 @@ TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec
     {
         const quad& p_ab = ui_panels.top().absolute_bounds;
         const quad& p_v  = ui_panels.top().viewport;
-        const vec2& p_ro = ui_panels.top().relative_offset;
+        const Vec2& p_ro = ui_panels.top().relative_offset;
 
         quad& c_ab = panel.absolute_bounds;
         quad& c_v  = panel.viewport;
-        vec2& c_ro = panel.relative_offset;
+        Vec2& c_ro = panel.relative_offset;
 
         c_ab.x += p_ab.x + p_ro.x;
         c_ab.y += p_ab.y + p_ro.y;
@@ -695,7 +695,7 @@ TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec
     else
     {
         panel.viewport = panel.absolute_bounds;
-        panel.relative_offset = vec2(0,0);
+        panel.relative_offset = Vec2(0,0);
         panel.flags = flags;
     }
 
@@ -710,7 +710,7 @@ TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, vec
     fill_quad(0, 0, panel.viewport.w, panel.viewport.h);
 }
 
-TEINAPI void begin_panel (quad bounds, UI_Flag flags, vec4 c)
+TEINAPI void begin_panel (quad bounds, UI_Flag flags, Vec4 c)
 {
     begin_panel(bounds.x, bounds.y, bounds.w, bounds.h, flags, c);
 }
@@ -721,8 +721,8 @@ TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flag
 {
     Panel& parent = ui_panels.top();
 
-    vec2 rcur = internal__get_relative_cursor(parent);
-    vec2 cur = internal__get_cursor(parent);
+    Vec2 rcur = internal__get_relative_cursor(parent);
+    Vec2 cur = internal__get_cursor(parent);
 
     // Cache the panel's flags so they are easily accessible.
     bool locked    = (flags&UI_LOCKED);
@@ -731,7 +731,7 @@ TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flag
     bool result = internal__handle_widget(rcur.x, rcur.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    vec4 back = ui_color_medium;
+    Vec4 back = ui_color_medium;
 
     if      (locked)             back = ui_color_med_dark;
     else if (internal__is_hit()) back = ui_color_dark;
@@ -742,14 +742,14 @@ TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flag
 
     if (highlight && !internal__is_hit())
     {
-        vec4 color = ui_color_med_light;
+        Vec4 color = ui_color_med_light;
         color.a = .66f;
         set_draw_color(color);
         fill_quad(0, 0, get_viewport().w, get_viewport().h);
     }
 
-    vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
-    vec2 cursor = ui_panels.top().relative_offset;
+    Vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
+    Vec2 cursor = ui_panels.top().relative_offset;
 
     internal__draw_separator(cursor, parent.cursor_dir, w, h, separator_color);
     internal__advance_ui_cursor_end(parent, w, h);
@@ -791,12 +791,12 @@ TEINAPI float get_panel_h ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI vec2 get_panel_offset ()
+TEINAPI Vec2 get_panel_offset ()
 {
     return ui_panels.top().relative_offset;
 }
 
-TEINAPI vec2 get_panel_cursor ()
+TEINAPI Vec2 get_panel_cursor ()
 {
     return internal__get_cursor(ui_panels.top());
 }
@@ -823,7 +823,7 @@ TEINAPI void advance_panel_cursor (float advance)
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void set_panel_cursor (vec2* cursor)
+TEINAPI void set_panel_cursor (Vec2* cursor)
 {
     ui_panels.top().cursor = cursor;
 }
@@ -872,7 +872,7 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Texture& tex = *ui_texture;
-    vec2     cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2     cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid image overspill.
     begin_scissor(cur.x, cur.y, w, h);
@@ -881,9 +881,9 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    vec4 front  = (ui_is_light) ? vec4(.4f,.4f,.4f, 1) : vec4(.73f,.73f,.73f, 1);
-    vec4 back   =  ui_color_medium;
-    vec4 shadow = (ui_is_light) ? vec4(.9f,.9f,.9f, 1) : vec4(.16f,.16f,.16f, 1);
+    Vec4 front  = (ui_is_light) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
+    Vec4 back   =  ui_color_medium;
+    Vec4 shadow = (ui_is_light) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
 
     if      (locked)             back = ui_color_med_dark;
     else if (internal__is_hit()) back = ui_color_dark;
@@ -900,7 +900,7 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
 
     if (highlight && !internal__is_hit())
     {
-        vec4 color = ui_color_med_light;
+        Vec4 color = ui_color_med_light;
         color.a = .66f;
         set_draw_color(color);
         fill_quad(0, 0, get_viewport().w, get_viewport().h);
@@ -969,7 +969,7 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Font& fnt = *ui_font;
-    vec2  cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2  cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
@@ -979,9 +979,9 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    vec4 front  = (ui_is_light) ? ui_color_black    : ui_color_ex_light;
-    vec4 back   = ui_color_medium;
-    vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 front  = (ui_is_light) ? ui_color_black    : ui_color_ex_light;
+    Vec4 back   = ui_color_medium;
+    Vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
 
     if      (locked)             back = ui_color_med_dark;
     else if (internal__is_hit()) back = ui_color_dark;
@@ -998,7 +998,7 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
 
     if (highlight && !internal__is_hit())
     {
-        vec4 color = ui_color_med_light;
+        Vec4 color = ui_color_med_light;
         color.a = .66f;
         set_draw_color(color);
         fill_quad(0, 0, get_viewport().w, get_viewport().h);
@@ -1062,7 +1062,7 @@ TEINAPI bool do_button_txt (UI_Action action, float h, UI_Flag flags, std::strin
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, vec4 bg)
+TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, Vec4 bg)
 {
     // Make sure that the necessary components are assigned.
     assert(ui_font);
@@ -1077,7 +1077,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Font& fnt = *ui_font;
-    vec2  cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2  cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
@@ -1122,8 +1122,8 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
 
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
-    vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    vec4 front = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 front = (ui_is_light) ? ui_color_black : ui_color_ex_light;
 
     if (locked || inactive)
     {
@@ -1137,7 +1137,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
         front = UI_D_COLOR_EX_LIGHT;
         if (darken)
         {
-            front = vec4(.7f,.7f,.7f, 1);
+            front = Vec4(.7f,.7f,.7f, 1);
         }
     }
 
@@ -1147,14 +1147,14 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
     draw_text(fnt, x, y, clipped_text);
 
     quad clipped_bounds = internal__get_clipped_bounds(cur.x, cur.y, w, h);
-    vec2 mouse = get_mouse_pos();
+    Vec2 mouse = get_mouse_pos();
     bool inside = point_in_bounds_xyxy(mouse, clipped_bounds);
     if (text_clipped && inside) set_current_tooltip(text);
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 }
 
-TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, vec4 bg)
+TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, Vec4 bg)
 {
     // Important to return ceiled value otherwise the next label using the
     // cursor to position itself might overlap the previous label by 1px.
@@ -1165,7 +1165,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, 
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, vec4 bg)
+TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, Vec4 bg)
 {
     // Make sure that the necessary components are assigned.
     assert(ui_font);
@@ -1173,7 +1173,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Font& fnt = *ui_font;
-    vec2  cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2  cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
@@ -1260,9 +1260,9 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
 
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
-    vec4 shadow     = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    vec4 front      = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    vec4 link_color = front;
+    Vec4 shadow     = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 front      = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 link_color = front;
 
     if      (internal__is_hit()) link_color = (ui_is_light) ? ui_color_ex_dark : ui_color_white;
     else if (internal__is_hot()) link_color = (ui_is_light) ? ui_color_ex_dark : ui_color_white;
@@ -1302,7 +1302,7 @@ TEINAPI void do_markdown (float w, float h, std::string text)
 
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
-    vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
     begin_scissor(cur.x, cur.y, w, h);
@@ -1316,8 +1316,8 @@ TEINAPI void do_markdown (float w, float h, std::string text)
 
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
-    vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    vec4 front = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 front = (ui_is_light) ? ui_color_black : ui_color_ex_light;
 
     if (locked || inactive)
     {
@@ -1372,7 +1372,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Font& fnt = *ui_font;
-    vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     if (!locked)
     {
@@ -1460,10 +1460,10 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         ui_text_box_tab_window_id = 0;
     }
 
-    vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    vec4 outline = ui_color_dark;
-    vec4 back    = ui_color_med_dark;
+    Vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 outline = ui_color_dark;
+    Vec4 back    = ui_color_med_dark;
 
     if (locked)
     {
@@ -1757,7 +1757,7 @@ TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& 
     if (tw < 0) return; // Won't draw anything!
 
     // Cache this stuff because we are going to temporarily change it.
-    vec2 cursor = *ui_panels.top().cursor;
+    Vec2 cursor = *ui_panels.top().cursor;
     UI_Dir dir = ui_panels.top().cursor_dir;
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -1786,7 +1786,7 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Font& fnt = *ui_font;
-    vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     if (!locked)
     {
@@ -1813,10 +1813,10 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding
         deselect_active_hotkey_rebind();
     }
 
-    vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    vec4 outline = ui_color_dark;
-    vec4 back    = ui_color_med_dark;
+    Vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 outline = ui_color_dark;
+    Vec4 back    = ui_color_med_dark;
 
     if (locked)
     {
@@ -1917,7 +1917,7 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding&
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Font& fnt = *ui_font;
-    vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     if (!locked)
     {
@@ -1944,10 +1944,10 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding&
         deselect_active_hotkey_rebind();
     }
 
-    vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    vec4 outline = ui_color_dark;
-    vec4 back    = ui_color_med_dark;
+    Vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 outline = ui_color_dark;
+    Vec4 back    = ui_color_med_dark;
 
     if (locked)
     {
@@ -2049,14 +2049,14 @@ TEINAPI void do_icon (float w, float h, Texture& tex, const quad* clip)
 
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
-    vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid image overspill.
     begin_scissor(cur.x, cur.y, w, h);
     Defer { end_scissor(); };
 
-    vec4 front  = (ui_is_light) ? vec4(.4f,.4f,.4f, 1) : vec4(.73f,.73f,.73f, 1);
-    vec4 shadow = (ui_is_light) ? vec4(.9f,.9f,.9f, 1) : vec4(.16f,.16f,.16f, 1);
+    Vec4 front  = (ui_is_light) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
+    Vec4 shadow = (ui_is_light) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
 
     if (locked || inactive)
     {
@@ -2080,13 +2080,13 @@ TEINAPI void do_icon (float w, float h, Texture& tex, const quad* clip)
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 }
 
-TEINAPI void do_quad (float w, float h, vec4 color)
+TEINAPI void do_quad (float w, float h, Vec4 color)
 {
     UI_ID flags = ui_panels.top().flags;
 
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
-    vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     bool inactive = (flags&UI_INACTIVE);
     bool locked   = (flags&UI_LOCKED);
@@ -2164,7 +2164,7 @@ TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_hei
     set_draw_color(ui_color_ex_dark);
     fill_quad(x, y, x+w, y+h);
 
-    vec4 color = ui_color_med_dark;
+    Vec4 color = ui_color_med_dark;
 
     if      (internal__is_hit()) color = ui_color_med_light;
     else if (internal__is_hot()) color = ui_color_medium;
@@ -2217,7 +2217,7 @@ TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_hei
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, vec4 cl, vec4 cr)
+TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, Vec4 cl, Vec4 cr)
 {
     Panel panel;
 
@@ -2228,11 +2228,11 @@ TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag f
     {
         const quad& p_ab = ui_panels.top().absolute_bounds;
         const quad& p_v  = ui_panels.top().viewport;
-        const vec2& p_ro = ui_panels.top().relative_offset;
+        const Vec2& p_ro = ui_panels.top().relative_offset;
 
         quad& c_ab = panel.absolute_bounds;
         quad& c_v  = panel.viewport;
-        vec2& c_ro = panel.relative_offset;
+        Vec2& c_ro = panel.relative_offset;
 
         c_ab.x += p_ab.x + p_ro.x;
         c_ab.y += p_ab.y + p_ro.y;
@@ -2263,7 +2263,7 @@ TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag f
     else
     {
         panel.viewport = panel.absolute_bounds;
-        panel.relative_offset = vec2(0,0);
+        panel.relative_offset = Vec2(0,0);
         panel.flags = flags;
     }
 
@@ -2282,7 +2282,7 @@ TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag f
     end_draw();
 }
 
-TEINAPI void begin_panel_gradient (quad bounds, UI_Flag flags, vec4 cl, vec4 cr)
+TEINAPI void begin_panel_gradient (quad bounds, UI_Flag flags, Vec4 cl, Vec4 cr)
 {
     begin_panel_gradient(bounds.x, bounds.y, bounds.w, bounds.h, flags, cl, cr);
 }
@@ -2293,8 +2293,8 @@ TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_
 {
     Panel& parent = ui_panels.top();
 
-    vec2 rcur = internal__get_relative_cursor(parent);
-    vec2 cur = internal__get_cursor(parent);
+    Vec2 rcur = internal__get_relative_cursor(parent);
+    Vec2 cur = internal__get_cursor(parent);
 
     bool locked    = (flags&UI_LOCKED);
     bool highlight = (flags&UI_HIGHLIGHT);
@@ -2302,8 +2302,8 @@ TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_
     bool result = internal__handle_widget(rcur.x, rcur.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    vec4 bl = ui_color_medium;
-    vec4 br = ui_color_medium;
+    Vec4 bl = ui_color_medium;
+    Vec4 br = ui_color_medium;
 
     if      (locked)             bl = ui_color_med_dark, br = ui_color_med_dark;
     else if (internal__is_hit()) bl = ui_color_dark;
@@ -2314,25 +2314,25 @@ TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_
 
     if (highlight && !internal__is_hit())
     {
-        vec4 color = ui_color_med_light;
+        Vec4 color = ui_color_med_light;
         color.a = .66f;
         set_draw_color(color);
         fill_quad(0, 0, get_viewport().w, get_viewport().h);
     }
     if (highlight && internal__is_hit())
     {
-        vec4 color = ui_color_med_light;
+        Vec4 color = ui_color_med_light;
         color.a = .66f;
         begin_draw(Buffer_Mode::TRIANGLE_STRIP);
-        put_vertex(0,                get_viewport().h, vec4(0,0,0,0)); // BL
-        put_vertex(0,                0   ,             vec4(0,0,0,0)); // TL
+        put_vertex(0,                get_viewport().h, Vec4(0,0,0,0)); // BL
+        put_vertex(0,                0   ,             Vec4(0,0,0,0)); // TL
         put_vertex(get_viewport().w, get_viewport().h,         color); // BR
         put_vertex(get_viewport().w, 0,                        color); // TR
         end_draw();
     }
 
-    vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
-    vec2 cursor = ui_panels.top().relative_offset;
+    Vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
+    Vec2 cursor = ui_panels.top().relative_offset;
 
     internal__draw_separator(cursor, parent.cursor_dir, w, h, separator_color);
     internal__advance_ui_cursor_end(parent, w, h);
@@ -2364,7 +2364,7 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
     internal__advance_ui_cursor_start(ui_panels.top(), w, h);
 
     Texture& tex = *ui_texture;
-    vec2     cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2     cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid image overspill.
     begin_scissor(cur.x, cur.y, w, h);
@@ -2374,10 +2374,10 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    vec4 front  = (ui_is_light) ? vec4(.4f,.4f,.4f, 1) : vec4(.73f,.73f,.73f, 1);
-    vec4 bl     =  ui_color_medium;
-    vec4 br     =  ui_color_medium;
-    vec4 shadow = (ui_is_light) ? vec4(.9f,.9f,.9f, 1) : vec4(.16f,.16f,.16f, 1);
+    Vec4 front  = (ui_is_light) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
+    Vec4 bl     =  ui_color_medium;
+    Vec4 br     =  ui_color_medium;
+    Vec4 shadow = (ui_is_light) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
 
     if      (locked)             br = ui_color_med_dark, bl = ui_color_med_dark;
     else if (internal__is_hit()) br = ui_color_dark;
@@ -2399,20 +2399,20 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
 
     if (highlight && !internal__is_hit())
     {
-        vec4 color = ui_color_med_light;
+        Vec4 color = ui_color_med_light;
         color.a = .66f;
         set_draw_color(color);
         fill_quad(0, 0, get_viewport().w, get_viewport().h);
     }
     if (highlight && internal__is_hit())
     {
-        vec4 color = ui_color_med_light;
+        Vec4 color = ui_color_med_light;
         color.a = .66f;
         begin_draw(Buffer_Mode::TRIANGLE_STRIP);
         put_vertex(cur.x,   cur.y+h,         color); // BL
         put_vertex(cur.x,   cur.y,           color); // TL
-        put_vertex(cur.x+w, cur.y+h, vec4(0,0,0,0)); // BR
-        put_vertex(cur.x+w, cur.y,   vec4(0,0,0,0)); // TR
+        put_vertex(cur.x+w, cur.y+h, Vec4(0,0,0,0)); // BR
+        put_vertex(cur.x+w, cur.y,   Vec4(0,0,0,0)); // TR
         end_draw();
     }
 

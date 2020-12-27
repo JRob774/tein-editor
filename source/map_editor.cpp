@@ -11,7 +11,7 @@
 
 TEINAPI bool internal__mouse_inside_map_editor_viewport ()
 {
-    vec2 m = map_editor.mouse;
+    Vec2 m = map_editor.mouse;
     quad v = map_editor.viewport;
 
     // We do this check for the disabling of cursor drawing during a resize.
@@ -33,11 +33,11 @@ TEINAPI std::string internal__get_tileset (std::string lvl)
     return lvl.substr(0, end);
 }
 
-TEINAPI vec4 internal__get_node_text_color (vec4 bg)
+TEINAPI Vec4 internal__get_node_text_color (Vec4 bg)
 {
     if (map_editor.text_color_map.count(bg)) return map_editor.text_color_map.at(bg);
 
-    vec4 bg2 = bg;
+    Vec4 bg2 = bg;
 
     // Useful way of determining whether we want white or black text based on the brightness of the node's bg color.
     // The second W3C guideline-based method was used from this answer here: https://stackoverflow.com/a/3943023
@@ -47,18 +47,18 @@ TEINAPI vec4 internal__get_node_text_color (vec4 bg)
 
     float l = .2126f * bg.r + .7152f * bg.g + .0722f * bg.b;
 
-    map_editor.text_color_map.insert(std::pair<vec4,vec4>(bg2, ((l > .179f) ? vec4(0,0,0,1) : vec4(1,1,1,1))));
+    map_editor.text_color_map.insert(std::pair<Vec4,Vec4>(bg2, ((l > .179f) ? Vec4(0,0,0,1) : Vec4(1,1,1,1))));
     return map_editor.text_color_map.at(bg2);
 }
 
-TEINAPI vec4 internal__get_node_shadow_color (vec4 bg)
+TEINAPI Vec4 internal__get_node_shadow_color (Vec4 bg)
 {
-    return ((internal__get_node_text_color(bg) == vec4(1,1,1,1)) ? vec4(0,0,0,1) : vec4(1,1,1,1));
+    return ((internal__get_node_text_color(bg) == Vec4(1,1,1,1)) ? Vec4(0,0,0,1) : Vec4(1,1,1,1));
 }
 
-TEINAPI vec2 internal__mouse_to_node_position ()
+TEINAPI Vec2 internal__mouse_to_node_position ()
 {
-    vec2 m = map_editor.mouse_world;
+    Vec2 m = map_editor.mouse_world;
 
     m.x = floorf((m.x - map_editor.bounds.x) / MAP_NODE_W);
     m.y = floorf((m.y - map_editor.bounds.y) / MAP_NODE_H);
@@ -66,14 +66,14 @@ TEINAPI vec2 internal__mouse_to_node_position ()
     return m;
 }
 
-TEINAPI ivec2 internal__mouse_to_node_position_int ()
+TEINAPI IVec2 internal__mouse_to_node_position_int ()
 {
-    vec2 m = map_editor.mouse_world;
+    Vec2 m = map_editor.mouse_world;
 
     m.x = floorf((m.x - map_editor.bounds.x) / MAP_NODE_W);
     m.y = floorf((m.y - map_editor.bounds.y) / MAP_NODE_H);
 
-    return ivec2(static_cast<int>(m.x), static_cast<int>(m.y));
+    return IVec2(static_cast<int>(m.x), static_cast<int>(m.y));
 }
 
 TEINAPI U32 internal__map_cursor_blink_callback (U32 interval, void* user_data)
@@ -225,7 +225,7 @@ TEINAPI void internal__draw_map_clipboard ()
     float x = map_editor.bounds.x;
     float y = map_editor.bounds.y;
 
-    ivec2 m = internal__mouse_to_node_position_int();
+    IVec2 m = internal__mouse_to_node_position_int();
 
     Font& fnt = (is_editor_font_opensans()) ? resource_font_regular_libmono : resource_font_mono_dyslexic;
     set_text_batch_font(fnt);
@@ -246,7 +246,7 @@ TEINAPI void internal__draw_map_clipboard ()
         x2 -= px;
         y2 -= px;
 
-        vec4 bg = get_tileset_main_color(tileset);
+        Vec4 bg = get_tileset_main_color(tileset);
         set_draw_color(bg);
         fill_quad(x1,y1,x2,y2);
 
@@ -260,8 +260,8 @@ TEINAPI void internal__draw_map_clipboard ()
 
             if (tw > (MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)))
             {
-                vec2 sa(world_to_screen(vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
-                vec2 sb(world_to_screen(vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
+                Vec2 sa(world_to_screen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
+                Vec2 sb(world_to_screen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
 
                 float scx = floorf(sa.x);
                 float scy = floorf(sa.y);
@@ -298,9 +298,9 @@ TEINAPI void internal__draw_map_clipboard ()
 
 TEINAPI void init_map_editor ()
 {
-    map_editor.mouse_world = vec2(0,0);
-    map_editor.mouse       = vec2(0,0);
-    map_editor.mouse_tile  = vec2(0,0);
+    map_editor.mouse_world = Vec2(0,0);
+    map_editor.mouse       = Vec2(0,0);
+    map_editor.mouse_tile  = Vec2(0,0);
 
     map_editor.cursor_blink_timer = NULL;
     map_editor.cursor_visible     = true;
@@ -395,10 +395,10 @@ TEINAPI void do_map_editor ()
         x2 -= px;
         y2 -= px;
 
-        vec4 bg = get_tileset_main_color(tileset);
+        Vec4 bg = get_tileset_main_color(tileset);
 
         // Highlight the moused over node and the active node.
-        ivec2 m = internal__mouse_to_node_position_int();
+        IVec2 m = internal__mouse_to_node_position_int();
         if (!draw_clipboard)
         {
             if ((m.x == node.x && m.y == node.y) || ((tab.map_node_info.active) &&
@@ -439,8 +439,8 @@ TEINAPI void do_map_editor ()
             if ((tw > (MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2))) || ((tab.map_node_info.active) &&
                 (tab.map_node_info.active_pos.x == node.x && tab.map_node_info.active_pos.y == node.y)))
             {
-                vec2 sa(world_to_screen(vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
-                vec2 sb(world_to_screen(vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
+                Vec2 sa(world_to_screen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
+                Vec2 sb(world_to_screen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
 
                 float scx = floorf(sa.x);
                 float scy = floorf(sa.y);
@@ -493,7 +493,7 @@ TEINAPI void do_map_editor ()
         {
             if (is_window_focused("WINMAIN"))
             {
-                vec2 m = internal__mouse_to_node_position();
+                Vec2 m = internal__mouse_to_node_position();
                 m.x *= MAP_NODE_W;
                 m.y *= MAP_NODE_H;
                 set_draw_color(1,1,1,.5f);
@@ -502,10 +502,10 @@ TEINAPI void do_map_editor ()
         }
         if (tab.map_node_info.active && !active_node_pos_been_drawn)
         {
-            ivec2 m = internal__mouse_to_node_position_int();
+            IVec2 m = internal__mouse_to_node_position_int();
             float nx = tab.map_node_info.active_pos.x * MAP_NODE_W;
             float ny = tab.map_node_info.active_pos.y * MAP_NODE_H;
-            set_draw_color(((is_ui_light()) ? vec4(1,1,1,1) : ui_color_ex_light));
+            set_draw_color(((is_ui_light()) ? Vec4(1,1,1,1) : ui_color_ex_light));
             fill_quad(nx,ny,nx+MAP_NODE_W,ny+MAP_NODE_H);
         }
     }
@@ -558,8 +558,8 @@ TEINAPI void do_map_editor ()
                     size_t begin = std::min(tab.map_node_info.cursor, tab.map_node_info.select);
                     size_t end   = std::max(tab.map_node_info.cursor, tab.map_node_info.select);
 
-                    vec2 sa(world_to_screen(vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
-                    vec2 sb(world_to_screen(vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
+                    Vec2 sa(world_to_screen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
+                    Vec2 sb(world_to_screen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
 
                     float scx = floorf(sa.x);
                     float scy = floorf(sa.y);
@@ -702,8 +702,8 @@ TEINAPI void handle_map_editor_events ()
                     if (map_editor.pressed)
                     {
                         internal__deselect_active_node();
-                        tab.map_select.a = ivec2(0,0);
-                        tab.map_select.b = ivec2(0,0);
+                        tab.map_select.a = IVec2(0,0);
+                        tab.map_select.b = IVec2(0,0);
                         map_editor.left_pressed = false;
                     }
                 }
@@ -1354,8 +1354,8 @@ TEINAPI void me_deselect ()
 
     Tab& tab = get_current_tab();
 
-    tab.map_select.a = ivec2(0,0);
-    tab.map_select.b = ivec2(0,0);
+    tab.map_select.a = IVec2(0,0);
+    tab.map_select.b = IVec2(0,0);
 }
 
 TEINAPI void me_clear_select ()
@@ -1402,8 +1402,8 @@ TEINAPI void me_select_all ()
         int x2 = static_cast<int>(get_max_map_bounds_x()/MAP_NODE_W);
         int y2 = static_cast<int>(get_max_map_bounds_y()/MAP_NODE_H);
 
-        tab.map_select.a = ivec2(x1,y1);
-        tab.map_select.b = ivec2(x2,y2);
+        tab.map_select.a = IVec2(x1,y1);
+        tab.map_select.b = IVec2(x2,y2);
     }
 }
 

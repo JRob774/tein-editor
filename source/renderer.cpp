@@ -13,7 +13,7 @@ static SDL_GLContext gl_context;
 static Window*    render_target;
 
 static quad renderer_viewport;
-static vec4 renderer_draw_color;
+static Vec4 renderer_draw_color;
 
 static std::stack<quad> scissor_stack;
 
@@ -35,10 +35,10 @@ static Vertex_Buffer tile_buffer;
 static Vertex_Buffer text_buffer;
 
 // Batched tile rendering.
-static vec4     tile_draw_color;
+static Vec4     tile_draw_color;
 static Texture* tile_texture;
 // Batched text rendering.
-static vec4     text_draw_color;
+static Vec4     text_draw_color;
 static Font*    text_font;
 
 /* -------------------------------------------------------------------------- */
@@ -105,7 +105,7 @@ TEINAPI bool init_renderer ()
     LOG_DEBUG("Initialized OpenGL Renderer");
     internal__dump_opengl_debug_info();
 
-    renderer_draw_color  = vec4(1,1,1,1);
+    renderer_draw_color  = Vec4(1,1,1,1);
     texture_draw_scale_x = 1;
     texture_draw_scale_y = 1;
     font_draw_scale      = 1;
@@ -167,7 +167,7 @@ TEINAPI void quit_renderer ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void render_clear (vec4 clear)
+TEINAPI void render_clear (Vec4 clear)
 {
     glClearColor(clear.r, clear.g, clear.b, clear.a);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -184,17 +184,17 @@ TEINAPI void render_present ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI vec2 screen_to_world (vec2 screen)
+TEINAPI Vec2 screen_to_world (Vec2 screen)
 {
     // GL expects bottom-left so we have to convert our viewport first.
     quad v = internal__convert_viewport(renderer_viewport);
 
     // We also need to do flip the Y coordinate to use this system.
     screen.y = get_render_target_h() - screen.y;
-    vec3 coord(screen.x, screen.y, 0);
+    Vec3 coord(screen.x, screen.y, 0);
 
-    mat4 projection;
-    mat4 modelview;
+    Mat4 projection;
+    Mat4 modelview;
 
     float matrix[16];
 
@@ -203,24 +203,24 @@ TEINAPI vec2 screen_to_world (vec2 screen)
     glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
     modelview = glm::make_mat4(matrix);
 
-    vec4 viewport(v.x, v.y, v.w, v.h);
+    Vec4 viewport(v.x, v.y, v.w, v.h);
 
     coord = glm::unProject(coord, modelview, projection, viewport);
 
-    vec2 world(coord.x, coord.y);
+    Vec2 world(coord.x, coord.y);
 
     return world;
 }
 
-TEINAPI vec2 world_to_screen (vec2 world)
+TEINAPI Vec2 world_to_screen (Vec2 world)
 {
     // GL expects bottom-left so we have to convert our viewport first.
     quad v = internal__convert_viewport(renderer_viewport);
 
-    vec3 coord(world.x, world.y, 0);
+    Vec3 coord(world.x, world.y, 0);
 
-    mat4 projection;
-    mat4 modelview;
+    Mat4 projection;
+    Mat4 modelview;
 
     float matrix[16];
 
@@ -229,12 +229,12 @@ TEINAPI vec2 world_to_screen (vec2 world)
     glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
     modelview = glm::make_mat4(matrix);
 
-    vec4 viewport(v.x, v.y, v.w, v.h);
+    Vec4 viewport(v.x, v.y, v.w, v.h);
 
     coord = glm::project(coord, modelview, projection, viewport);
 
     // We also need to do flip the Y coordinate to use this system.
-    vec2 screen(coord.x, coord.y);
+    Vec2 screen(coord.x, coord.y);
 
     screen.x -= v.x;
     screen.y  = get_render_target_h() - (screen.y + renderer_viewport.y);
@@ -332,7 +332,7 @@ TEINAPI void set_draw_color (float r, float g, float b, float a)
     renderer_draw_color = { r, g, b, a };
 }
 
-TEINAPI void set_draw_color (vec4 color)
+TEINAPI void set_draw_color (Vec4 color)
 {
     renderer_draw_color = color;
 }
@@ -452,8 +452,8 @@ TEINAPI void draw_line (float x1, float y1, float x2, float y2)
 {
     glUseProgram(untextured_shader);
 
-    put_buffer_vertex(draw_buffer, { vec2(x1,y1), vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { vec2(x2,y2), vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
 
     draw_vertex_buffer(draw_buffer, Buffer_Mode::LINES);
     clear_vertex_buffer(draw_buffer);
@@ -469,10 +469,10 @@ TEINAPI void draw_quad (float x1, float y1, float x2, float y2)
     x2 -= .5f;
     y2 -= .5f;
 
-    put_buffer_vertex(draw_buffer, { vec2(x1,y1), vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { vec2(x2,y1), vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { vec2(x2,y2), vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { vec2(x1,y2), vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
 
     draw_vertex_buffer(draw_buffer, Buffer_Mode::LINE_LOOP);
     clear_vertex_buffer(draw_buffer);
@@ -482,10 +482,10 @@ TEINAPI void fill_quad (float x1, float y1, float x2, float y2)
 {
     glUseProgram(untextured_shader);
 
-    put_buffer_vertex(draw_buffer, { vec2(x1,y2), vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { vec2(x1,y1), vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { vec2(x2,y2), vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { vec2(x2,y1), vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
+    put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
 
     draw_vertex_buffer(draw_buffer, Buffer_Mode::TRIANGLE_STRIP);
     clear_vertex_buffer(draw_buffer);
@@ -532,10 +532,10 @@ TEINAPI void draw_texture (const Texture& tex, float x, float y, const quad* cli
     float x2 = x1 + w;
     float y2 = y1 + h;
 
-    put_buffer_vertex(draw_buffer, { vec2(x1,y2), vec2(cx1,cy2), tex.color });
-    put_buffer_vertex(draw_buffer, { vec2(x1,y1), vec2(cx1,cy1), tex.color });
-    put_buffer_vertex(draw_buffer, { vec2(x2,y2), vec2(cx2,cy2), tex.color });
-    put_buffer_vertex(draw_buffer, { vec2(x2,y1), vec2(cx2,cy1), tex.color });
+    put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tex.color });
+    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tex.color });
+    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tex.color });
+    put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tex.color });
 
     draw_vertex_buffer(draw_buffer, Buffer_Mode::TRIANGLE_STRIP);
     clear_vertex_buffer(draw_buffer);
@@ -599,12 +599,12 @@ TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
                 float x2 = roundf(x1 + w);
                 float y2 = roundf(y1 + h);
 
-                put_buffer_vertex(draw_buffer, { vec2(x1,y2), vec2(cx1,cy2), fnt.color }); // V0
-                put_buffer_vertex(draw_buffer, { vec2(x1,y1), vec2(cx1,cy1), fnt.color }); // V1
-                put_buffer_vertex(draw_buffer, { vec2(x2,y2), vec2(cx2,cy2), fnt.color }); // V2
-                put_buffer_vertex(draw_buffer, { vec2(x2,y2), vec2(cx2,cy2), fnt.color }); // V2
-                put_buffer_vertex(draw_buffer, { vec2(x1,y1), vec2(cx1,cy1), fnt.color }); // V1
-                put_buffer_vertex(draw_buffer, { vec2(x2,y1), vec2(cx2,cy1), fnt.color }); // V3
+                put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), fnt.color }); // V0
+                put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
+                put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
+                put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
+                put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
+                put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), fnt.color }); // V3
 
                 cx += advance;
             } break;
@@ -632,9 +632,9 @@ TEINAPI void end_draw ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void put_vertex (float x, float y, vec4 color)
+TEINAPI void put_vertex (float x, float y, Vec4 color)
 {
-    put_buffer_vertex(draw_buffer, { vec2(x,y), vec2(0,0), color });
+    put_buffer_vertex(draw_buffer, { Vec2(x,y), Vec2(0,0), color });
 }
 
 /* -------------------------------------------------------------------------- */
@@ -681,12 +681,12 @@ TEINAPI void set_text_batch_font (Font& fnt)
     text_font = &fnt;
 }
 
-TEINAPI void set_tile_batch_color (vec4 color)
+TEINAPI void set_tile_batch_color (Vec4 color)
 {
     tile_draw_color = color;
 }
 
-TEINAPI void set_text_batch_color (vec4 color)
+TEINAPI void set_text_batch_color (Vec4 color)
 {
     text_draw_color = color;
 }
@@ -710,12 +710,12 @@ TEINAPI void draw_batched_tile (float x, float y, const quad* clip)
     float x2 = x1 + w;
     float y2 = y1 + h;
 
-    put_buffer_vertex(tile_buffer, { vec2(x1,y2), vec2(cx1,cy2), tile_draw_color }); // V0
-    put_buffer_vertex(tile_buffer, { vec2(x1,y1), vec2(cx1,cy1), tile_draw_color }); // V1
-    put_buffer_vertex(tile_buffer, { vec2(x2,y2), vec2(cx2,cy2), tile_draw_color }); // V2
-    put_buffer_vertex(tile_buffer, { vec2(x2,y2), vec2(cx2,cy2), tile_draw_color }); // V2
-    put_buffer_vertex(tile_buffer, { vec2(x1,y1), vec2(cx1,cy1), tile_draw_color }); // V1
-    put_buffer_vertex(tile_buffer, { vec2(x2,y1), vec2(cx2,cy1), tile_draw_color }); // V3
+    put_buffer_vertex(tile_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tile_draw_color }); // V0
+    put_buffer_vertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
+    put_buffer_vertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
+    put_buffer_vertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
+    put_buffer_vertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
+    put_buffer_vertex(tile_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tile_draw_color }); // V3
 }
 
 TEINAPI void draw_batched_text (float x, float y, std::string text)
@@ -768,12 +768,12 @@ TEINAPI void draw_batched_text (float x, float y, std::string text)
                 float x2 = roundf(x1 + w);
                 float y2 = roundf(y1 + h);
 
-                put_buffer_vertex(text_buffer, { vec2(x1,y2), vec2(cx1,cy2), text_draw_color }); // V0
-                put_buffer_vertex(text_buffer, { vec2(x1,y1), vec2(cx1,cy1), text_draw_color }); // V1
-                put_buffer_vertex(text_buffer, { vec2(x2,y2), vec2(cx2,cy2), text_draw_color }); // V2
-                put_buffer_vertex(text_buffer, { vec2(x2,y2), vec2(cx2,cy2), text_draw_color }); // V2
-                put_buffer_vertex(text_buffer, { vec2(x1,y1), vec2(cx1,cy1), text_draw_color }); // V1
-                put_buffer_vertex(text_buffer, { vec2(x2,y1), vec2(cx2,cy1), text_draw_color }); // V3
+                put_buffer_vertex(text_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), text_draw_color }); // V0
+                put_buffer_vertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
+                put_buffer_vertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
+                put_buffer_vertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
+                put_buffer_vertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
+                put_buffer_vertex(text_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), text_draw_color }); // V3
 
                 cx += advance;
             } break;

@@ -27,9 +27,9 @@ typedef GLuint VAO;
 
 struct Vertex
 {
-    vec2 position;
-    vec2 texcoord;
-    vec4 outcolor;
+    Vec2 position;
+    Vec2 texcoord;
+    Vec4 outcolor;
 };
 
 struct Vertex_Buffer

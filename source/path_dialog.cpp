@@ -42,7 +42,7 @@ TEINAPI void do_path ()
     float bh = bb - WINDOW_BORDER;
 
     // Bottom buttons for okaying or cancelling the path dialog.
-    vec2 btn_cursor(0, WINDOW_BORDER);
+    Vec2 btn_cursor(0, WINDOW_BORDER);
     begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -70,7 +70,7 @@ TEINAPI void do_path ()
     constexpr float XPAD = 8;
     constexpr float YPAD = 4;
 
-    vec2 cursor(XPAD, YPAD);
+    Vec2 cursor(XPAD, YPAD);
 
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);

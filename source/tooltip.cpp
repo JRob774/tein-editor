@@ -110,7 +110,7 @@ TEINAPI void do_tooltip ()
         float dw = get_text_width_scaled (fnt, desc        );
         float dh = get_text_height_scaled(fnt, desc        );
 
-        vec2 mouse = get_mouse_pos();
+        Vec2 mouse = get_mouse_pos();
 
         float tx = mouse.x;
         float ty = mouse.y + 16; // Some constant just so it doesn't get covered by the mouse.
@@ -121,9 +121,9 @@ TEINAPI void do_tooltip ()
         if (tx+tw >= get_render_target_w()) tx = mouse.x - tw;
         if (ty+th >= get_render_target_h()) ty = mouse.y - th;
 
-        begin_panel(tx, ty, tw, th, UI_NONE, vec4(0,0,0,.8f));
+        begin_panel(tx, ty, tw, th, UI_NONE, Vec4(0,0,0,.8f));
 
-        vec2 cursor(xpad, ypad);
+        Vec2 cursor(xpad, ypad);
 
         set_panel_cursor(&cursor);
         set_panel_cursor_dir(UI_DIR_DOWN);

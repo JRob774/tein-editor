@@ -32,19 +32,19 @@ static constexpr int   COLOR_PICKER_SWATCH_COUNT =  9;
 static Channel_Type color_picker_active_channel;
 static bool color_picker_mouse_pressed;
 
-static std::deque<vec4> color_picker_swatches;
+static std::deque<Vec4> color_picker_swatches;
 
 // When the color picker menu is opened we cache the current color value.
 // This allows the color picker menu to modify the current color immediately
 // for instant feedback. If the user then wants to cancel the changes made,
 // we can just restore the cached version of the color to turn it back.
 
-static vec4* current_color_picker_color;
-static vec4  cached_color_picker_color;
+static Vec4* current_color_picker_color;
+static Vec4  cached_color_picker_color;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float& channel, Channel_Type type)
+TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float& channel, Channel_Type type)
 {
     float xpad = COLOR_PICKER_XPAD;
     float ypad = COLOR_PICKER_YPAD;
@@ -89,7 +89,7 @@ TEINAPI void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float
     float ix2 = cursor.x+cw+2;
     float iy2 = pos        +2;
 
-    vec4 cur = min;
+    Vec4 cur = min;
     switch (type)
     {
         case (Channel_Type::R): cur.r = channel; break;
@@ -129,7 +129,7 @@ TEINAPI void internal__do_color_channel (vec2& cursor, vec4 min, vec4 max, float
     cursor.x += cw + (xpad*3);
 }
 
-TEINAPI void internal__do_color_preview (vec2& cursor, vec4 c, float size)
+TEINAPI void internal__do_color_preview (Vec2& cursor, Vec4 c, float size)
 {
     const Texture& tex = (static_cast<int>(size) % 14 == 0) ? resource_checker_14 : resource_checker_16;
 
@@ -148,8 +148,8 @@ TEINAPI void internal__do_color_preview (vec2& cursor, vec4 c, float size)
     quad clip = { 0, 0, size, size };
     draw_texture(tex, tx, ty, &clip);
 
-    vec4 max(c.r, c.g, c.b,   1);
-    vec4 min(c.r, c.g, c.b, c.a);
+    Vec4 max(c.r, c.g, c.b,   1);
+    Vec4 min(c.r, c.g, c.b, c.a);
 
     begin_draw(Buffer_Mode::TRIANGLE_STRIP);
     put_vertex(x     , y+size, min); // BL
@@ -159,7 +159,7 @@ TEINAPI void internal__do_color_preview (vec2& cursor, vec4 c, float size)
     end_draw();
 }
 
-TEINAPI void internal__do_swatch_panel (vec2& cursor)
+TEINAPI void internal__do_swatch_panel (Vec2& cursor)
 {
     assert(current_color_picker_color);
 
@@ -173,7 +173,7 @@ TEINAPI void internal__do_swatch_panel (vec2& cursor)
     float w = COLOR_PICKER_SWATCH_LG                    -2;
     float h = (get_panel_h()-COLOR_PICKER_YPAD)-cursor.y-2;
 
-    vec2 cursor2(COLOR_PICKER_SWATCH_XPAD, COLOR_PICKER_SWATCH_YPAD);
+    Vec2 cursor2(COLOR_PICKER_SWATCH_XPAD, COLOR_PICKER_SWATCH_YPAD);
     begin_panel(x, y, w, h, UI_NONE);
 
     for (auto& c: color_picker_swatches)
@@ -194,7 +194,7 @@ TEINAPI void internal__do_swatch_panel (vec2& cursor)
     end_panel();
 }
 
-TEINAPI void internal__do_alpha_channel (vec2& cursor, vec4& c)
+TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
 {
     float xpad = COLOR_PICKER_XPAD;
     float ypad = COLOR_PICKER_YPAD;
@@ -239,8 +239,8 @@ TEINAPI void internal__do_alpha_channel (vec2& cursor, vec4& c)
     quad clip1 = { 0, 0, tw, th };
     draw_texture(resource_checker_20, tx, ty, &clip1);
 
-    vec4 min(c.r, c.g, c.b, 0);
-    vec4 max(c.r, c.g, c.b, 1);
+    Vec4 min(c.r, c.g, c.b, 0);
+    Vec4 max(c.r, c.g, c.b, 1);
 
     begin_draw(Buffer_Mode::TRIANGLE_STRIP);
     put_vertex(x1, y2, min); // BL
@@ -336,11 +336,11 @@ TEINAPI void init_color_picker ()
     // Add some empty swatches to the color picker on start-up.
     for (int i=0; i<COLOR_PICKER_SWATCH_COUNT; ++i)
     {
-        color_picker_swatches.push_back(vec4(1,1,1,0));
+        color_picker_swatches.push_back(Vec4(1,1,1,0));
     }
 }
 
-TEINAPI void open_color_picker (vec4* color)
+TEINAPI void open_color_picker (Vec4* color)
 {
     raise_window("WINCOLOR");
 
@@ -382,7 +382,7 @@ TEINAPI void do_color_picker ()
     float bh = bb - WINDOW_BORDER;
 
     // Bottom buttons for okaying or cancelling the color picker.
-    vec2 btn_cursor(0, WINDOW_BORDER);
+    Vec2 btn_cursor(0, WINDOW_BORDER);
     begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -410,19 +410,19 @@ TEINAPI void do_color_picker ()
 
     assert(current_color_picker_color);
 
-    vec4& c = *current_color_picker_color; // So much shorter to type out...
-    vec2 cursor(COLOR_PICKER_XPAD, COLOR_PICKER_YPAD);
+    Vec4& c = *current_color_picker_color; // So much shorter to type out...
+    Vec2 cursor(COLOR_PICKER_XPAD, COLOR_PICKER_YPAD);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
     set_panel_cursor(&cursor);
 
     // Draw the three R G B channel selectors/sliders.
-    vec4 r_min(  0, c.g, c.b, 1);
-    vec4 r_max(  1, c.g, c.b, 1);
-    vec4 g_min(c.r,   0, c.b, 1);
-    vec4 g_max(c.r,   1, c.b, 1);
-    vec4 b_min(c.r, c.g,   0, 1);
-    vec4 b_max(c.r, c.g,   1, 1);
+    Vec4 r_min(  0, c.g, c.b, 1);
+    Vec4 r_max(  1, c.g, c.b, 1);
+    Vec4 g_min(c.r,   0, c.b, 1);
+    Vec4 g_max(c.r,   1, c.b, 1);
+    Vec4 b_min(c.r, c.g,   0, 1);
+    Vec4 b_max(c.r, c.g,   1, 1);
 
     internal__do_color_channel(cursor, r_min, r_max, c.r, Channel_Type::R);
     internal__do_color_channel(cursor, g_min, g_max, c.g, Channel_Type::G);

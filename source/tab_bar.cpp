@@ -32,8 +32,8 @@ TEINAPI bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool
     float tw = w;
     float th = get_panel_h();
 
-    vec2 cursor1(0, 0);
-    vec2 cursor2(xpad, 0);
+    Vec2 cursor1(0, 0);
+    Vec2 cursor2(xpad, 0);
 
     float bw = 24;
     float pw = tw-(bw);
@@ -151,7 +151,7 @@ TEINAPI void do_tab_bar ()
     if (are_there_any_tabs())
     {
         begin_panel(x, y, bw,bh, UI_NONE);
-        vec2 tmp(0,0);
+        Vec2 tmp(0,0);
         set_panel_cursor(&tmp);
         bool l_arrow_active = (starting_tab_offset != 0);
         UI_Flag flags = (l_arrow_active) ? UI_NONE : UI_LOCKED;
@@ -163,9 +163,9 @@ TEINAPI void do_tab_bar ()
     }
 
     // THE LIST OF TABS
-    vec2 cursor(0,0);
+    Vec2 cursor(0,0);
 
-    vec4 color = (are_there_any_tabs()) ? ui_color_med_dark : ui_color_ex_dark;
+    Vec4 color = (are_there_any_tabs()) ? ui_color_med_dark : ui_color_ex_dark;
     begin_panel(x+bw+1, y, pw, ph, UI_NONE, color);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -192,7 +192,7 @@ TEINAPI void do_tab_bar ()
     if (are_there_any_tabs())
     {
         begin_panel(x+bw+2+pw, 0, bw,bh, UI_NONE);
-        vec2 tmp(0,0);
+        Vec2 tmp(0,0);
         set_panel_cursor(&tmp);
         bool r_arrow_active = (starting_tab_offset+max_number_of_tabs < editor.tabs.size());
         UI_Flag flags = (r_arrow_active) ? UI_NONE : UI_LOCKED;

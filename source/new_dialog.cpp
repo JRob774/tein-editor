@@ -70,7 +70,7 @@ TEINAPI void do_new ()
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
-    vec2 cursor;
+    Vec2 cursor;
 
     float nvfh = NEW_V_FRAME_H;
 
@@ -81,7 +81,7 @@ TEINAPI void do_new ()
     float bh = nvfh - WINDOW_BORDER;
 
     // Top tabs for switching type of file to create.
-    cursor = vec2(0,0);
+    cursor = Vec2(0,0);
     begin_panel(0, 0, vw, nvfh, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -104,7 +104,7 @@ TEINAPI void do_new ()
     end_panel();
 
     // Bottom buttons for okaying or cancelling the resize.
-    cursor = vec2(0, WINDOW_BORDER);
+    cursor = Vec2(0, WINDOW_BORDER);
     begin_panel(0, vh-nvfh, vw, nvfh, UI_NONE, ui_color_medium);
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -130,7 +130,7 @@ TEINAPI void do_new ()
     UI_Flag panel_flags = (current_tab_type == Tab_Type::LEVEL) ? UI_NONE : UI_LOCKED;
     begin_panel(p2, panel_flags, ui_color_medium);
 
-    cursor = vec2(NEW_XPAD, NEW_YPAD);
+    cursor = Vec2(NEW_XPAD, NEW_YPAD);
 
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);

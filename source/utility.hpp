@@ -49,16 +49,16 @@ typedef  int16_t S16;
 typedef  int32_t S32;
 typedef  int64_t S64;
 
-typedef glm::vec2   vec2;
-typedef glm::vec3   vec3;
-typedef glm::vec4   vec4;
-typedef glm::ivec2 ivec2;
-typedef glm::ivec3 ivec3;
-typedef glm::ivec4 ivec4;
-typedef glm::ivec4 ivec4;
-typedef glm::mat2   mat2;
-typedef glm::mat3   mat3;
-typedef glm::mat4   mat4;
+typedef glm::vec2   Vec2;
+typedef glm::vec3   Vec3;
+typedef glm::vec4   Vec4;
+typedef glm::ivec2 IVec2;
+typedef glm::ivec3 IVec3;
+typedef glm::ivec4 IVec4;
+typedef glm::ivec4 IVec4;
+typedef glm::mat2   Mat2;
+typedef glm::mat3   Mat3;
+typedef glm::mat4   Mat4;
 
 struct quad
 {
@@ -107,14 +107,14 @@ TEINAPI void tokenize_string (const std::string& str, const char* delims,
 TEINAPI std::string format_string   (const char* format, ...);
 TEINAPI std::string format_string_v (const char* format, va_list args);
 
-TEINAPI vec2 get_mouse_pos ();
+TEINAPI Vec2 get_mouse_pos ();
 
 TEINAPI std::string format_time (const char* format);
 
 TEINAPI unsigned int get_thread_id ();
 
-TEINAPI bool point_in_bounds_xyxy (vec2 p, quad q);
-TEINAPI bool point_in_bounds_xywh (vec2 p, quad q);
+TEINAPI bool point_in_bounds_xyxy (Vec2 p, quad q);
+TEINAPI bool point_in_bounds_xywh (Vec2 p, quad q);
 
 TEINAPI bool insensitive_compare (const std::string& a, const std::string& b);
 

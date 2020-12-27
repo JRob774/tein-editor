@@ -16,7 +16,7 @@ static constexpr const char* GAME_GPAK    = "game.gpak";
 // The columns in the palette file to pull the colors from.
 static constexpr int PALETTE_MAIN_COLUMN = 5;
 
-static std::map<std::string, vec4> palette_main_lookup;
+static std::map<std::string, Vec4> palette_main_lookup;
 
 /* -------------------------------------------------------------------------- */
 
@@ -128,11 +128,11 @@ TEINAPI void init_palette_lookup ()
         float b = static_cast<float>(palette[index+2]) / 255;
         float a = static_cast<float>(palette[index+3]) / 255;
 
-        palette_main_lookup.insert(std::pair<std::string, vec4>(name, vec4(r,g,b,a)));
+        palette_main_lookup.insert(std::pair<std::string, Vec4>(name, Vec4(r,g,b,a)));
     }
 }
 
-TEINAPI vec4 get_tileset_main_color (std::string tileset)
+TEINAPI Vec4 get_tileset_main_color (std::string tileset)
 {
     if (tileset != "..")
     {
@@ -142,7 +142,7 @@ TEINAPI vec4 get_tileset_main_color (std::string tileset)
         }
         return ((is_ui_light()) ? ui_color_ex_dark : ui_color_ex_dark);
     }
-    return vec4(0,0,0,1);
+    return Vec4(0,0,0,1);
 }
 
 /* -------------------------------------------------------------------------- */

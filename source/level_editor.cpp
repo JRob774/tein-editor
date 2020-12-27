@@ -204,12 +204,12 @@ TEINAPI void internal__copy ()
     }
 }
 
-TEINAPI vec2 internal__mouse_to_tile_position ()
+TEINAPI Vec2 internal__mouse_to_tile_position ()
 {
     // Only continue calculating the tile position if the mouse is in bounds.
-    if (!mouse_inside_level_editor_viewport()) return vec2(-1,-1);
+    if (!mouse_inside_level_editor_viewport()) return Vec2(-1,-1);
 
-    vec2 m = level_editor.mouse_world;
+    Vec2 m = level_editor.mouse_world;
 
     m.x = floorf((m.x - level_editor.bounds.x) / DEFAULT_TILE_SIZE);
     m.y = floorf((m.y - level_editor.bounds.y) / DEFAULT_TILE_SIZE);
@@ -219,7 +219,7 @@ TEINAPI vec2 internal__mouse_to_tile_position ()
 
 TEINAPI void internal__handle_brush ()
 {
-    vec2 tile_pos = internal__mouse_to_tile_position();
+    Vec2 tile_pos = internal__mouse_to_tile_position();
 
     int x = static_cast<int>(tile_pos.x);
     int y = static_cast<int>(tile_pos.y);
@@ -307,7 +307,7 @@ TEINAPI void internal__fill ()
     // to within the level. Meaning that the fill is complete and we can leave.
     while (tab.tool_info.fill.frontier.size() > 0)
     {
-        vec2 temp = tab.tool_info.fill.frontier.at(0);
+        Vec2 temp = tab.tool_info.fill.frontier.at(0);
 
         int cx = static_cast<int>(temp.x);
         int cy = static_cast<int>(temp.y);
@@ -359,7 +359,7 @@ TEINAPI void internal__replace ()
 
 TEINAPI void internal__handle_fill ()
 {
-    vec2 tile_pos = internal__mouse_to_tile_position();
+    Vec2 tile_pos = internal__mouse_to_tile_position();
 
     int x = static_cast<int>(tile_pos.x);
     int y = static_cast<int>(tile_pos.y);
@@ -444,7 +444,7 @@ TEINAPI void internal__handle_select ()
 
         Select_Bounds& select_bounds = tab.tool_info.select.bounds.back();
 
-        vec2 ta = internal__mouse_to_tile_position();
+        Vec2 ta = internal__mouse_to_tile_position();
         // Set the starting anchor point of the selection (clamp in bounds).
         select_bounds.top  = std::clamp(static_cast<int>(ta.y), 0, tab.level.header.height-1);
         select_bounds.left = std::clamp(static_cast<int>(ta.x), 0, tab.level.header.width-1);
@@ -460,7 +460,7 @@ TEINAPI void internal__handle_select ()
     // not start the actual selection until their mouse enters the bounds.
     if (!select_bounds.visible)
     {
-        vec2 a = internal__mouse_to_tile_position();
+        Vec2 a = internal__mouse_to_tile_position();
         if (internal__tile_in_bounds(static_cast<int>(a.x), static_cast<int>(a.y)))
         {
             select_bounds.visible = true;
@@ -470,7 +470,7 @@ TEINAPI void internal__handle_select ()
     if (select_bounds.visible)
     {
         // Set the second point of the selection box bounds.
-        vec2 tb = internal__mouse_to_tile_position();
+        Vec2 tb = internal__mouse_to_tile_position();
         select_bounds.bottom = std::clamp(static_cast<int>(tb.y), 0, tab.level.header.height-1);
         select_bounds.right  = std::clamp(static_cast<int>(tb.x), 0, tab.level.header.width-1);
     }
@@ -600,7 +600,7 @@ TEINAPI void internal__draw_cursor (int x, int y, Tile_ID id)
         set_draw_color(1,1,1,1);
         fill_quad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
 
-        atlas.texture.color = vec4(1,1,1,1);
+        atlas.texture.color = Vec4(1,1,1,1);
         draw_texture(atlas.texture, gx+DEFAULT_TILE_SIZE_HALF, gy+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
     }
 }
@@ -617,7 +617,7 @@ TEINAPI void internal__draw_mirrored_cursor ()
     int lw = tab.level.header.width-1;
     int lh = tab.level.header.height-1;
 
-    vec2 t = internal__mouse_to_tile_position();
+    Vec2 t = internal__mouse_to_tile_position();
 
     int tx = static_cast<int>(t.x);
     int ty = static_cast<int>(t.y);
@@ -647,7 +647,7 @@ TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
         int sw = clipboard.w-1;
         int sh = clipboard.h-1;
 
-        vec2 t = internal__mouse_to_tile_position();
+        Vec2 t = internal__mouse_to_tile_position();
 
         int tx = static_cast<int>(t.x) + clipboard.x;
         int ty = static_cast<int>(t.y) + clipboard.y;
@@ -676,7 +676,7 @@ TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
     Texture_Atlas& atlas = get_editor_atlas_large();
 
     set_tile_batch_texture(atlas.texture);
-    set_tile_batch_color(vec4(1,1,1,GHOSTED_CURSOR_ALPHA));
+    set_tile_batch_color(Vec4(1,1,1,GHOSTED_CURSOR_ALPHA));
 
     // Stops us from drawing multiple copies of a tile where clipboards overlap.
     std::array<std::map<size_t, bool>, LEVEL_LAYER_TOTAL> tile_space_occupied;
@@ -690,7 +690,7 @@ TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
         int sw = clipboard.w-1;
         int sh = clipboard.h-1;
 
-        vec2 t = internal__mouse_to_tile_position();
+        Vec2 t = internal__mouse_to_tile_position();
 
         int x = static_cast<int>(t.x) + clipboard.x;
         int y = static_cast<int>(t.y) + clipboard.y;
@@ -923,9 +923,9 @@ TEINAPI void init_level_editor ()
     level_editor.tool_state = Tool_State::IDLE;
     level_editor.tool_type  = Tool_Type::BRUSH;
 
-    level_editor.mouse_world = vec2(0,0);
-    level_editor.mouse       = vec2(0,0);
-    level_editor.mouse_tile  = vec2(0,0);
+    level_editor.mouse_world = Vec2(0,0);
+    level_editor.mouse       = Vec2(0,0);
+    level_editor.mouse_tile  = Vec2(0,0);
 
     level_editor.bounds_visible     = true;
     level_editor.layer_transparency = true;
@@ -1002,8 +1002,8 @@ TEINAPI void do_level_editor ()
 
     // We cache the transformed level editor bounds in screen coordinates so
     // that we can later scissor the area to avoid any tile/spawn overspill.
-    vec2 le_bounds_a = world_to_screen(vec2(x  , y  ));
-    vec2 le_bounds_b = world_to_screen(vec2(x+w, y+h));
+    Vec2 le_bounds_a = world_to_screen(Vec2(x  , y  ));
+    Vec2 le_bounds_b = world_to_screen(Vec2(x+w, y+h));
 
     // Because we mess with the orthographic projection matrix a pixel is no
     // longer 1.0f so we need to adjust by the current zoom to get a pixel.
@@ -1043,11 +1043,11 @@ TEINAPI void do_level_editor ()
 
         if (level_editor.layer_transparency && (selected_layer != LEVEL_LAYER_TAG && selected_layer > i))
         {
-            set_tile_batch_color(vec4(1,1,1,SEMI_TRANS));
+            set_tile_batch_color(Vec4(1,1,1,SEMI_TRANS));
         }
         else
         {
-            set_tile_batch_color(vec4(1,1,1,1));
+            set_tile_batch_color(Vec4(1,1,1,1));
         }
 
         // We draw from the top-to-bottom, left-to-right, so that elements
@@ -1141,7 +1141,7 @@ TEINAPI void do_level_editor ()
             {
                 if (mouse_inside_level_editor_viewport())
                 {
-                    vec2 tile = internal__mouse_to_tile_position();
+                    Vec2 tile = internal__mouse_to_tile_position();
                     ++camera_tile_count;
 
                     cl = std::min(cl, static_cast<int>(tile.x));
@@ -1169,7 +1169,7 @@ TEINAPI void do_level_editor ()
         begin_stencil();
 
         stencil_mode_erase();
-        set_draw_color(vec4(1,1,1,1));
+        set_draw_color(Vec4(1,1,1,1));
         fill_quad(cx1, cy1, cx2, cy2);
 
         stencil_mode_draw();
@@ -1215,13 +1215,13 @@ TEINAPI void do_level_editor ()
         begin_draw(Buffer_Mode::LINES);
         for (float ix=x+DEFAULT_TILE_SIZE; ix<(x+w); ix+=DEFAULT_TILE_SIZE)
         {
-            put_vertex(ix, y,   vec4(editor_settings.tile_grid_color));
-            put_vertex(ix, y+h, vec4(editor_settings.tile_grid_color));
+            put_vertex(ix, y,   Vec4(editor_settings.tile_grid_color));
+            put_vertex(ix, y+h, Vec4(editor_settings.tile_grid_color));
         }
         for (float iy=y+DEFAULT_TILE_SIZE; iy<(y+h); iy+=DEFAULT_TILE_SIZE)
         {
-            put_vertex(x,   iy, vec4(editor_settings.tile_grid_color));
-            put_vertex(x+w, iy, vec4(editor_settings.tile_grid_color));
+            put_vertex(x,   iy, Vec4(editor_settings.tile_grid_color));
+            put_vertex(x+w, iy, Vec4(editor_settings.tile_grid_color));
         }
         end_draw();
     }
@@ -1233,7 +1233,7 @@ TEINAPI void do_level_editor ()
         {
             begin_scissor(scx, scy, scw, sch);
 
-            vec4 color = editor_settings.cursor_color;
+            Vec4 color = editor_settings.cursor_color;
             set_line_width(2);
 
             const float LINE_WIDTH = (DEFAULT_TILE_SIZE / 3) * 2; // 2/3
@@ -1306,7 +1306,7 @@ TEINAPI void do_level_editor ()
     begin_stencil();
 
     stencil_mode_erase();
-    set_draw_color(vec4(1,1,1,1));
+    set_draw_color(Vec4(1,1,1,1));
     fill_quad(x, y, x+w, y+h);
 
     stencil_mode_draw();
@@ -1448,7 +1448,7 @@ TEINAPI void handle_level_editor_events ()
 
 TEINAPI bool mouse_inside_level_editor_viewport ()
 {
-    vec2 m = level_editor.mouse;
+    Vec2 m = level_editor.mouse;
     quad v = level_editor.viewport;
 
     // We do this check for the disabling of cursor drawing during a resize.
@@ -1815,7 +1815,7 @@ TEINAPI void le_paste ()
 {
     if (!current_tab_is_level() || internal__clipboard_empty()) return;
 
-    vec2 tile_pos = level_editor.mouse_tile;
+    Vec2 tile_pos = level_editor.mouse_tile;
     new_level_history_state(Level_History_Action::NORMAL);
 
     for (auto& clipboard: level_editor.clipboard)
