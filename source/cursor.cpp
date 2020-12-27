@@ -101,7 +101,7 @@ TEINAPI bool load_editor_cursors ()
 
     if (!cursors_were_loaded) // Stops this getting printed on settings change.
     {
-        LOG_DEBUG("Loaded Editor Cursors");
+        LogDebug("Loaded Editor Cursors");
     }
 
     return true;

@@ -183,7 +183,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     stbi_write_png(output_png_name.c_str(), atlas_w,atlas_h, BYTES_PER_PIXEL,
         atlas_surface->pixels, atlas_w*BYTES_PER_PIXEL);
 
-    LOG_DEBUG("Created Texture Atlas: %s", StripFilePath(output_name).c_str());
+    LogDebug("Created Texture Atlas: %s", StripFilePath(output_name).c_str());
 }
 
 /* -------------------------------------------------------------------------- */

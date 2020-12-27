@@ -14,10 +14,10 @@ TEINAPI void internal__dump_debug_application_info ()
     int num_display_modes = SDL_GetNumVideoDisplays();
     int num_video_drivers = SDL_GetNumVideoDrivers();
 
-    LOG_DEBUG("Platform: %s", SDL_GetPlatform());
+    LogDebug("Platform: %s", SDL_GetPlatform());
     if (num_display_modes > 0)
     {
-        begin_debug_section("Displays:");
+        BeginDebugSection("Displays:");
         for (int i=0; i<num_display_modes; ++i)
         {
             SDL_DisplayMode display_mode = {};
@@ -27,20 +27,20 @@ TEINAPI void internal__dump_debug_application_info ()
                 int w            = display_mode.w;
                 int h            = display_mode.h;
                 int hz           = display_mode.refresh_rate;
-                LOG_DEBUG("(%d) %s %dx%d %dHz", i, name, w, h, hz);
+                LogDebug("(%d) %s %dx%d %dHz", i, name, w, h, hz);
             }
         }
-        end_debug_section();
+        EndDebugSection();
     }
     if (num_video_drivers > 0)
     {
-        begin_debug_section("Drivers:");
+        BeginDebugSection("Drivers:");
         for (int i=0; i<num_video_drivers; ++i)
         {
             const char* name = SDL_GetVideoDriver(i);
-            LOG_DEBUG("(%d) %s", i, name);
+            LogDebug("(%d) %s", i, name);
         }
-        end_debug_section();
+        EndDebugSection();
     }
 }
 
@@ -48,7 +48,7 @@ TEINAPI void internal__dump_debug_application_info ()
 
 TEINAPI void init_application (int argc, char** argv)
 {
-    begin_debug_timer("init_application");
+    BeginDebugTimer("init_application");
 
     // We set this here at program start so any fatal calls to LOG_ERROR can
     // set this to false and we will never enter the main application loop.
@@ -56,22 +56,22 @@ TEINAPI void init_application (int argc, char** argv)
 
     get_resource_location();
 
-    begin_debug_section("Editor:");
-    LOG_DEBUG("Version %d.%d.%d", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH);
+    BeginDebugSection("Editor:");
+    LogDebug("Version %d.%d.%d", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH);
     #if defined(BUILD_DEBUG)
-    LOG_DEBUG("Build: Debug");
+    LogDebug("Build: Debug");
     #else
-    LOG_DEBUG("Build: Release");
+    LogDebug("Build: Release");
     #endif
     #if defined(ARCHITECTURE_32BIT)
-    LOG_DEBUG("Architecture: x86");
+    LogDebug("Architecture: x86");
     #endif
     #if defined(ARCHITECTURE_64BIT)
-    LOG_DEBUG("Architecture: x64");
+    LogDebug("Architecture: x64");
     #endif
-    end_debug_section();
+    EndDebugSection();
 
-    begin_debug_section("Initialization:");
+    BeginDebugSection("Initialization:");
 
     if (!init_error_system())
     {
@@ -85,14 +85,14 @@ TEINAPI void init_application (int argc, char** argv)
         LOG_ERROR(ERR_MAX, "Failed to initialize SDL! (%s)", SDL_GetError());
         return;
     }
-    else LOG_DEBUG("Initialized SDL2 Library");
+    else LogDebug("Initialized SDL2 Library");
 
     if (FT_Init_FreeType(&freetype) != 0)
     {
         LOG_ERROR(ERR_MAX, "Failed to initialize FreeType!");
         return;
     }
-    else LOG_DEBUG("Initialized FreeType2 Library");
+    else LogDebug("Initialized FreeType2 Library");
 
     internal__dump_debug_application_info();
 
@@ -162,15 +162,15 @@ TEINAPI void init_application (int argc, char** argv)
     if (are_there_updates()) open_update_window_timed();
     #endif // !BUILD_DEBUG
 
-    end_debug_section();
+    EndDebugSection();
 
-    end_debug_timer();
-    dump_debug_timer_results();
+    EndDebugTimer();
+    DumpDebugTimerResult();
 }
 
 TEINAPI void quit_application ()
 {
-    LOG_DEBUG("quit_application()");
+    LogDebug("quit_application()");
 
     quit_editor();
 
@@ -180,7 +180,7 @@ TEINAPI void quit_application ()
     quit_renderer();
     quit_window();
 
-    quit_debug_system();
+    QuitDebugSystem();
     quit_error_system();
 
     FT_Done_FreeType(freetype);
@@ -191,8 +191,8 @@ TEINAPI void quit_application ()
 
 TEINAPI void do_application ()
 {
-    clear_debug_timer_results();
-    Defer { dump_debug_timer_results(); };
+    ClearDebugTimerResult();
+    Defer { DumpDebugTimerResult(); };
 
     set_render_target(&get_window("WINMAIN"));
     set_viewport(0, 0, get_render_target_w(), get_render_target_h());

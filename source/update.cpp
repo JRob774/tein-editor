@@ -63,7 +63,7 @@ TEINAPI size_t internal__curl_write_callback (const char* in, size_t size, size_
 // Example Curl GET <https://gist.github.com/connormanning/41efa6075515019e499c>
 TEINAPI void check_for_updates ()
 {
-    LOG_DEBUG("Checking for new releases...");
+    LogDebug("Checking for new releases...");
 
     curl = curl_easy_init();
     if (!curl)
@@ -106,12 +106,12 @@ TEINAPI void check_for_updates ()
 
     if (current_version != latest_version)
     {
-        LOG_DEBUG("New Release Found");
+        LogDebug("New Release Found");
         there_is_an_update = true;
     }
     else
     {
-        LOG_DEBUG("No New Releases");
+        LogDebug("No New Releases");
         there_is_an_update = false;
     }
 }

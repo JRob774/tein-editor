@@ -1,166 +1,139 @@
-/*******************************************************************************
- * Debug facilities for logging messages and timing sections of code.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr const char* gDebugLogName = "logs/debug_editor.log";
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static int gCurrentDebugSection = 0;
+static FILE* gDebugLog;
 
-/* -------------------------------------------------------------------------- */
-
-static constexpr const char* DEBUG_LOG_NAME = "logs/debug_editor.log";
-
-static int   current_debug_section = 0;
-static FILE* debug_log;
-
-struct Debug_Timer
+struct DebugTimer
 {
-    std::string  name;
-    U64 start_counter;
+    std::string name;
+    U64 startCounter;
 };
 
-static std::stack<Debug_Timer> debug_timers;
-static std::vector<std::string> debug_timer_results;
+static std::stack<DebugTimer> gDebugTimers;
+static std::vector<std::string> gDebugTimerResults;
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void internal__log_debug (const char* format, ...)
+namespace Internal
 {
-    // We only open the debug log once the first debug occurs.
-    if (!debug_log)
+    TEINAPI void LogDebugMessage (const char* format, ...)
     {
-        std::string debug_log_name(build_resource_string(DEBUG_LOG_NAME));
-        CreatePath(StripFileName(debug_log_name));
-        debug_log = fopen(debug_log_name.c_str(), "w");
-        if (debug_log)
+        // We only open the debug log once the first debug occurs.
+        if (!gDebugLog)
         {
-            LOG_DEBUG("DEBUG LOG [%s]", FormatTime("%m/%d/%Y %H:%M:%S").c_str());
+            std::string debugLogName(build_resource_string(gDebugLogName));
+            CreatePath(StripFileName(debugLogName));
+            gDebugLog = fopen(debugLogName.c_str(), "w");
+            if (gDebugLog)
+            {
+                LogDebug("DEBUG LOG [%s]", FormatTime("%m/%d/%Y %H:%M:%S").c_str());
+            }
         }
-    }
 
-    va_list args;
+        va_list args;
 
-    #if defined(BUILD_DEBUG)
-    va_start(args, format);
-    for (int i=0; i<current_debug_section; ++i)
-    {
-        fprintf(stdout, "  ");
-    }
-    vfprintf(stdout, format, args);
-    fprintf(stdout, "\n");
-    va_end(args);
-    fflush(stdout);
-    #endif
-
-    if (debug_log)
-    {
+        #if defined(BUILD_DEBUG)
         va_start(args, format);
-        for (int i=0; i<current_debug_section; ++i)
+        for (int i=0; i<gCurrentDebugSection; ++i)
         {
-            fprintf(debug_log, "  ");
+            fprintf(stdout, "  ");
         }
-        vfprintf(debug_log, format, args);
-        fprintf(debug_log, "\n");
+        vfprintf(stdout, format, args);
+        fprintf(stdout, "\n");
         va_end(args);
-        fflush(debug_log);
+        fflush(stdout);
+        #endif // BUILD_DEBUG
+
+        if (gDebugLog)
+        {
+            va_start(args, format);
+            for (int i=0; i<gCurrentDebugSection; ++i)
+            {
+                fprintf(gDebugLog, "  ");
+            }
+            vfprintf(gDebugLog, format, args);
+            fprintf(gDebugLog, "\n");
+            va_end(args);
+            fflush(gDebugLog);
+        }
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void begin_debug_section (const char* name)
+TEINAPI void BeginDebugSection (const char* name)
 {
-    if (name) LOG_DEBUG("%s", name);
-    current_debug_section++;
+    if (name) LogDebug("%s", name);
+    gCurrentDebugSection++;
 }
 
-TEINAPI void end_debug_section ()
+TEINAPI void EndDebugSection ()
 {
-    if (current_debug_section > 0) current_debug_section--;
+    if (gCurrentDebugSection > 0) gCurrentDebugSection--;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void quit_debug_system ()
+TEINAPI void QuitDebugSystem ()
 {
     // This condition is important because, for some reason, calling
     // fclose(NULL) results in a long hang-time during program exit.
-    if (debug_log)
+    if (gDebugLog)
     {
-        fclose(debug_log);
-        debug_log = NULL;
+        fclose(gDebugLog);
+        gDebugLog = NULL;
     }
 }
 
-/* -------------------------------------------------------------------------- */
+#if defined(BUILD_DEBUG)
 
-#if defined(BUILD_DEBUG) /*****************************************************/
-
-TEINAPI void begin_debug_timer (const char* name)
+TEINAPI void BeginDebugTimer (const char* name)
 {
-    Debug_Timer timer = {};
-    timer.start_counter = SDL_GetPerformanceCounter();
+    DebugTimer timer;
+    timer.startCounter = SDL_GetPerformanceCounter();
     timer.name = name;
-    debug_timers.push(timer);
+    gDebugTimers.push(std::move(timer));
 }
-
-TEINAPI void end_debug_timer ()
+TEINAPI void EndDebugTimer ()
 {
-    Debug_Timer timer = debug_timers.top();
-    debug_timers.pop();
+    DebugTimer timer = gDebugTimers.top();
+    gDebugTimers.pop();
 
-    U64   start_counter = timer.start_counter;
-    U64   end_counter   = SDL_GetPerformanceCounter();
-    float frequency     = static_cast<float>(SDL_GetPerformanceFrequency());
-    float elapsed       = static_cast<float>(end_counter-start_counter);
-    float seconds       = elapsed / frequency;
+    U64 startCounter = timer.startCounter;
+    U64 endCounter = SDL_GetPerformanceCounter();
 
-    std::string str(FormatString("%s took %fs.", timer.name.c_str(), seconds));
-    debug_timer_results.push_back(str);
+    float frequency = static_cast<float>(SDL_GetPerformanceFrequency());
+    float elapsed = static_cast<float>(endCounter-startCounter);
+    float seconds = elapsed / frequency;
+
+    std::string results(FormatString("%s took %fs.", timer.name.c_str(), seconds));
+    gDebugTimerResults.push_back(results);
 }
-
-TEINAPI void clear_debug_timer_results ()
+TEINAPI void ClearDebugTimerResult ()
 {
-    debug_timer_results.clear();
+    gDebugTimerResults.clear();
 }
-
-TEINAPI void dump_debug_timer_results  ()
+TEINAPI void DumpDebugTimerResult  ()
 {
-    if (!debug_timer_results.empty())
+    if (!gDebugTimerResults.empty())
     {
-        begin_debug_section("Debug Timer Results:");
-        for (auto str: debug_timer_results) LOG_DEBUG(str.c_str());
-        end_debug_section();
+        BeginDebugSection("Debug Timer Results:");
+        for (auto str: gDebugTimerResults) LogDebug(str.c_str());
+        EndDebugSection();
     }
 }
 
-#endif /* BUILD_DEBUG *********************************************************/
+#else
 
-/* -------------------------------------------------------------------------- */
+TEINAPI void BeginDebugTimer (const char* name)
+{
+    // Nothing...
+}
+TEINAPI void EndDebugTimer ()
+{
+    // Nothing...
+}
+TEINAPI void ClearDebugTimerResult ()
+{
+    // Nothing...
+}
+TEINAPI void DumpDebugTimerResult  ()
+{
+    // Nothing...
+}
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/
+#endif // BUILD_DEBUG

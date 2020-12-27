@@ -410,8 +410,9 @@ TEINAPI void LoadWebpage (std::string url)
 {
     ShellExecuteA(NULL, NULL, url.c_str(), NULL, NULL, SW_SHOW);
 }
-#endif
+#endif // PLATFORM_WIN32
 
+#if defined(PLATFORM_WIN32)
 TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType type, AlertButton buttons, std::string window)
 {
     // Convert the type and button parameters into values that can be used by MessageBoxA.
@@ -446,3 +447,4 @@ TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType typ
 
     return result;
 }
+#endif // PLATFORM_WIN32

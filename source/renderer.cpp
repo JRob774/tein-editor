@@ -75,14 +75,14 @@ TEINAPI void internal__dump_opengl_debug_info ()
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,        &max_texture_size );
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
 
-    begin_debug_section("OpenGL:");
-    LOG_DEBUG("Version %s"            , gl_version       );
-    LOG_DEBUG("GLSL Version %s"       , gl_slversion     );
-    LOG_DEBUG("Renderer: %s"          , gl_renderer      );
-    LOG_DEBUG("Vendor: %s"            , gl_vendor        );
-    LOG_DEBUG("Max Texture Size: %d"  , max_texture_size );
-    LOG_DEBUG("Max Texture Units: %d" , max_texture_units);
-    end_debug_section();
+    BeginDebugSection("OpenGL:");
+    LogDebug("Version %s"            , gl_version       );
+    LogDebug("GLSL Version %s"       , gl_slversion     );
+    LogDebug("Renderer: %s"          , gl_renderer      );
+    LogDebug("Vendor: %s"            , gl_vendor        );
+    LogDebug("Max Texture Size: %d"  , max_texture_size );
+    LogDebug("Max Texture Units: %d" , max_texture_units);
+    EndDebugSection();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -102,7 +102,7 @@ TEINAPI bool init_renderer ()
         return false;
     }
 
-    LOG_DEBUG("Initialized OpenGL Renderer");
+    LogDebug("Initialized OpenGL Renderer");
     internal__dump_opengl_debug_info();
 
     renderer_draw_color  = Vec4(1,1,1,1);

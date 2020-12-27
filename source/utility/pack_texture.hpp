@@ -98,7 +98,7 @@ TEINAPI void internal__pack_textures (std::string in, std::string out)
         stbi_write_png(file_name.c_str(), w+xpad,h+ypad, BPP, out_pixels, (w+xpad)*BPP);
     }
 
-    LOG_DEBUG("Padded Tiles: %s", in.c_str());
+    LogDebug("Padded Tiles: %s", in.c_str());
 }
 
 /* -------------------------------------------------------------------------- */

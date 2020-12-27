@@ -801,7 +801,7 @@ TEINAPI void internal__dump_level_history ()
 {
     const Tab& tab = get_current_tab();
 
-    begin_debug_section("History Stack Dump:");
+    BeginDebugSection("History Stack Dump:");
     for (int i=0; i<static_cast<int>(tab.level_history.state.size()); ++i)
     {
         const Level_History_State& s = tab.level_history.state.at(i);
@@ -836,9 +836,9 @@ TEINAPI void internal__dump_level_history ()
         }
 
         history_state += " |";
-        LOG_DEBUG("%s", history_state.c_str());
+        LogDebug("%s", history_state.c_str());
     }
-    end_debug_section();
+    EndDebugSection();
 }
 
 TEINAPI void internal__resize (Resize_Dir dir, int nw, int nh)

@@ -150,12 +150,12 @@ TEINAPI bool load_editor_settings ()
     // This could be the case if the settings failed to load or haven't been modified.
     if (gon.type != GonObject::FieldType::OBJECT)
     {
-        LOG_DEBUG("No settings file found -- using defaults.");
+        LogDebug("No settings file found -- using defaults.");
         gon = GonObject::LoadFromBuffer(SETTINGS_FALLBACK);
     }
     else
     {
-        LOG_DEBUG("Loaded Editor Settings");
+        LogDebug("Loaded Editor Settings");
     }
 
     // Load the settings values from the GON into the actual values.

@@ -239,7 +239,7 @@ TEINAPI bool create_window (std::string name, std::string title, int x, int y, i
     window.focus = false;
     window.mouse = false;
 
-    LOG_DEBUG("Created Window %s", name.c_str());
+    LogDebug("Created Window %s", name.c_str());
     return true;
 }
 

@@ -352,7 +352,7 @@ TEINAPI bool load_editor_key_bindings ()
     GonObject gon_fallback = GonObject::LoadFromBuffer(KEY_BINDINGS_FALLBACK);
 
     internal__load_editor_key_bindings(gon, gon_fallback);
-    LOG_DEBUG("Loaded Editor Key Bindings");
+    LogDebug("Loaded Editor Key Bindings");
 
     return true;
 }

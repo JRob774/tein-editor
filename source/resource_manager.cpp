@@ -56,7 +56,7 @@ TEINAPI bool init_resource_manager ()
         gpak_resource_lookup.insert(std::pair<std::string, std::vector<U8>>(e.name, file_buffer));
     }
 
-    LOG_DEBUG("Loaded Editor GPAK");
+    LogDebug("Loaded Editor GPAK");
     return true;
 }
 
@@ -185,7 +185,7 @@ TEINAPI bool load_editor_resources ()
 
     update_editor_font();
 
-    LOG_DEBUG("Loaded Editor Resources");
+    LogDebug("Loaded Editor Resources");
     return true;
 }
 
