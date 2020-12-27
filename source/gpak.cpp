@@ -170,7 +170,7 @@ STDDEF int internal__gpak_pack_thread_main (void* user_data)
     for (auto path: paths)
     {
         std::vector<std::string> temp_files;
-        list_path_files_r(path, temp_files);
+        list_path_files(path, temp_files, true);
 
         files.insert(files.end(), temp_files.begin(), temp_files.end());
 

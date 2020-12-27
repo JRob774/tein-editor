@@ -88,10 +88,8 @@ FILDEF size_t get_size_of_file (FILE*       file);
 FILDEF bool does_file_exist (std::string file_name);
 FILDEF bool does_path_exist (std::string path_name);
 
-STDDEF void list_path_content   (std::string path_name, std::vector<std::string>& content);
-STDDEF void list_path_content_r (std::string path_name, std::vector<std::string>& content);
-STDDEF void list_path_files     (std::string path_name, std::vector<std::string>& files  );
-STDDEF void list_path_files_r   (std::string path_name, std::vector<std::string>& files  );
+STDDEF void list_path_content (std::string path_name, std::vector<std::string>& content, bool recursive = false);
+STDDEF void list_path_files   (std::string path_name, std::vector<std::string>& files,   bool recursive = false);
 
 FILDEF bool create_path (std::string path_name);
 

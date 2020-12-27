@@ -88,7 +88,7 @@ FILDEF bool does_path_exist (std::string path_name)
 #endif
 
 #if defined(PLATFORM_WIN32)
-STDDEF void list_path_content (std::string path_name, std::vector<std::string>& content)
+STDDEF void list_path_content (std::string path_name, std::vector<std::string>& content, bool recursive)
 {
     // Clean the path in case there are trailing slashes.
     path_name = fix_path_slashes(path_name);
@@ -111,6 +111,10 @@ STDDEF void list_path_content (std::string path_name, std::vector<std::string>& 
             if (file_name != "." && file_name != "..")
             {
                 content.push_back(path_name + "/" + fix_path_slashes(file_name));
+                if (recursive && is_path(content.back()))
+                {
+                    list_path_content(content.back(), content, recursive);
+                }
             }
         }
         while (FindNextFile(find_file, &find_data));
@@ -121,44 +125,7 @@ STDDEF void list_path_content (std::string path_name, std::vector<std::string>& 
 #endif
 
 #if defined(PLATFORM_WIN32)
-STDDEF void list_path_content_r (std::string path_name, std::vector<std::string>& content)
-{
-    // Clean the path in case there are trailing slashes.
-    path_name = fix_path_slashes(path_name);
-    while (path_name.back() == '/') path_name.pop_back();
-
-    if (!is_path(path_name)) return;
-
-    std::string find_path(path_name + "\\*");
-    WIN32_FIND_DATAA find_data = {};
-
-    HANDLE find_file = FindFirstFileA(find_path.c_str(), &find_data);
-    defer { FindClose(find_file); };
-
-    if (find_file != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            // We do not want to include the self and parent directories.
-            std::string file_name(find_data.cFileName);
-            if (file_name != "." && file_name != "..")
-            {
-                content.push_back(path_name + "/" + fix_path_slashes(file_name));
-                if (is_path(content.back()))
-                {
-                    list_path_content_r(content.back(), content);
-                }
-            }
-        }
-        while (FindNextFile(find_file, &find_data));
-    }
-}
-#else
-#error list_path_content_r not implemented on the current platform!
-#endif
-
-#if defined(PLATFORM_WIN32)
-STDDEF void list_path_files (std::string path_name, std::vector<std::string>& files)
+STDDEF void list_path_files (std::string path_name, std::vector<std::string>& files, bool recursive)
 {
     // Clean the path in case there are trailing slashes.
     path_name = fix_path_slashes(path_name);
@@ -182,6 +149,7 @@ STDDEF void list_path_files (std::string path_name, std::vector<std::string>& fi
             {
                 std::string final(path_name + "/" + fix_path_slashes(file_name));
                 if (is_file(final)) files.push_back(final);
+                else if (recursive) list_path_files(final, files, recursive);
             }
         }
         while (FindNextFile(find_file, &find_data));
@@ -189,41 +157,6 @@ STDDEF void list_path_files (std::string path_name, std::vector<std::string>& fi
 }
 #else
 #error list_path_files not implemented on the current platform!
-#endif
-
-#if defined(PLATFORM_WIN32)
-STDDEF void list_path_files_r (std::string path_name, std::vector<std::string>& files)
-{
-    // Clean the path in case there are trailing slashes.
-    path_name = fix_path_slashes(path_name);
-    while (path_name.back() == '/') path_name.pop_back();
-
-    if (!is_path(path_name)) return;
-
-    std::string find_path(path_name + "\\*");
-    WIN32_FIND_DATAA find_data = {};
-
-    HANDLE find_file = FindFirstFileA(find_path.c_str(), &find_data);
-    defer { FindClose(find_file); };
-
-    if (find_file != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
-            // We do not want to include the self and parent directories.
-            std::string file_name(find_data.cFileName);
-            if (file_name != "." && file_name != "..")
-            {
-                std::string final(path_name + "/" + fix_path_slashes(file_name));
-                if (is_file(final)) files.push_back(final);
-                else list_path_files_r(final, files);
-            }
-        }
-        while (FindNextFile(find_file, &find_data));
-    }
-}
-#else
-#error list_path_files_r not implemented on the current platform!
 #endif
 
 #if defined(PLATFORM_WIN32)

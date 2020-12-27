@@ -73,7 +73,7 @@ FILDEF void internal__pack_textures (std::string in, std::string out)
     constexpr int BPP = 4;
 
     std::vector<std::string> files;
-    list_path_files_r(make_path_absolute(in).c_str(), files);
+    list_path_files(make_path_absolute(in).c_str(), files, true);
 
     for (auto f: files)
     {

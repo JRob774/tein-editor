@@ -32,7 +32,7 @@ STDDEF void internal__generate_texture_atlas (std::string output_name, std::stri
     const int atlas_h = static_cast<int>(h);
 
     std::vector<std::string> files;
-    list_path_files_r(make_path_absolute(path).c_str(), files);
+    list_path_files(make_path_absolute(path).c_str(), files, true);
 
     // We will be loading all textures in the same 8-bit component RGBA format.
     constexpr u32 SURFACE_FORMAT  = SDL_PIXELFORMAT_RGBA32;
