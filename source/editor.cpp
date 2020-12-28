@@ -433,13 +433,13 @@ TEINAPI void update_backup_timer ()
 
     // We do not fail on this because the editor will still work without this
     // system. We just let the user know that the feature is not available.
-    if (editor_settings.auto_backup)
+    if (gEditorSettings.autoBackup)
     {
-        if (editor_settings.backup_interval > 0)
+        if (gEditorSettings.backupInterval > 0)
         {
             // Avoid any issues with overflows.
-            U32 backup_interval = static_cast<U32>(editor_settings.backup_interval)*1000;
-            if (static_cast<U64>(editor_settings.backup_interval)*1000 > INT_MAX)
+            U32 backup_interval = static_cast<U32>(gEditorSettings.backupInterval)*1000;
+            if (static_cast<U64>(gEditorSettings.backupInterval)*1000 > INT_MAX)
             {
                 backup_interval = INT_MAX;
             }

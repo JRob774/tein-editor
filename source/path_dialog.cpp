@@ -16,7 +16,7 @@ static std::string temp_game_path;
 
 TEINAPI void open_path ()
 {
-    temp_game_path = editor_settings.game_path;
+    temp_game_path = gEditorSettings.gamePath;
     ShowWindow("WINPATH");
 }
 
@@ -118,12 +118,12 @@ TEINAPI void do_path ()
 TEINAPI void okay_path ()
 {
     temp_game_path = FixPathSlashes(temp_game_path);
-    editor_settings.game_path = temp_game_path;
+    gEditorSettings.gamePath = temp_game_path;
 
     save_preferences();
     HideWindow("WINPATH");
 
-    if (!RunExecutable(editor_settings.game_path))
+    if (!RunExecutable(gEditorSettings.gamePath))
     {
         LogError(ERR_MED, "Failed to launch The End is Nigh executable!");
     }

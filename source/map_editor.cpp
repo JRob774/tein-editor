@@ -287,7 +287,7 @@ TEINAPI void internal__draw_map_clipboard ()
         x2 += px;
         y2 += px;
 
-        set_draw_color(editor_settings.cursor_color);
+        set_draw_color(gEditorSettings.cursorColor);
         fill_quad(x1,y1,x2,y2);
     }
 
@@ -323,7 +323,7 @@ TEINAPI void do_map_editor ()
     // To account for the control panel disappearing.
     p1.w += 1;
 
-    begin_panel(p1.x, p1.y, p1.w, p1.h, UI_NONE, editor_settings.background_color);
+    begin_panel(p1.x, p1.y, p1.w, p1.h, UI_NONE, gEditorSettings.backgroundColor);
 
     // We cache the mouse position so that systems such as paste which can
     // potentially happen outside of this section of code (where the needed
@@ -584,7 +584,7 @@ TEINAPI void do_map_editor ()
                         xo2 += 1;
                     }
 
-                    set_draw_color(editor_settings.select_color);
+                    set_draw_color(gEditorSettings.selectColor);
                     fill_quad(tx+xo+x_off, y1+yo, tx+xo2+x_off2, y1+yo+th);
 
                     end_scissor();
@@ -626,7 +626,7 @@ TEINAPI void do_map_editor ()
         sx2 += MAP_NODE_W;
         sy2 += MAP_NODE_H;
 
-        set_draw_color(editor_settings.select_color);
+        set_draw_color(gEditorSettings.selectColor);
         fill_quad(sx1,sy1,sx2,sy2);
     }
 
@@ -1105,7 +1105,7 @@ TEINAPI void map_drop_file (Tab* tab, std::string file_name)
 TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
 {
     // Determine how many backups the user wants saved for a given map.
-    int backup_count = editor_settings.backup_count;
+    int backup_count = gEditorSettings.backupCount;
     if (backup_count <= 0) return; // No backups are wanted!
 
     std::string map_name((file_name.empty()) ? "untitled" : StripFilePathAndExt(file_name));
@@ -1143,7 +1143,7 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
     // If there is still room to create a new backup then that is what
     // we do. Otherwise, we overwrite the oldest backup of the map.
     std::string backup_name = backup_path + map_name + ".bak";
-    if (editor_settings.unlimited_backups || (map_count < backup_count))
+    if (gEditorSettings.unlimitedBackups || (map_count < backup_count))
     {
         backup_name += std::to_string(map_count) + ".csv";
         save_map(tab, backup_name);

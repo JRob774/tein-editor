@@ -587,7 +587,7 @@ TEINAPI void internal__draw_cursor (int x, int y, Tile_ID id)
         float gy = level_editor.bounds.y + (y * DEFAULT_TILE_SIZE);
 
         stencil_mode_draw();
-        set_draw_color(editor_settings.cursor_color);
+        set_draw_color(gEditorSettings.cursorColor);
         fill_quad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
 
         Texture_Atlas& atlas = get_editor_atlas_large();
@@ -661,7 +661,7 @@ TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
         float gh = clipboard.h * DEFAULT_TILE_SIZE;
 
         stencil_mode_draw();
-        set_draw_color(editor_settings.cursor_color);
+        set_draw_color(gEditorSettings.cursorColor);
         fill_quad(gx, gy, gx+gw, gy+gh);
 
         stencil_mode_erase();
@@ -1014,7 +1014,7 @@ TEINAPI void do_level_editor ()
 
     set_draw_color(ui_color_black);
     fill_quad(x-px, y-px, x+w+px, y+h+px);
-    set_draw_color(editor_settings.background_color);
+    set_draw_color(gEditorSettings.backgroundColor);
     fill_quad(x, y, x+w, y+h);
 
     // Determine the currently selected layer so that we can make all of the
@@ -1173,7 +1173,7 @@ TEINAPI void do_level_editor ()
         fill_quad(cx1, cy1, cx2, cy2);
 
         stencil_mode_draw();
-        set_draw_color(editor_settings.out_of_bounds_color);
+        set_draw_color(gEditorSettings.outOfBoundsColor);
         fill_quad(x, y, x+w, y+h);
 
         end_stencil();
@@ -1199,7 +1199,7 @@ TEINAPI void do_level_editor ()
             float sy2 = sy1 + ((t-b) * DEFAULT_TILE_SIZE);
 
             stencil_mode_draw();
-            set_draw_color(editor_settings.select_color);
+            set_draw_color(gEditorSettings.selectColor);
             fill_quad(sx1, sy1, sx2, sy2);
 
             stencil_mode_erase();
@@ -1215,13 +1215,13 @@ TEINAPI void do_level_editor ()
         begin_draw(Buffer_Mode::LINES);
         for (float ix=x+DEFAULT_TILE_SIZE; ix<(x+w); ix+=DEFAULT_TILE_SIZE)
         {
-            put_vertex(ix, y,   Vec4(editor_settings.tile_grid_color));
-            put_vertex(ix, y+h, Vec4(editor_settings.tile_grid_color));
+            put_vertex(ix, y,   Vec4(gEditorSettings.tileGridColor));
+            put_vertex(ix, y+h, Vec4(gEditorSettings.tileGridColor));
         }
         for (float iy=y+DEFAULT_TILE_SIZE; iy<(y+h); iy+=DEFAULT_TILE_SIZE)
         {
-            put_vertex(x,   iy, Vec4(editor_settings.tile_grid_color));
-            put_vertex(x+w, iy, Vec4(editor_settings.tile_grid_color));
+            put_vertex(x,   iy, Vec4(gEditorSettings.tileGridColor));
+            put_vertex(x+w, iy, Vec4(gEditorSettings.tileGridColor));
         }
         end_draw();
     }
@@ -1233,7 +1233,7 @@ TEINAPI void do_level_editor ()
         {
             begin_scissor(scx, scy, scw, sch);
 
-            Vec4 color = editor_settings.cursor_color;
+            Vec4 color = gEditorSettings.cursorColor;
             set_line_width(2);
 
             const float LINE_WIDTH = (DEFAULT_TILE_SIZE / 3) * 2; // 2/3
@@ -1282,7 +1282,7 @@ TEINAPI void do_level_editor ()
     }
 
     // Draw the mirroring lines for the level editor.
-    set_draw_color(editor_settings.mirror_line_color);
+    set_draw_color(gEditorSettings.mirrorLineColor);
     set_line_width(std::max(1.0f, 3.0f/px));
     if (level_editor.mirror_h)
     {
@@ -2217,7 +2217,7 @@ TEINAPI void level_drop_file (Tab* tab, std::string file_name)
 TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
 {
     // Determine how many backups the user wants saved for a given level.
-    int backup_count = editor_settings.backup_count;
+    int backup_count = gEditorSettings.backupCount;
     if (backup_count <= 0) return; // No backups are wanted!
 
     std::string level_name((file_name.empty()) ? "untitled" : StripFilePathAndExt(file_name));
@@ -2255,7 +2255,7 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
     // If there is still room to create a new backup then that is what
     // we do. Otherwise, we overwrite the oldest backup of the level.
     std::string backup_name = backup_path + level_name + ".bak";
-    if (editor_settings.unlimited_backups || (level_count < backup_count))
+    if (gEditorSettings.unlimitedBackups || (level_count < backup_count))
     {
         backup_name += std::to_string(level_count) + ".lvl";
         save_level(level, backup_name);

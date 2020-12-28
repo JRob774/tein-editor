@@ -393,9 +393,9 @@ TEINAPI void hb_run_game ()
     };
 
     std::string executable;
-    if (!editor_settings.game_path.empty())
+    if (!gEditorSettings.gamePath.empty())
     {
-        executable = editor_settings.game_path;
+        executable = gEditorSettings.gamePath;
         if (!DoesFileExist(executable))
         {
             executable.clear();

@@ -216,7 +216,7 @@ TEINAPI std::string build_resource_string (std::string str)
 
 TEINAPI void update_editor_font ()
 {
-    current_editor_font = editor_settings.font_face;
+    current_editor_font = gEditorSettings.fontFace;
 }
 
 TEINAPI bool is_editor_font_opensans ()

@@ -11,21 +11,21 @@
 
 static const std::map<std::string, const char*> PREFERENCES_SETTINGS_NAMES
 {
-{ SETTING_UI_THEME,            "Theme"                         },
-{ SETTING_FONT_FACE,           "Font"                          },
-{ SETTING_TILE_GRAPHICS,       "Tile Graphics"                 },
-{ SETTING_CUSTOM_CURSORS,      "Cursors"                       },
-{ SETTING_SHOW_TOOLTIPS,       "Tooltips"                      },
-{ SETTING_UNLIMITED_BACKUPS,   "Unlimited Backups"             },
-{ SETTING_BACKUP_COUNT,        "Backups Per Level"             },
-{ SETTING_AUTO_BACKUP,         "Automatic Backups"             },
-{ SETTING_BACKUP_INTERVAL,     "Auto-Backup Time"              },
-{ SETTING_BACKGROUND_COLOR,    "Background"                    },
-{ SETTING_SELECT_COLOR,        "Select"                        },
-{ SETTING_OUT_OF_BOUNDS_COLOR, "Out of Bounds"                 },
-{ SETTING_CURSOR_COLOR,        "Cursor"                        },
-{ SETTING_MIRROR_LINE_COLOR,   "Mirror Lines"                  },
-{ SETTING_TILE_GRID_COLOR,     "Tile Grid"                     }
+{ gSettingUITheme,             "Theme"                         },
+{ gSettingFontFace,            "Font"                          },
+{ gSettingTileGraphics,        "Tile Graphics"                 },
+{ gSettingCustomCursors,       "Cursors"                       },
+{ gSettingShowTooltips,        "Tooltips"                      },
+{ gSettingUnlimitedBackups,    "Unlimited Backups"             },
+{ gSettingBackupCount,         "Backups Per Level"             },
+{ gSettingAutoBackup,          "Automatic Backups"             },
+{ gSettingBackupInterval,      "Auto-Backup Time"              },
+{ gSettingBackgroundColor,     "Background"                    },
+{ gSettingSelectColor,         "Select"                        },
+{ gSettingOutOfBoundsColor,    "Out of Bounds"                 },
+{ gSettingCursorColor,         "Cursor"                        },
+{ gSettingMirrorLineColor,     "Mirror Lines"                  },
+{ gSettingTileGridColor,       "Tile Grid"                     }
 };
 
 /* -------------------------------------------------------------------------- */
@@ -318,7 +318,7 @@ TEINAPI void internal__do_hotkey_rebind (Vec2& cursor, const char* key)
 
 TEINAPI void internal__save_settings ()
 {
-    std::string file_name(MakePathAbsolute(SETTINGS_FILE_NAME));
+    std::string file_name(MakePathAbsolute(gSettingsFileName));
     FILE* file = fopen(file_name.c_str(), "w");
     if (!file)
     {
@@ -329,44 +329,44 @@ TEINAPI void internal__save_settings ()
 
     Vec4 c;
 
-    if (!editor_settings.game_path.empty())
+    if (!gEditorSettings.gamePath.empty())
     {
-        fprintf(file, "%s \"%s\"\n", SETTING_GAME_PATH, editor_settings.game_path.c_str());
+        fprintf(file, "%s \"%s\"\n", gSettingGamePath, gEditorSettings.gamePath.c_str());
     }
-    fprintf(file, "%s %s\n", SETTING_UI_THEME,           editor_settings.ui_theme     .c_str());
-    fprintf(file, "%s %s\n", SETTING_FONT_FACE,          editor_settings.font_face    .c_str());
-    fprintf(file, "%s %s\n", SETTING_TILE_GRAPHICS,      editor_settings.tile_graphics.c_str());
-    fprintf(file, "%s %s\n", SETTING_CUSTOM_CURSORS,    (editor_settings.custom_cursors)    ? "true" : "false");
-    fprintf(file, "%s %s\n", SETTING_SHOW_TOOLTIPS,     (editor_settings.show_tooltips)     ? "true" : "false");
-    fprintf(file, "%s %s\n", SETTING_UNLIMITED_BACKUPS, (editor_settings.unlimited_backups) ? "true" : "false");
-    fprintf(file, "%s %d\n", SETTING_BACKUP_COUNT,       editor_settings.backup_count);
-    fprintf(file, "%s %s\n", SETTING_AUTO_BACKUP,       (editor_settings.auto_backup)       ? "true" : "false");
-    fprintf(file, "%s %d\n", SETTING_BACKUP_INTERVAL,    editor_settings.backup_interval);
-    if (!editor_settings.background_color_defaulted)
+    fprintf(file, "%s %s\n", gSettingUITheme,           gEditorSettings.uiTheme     .c_str());
+    fprintf(file, "%s %s\n", gSettingFontFace,          gEditorSettings.fontFace    .c_str());
+    fprintf(file, "%s %s\n", gSettingTileGraphics,      gEditorSettings.tileGraphics.c_str());
+    fprintf(file, "%s %s\n", gSettingCustomCursors,    (gEditorSettings.customCursors)    ? "true" : "false");
+    fprintf(file, "%s %s\n", gSettingShowTooltips,     (gEditorSettings.showTooltips)     ? "true" : "false");
+    fprintf(file, "%s %s\n", gSettingUnlimitedBackups, (gEditorSettings.unlimitedBackups) ? "true" : "false");
+    fprintf(file, "%s %d\n", gSettingBackupCount,       gEditorSettings.backupCount);
+    fprintf(file, "%s %s\n", gSettingAutoBackup,       (gEditorSettings.autoBackup)       ? "true" : "false");
+    fprintf(file, "%s %d\n", gSettingBackupInterval,    gEditorSettings.backupInterval);
+    if (!gEditorSettings.backgroundColorDefaulted)
     {
-        c = editor_settings.background_color;
-        fprintf(file, "%s [%f %f %f %f]\n", SETTING_BACKGROUND_COLOR, c.r, c.g, c.b, c.a);
-    }
-    else
-    {
-        fprintf(file, "%s %s\n", SETTING_BACKGROUND_COLOR, "none");
-    }
-    c = editor_settings.select_color;
-    fprintf(file, "%s [%f %f %f %f]\n", SETTING_SELECT_COLOR, c.r, c.g, c.b, c.a);
-    c = editor_settings.out_of_bounds_color;
-    fprintf(file, "%s [%f %f %f %f]\n", SETTING_OUT_OF_BOUNDS_COLOR, c.r, c.g, c.b, c.a);
-    c = editor_settings.cursor_color;
-    fprintf(file, "%s [%f %f %f %f]\n", SETTING_CURSOR_COLOR, c.r, c.g, c.b, c.a);
-    c = editor_settings.mirror_line_color;
-    fprintf(file, "%s [%f %f %f %f]\n", SETTING_MIRROR_LINE_COLOR, c.r, c.g, c.b, c.a);
-    if (!editor_settings.tile_grid_color_defaulted)
-    {
-        c = editor_settings.tile_grid_color;
-        fprintf(file, "%s [%f %f %f %f]\n", SETTING_TILE_GRID_COLOR, c.r, c.g, c.b, c.a);
+        c = gEditorSettings.backgroundColor;
+        fprintf(file, "%s [%f %f %f %f]\n", gSettingBackgroundColor, c.r, c.g, c.b, c.a);
     }
     else
     {
-        fprintf(file, "%s %s\n", SETTING_TILE_GRID_COLOR, "none");
+        fprintf(file, "%s %s\n", gSettingBackgroundColor, "none");
+    }
+    c = gEditorSettings.selectColor;
+    fprintf(file, "%s [%f %f %f %f]\n", gSettingSelectColor, c.r, c.g, c.b, c.a);
+    c = gEditorSettings.outOfBoundsColor;
+    fprintf(file, "%s [%f %f %f %f]\n", gSettingOutOfBoundsColor, c.r, c.g, c.b, c.a);
+    c = gEditorSettings.cursorColor;
+    fprintf(file, "%s [%f %f %f %f]\n", gSettingCursorColor, c.r, c.g, c.b, c.a);
+    c = gEditorSettings.mirrorLineColor;
+    fprintf(file, "%s [%f %f %f %f]\n", gSettingMirrorLineColor, c.r, c.g, c.b, c.a);
+    if (!gEditorSettings.tileGridColorDefaulted)
+    {
+        c = gEditorSettings.tileGridColor;
+        fprintf(file, "%s [%f %f %f %f]\n", gSettingTileGridColor, c.r, c.g, c.b, c.a);
+    }
+    else
+    {
+        fprintf(file, "%s %s\n", gSettingTileGridColor, "none");
     }
 
     fprintf(file, "\n");
@@ -440,34 +440,34 @@ TEINAPI void internal__do_preferences_settings ()
 
     internal__begin_settings_area("User Interface", cursor);
 
-    internal__do_settings_label(sw, SETTING_UI_THEME);
+    internal__do_settings_label(sw, gSettingUITheme);
     UI_Flag dark_flags  = (is_ui_light()) ? UI_INACTIVE : UI_NONE;
     UI_Flag light_flags = (is_ui_light()) ? UI_NONE : UI_INACTIVE;
     if (do_button_txt(NULL, bw,sh, dark_flags,  "Dark"))
     {
-        editor_settings.ui_theme = "dark";
+        gEditorSettings.uiTheme = "dark";
         load_ui_theme();
     }
     if (do_button_txt(NULL, bw,sh, light_flags, "Light"))
     {
-        editor_settings.ui_theme = "light";
+        gEditorSettings.uiTheme = "light";
         load_ui_theme();
     }
     internal__next_section(cursor);
 
-    internal__do_settings_label(sw, SETTING_FONT_FACE);
+    internal__do_settings_label(sw, gSettingFontFace);
     UI_Flag sans_flags = (is_editor_font_opensans()) ? UI_NONE : UI_INACTIVE;
     UI_Flag dysl_flags = (is_editor_font_opensans()) ? UI_INACTIVE : UI_NONE;
     set_ui_font(&resource_font_regular_sans);
     if (do_button_txt(NULL, bw,sh, sans_flags, "OpenSans"))
     {
-        editor_settings.font_face = "OpenSans";
+        gEditorSettings.fontFace = "OpenSans";
         update_editor_font();
     }
     set_ui_font(&resource_font_regular_dyslexic);
     if (do_button_txt(NULL, bw,sh, dysl_flags, "OpenDyslexic"))
     {
-        editor_settings.font_face = "OpenDyslexic";
+        gEditorSettings.fontFace = "OpenDyslexic";
         update_editor_font();
     }
     internal__next_section(cursor);
@@ -475,52 +475,52 @@ TEINAPI void internal__do_preferences_settings ()
     // Reset the font to being the default for the editor.
     set_ui_font(&get_editor_regular_font());
 
-    internal__do_settings_label(sw, SETTING_TILE_GRAPHICS);
-    UI_Flag tile_graphics_new_flags = (editor_settings.tile_graphics == "new") ? UI_NONE : UI_INACTIVE;
-    UI_Flag tile_graphics_old_flags = (editor_settings.tile_graphics == "new") ? UI_INACTIVE : UI_NONE;
+    internal__do_settings_label(sw, gSettingTileGraphics);
+    UI_Flag tile_graphics_new_flags = (gEditorSettings.tileGraphics == "new") ? UI_NONE : UI_INACTIVE;
+    UI_Flag tile_graphics_old_flags = (gEditorSettings.tileGraphics == "new") ? UI_INACTIVE : UI_NONE;
     if (do_button_txt(NULL, bw,sh, tile_graphics_new_flags, "New"))
     {
-        if (editor_settings.tile_graphics != "new")
+        if (gEditorSettings.tileGraphics != "new")
         {
-            editor_settings.tile_graphics = "new";
+            gEditorSettings.tileGraphics = "new";
             reload_tile_graphics();
         }
     }
     if (do_button_txt(NULL, bw,sh, tile_graphics_old_flags, "Old"))
     {
-        if (editor_settings.tile_graphics != "old")
+        if (gEditorSettings.tileGraphics != "old")
         {
-            editor_settings.tile_graphics = "old";
+            gEditorSettings.tileGraphics = "old";
             reload_tile_graphics();
         }
     }
     internal__next_section(cursor);
 
-    internal__do_settings_label(sw, SETTING_CUSTOM_CURSORS);
+    internal__do_settings_label(sw, gSettingCustomCursors);
     UI_Flag cursor_enabled_flags  = (CustomCursorsEnabled()) ? UI_NONE : UI_INACTIVE;
     UI_Flag cursor_disabled_flags = (CustomCursorsEnabled()) ? UI_INACTIVE : UI_NONE;
     if (do_button_txt(NULL, bw,sh, cursor_enabled_flags,  "Enabled"))
     {
-        editor_settings.custom_cursors = true;
+        gEditorSettings.customCursors = true;
         LoadEditorCursors();
     }
     if (do_button_txt(NULL, bw,sh, cursor_disabled_flags, "Disabled"))
     {
-        editor_settings.custom_cursors = false;
+        gEditorSettings.customCursors = false;
         LoadEditorCursors();
     }
     internal__next_section(cursor);
 
-    UI_Flag tooltips_enabled_flags  = (editor_settings.show_tooltips) ? UI_NONE : UI_INACTIVE;
-    UI_Flag tooltips_disabled_flags = (editor_settings.show_tooltips) ? UI_INACTIVE : UI_NONE;
-    internal__do_settings_label(sw, SETTING_SHOW_TOOLTIPS);
+    UI_Flag tooltips_enabled_flags  = (gEditorSettings.showTooltips) ? UI_NONE : UI_INACTIVE;
+    UI_Flag tooltips_disabled_flags = (gEditorSettings.showTooltips) ? UI_INACTIVE : UI_NONE;
+    internal__do_settings_label(sw, gSettingShowTooltips);
     if (do_button_txt(NULL, bw,sh, tooltips_enabled_flags,  "Enabled"))
     {
-        editor_settings.show_tooltips = true;
+        gEditorSettings.showTooltips = true;
     }
     if (do_button_txt(NULL, bw,sh, tooltips_disabled_flags, "Disabled"))
     {
-        editor_settings.show_tooltips = false;
+        gEditorSettings.showTooltips = false;
     }
     internal__next_section(cursor);
 
@@ -528,68 +528,68 @@ TEINAPI void internal__do_preferences_settings ()
 
     internal__begin_settings_area("Level Backups", cursor);
 
-    internal__do_settings_label(sw, SETTING_AUTO_BACKUP);
-    UI_Flag backup_enabled_flags  = (editor_settings.auto_backup) ? UI_NONE : UI_INACTIVE;
-    UI_Flag backup_disabled_flags = (editor_settings.auto_backup) ? UI_INACTIVE : UI_NONE;
+    internal__do_settings_label(sw, gSettingAutoBackup);
+    UI_Flag backup_enabled_flags  = (gEditorSettings.autoBackup) ? UI_NONE : UI_INACTIVE;
+    UI_Flag backup_disabled_flags = (gEditorSettings.autoBackup) ? UI_INACTIVE : UI_NONE;
     if (do_button_txt(NULL, bw,sh, backup_enabled_flags,  "Enabled"))
     {
-        editor_settings.auto_backup = true;
+        gEditorSettings.autoBackup = true;
         update_backup_timer();
     }
     if (do_button_txt(NULL, bw,sh, backup_disabled_flags, "Disabled"))
     {
-        editor_settings.auto_backup = false;
+        gEditorSettings.autoBackup = false;
         update_backup_timer();
     }
     internal__next_section(cursor);
 
-    internal__do_settings_label(sw, SETTING_UNLIMITED_BACKUPS);
-    UI_Flag unlimited_enabled_flags  = (editor_settings.unlimited_backups) ? UI_NONE : UI_INACTIVE;
-    UI_Flag unlimited_disabled_flags = (editor_settings.unlimited_backups) ? UI_INACTIVE : UI_NONE;
+    internal__do_settings_label(sw, gSettingUnlimitedBackups);
+    UI_Flag unlimited_enabled_flags  = (gEditorSettings.unlimitedBackups) ? UI_NONE : UI_INACTIVE;
+    UI_Flag unlimited_disabled_flags = (gEditorSettings.unlimitedBackups) ? UI_INACTIVE : UI_NONE;
     if (do_button_txt(NULL, bw,sh, unlimited_enabled_flags,  "Enabled"))
     {
-        editor_settings.unlimited_backups = true;
+        gEditorSettings.unlimitedBackups = true;
     }
     if (do_button_txt(NULL, bw,sh, unlimited_disabled_flags, "Disabled"))
     {
-        editor_settings.unlimited_backups = false;
+        gEditorSettings.unlimitedBackups = false;
     }
     internal__next_section(cursor);
 
-    internal__do_settings_label(sw, SETTING_BACKUP_INTERVAL);
-    if (!editor_settings.auto_backup) set_panel_flags(UI_LOCKED);
+    internal__do_settings_label(sw, gSettingBackupInterval);
+    if (!gEditorSettings.autoBackup) set_panel_flags(UI_LOCKED);
     cursor.y += PREFERENCES_TEXT_BOX_INSET;
-    std::string backup_interval_str(std::to_string(editor_settings.backup_interval));
+    std::string backup_interval_str(std::to_string(gEditorSettings.backupInterval));
     do_text_box(vw-cursor.x,th, UI_NUMERIC, backup_interval_str, "0");
     cursor.y -= PREFERENCES_TEXT_BOX_INSET;
-    if (!editor_settings.auto_backup) set_panel_flags(UI_NONE);
+    if (!gEditorSettings.autoBackup) set_panel_flags(UI_NONE);
     if (atoll(backup_interval_str.c_str()) > INT_MAX)
     {
         backup_interval_str = std::to_string(INT_MAX);
     }
     int backup_interval = atoi(backup_interval_str.c_str());
-    if (backup_interval != editor_settings.backup_interval)
+    if (backup_interval != gEditorSettings.backupInterval)
     {
-        editor_settings.backup_interval = backup_interval;
+        gEditorSettings.backupInterval = backup_interval;
         update_backup_timer();
     }
     internal__next_section(cursor);
 
-    internal__do_settings_label(sw, SETTING_BACKUP_COUNT);
-    if (editor_settings.unlimited_backups) set_panel_flags(UI_LOCKED);
+    internal__do_settings_label(sw, gSettingBackupCount);
+    if (gEditorSettings.unlimitedBackups) set_panel_flags(UI_LOCKED);
     cursor.y += PREFERENCES_TEXT_BOX_INSET;
-    std::string backup_count_str(std::to_string(editor_settings.backup_count));
+    std::string backup_count_str(std::to_string(gEditorSettings.backupCount));
     do_text_box(vw-cursor.x,th, UI_NUMERIC, backup_count_str, "0");
     cursor.y -= PREFERENCES_TEXT_BOX_INSET;
-    if (editor_settings.unlimited_backups) set_panel_flags(UI_NONE);
+    if (gEditorSettings.unlimitedBackups) set_panel_flags(UI_NONE);
     if (atoll(backup_count_str.c_str()) > INT_MAX)
     {
         backup_count_str = std::to_string(INT_MAX);
     }
     int backup_count = atoi(backup_count_str.c_str());
-    if (backup_count != editor_settings.backup_count)
+    if (backup_count != gEditorSettings.backupCount)
     {
-        editor_settings.backup_count = backup_count;
+        gEditorSettings.backupCount = backup_count;
     }
     internal__next_section(cursor);
 
@@ -599,9 +599,9 @@ TEINAPI void internal__do_preferences_settings ()
 
     float hw = roundf(vw/4) - (xpad/2);
 
-    internal__do_color_setting_row(cursor, hw, SETTING_BACKGROUND_COLOR, SETTING_TILE_GRID_COLOR    , editor_settings.background_color, editor_settings.tile_grid_color    );
-    internal__do_color_setting_row(cursor, hw, SETTING_SELECT_COLOR    , SETTING_OUT_OF_BOUNDS_COLOR, editor_settings.select_color    , editor_settings.out_of_bounds_color);
-    internal__do_color_setting_row(cursor, hw, SETTING_CURSOR_COLOR    , SETTING_MIRROR_LINE_COLOR  , editor_settings.cursor_color    , editor_settings.mirror_line_color  );
+    internal__do_color_setting_row(cursor, hw, gSettingBackgroundColor, gSettingTileGridColor   , gEditorSettings.backgroundColor, gEditorSettings.tileGridColor   );
+    internal__do_color_setting_row(cursor, hw, gSettingSelectColor    , gSettingOutOfBoundsColor, gEditorSettings.selectColor    , gEditorSettings.outOfBoundsColor);
+    internal__do_color_setting_row(cursor, hw, gSettingCursorColor    , gSettingMirrorLineColor , gEditorSettings.cursorColor    , gEditorSettings.mirrorLineColor );
 
     internal__end_settings_area();
 
@@ -699,7 +699,7 @@ TEINAPI void internal__do_preferences_hotkeys ()
 
 TEINAPI void init_preferences_menu ()
 {
-    cached_editor_settings = editor_settings;
+    cached_editor_settings = gEditorSettings;
     cached_editor_hotkeys  = gKeyBindings;
 
     color_picker_mouse_pressed = false;
@@ -835,7 +835,7 @@ TEINAPI void restore_preferences ()
 {
     switch (preferences_tab)
     {
-        case (Preferennes_Tab::SETTINGS): restore_editor_settings(); break;
+        case (Preferennes_Tab::SETTINGS): RestoreEditorSettings(); break;
         case (Preferennes_Tab::HOTKEYS): RestoreEditorKeyBindings(); break;
     }
 }
@@ -843,7 +843,7 @@ TEINAPI void restore_preferences ()
 TEINAPI void cancel_preferences ()
 {
     // We only want to shot this prompt if the user actually made any changes to preferences.
-    if (editor_settings != cached_editor_settings || gKeyBindings != cached_editor_hotkeys)
+    if (gEditorSettings != cached_editor_settings || gKeyBindings != cached_editor_hotkeys)
     {
         // Make sure the user is certain about what they are doing and cancel the
         // action if they decide that they do not actually want to discard changes.
@@ -854,13 +854,13 @@ TEINAPI void cancel_preferences ()
         }
     }
 
-    bool tile_graphics_changed = (editor_settings.tile_graphics != cached_editor_settings.tile_graphics);
+    bool tile_graphics_changed = (gEditorSettings.tileGraphics != cached_editor_settings.tileGraphics);
 
     // Restore the settings/hotkeys states from before modifying preferences.
-    editor_settings = cached_editor_settings;
+    gEditorSettings = cached_editor_settings;
     gKeyBindings = cached_editor_hotkeys;
 
-    update_systems_that_rely_on_settings(tile_graphics_changed);
+    UpdateSystemsThatRelyOnSettings(tile_graphics_changed);
 
     HideWindow("WINCOLOR");
     HideWindow("WINPREFERENCES");
@@ -869,7 +869,7 @@ TEINAPI void cancel_preferences ()
 TEINAPI void save_preferences ()
 {
     // No point saving unless there were changes.
-    if (editor_settings != cached_editor_settings || gKeyBindings != cached_editor_hotkeys)
+    if (gEditorSettings != cached_editor_settings || gKeyBindings != cached_editor_hotkeys)
     {
         internal__save_settings();
     }

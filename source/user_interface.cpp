@@ -405,7 +405,7 @@ TEINAPI bool init_ui_system ()
 
 TEINAPI void load_ui_theme ()
 {
-    std::string theme = editor_settings.ui_theme;
+    std::string theme = gEditorSettings.uiTheme;
     if (theme == "dark")
     {
         ui_color_black     = UI_D_COLOR_BLACK;
@@ -440,13 +440,13 @@ TEINAPI void load_ui_theme ()
     Vec4 default_background_color = ui_color_light;
     Vec4 default_tile_grid_color = is_ui_light() ? ui_color_black : ui_color_ex_dark;
 
-    if (editor_settings.background_color_defaulted)
+    if (gEditorSettings.backgroundColorDefaulted)
     {
-        editor_settings.background_color = default_background_color;
+        gEditorSettings.backgroundColor = default_background_color;
     }
-    if (editor_settings.tile_grid_color_defaulted)
+    if (gEditorSettings.tileGridColorDefaulted)
     {
-        editor_settings.tile_grid_color = default_tile_grid_color;
+        gEditorSettings.tileGridColor = default_tile_grid_color;
     }
 }
 

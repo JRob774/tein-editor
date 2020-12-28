@@ -300,13 +300,13 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
 TEINAPI void internal__okay_color ()
 {
     // Special checks for background and tile grid color because of the defaulting.
-    if (current_color_picker_color == &editor_settings.background_color)
+    if (current_color_picker_color == &gEditorSettings.backgroundColor)
     {
-        editor_settings.background_color_defaulted = false;
+        gEditorSettings.backgroundColorDefaulted = false;
     }
-    if (current_color_picker_color == &editor_settings.tile_grid_color)
+    if (current_color_picker_color == &gEditorSettings.tileGridColor)
     {
-        editor_settings.tile_grid_color_defaulted = false;
+        gEditorSettings.tileGridColorDefaulted = false;
     }
 
     HideWindow("WINCOLOR");

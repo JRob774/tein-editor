@@ -70,7 +70,7 @@ TEINAPI bool LoadEditorCursors ()
     if (!Internal::LoadCursor(Cursor::FILL,    gCursorFileFill   , 19, 16)) return false;
     if (!Internal::LoadCursor(Cursor::SELECT,  gCursorFileSelect , 11, 12)) return false;
 
-    gCursorsEnabled = editor_settings.custom_cursors;
+    gCursorsEnabled = gEditorSettings.customCursors;
     gCursorsLoaded = true;
 
     // By default we want to be using the arrow cursor.

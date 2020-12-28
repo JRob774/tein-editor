@@ -132,7 +132,7 @@ TEINAPI void init_application (int argc, char** argv)
     SetWindowChild("WINUPDATE");
 
     if (!init_renderer        ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
-    if (!load_editor_settings ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
+    if (!LoadEditorSettings   ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
     if (!LoadEditorKeyBindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
     if (!load_editor_resources()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
     if (!init_tile_panel      ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }

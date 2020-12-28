@@ -419,7 +419,7 @@ TEINAPI void reload_tile_graphics ()
     free_texture_atlas(resource_large);
     free_texture_atlas(resource_small);
 
-    if (editor_settings.tile_graphics == "new")
+    if (gEditorSettings.tileGraphics == "new")
     {
         load_atlas_resource("textures/editor_icons/new_large.txt", resource_large);
         load_atlas_resource("textures/editor_icons/new_small.txt", resource_small);

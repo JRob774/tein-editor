@@ -67,7 +67,7 @@ TEINAPI void set_current_tooltip (std::string name, std::string desc)
 
 TEINAPI void do_tooltip ()
 {
-    if (!editor_settings.show_tooltips) return;
+    if (!gEditorSettings.showTooltips) return;
 
     if (!tooltip_set_this_update)
     {
