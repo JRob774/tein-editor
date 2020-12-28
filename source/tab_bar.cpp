@@ -172,7 +172,7 @@ TEINAPI void do_tab_bar ()
     set_panel_cursor(&cursor);
 
     // Check to see if the mouse is in the panel, if it is then the mouse scroll wheel will scroll through tabs.
-    can_scroll_in_tab_bar = (mouse_in_ui_bounds_xywh(0, 0, pw, ph) && is_key_mod_state_active(KMOD_NONE));
+    can_scroll_in_tab_bar = (mouse_in_ui_bounds_xywh(0, 0, pw, ph) && IsKeyModStateActive(KMOD_NONE));
 
     size_t index_to_close = NO_TAB_TO_CLOSE;
     size_t last = std::min(editor.tabs.size(), starting_tab_offset+max_number_of_tabs);

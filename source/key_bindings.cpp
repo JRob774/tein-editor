@@ -1,18 +1,7 @@
-/*******************************************************************************
- * System for binding specific keys to actions and handling them when pressed.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
 // Fallback copy of the key bindings file we can load in the case that the
 // key bindings file is not present and then we just use these defaults.
 
-static constexpr const char* KEY_BINDINGS_FALLBACK =
+static constexpr const char* gKeyBindingsFallback =
 "level_new { main [\"Ctrl\" \"N\"] }\n"
 "level_open { main [\"Ctrl\" \"O\"] }\n"
 "level_save  { main [\"Ctrl\" \"S\"] }\n"
@@ -77,11 +66,9 @@ static constexpr const char* KEY_BINDINGS_FALLBACK =
 "load_prev_level { main [\"Ctrl\" \"Left\"] }\n"
 "load_next_level { main [\"Ctrl\" \"Right\"] }\n";
 
-/* -------------------------------------------------------------------------- */
+typedef std::pair<std::string,KeyBinding> KBPair;
 
-typedef std::pair<std::string, Key_Binding> KB_Pair;
-
-static const std::map<std::string, int> KEY_MOD_MAP
+static const std::map<std::string,int> gKeyModMap
 {
 { "None",  0          },
 { "Ctrl",  KMOD_CTRL  },
@@ -91,239 +78,231 @@ static const std::map<std::string, int> KEY_MOD_MAP
 { "Gui",   KMOD_GUI   }
 };
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool internal__key_binding_active (const Key_Binding& kb)
+namespace Internal
 {
-    // Not all key bindings necessarily have a key code so we assign a
-    // default value of true. However, key mods should always be checked
-    // even if they are not present. Otherwise issues can occur where
-    // key bindings get checked as active even when they shouldn't be.
-    bool code_active = true, alt_code_active = true;
-    bool mod_active = false, alt_mod_active = false;
-
-    if (kb.code) code_active = is_key_code_active(kb.code);
-    mod_active = is_key_mod_state_active(kb.mod);
-
-    if (kb.has_alt)
+    TEINAPI bool KeyBindingActive (const KeyBinding& kb)
     {
-        if (kb.alt_code) alt_code_active = is_key_code_active(kb.alt_code);
-        alt_mod_active = is_key_mod_state_active(kb.alt_mod);
-    }
+        // Not all key bindings necessarily have a key code so we assign a
+        // default value of true. However, key mods should always be checked
+        // even if they are not present. Otherwise issues can occur where
+        // key bindings get checked as active even when they shouldn't be.
+        bool codeActive = true, altCodeActive = true;
+        bool modActive = false, altModActive = false;
 
-    return (code_active && mod_active) || (kb.has_alt && (alt_code_active && alt_mod_active));
-}
+        if (kb.code) codeActive = IsKeyCodeActive(kb.code);
+        modActive = IsKeyModStateActive(kb.mod);
 
-TEINAPI std::string internal__get_key_binding_string (int code, int mod)
-{
-    std::string str;
-    if (mod)
-    {
-        if (mod & KMOD_CTRL ) str +=  "Ctrl ";
-        if (mod & KMOD_ALT  ) str +=   "Alt ";
-        if (mod & KMOD_MODE ) str += "AltGr ";
-        if (mod & KMOD_SHIFT) str += "Shift ";
-        if (mod & KMOD_GUI  ) str +=   "Gui ";
-    }
-
-    str += SDL_GetKeyName(code);
-
-    // Trim trailing whitespace from the key binding name.
-    size_t pos = str.find_last_not_of(" ");
-    if (pos != std::string::npos) str.erase(pos+1);
-
-    return str;
-}
-
-TEINAPI void internal__add_key_binding (const GonObject& gon, const GonObject& gon_fallback, const char* name, KB_Action action)
-{
-    // Assign both to zero in case there are no values.
-    int code = 0, alt_code = 0;
-    int mod = 0, alt_mod = 0;
-
-    bool gon_contains = gon.Contains(name);
-    if (!gon_contains && !gon_fallback.Contains(name))
-    {
-        LogError(ERR_MIN, "No key binding for '%s'!", name);
-        return;
-    }
-
-    if (key_bindings.count(name) > 0)
-    {
-        LogError(ERR_MED, "Duplicate key binding '%s'!", name);
-        return;
-    }
-
-    const GonObject& key_binding = (gon_contains) ? gon[name] : gon_fallback[name];
-    if (key_binding.Contains("main"))
-    {
-        const GonObject& kb_main = key_binding["main"];
-        for (int i=0; i<kb_main.size(); ++i)
+        if (kb.hasAlt)
         {
-            // Convert the key mod and code names into actual values.
-            std::string key_name = kb_main[i].String();
-            SDL_Keycode key_code = SDL_GetKeyFromName(key_name.c_str());
+            if (kb.altCode) altCodeActive = IsKeyCodeActive(kb.altCode);
+            altModActive = IsKeyModStateActive(kb.altMod);
+        }
 
-            if (key_code != SDLK_UNKNOWN)
+        return (codeActive && modActive) || (kb.hasAlt && (altCodeActive && altModActive));
+    }
+
+    TEINAPI std::string GetKeyBindingString (int code, int mod)
+    {
+        std::string str;
+        if (mod)
+        {
+            if (mod & KMOD_CTRL ) str +=  "Ctrl ";
+            if (mod & KMOD_ALT  ) str +=   "Alt ";
+            if (mod & KMOD_MODE ) str += "AltGr ";
+            if (mod & KMOD_SHIFT) str += "Shift ";
+            if (mod & KMOD_GUI  ) str +=   "Gui ";
+        }
+
+        str += SDL_GetKeyName(code);
+
+        // Trim trailing whitespace from the key binding name.
+        size_t pos = str.find_last_not_of(" ");
+        if (pos != std::string::npos) str.erase(pos+1);
+
+        return str;
+    }
+
+    TEINAPI void AddKeyBinding (const GonObject& gon, const GonObject& gonFallback, const char* name, KBAction action)
+    {
+        // Assign both to zero in case there are no values.
+        int code = 0, altCode = 0;
+        int mod = 0, altMod = 0;
+
+        bool gonContains = gon.Contains(name);
+        if (!gonContains && !gonFallback.Contains(name))
+        {
+            LogError(ERR_MIN, "No key binding for '%s'!", name);
+            return;
+        }
+
+        if (gKeyBindings.count(name))
+        {
+            LogError(ERR_MED, "Duplicate key binding '%s'!", name);
+            return;
+        }
+
+        const GonObject& keyBinding = (gonContains) ? gon[name] : gonFallback[name];
+        if (keyBinding.Contains("main"))
+        {
+            const GonObject& kbMain = keyBinding["main"];
+            for (int i=0; i<kbMain.size(); ++i)
             {
-                code = key_code;
-            }
-            else
-            {
-                if (KEY_MOD_MAP.count(key_name))
+                // Convert the key mod and code names into actual values.
+                std::string keyName = kbMain[i].String();
+                SDL_Keycode keyCode = SDL_GetKeyFromName(keyName.c_str());
+
+                if (keyCode != SDLK_UNKNOWN)
                 {
-                    mod |= KEY_MOD_MAP.at(key_name);
+                    code = keyCode;
                 }
                 else
                 {
-                    LogError(ERR_MED, "Invalid key mod '%s'!", key_name.c_str());
-                    return;
+                    if (gKeyModMap.count(keyName))
+                    {
+                        mod |= gKeyModMap.at(keyName);
+                    }
+                    else
+                    {
+                        LogError(ERR_MED, "Invalid key mod '%s'!", keyName.c_str());
+                        return;
+                    }
                 }
             }
         }
-    }
 
-    bool has_alt = key_binding.Contains("alt");
-    if (has_alt)
-    {
-        const GonObject& kb_alt = key_binding["alt"];
-        for (int i=0; i<kb_alt.size(); ++i)
+        bool hasAlt = keyBinding.Contains("alt");
+        if (hasAlt)
         {
-            // Convert the key mod and code names into actual values.
-            std::string key_name = kb_alt[i].String();
-            SDL_Keycode key_code = SDL_GetKeyFromName(key_name.c_str());
+            const GonObject& kbAlt = keyBinding["alt"];
+            for (int i=0; i<kbAlt.size(); ++i)
+            {
+                // Convert the key mod and code names into actual values.
+                std::string keyName = kbAlt[i].String();
+                SDL_Keycode keyCode = SDL_GetKeyFromName(keyName.c_str());
 
-            if (key_code != SDLK_UNKNOWN)
-            {
-                alt_code = key_code;
-            }
-            else
-            {
-                if (KEY_MOD_MAP.count(key_name))
+                if (keyCode != SDLK_UNKNOWN)
                 {
-                    alt_mod |= KEY_MOD_MAP.at(key_name);
+                    altCode = keyCode;
                 }
                 else
                 {
-                    LogError(ERR_MED, "Invalid key mod '%s'!", key_name.c_str());
-                    return;
+                    if (gKeyModMap.count(keyName))
+                    {
+                        altMod |= gKeyModMap.at(keyName);
+                    }
+                    else
+                    {
+                        LogError(ERR_MED, "Invalid key mod '%s'!", keyName.c_str());
+                        return;
+                    }
                 }
             }
         }
+
+        // If neither are set then input was malformed or empty.
+        if (!code && !mod)
+        {
+            LogError(ERR_MED, "Invalid key binding '%s'!", name);
+            return;
+        }
+
+        KeyBinding kb = {};
+        kb.action = action;
+        kb.hasAlt = hasAlt;
+        kb.mod = mod;
+        kb.code = code;
+        kb.altMod = altMod;
+        kb.altCode = altCode;
+
+        gKeyBindings.insert({ name, kb });
     }
 
-    // If neither are set then input was malformed or empty.
-    if (!code && !mod)
+    TEINAPI void LoadEditorKeyBindings (const GonObject& a, const GonObject& b)
     {
-        LogError(ERR_MED, "Invalid key binding '%s'!", name);
-        return;
+        gKeyBindings.clear();
+
+        AddKeyBinding(a, b, gKbLevelNew,           hb_new);
+        AddKeyBinding(a, b, gKbLevelOpen,          hb_load);
+        AddKeyBinding(a, b, gKbLevelSave,          hb_save);
+        AddKeyBinding(a, b, gKbLevelSaveAs,        hb_save_as);
+        AddKeyBinding(a, b, gKbLevelClose,         close_current_tab);
+        AddKeyBinding(a, b, gKbLevelCloseAll,      close_all_tabs);
+        AddKeyBinding(a, b, gKbLevelResize,        le_resize);
+        AddKeyBinding(a, b, gKbUndo,               hb_undo_action);
+        AddKeyBinding(a, b, gKbRedo,               hb_redo_action);
+        AddKeyBinding(a, b, gKbHistoryBegin,       hb_history_begin);
+        AddKeyBinding(a, b, gKbHistoryEnd,         hb_history_end);
+        AddKeyBinding(a, b, gKbCameraZoomOut,      hb_zoom_out);
+        AddKeyBinding(a, b, gKbCameraZoomIn,       hb_zoom_in);
+        AddKeyBinding(a, b, gKbRunGame,            hb_run_game);
+        AddKeyBinding(a, b, gKbPreferences,        hb_preferences);
+        AddKeyBinding(a, b, gKbAbout,              hb_about);
+        AddKeyBinding(a, b, gKbBugReport,          hb_bug_report);
+        AddKeyBinding(a, b, gKbHelp,               hb_help);
+        AddKeyBinding(a, b, gKbToolBrush,          tb_set_tool_to_brush);
+        AddKeyBinding(a, b, gKbToolFill,           tb_set_tool_to_fill);
+        AddKeyBinding(a, b, gKbToolSelect,         tb_set_tool_to_select);
+        AddKeyBinding(a, b, gKbFlipH,              tb_flip_level_h);
+        AddKeyBinding(a, b, gKbFlipV,              tb_flip_level_v);
+        AddKeyBinding(a, b, gKbMirrorHToggle,      tb_toggle_mirror_h);
+        AddKeyBinding(a, b, gKbMirrorVToggle,      tb_toggle_mirror_v);
+        AddKeyBinding(a, b, gKbGpakUnpack,         hb_gpak_unpack);
+        AddKeyBinding(a, b, gKbGpakPack,           hb_gpak_pack);
+        AddKeyBinding(a, b, gKbToggleEntity,       tb_toggle_entity);
+        AddKeyBinding(a, b, gKbToggleGuides,       tb_toggle_guides);
+        AddKeyBinding(a, b, gKbGridToggle,         tb_toggle_grid);
+        AddKeyBinding(a, b, gKbBoundsToggle,       tb_toggle_bounds);
+        AddKeyBinding(a, b, gKbLayersToggle,       tb_toggle_layer_trans);
+        AddKeyBinding(a, b, gKbCameraReset,        tb_reset_camera);
+        AddKeyBinding(a, b, gKbClearSelect,        tb_clear_select);
+        AddKeyBinding(a, b, gKbDeselect,           tb_deselect);
+        AddKeyBinding(a, b, gKbSelectAll,          editor_select_all);
+        AddKeyBinding(a, b, gKbCopy,               tb_copy);
+        AddKeyBinding(a, b, gKbCut,                tb_cut);
+        AddKeyBinding(a, b, gKbPaste,              editor_paste);
+        AddKeyBinding(a, b, gKbIncrementTile,      increment_selected_tile);
+        AddKeyBinding(a, b, gKbDecrementTile,      decrement_selected_tile);
+        AddKeyBinding(a, b, gKbIncrementGroup,     increment_selected_group);
+        AddKeyBinding(a, b, gKbDecrementGroup,     decrement_selected_group);
+        AddKeyBinding(a, b, gKbIncrementCategory,  increment_selected_category);
+        AddKeyBinding(a, b, gKbDecrementCategory,  decrement_selected_category);
+        AddKeyBinding(a, b, gKbToggleLayerActive,  toggle_layer_active);
+        AddKeyBinding(a, b, gKbToggleLayerTag,     toggle_layer_tag);
+        AddKeyBinding(a, b, gKbToggleLayerOverlay, toggle_layer_overlay);
+        AddKeyBinding(a, b, gKbToggleLayerBack1,   toggle_layer_back1);
+        AddKeyBinding(a, b, gKbToggleLayerBack2,   toggle_layer_back2);
+        AddKeyBinding(a, b, gKbCategoryBasic,      jump_to_category_basic);
+        AddKeyBinding(a, b, gKbCategoryTag,        jump_to_category_tag);
+        AddKeyBinding(a, b, gKbCategoryOverlay,    jump_to_category_overlay);
+        AddKeyBinding(a, b, gKbCategoryEntity,     jump_to_category_entity);
+        AddKeyBinding(a, b, gKbCategoryBack1,      jump_to_category_back1);
+        AddKeyBinding(a, b, gKbCategoryBack2,      jump_to_category_back2);
+        AddKeyBinding(a, b, gKbIncrementTab,       increment_tab);
+        AddKeyBinding(a, b, gKbDecrementTab,       decrement_tab);
+        AddKeyBinding(a, b, gKbMoveTabLeft,        open_recently_closed_tab);
+        AddKeyBinding(a, b, gKbMoveTabRight,       move_tab_left);
+        AddKeyBinding(a, b, gKbOpenRecentTab,      move_tab_right);
+        AddKeyBinding(a, b, gKbLoadPrevLevel,      le_load_prev_level);
+        AddKeyBinding(a, b, gKbLoadNextLevel,      le_load_next_level);
     }
-
-    Key_Binding kb = {};
-    kb.action   = action;
-    kb.has_alt  = has_alt;
-    kb.mod      = mod;
-    kb.code     = code;
-    kb.alt_mod  = alt_mod;
-    kb.alt_code = alt_code;
-
-    key_bindings.insert(KB_Pair(name, kb));
 }
 
-TEINAPI void internal__load_editor_key_bindings (const GonObject& a, const GonObject& b)
+TEINAPI inline bool operator== (const KeyBinding& a, const KeyBinding& b)
 {
-    key_bindings.clear();
-
-    internal__add_key_binding(a, b, KB_LEVEL_NEW           , hb_new                     );
-    internal__add_key_binding(a, b, KB_LEVEL_OPEN          , hb_load                    );
-    internal__add_key_binding(a, b, KB_LEVEL_SAVE          , hb_save                    );
-    internal__add_key_binding(a, b, KB_LEVEL_SAVE_AS       , hb_save_as                 );
-    internal__add_key_binding(a, b, KB_LEVEL_CLOSE         , close_current_tab          );
-    internal__add_key_binding(a, b, KB_LEVEL_CLOSE_ALL     , close_all_tabs             );
-    internal__add_key_binding(a, b, KB_LEVEL_RESIZE        , le_resize                  );
-    internal__add_key_binding(a, b, KB_UNDO                , hb_undo_action             );
-    internal__add_key_binding(a, b, KB_REDO                , hb_redo_action             );
-    internal__add_key_binding(a, b, KB_HISTORY_BEGIN       , hb_history_begin           );
-    internal__add_key_binding(a, b, KB_HISTORY_END         , hb_history_end             );
-    internal__add_key_binding(a, b, KB_CAMERA_ZOOM_OUT     , hb_zoom_out                );
-    internal__add_key_binding(a, b, KB_CAMERA_ZOOM_IN      , hb_zoom_in                 );
-    internal__add_key_binding(a, b, KB_RUN_GAME            , hb_run_game                );
-    internal__add_key_binding(a, b, KB_PREFERENCES         , hb_preferences             );
-    internal__add_key_binding(a, b, KB_ABOUT               , hb_about                   );
-    internal__add_key_binding(a, b, KB_BUG_REPORT          , hb_bug_report              );
-    internal__add_key_binding(a, b, KB_HELP                , hb_help                    );
-    internal__add_key_binding(a, b, KB_TOOL_BRUSH          , tb_set_tool_to_brush       );
-    internal__add_key_binding(a, b, KB_TOOL_FILL           , tb_set_tool_to_fill        );
-    internal__add_key_binding(a, b, KB_TOOL_SELECT         , tb_set_tool_to_select      );
-    internal__add_key_binding(a, b, KB_FLIP_H              , tb_flip_level_h            );
-    internal__add_key_binding(a, b, KB_FLIP_V              , tb_flip_level_v            );
-    internal__add_key_binding(a, b, KB_MIRROR_H_TOGGLE     , tb_toggle_mirror_h         );
-    internal__add_key_binding(a, b, KB_MIRROR_V_TOGGLE     , tb_toggle_mirror_v         );
-    internal__add_key_binding(a, b, KB_GPAK_UNPACK         , hb_gpak_unpack             );
-    internal__add_key_binding(a, b, KB_GPAK_PACK           , hb_gpak_pack               );
-    internal__add_key_binding(a, b, KB_TOGGLE_ENTITY       , tb_toggle_entity           );
-    internal__add_key_binding(a, b, KB_TOGGLE_GUIDES       , tb_toggle_guides           );
-    internal__add_key_binding(a, b, KB_GRID_TOGGLE         , tb_toggle_grid             );
-    internal__add_key_binding(a, b, KB_BOUNDS_TOGGLE       , tb_toggle_bounds           );
-    internal__add_key_binding(a, b, KB_LAYERS_TOGGLE       , tb_toggle_layer_trans      );
-    internal__add_key_binding(a, b, KB_CAMERA_RESET        , tb_reset_camera            );
-    internal__add_key_binding(a, b, KB_CLEAR_SELECT        , tb_clear_select            );
-    internal__add_key_binding(a, b, KB_DESELECT            , tb_deselect                );
-    internal__add_key_binding(a, b, KB_SELECT_ALL          , editor_select_all          );
-    internal__add_key_binding(a, b, KB_COPY                , tb_copy                    );
-    internal__add_key_binding(a, b, KB_CUT                 , tb_cut                     );
-    internal__add_key_binding(a, b, KB_PASTE               , editor_paste               );
-    internal__add_key_binding(a, b, KB_INCREMENT_TILE      , increment_selected_tile    );
-    internal__add_key_binding(a, b, KB_DECREMENT_TILE      , decrement_selected_tile    );
-    internal__add_key_binding(a, b, KB_INCREMENT_GROUP     , increment_selected_group   );
-    internal__add_key_binding(a, b, KB_DECREMENT_GROUP     , decrement_selected_group   );
-    internal__add_key_binding(a, b, KB_INCREMENT_CATEGORY  , increment_selected_category);
-    internal__add_key_binding(a, b, KB_DECREMENT_CATEGORY  , decrement_selected_category);
-    internal__add_key_binding(a, b, KB_TOGGLE_LAYER_ACTIVE , toggle_layer_active        );
-    internal__add_key_binding(a, b, KB_TOGGLE_LAYER_TAG    , toggle_layer_tag           );
-    internal__add_key_binding(a, b, KB_TOGGLE_LAYER_OVERLAY, toggle_layer_overlay       );
-    internal__add_key_binding(a, b, KB_TOGGLE_LAYER_BACK1  , toggle_layer_back1         );
-    internal__add_key_binding(a, b, KB_TOGGLE_LAYER_BACK2  , toggle_layer_back2         );
-    internal__add_key_binding(a, b, KB_CATEGORY_BASIC      , jump_to_category_basic     );
-    internal__add_key_binding(a, b, KB_CATEGORY_TAG        , jump_to_category_tag       );
-    internal__add_key_binding(a, b, KB_CATEGORY_OVERLAY    , jump_to_category_overlay   );
-    internal__add_key_binding(a, b, KB_CATEGORY_ENTITY     , jump_to_category_entity    );
-    internal__add_key_binding(a, b, KB_CATEGORY_BACK1      , jump_to_category_back1     );
-    internal__add_key_binding(a, b, KB_CATEGORY_BACK2      , jump_to_category_back2     );
-    internal__add_key_binding(a, b, KB_INCREMENT_TAB       , increment_tab              );
-    internal__add_key_binding(a, b, KB_DECREMENT_TAB       , decrement_tab              );
-    internal__add_key_binding(a, b, KB_OPEN_RECENT_TAB     , open_recently_closed_tab   );
-    internal__add_key_binding(a, b, KB_MOVE_TAB_LEFT       , move_tab_left              );
-    internal__add_key_binding(a, b, KB_MOVE_TAB_RIGHT      , move_tab_right             );
-    internal__add_key_binding(a, b, KB_LOAD_PREV_LEVEL     , le_load_prev_level         );
-    internal__add_key_binding(a, b, KB_LOAD_NEXT_LEVEL     , le_load_next_level         );
+    return ((a.action == b.action) && (a.code == b.code) && (a.mod == b.mod) && (a.altCode == b.altCode) && (a.altMod == b.altMod));
 }
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool operator== (const Key_Binding& a, const Key_Binding& b)
-{
-    return ((a.action   == b.action  ) &&
-            (a.code     == b.code    ) &&
-            (a.mod      == b.mod     ) &&
-            (a.alt_code == b.alt_code) &&
-            (a.alt_mod  == b.alt_mod ));
-}
-
-TEINAPI bool operator!= (const Key_Binding& a, const Key_Binding& b)
+TEINAPI inline bool operator!= (const KeyBinding& a, const KeyBinding& b)
 {
     return !(a == b);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool load_editor_key_bindings ()
+TEINAPI bool LoadEditorKeyBindings ()
 {
     GonObject gon;
     try
     {
-        std::string file_name(MakePathAbsolute(KEY_BINDINGS_FILE_NAME));
-        gon = GonObject::Load(file_name);
+        std::string fileName(MakePathAbsolute(gKeyBindingsFileName));
+        gon = GonObject::Load(fileName);
     }
     catch (const char* msg)
     {
@@ -331,14 +310,14 @@ TEINAPI bool load_editor_key_bindings ()
 
         // If we already have key bind data then we just inform the user that the operation
         // failed. Otherwise, we just fallback to using the default application key binds.
-        if (!key_bindings.empty())
+        if (!gKeyBindings.empty())
         {
             LogError(ERR_MED, "Failed to reload key bindings data!");
             return false;
         }
         else
         {
-            gon = GonObject::LoadFromBuffer(KEY_BINDINGS_FALLBACK);
+            gon = GonObject::LoadFromBuffer(gKeyBindingsFallback);
         }
     }
 
@@ -346,38 +325,35 @@ TEINAPI bool load_editor_key_bindings ()
     // This could be the case if the key binds failed to load or haven't been modified.
     if (gon.type != GonObject::FieldType::OBJECT)
     {
-        gon = GonObject::LoadFromBuffer(KEY_BINDINGS_FALLBACK);
+        gon = GonObject::LoadFromBuffer(gKeyBindingsFallback);
     }
 
-    GonObject gon_fallback = GonObject::LoadFromBuffer(KEY_BINDINGS_FALLBACK);
+    GonObject gonFallback = GonObject::LoadFromBuffer(gKeyBindingsFallback);
 
-    internal__load_editor_key_bindings(gon, gon_fallback);
+    Internal::LoadEditorKeyBindings(gon, gonFallback);
     LogDebug("Loaded Editor Key Bindings");
 
     return true;
 }
 
-TEINAPI void restore_editor_key_bindings ()
+TEINAPI void RestoreEditorKeyBindings ()
 {
     // Load the fallback/default editor key bindings so they can be restored.
-    GonObject gon = GonObject::LoadFromBuffer(KEY_BINDINGS_FALLBACK);
-    internal__load_editor_key_bindings(gon, gon);
+    GonObject gon = GonObject::LoadFromBuffer(gKeyBindingsFallback);
+    Internal::LoadEditorKeyBindings(gon, gon);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void handle_key_binding_events ()
+TEINAPI void HandleKeyBindingEvents ()
 {
     if (!text_box_is_active() || IsWindowFocused("WINMAIN"))
     {
         // We only care about key press events, anything else is ignored.
         if (main_event.type == SDL_KEYDOWN)
         {
-            for (auto it: key_bindings)
+            for (auto [name,kb]: gKeyBindings)
             {
                 // Check that the appropriate keys and mods are pressed.
-                const Key_Binding& kb = it.second;
-                if (internal__key_binding_active(kb))
+                if (Internal::KeyBindingActive(kb))
                 {
                     // Do not attempt to call a NULL value!
                     if (kb.action) kb.action();
@@ -387,101 +363,65 @@ TEINAPI void handle_key_binding_events ()
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI const Key_Binding& get_key_binding (std::string name)
+TEINAPI const KeyBinding& GetKeyBinding (std::string name)
 {
-    return key_bindings[name];
+    return gKeyBindings[name];
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI std::string get_key_binding_main_string (const Key_Binding& kb)
+TEINAPI std::string GetKeyBindingMainString (const KeyBinding& kb)
 {
-    return internal__get_key_binding_string(kb.code, kb.mod);
+    return Internal::GetKeyBindingString(kb.code, kb.mod);
+}
+TEINAPI std::string GetKeyBindingMainString (std::string name)
+{
+    return GetKeyBindingMainString(GetKeyBinding(name));
 }
 
-TEINAPI std::string get_key_binding_main_string (std::string name)
-{
-    return get_key_binding_main_string(get_key_binding(name));
-}
-
-TEINAPI std::string get_key_binding_alt_string (const Key_Binding& kb)
+TEINAPI std::string GetKeyBindingAltString (const KeyBinding& kb)
 {
     // There is no alternative key binding for this particular key.
-    if (!kb.alt_code && !kb.alt_mod) return std::string();
-    return internal__get_key_binding_string(kb.alt_code, kb.alt_mod);
+    if (!kb.altCode && !kb.altMod) return std::string();
+    return Internal::GetKeyBindingString(kb.altCode, kb.altMod);
 }
-
-TEINAPI std::string get_key_binding_alt_string (std::string name)
+TEINAPI std::string GetKeyBindingAltString (std::string name)
 {
-    return get_key_binding_alt_string(get_key_binding(name));
+    return GetKeyBindingAltString(GetKeyBinding(name));
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool is_key_binding_active (std::string name)
+TEINAPI bool IsKeyBindingActive (std::string name)
 {
     if (text_box_is_active() || !IsWindowFocused("WINMAIN")) return false;
 
     // If the key binding doesn't exist then it can't be active.
-    if (!key_bindings.count(name))
+    if (!gKeyBindings.count(name))
     {
         LogError(ERR_MIN, "No key binding with name '%s'!", name.c_str());
         return false;
     }
 
-    return internal__key_binding_active(key_bindings.at(name));
+    return Internal::KeyBindingActive(gKeyBindings.at(name));
 }
 
-TEINAPI bool is_key_mod_state_active (int mod)
+TEINAPI bool IsKeyModStateActive (int mod)
 {
     if (text_box_is_active() || !IsWindowFocused("WINMAIN")) return false;
 
     // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
-    int curr_mod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
+    int currentMod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
     // We do not care whether the right or left variants have been pressed.
-    if (curr_mod&KMOD_LCTRL  || curr_mod&KMOD_RCTRL ) curr_mod |= KMOD_CTRL;
-    if (curr_mod&KMOD_LALT   || curr_mod&KMOD_RALT  ) curr_mod |= KMOD_ALT;
-    if (curr_mod&KMOD_LSHIFT || curr_mod&KMOD_RSHIFT) curr_mod |= KMOD_SHIFT;
-    if (curr_mod&KMOD_LGUI   || curr_mod&KMOD_RGUI  ) curr_mod |= KMOD_GUI;
+    if ((currentMod & KMOD_LCTRL ) || (currentMod & KMOD_RCTRL )) currentMod |= KMOD_CTRL;
+    if ((currentMod & KMOD_LALT  ) || (currentMod & KMOD_RALT  )) currentMod |= KMOD_ALT;
+    if ((currentMod & KMOD_LSHIFT) || (currentMod & KMOD_RSHIFT)) currentMod |= KMOD_SHIFT;
+    if ((currentMod & KMOD_LGUI  ) || (currentMod & KMOD_RGUI  )) currentMod |= KMOD_GUI;
 
-    return (curr_mod == mod);
+    return (currentMod == mod);
 }
 
-TEINAPI bool is_key_code_active (int code)
+TEINAPI bool IsKeyCodeActive (int code)
 {
-    int key_count; // So we know the length of the returned array.
-    const U8* key_state = SDL_GetKeyboardState(&key_count);
+    int keyCount; // So we know the length of the returned array.
+    const U8* keyState = SDL_GetKeyboardState(&keyCount);
     // Need to convert the keycode to a scancode for this.
-    SDL_Scancode scan = SDL_GetScancodeFromKey(code);
-    return (scan < key_count) ? key_state[scan] : false;
+    SDL_Scancode scancode = SDL_GetScancodeFromKey(code);
+    return (scancode < keyCount) ? keyState[scancode] : false;
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

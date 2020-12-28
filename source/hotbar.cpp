@@ -158,39 +158,39 @@ TEINAPI void do_hotbar ()
     // Display text or icons depending on what we have room for.
     if (width < get_viewport().w)
     {
-    do_button_txt(hb_new,             bh,  UI_NONE,         HB_NAME_NEW,          HB_INFO_NEW,          KB_LEVEL_NEW                            );
-    do_button_txt(hb_load,            bh,  UI_NONE,         HB_NAME_LOAD,         HB_INFO_LOAD,         KB_LEVEL_OPEN                           );
-    do_button_txt(hb_save,            bh,  save_flags,      HB_NAME_SAVE,         HB_INFO_SAVE,         KB_LEVEL_SAVE                           );
-    do_button_txt(hb_save_as,         bh,  save_as_flags,   HB_NAME_SAVE_AS,      HB_INFO_SAVE_AS,      KB_LEVEL_SAVE_AS                        );
-    do_button_txt(hb_undo_action,     bh,  undo_flags,      HB_NAME_UNDO,         HB_INFO_UNDO,         KB_UNDO                                 );
-    do_button_txt(hb_redo_action,     bh,  redo_flags,      HB_NAME_REDO,         HB_INFO_REDO,         KB_REDO                                 );
-    do_button_txt(hb_zoom_out,        bh,  zoom_out_flags,  HB_NAME_ZOOM_OUT,     HB_INFO_ZOOM_OUT,     KB_CAMERA_ZOOM_OUT                      );
-    do_button_txt(hb_zoom_in,         bh,  zoom_in_flags,   HB_NAME_ZOOM_IN,      HB_INFO_ZOOM_IN,      KB_CAMERA_ZOOM_IN                       );
-    do_button_txt(hb_gpak_pack,       bh,  pack_flags,      HB_NAME_PACK,         HB_INFO_PACK,         KB_GPAK_PACK                            );
-    do_button_txt(hb_gpak_unpack,     bh,  unpack_flags,    HB_NAME_UNPACK,       HB_INFO_UNPACK,       KB_GPAK_UNPACK                          );
-    do_button_txt(hb_run_game,        bh,  UI_NONE,         HB_NAME_RUN_GAME,     HB_INFO_RUN_GAME,     KB_RUN_GAME                             );
-    do_button_txt(hb_preferences,     bh,  UI_NONE,         HB_NAME_PREFERENCES,  HB_INFO_PREFERENCES,  KB_PREFERENCES                          );
-    do_button_txt(hb_about,           bh,  UI_NONE,         HB_NAME_ABOUT,        HB_INFO_ABOUT,        KB_ABOUT                                );
-    do_button_txt(hb_bug_report,      bh,  UI_NONE,         HB_NAME_BUG_REPORT,   HB_INFO_BUG_REPORT,   KB_BUG_REPORT                           );
-    do_button_txt(hb_help,            bh,  UI_NONE,         HB_NAME_HELP,         HB_INFO_HELP,         KB_HELP                                 );
+    do_button_txt(hb_new,             bh,  UI_NONE,         HB_NAME_NEW,          HB_INFO_NEW,          gKbLevelNew                          );
+    do_button_txt(hb_load,            bh,  UI_NONE,         HB_NAME_LOAD,         HB_INFO_LOAD,         gKbLevelOpen                         );
+    do_button_txt(hb_save,            bh,  save_flags,      HB_NAME_SAVE,         HB_INFO_SAVE,         gKbLevelSave                         );
+    do_button_txt(hb_save_as,         bh,  save_as_flags,   HB_NAME_SAVE_AS,      HB_INFO_SAVE_AS,      gKbLevelSaveAs                       );
+    do_button_txt(hb_undo_action,     bh,  undo_flags,      HB_NAME_UNDO,         HB_INFO_UNDO,         gKbUndo                              );
+    do_button_txt(hb_redo_action,     bh,  redo_flags,      HB_NAME_REDO,         HB_INFO_REDO,         gKbRedo                              );
+    do_button_txt(hb_zoom_out,        bh,  zoom_out_flags,  HB_NAME_ZOOM_OUT,     HB_INFO_ZOOM_OUT,     gKbCameraZoomOut                     );
+    do_button_txt(hb_zoom_in,         bh,  zoom_in_flags,   HB_NAME_ZOOM_IN,      HB_INFO_ZOOM_IN,      gKbCameraZoomIn                      );
+    do_button_txt(hb_gpak_pack,       bh,  pack_flags,      HB_NAME_PACK,         HB_INFO_PACK,         gKbGpakPack                          );
+    do_button_txt(hb_gpak_unpack,     bh,  unpack_flags,    HB_NAME_UNPACK,       HB_INFO_UNPACK,       gKbGpakUnpack                        );
+    do_button_txt(hb_run_game,        bh,  UI_NONE,         HB_NAME_RUN_GAME,     HB_INFO_RUN_GAME,     gKbRunGame                           );
+    do_button_txt(hb_preferences,     bh,  UI_NONE,         HB_NAME_PREFERENCES,  HB_INFO_PREFERENCES,  gKbPreferences                       );
+    do_button_txt(hb_about,           bh,  UI_NONE,         HB_NAME_ABOUT,        HB_INFO_ABOUT,        gKbAbout                             );
+    do_button_txt(hb_bug_report,      bh,  UI_NONE,         HB_NAME_BUG_REPORT,   HB_INFO_BUG_REPORT,   gKbBugReport                         );
+    do_button_txt(hb_help,            bh,  UI_NONE,         HB_NAME_HELP,         HB_INFO_HELP,         gKbHelp                              );
     }
     else
     {
-    do_button_img(hb_new,          bw,bh,  UI_NONE,         &CLIP_NEW,            HB_INFO_NEW,          KB_LEVEL_NEW,        HB_NAME_NEW        );
-    do_button_img(hb_load,         bw,bh,  UI_NONE,         &CLIP_LOAD,           HB_INFO_LOAD,         KB_LEVEL_OPEN,       HB_NAME_LOAD       );
-    do_button_img(hb_save,         bw,bh,  save_flags,      &CLIP_SAVE,           HB_INFO_SAVE,         KB_LEVEL_SAVE,       HB_NAME_SAVE       );
-    do_button_img(hb_save,         bw,bh,  save_as_flags,   &CLIP_SAVE_AS,        HB_INFO_SAVE_AS,      KB_LEVEL_SAVE_AS,    HB_NAME_SAVE_AS    );
-    do_button_img(hb_undo_action,  bw,bh,  undo_flags,      &CLIP_UNDO,           HB_INFO_UNDO,         KB_UNDO,             HB_NAME_UNDO       );
-    do_button_img(hb_redo_action,  bw,bh,  redo_flags,      &CLIP_REDO,           HB_INFO_REDO,         KB_REDO,             HB_NAME_REDO       );
-    do_button_img(hb_zoom_out,     bw,bh,  zoom_out_flags,  &CLIP_ZOOM_OUT,       HB_INFO_ZOOM_OUT,     KB_CAMERA_ZOOM_OUT,  HB_NAME_ZOOM_OUT   );
-    do_button_img(hb_zoom_in,      bw,bh,  zoom_in_flags,   &CLIP_ZOOM_IN,        HB_INFO_ZOOM_IN,      KB_CAMERA_ZOOM_IN,   HB_NAME_ZOOM_IN    );
-    do_button_img(hb_gpak_pack,    bw,bh,  pack_flags,      &CLIP_PACK,           HB_INFO_PACK,         KB_GPAK_PACK,        HB_NAME_PACK       );
-    do_button_img(hb_gpak_unpack,  bw,bh,  unpack_flags,    &CLIP_UNPACK,         HB_INFO_UNPACK,       KB_GPAK_UNPACK,      HB_NAME_UNPACK     );
-    do_button_img(hb_run_game,     bw,bh,  UI_NONE,         &CLIP_RUN,            HB_INFO_RUN_GAME,     KB_RUN_GAME,         HB_NAME_RUN_GAME   );
-    do_button_img(hb_preferences,  bw,bh,  UI_NONE,         &CLIP_SETTINGS,       HB_INFO_PREFERENCES,  KB_PREFERENCES,      HB_NAME_PREFERENCES);
-    do_button_img(hb_about,        bw,bh,  UI_NONE,         &CLIP_ABOUT,          HB_INFO_ABOUT,        KB_ABOUT,            HB_NAME_ABOUT      );
-    do_button_img(hb_bug_report,   bw,bh,  UI_NONE,         &CLIP_BUG,            HB_INFO_BUG_REPORT,   KB_BUG_REPORT,       HB_NAME_BUG_REPORT );
-    do_button_img(hb_help,         bw,bh,  UI_NONE,         &CLIP_HELP,           HB_INFO_HELP,         KB_HELP,             HB_NAME_HELP       );
+    do_button_img(hb_new,          bw,bh,  UI_NONE,         &CLIP_NEW,            HB_INFO_NEW,          gKbLevelNew,      HB_NAME_NEW        );
+    do_button_img(hb_load,         bw,bh,  UI_NONE,         &CLIP_LOAD,           HB_INFO_LOAD,         gKbLevelOpen,     HB_NAME_LOAD       );
+    do_button_img(hb_save,         bw,bh,  save_flags,      &CLIP_SAVE,           HB_INFO_SAVE,         gKbLevelSave,     HB_NAME_SAVE       );
+    do_button_img(hb_save,         bw,bh,  save_as_flags,   &CLIP_SAVE_AS,        HB_INFO_SAVE_AS,      gKbLevelSaveAs,   HB_NAME_SAVE_AS    );
+    do_button_img(hb_undo_action,  bw,bh,  undo_flags,      &CLIP_UNDO,           HB_INFO_UNDO,         gKbUndo,          HB_NAME_UNDO       );
+    do_button_img(hb_redo_action,  bw,bh,  redo_flags,      &CLIP_REDO,           HB_INFO_REDO,         gKbRedo,          HB_NAME_REDO       );
+    do_button_img(hb_zoom_out,     bw,bh,  zoom_out_flags,  &CLIP_ZOOM_OUT,       HB_INFO_ZOOM_OUT,     gKbCameraZoomOut, HB_NAME_ZOOM_OUT   );
+    do_button_img(hb_zoom_in,      bw,bh,  zoom_in_flags,   &CLIP_ZOOM_IN,        HB_INFO_ZOOM_IN,      gKbCameraZoomIn,  HB_NAME_ZOOM_IN    );
+    do_button_img(hb_gpak_pack,    bw,bh,  pack_flags,      &CLIP_PACK,           HB_INFO_PACK,         gKbGpakPack,      HB_NAME_PACK       );
+    do_button_img(hb_gpak_unpack,  bw,bh,  unpack_flags,    &CLIP_UNPACK,         HB_INFO_UNPACK,       gKbGpakUnpack,    HB_NAME_UNPACK     );
+    do_button_img(hb_run_game,     bw,bh,  UI_NONE,         &CLIP_RUN,            HB_INFO_RUN_GAME,     gKbRunGame,       HB_NAME_RUN_GAME   );
+    do_button_img(hb_preferences,  bw,bh,  UI_NONE,         &CLIP_SETTINGS,       HB_INFO_PREFERENCES,  gKbPreferences,   HB_NAME_PREFERENCES);
+    do_button_img(hb_about,        bw,bh,  UI_NONE,         &CLIP_ABOUT,          HB_INFO_ABOUT,        gKbAbout,         HB_NAME_ABOUT      );
+    do_button_img(hb_bug_report,   bw,bh,  UI_NONE,         &CLIP_BUG,            HB_INFO_BUG_REPORT,   gKbBugReport,     HB_NAME_BUG_REPORT );
+    do_button_img(hb_help,         bw,bh,  UI_NONE,         &CLIP_HELP,           HB_INFO_HELP,         gKbHelp,          HB_NAME_HELP       );
     }
 
     // Right-aligned update button.

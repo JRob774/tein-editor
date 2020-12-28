@@ -32,69 +32,69 @@ static const std::map<std::string, const char*> PREFERENCES_SETTINGS_NAMES
 
 static const std::map<std::string, const char*> PREFERENCES_HOTKEYS_NAMES
 {
-{ KB_LEVEL_NEW,                "New"                           },
-{ KB_LEVEL_OPEN,               "Load"                          },
-{ KB_LEVEL_SAVE,               "Save"                          },
-{ KB_LEVEL_SAVE_AS,            "Save As"                       },
-{ KB_LEVEL_CLOSE,              "Close"                         },
-{ KB_LEVEL_CLOSE_ALL,          "Close All"                     },
-{ KB_LEVEL_RESIZE,             "Resize"                        },
-{ KB_UNDO,                     "Undo"                          },
-{ KB_REDO,                     "Redo"                          },
-{ KB_HISTORY_BEGIN,            "History Begin"                 },
-{ KB_HISTORY_END,              "History End"                   },
-{ KB_CAMERA_ZOOM_OUT,          "Zoom Out"                      },
-{ KB_CAMERA_ZOOM_IN,           "Zoom In"                       },
-{ KB_RUN_GAME,                 "Run Game"                      },
-{ KB_PREFERENCES,              "Preferences"                   },
-{ KB_ABOUT,                    "About"                         },
-{ KB_BUG_REPORT,               "Bug Report"                    },
-{ KB_HELP,                     "Help"                          },
-{ KB_TOOL_BRUSH,               "Brush"                         },
-{ KB_TOOL_FILL,                "Fill"                          },
-{ KB_TOOL_SELECT,              "Select"                        },
-{ KB_FLIP_H,                   "Flip Horizontal"               },
-{ KB_FLIP_V,                   "Flip Vertical"                 },
-{ KB_MIRROR_H_TOGGLE,          "Mirror Horizontal"             },
-{ KB_MIRROR_V_TOGGLE,          "Mirror Vertical"               },
-{ KB_GPAK_UNPACK,              "Unpack GPAK"                   },
-{ KB_GPAK_PACK,                "Pack GPAK"                     },
-{ KB_TOGGLE_ENTITY,            "Toggle Large Entities"         },
-{ KB_TOGGLE_GUIDES,            "Toggle Entity Guides"          },
-{ KB_GRID_TOGGLE,              "Toggle Tile Grid"              },
-{ KB_BOUNDS_TOGGLE,            "Toggle Out of Bounds"          },
-{ KB_LAYERS_TOGGLE,            "Toggle Transparency"           },
-{ KB_CAMERA_RESET,             "Reset Camera"                  },
-{ KB_CLEAR_SELECT,             "Clear Selection"               },
-{ KB_DESELECT,                 "Select Box Deselect"           },
-{ KB_SELECT_ALL,               "Cursor Deselect"               },
-{ KB_COPY,                     "Copy"                          },
-{ KB_CUT,                      "Cut"                           },
-{ KB_PASTE,                    "Paste"                         },
-{ KB_INCREMENT_TILE,           "Next Selected Tile"            },
-{ KB_DECREMENT_TILE,           "Prev Selected Tile"            },
-{ KB_INCREMENT_GROUP,          "Next Selected Group"           },
-{ KB_DECREMENT_GROUP,          "Prev Selected Group"           },
-{ KB_INCREMENT_CATEGORY,       "Next Selected Category"        },
-{ KB_DECREMENT_CATEGORY,       "Prev Selected Category"        },
-{ KB_TOGGLE_LAYER_ACTIVE,      "Toggle Active Layer"           },
-{ KB_TOGGLE_LAYER_TAG,         "Toggle Tag Layer"              },
-{ KB_TOGGLE_LAYER_OVERLAY,     "Toggle Overlay Layer"          },
-{ KB_TOGGLE_LAYER_BACK1,       "Toggle Back 1 Layer"           },
-{ KB_TOGGLE_LAYER_BACK2,       "Toggle Back 2 Layer"           },
-{ KB_CATEGORY_BASIC,           "Category Basic"                },
-{ KB_CATEGORY_TAG,             "Category Tag"                  },
-{ KB_CATEGORY_OVERLAY,         "Category Overlay"              },
-{ KB_CATEGORY_ENTITY,          "Category Entity"               },
-{ KB_CATEGORY_BACK1,           "Category Back 1"               },
-{ KB_CATEGORY_BACK2,           "Category Back 2"               },
-{ KB_INCREMENT_TAB,            "Next Tab"                      },
-{ KB_DECREMENT_TAB,            "Prev Tab"                      },
-{ KB_MOVE_TAB_LEFT,            "Move Tab Left"                 },
-{ KB_MOVE_TAB_RIGHT,           "Move Tab Right"                },
-{ KB_OPEN_RECENT_TAB,          "Open Recent Tab"               },
-{ KB_LOAD_NEXT_LEVEL,          "Load Next Level"               },
-{ KB_LOAD_PREV_LEVEL,          "Load Prev Level"               }
+{ gKbLevelNew,                 "New"                           },
+{ gKbLevelOpen,                "Load"                          },
+{ gKbLevelSave,                "Save"                          },
+{ gKbLevelSaveAs,              "Save As"                       },
+{ gKbLevelClose,               "Close"                         },
+{ gKbLevelCloseAll,            "Close All"                     },
+{ gKbLevelResize,              "Resize"                        },
+{ gKbUndo,                     "Undo"                          },
+{ gKbRedo,                     "Redo"                          },
+{ gKbHistoryBegin,             "History Begin"                 },
+{ gKbHistoryEnd,               "History End"                   },
+{ gKbCameraZoomOut,            "Zoom Out"                      },
+{ gKbCameraZoomIn,             "Zoom In"                       },
+{ gKbRunGame,                  "Run Game"                      },
+{ gKbPreferences,              "Preferences"                   },
+{ gKbAbout,                    "About"                         },
+{ gKbBugReport,                "Bug Report"                    },
+{ gKbHelp,                     "Help"                          },
+{ gKbToolBrush,                "Brush"                         },
+{ gKbToolFill,                 "Fill"                          },
+{ gKbToolSelect,               "Select"                        },
+{ gKbFlipH,                    "Flip Horizontal"               },
+{ gKbFlipV,                    "Flip Vertical"                 },
+{ gKbMirrorHToggle,            "Mirror Horizontal"             },
+{ gKbMirrorVToggle,            "Mirror Vertical"               },
+{ gKbGpakUnpack,               "Unpack GPAK"                   },
+{ gKbGpakPack,                 "Pack GPAK"                     },
+{ gKbToggleEntity,             "Toggle Large Entities"         },
+{ gKbToggleGuides,             "Toggle Entity Guides"          },
+{ gKbGridToggle,               "Toggle Tile Grid"              },
+{ gKbBoundsToggle,             "Toggle Out of Bounds"          },
+{ gKbLayersToggle,             "Toggle Transparency"           },
+{ gKbCameraReset,              "Reset Camera"                  },
+{ gKbClearSelect,              "Clear Selection"               },
+{ gKbDeselect,                 "Select Box Deselect"           },
+{ gKbSelectAll,                "Cursor Deselect"               },
+{ gKbCopy,                     "Copy"                          },
+{ gKbCut,                      "Cut"                           },
+{ gKbPaste,                    "Paste"                         },
+{ gKbIncrementTile,            "Next Selected Tile"            },
+{ gKbDecrementTile,            "Prev Selected Tile"            },
+{ gKbIncrementGroup,           "Next Selected Group"           },
+{ gKbDecrementGroup,           "Prev Selected Group"           },
+{ gKbIncrementCategory,        "Next Selected Category"        },
+{ gKbDecrementCategory,        "Prev Selected Category"        },
+{ gKbToggleLayerActive,        "Toggle Active Layer"           },
+{ gKbToggleLayerTag,           "Toggle Tag Layer"              },
+{ gKbToggleLayerOverlay,       "Toggle Overlay Layer"          },
+{ gKbToggleLayerBack1,         "Toggle Back 1 Layer"           },
+{ gKbToggleLayerBack2,         "Toggle Back 2 Layer"           },
+{ gKbCategoryBasic,            "Category Basic"                },
+{ gKbCategoryTag,              "Category Tag"                  },
+{ gKbCategoryOverlay,          "Category Overlay"              },
+{ gKbCategoryEntity,           "Category Entity"               },
+{ gKbCategoryBack1,            "Category Back 1"               },
+{ gKbCategoryBack2,            "Category Back 2"               },
+{ gKbIncrementTab,             "Next Tab"                      },
+{ gKbDecrementTab,             "Prev Tab"                      },
+{ gKbMoveTabLeft,              "Move Tab Left"                 },
+{ gKbMoveTabRight,             "Move Tab Right"                },
+{ gKbOpenRecentTab,            "Open Recent Tab"               },
+{ gKbLoadPrevLevel,            "Load Next Level"               },
+{ gKbLoadNextLevel,            "Load Prev Level"               }
 };
 
 /* -------------------------------------------------------------------------- */
@@ -120,8 +120,8 @@ static bool  preferences_mouse_pressed = false;
 // then wants to cancel the changes made, we can just restore the cached
 // versions of the settings and hotkeys to return to the original state.
 
-static Settings                           cached_editor_settings;
-static std::map<std::string, Key_Binding> cached_editor_hotkeys;
+static Settings                          cached_editor_settings;
+static std::map<std::string, KeyBinding> cached_editor_hotkeys;
 
 /* -------------------------------------------------------------------------- */
 
@@ -303,9 +303,9 @@ TEINAPI void internal__do_hotkey_rebind (Vec2& cursor, const char* key)
     // It says text box inset but we're using for the hotkey rebind as well...
     float th = sh-(PREFERENCES_TEXT_BOX_INSET*2);
     cursor.y += PREFERENCES_TEXT_BOX_INSET;
-    do_hotkey_rebind_main(tw,th, UI_NONE, key_bindings.at(key));
+    do_hotkey_rebind_main(tw,th, UI_NONE, gKeyBindings.at(key));
     cursor.x += roundf(PREFERENCES_INNER_XPAD/3);
-    do_hotkey_rebind_alt(tw,th, UI_NONE, key_bindings.at(key));
+    do_hotkey_rebind_alt(tw,th, UI_NONE, gKeyBindings.at(key));
     cursor.y -= PREFERENCES_TEXT_BOX_INSET;
 
     internal__next_section(cursor);
@@ -372,10 +372,9 @@ TEINAPI void internal__save_settings ()
     fprintf(file, "\n");
 
     // Save all of the hotkeys to GON format.
-    for (auto& it: key_bindings)
+    for (auto& [name,kb]: gKeyBindings)
     {
-        const Key_Binding& kb = it.second;
-        fprintf(file, "%s { ", it.first.c_str());
+        fprintf(file, "%s { ", name.c_str());
         fprintf(file, "main [");
         if (kb.mod)
         {
@@ -390,20 +389,20 @@ TEINAPI void internal__save_settings ()
             fprintf(file, "\"%s\"", SDL_GetKeyName(kb.code));
         }
         fprintf(file, "] ");
-        if (kb.has_alt)
+        if (kb.hasAlt)
         {
             fprintf(file, "alt [");
-            if (kb.alt_mod)
+            if (kb.altMod)
             {
-                if (kb.alt_mod&KMOD_CTRL ) fprintf(file, "\"Ctrl\" " );
-                if (kb.alt_mod&KMOD_ALT  ) fprintf(file, "\"Alt\" "  );
-                if (kb.alt_mod&KMOD_MODE ) fprintf(file, "\"AltGr\" ");
-                if (kb.alt_mod&KMOD_SHIFT) fprintf(file, "\"Shift\" ");
-                if (kb.alt_mod&KMOD_GUI  ) fprintf(file, "\"Gui\" "  );
+                if (kb.altMod & KMOD_CTRL ) fprintf(file, "\"Ctrl\" " );
+                if (kb.altMod & KMOD_ALT  ) fprintf(file, "\"Alt\" "  );
+                if (kb.altMod & KMOD_MODE ) fprintf(file, "\"AltGr\" ");
+                if (kb.altMod & KMOD_SHIFT) fprintf(file, "\"Shift\" ");
+                if (kb.altMod & KMOD_GUI  ) fprintf(file, "\"Gui\" "  );
             }
-            if (kb.alt_code)
+            if (kb.altCode)
             {
-                fprintf(file, "\"%s\"", SDL_GetKeyName(kb.alt_code));
+                fprintf(file, "\"%s\"", SDL_GetKeyName(kb.altCode));
             }
             fprintf(file, "] ");
         }
@@ -629,69 +628,69 @@ TEINAPI void internal__do_preferences_hotkeys ()
 
     internal__do_hotkey_label_titles(cursor);
 
-    internal__do_hotkey_rebind(cursor, KB_LEVEL_NEW            );
-    internal__do_hotkey_rebind(cursor, KB_LEVEL_OPEN           );
-    internal__do_hotkey_rebind(cursor, KB_LEVEL_SAVE           );
-    internal__do_hotkey_rebind(cursor, KB_LEVEL_SAVE_AS        );
-    internal__do_hotkey_rebind(cursor, KB_LEVEL_CLOSE          );
-    internal__do_hotkey_rebind(cursor, KB_LEVEL_CLOSE_ALL      );
-    internal__do_hotkey_rebind(cursor, KB_LEVEL_RESIZE         );
-    internal__do_hotkey_rebind(cursor, KB_UNDO                 );
-    internal__do_hotkey_rebind(cursor, KB_REDO                 );
-    internal__do_hotkey_rebind(cursor, KB_HISTORY_BEGIN        );
-    internal__do_hotkey_rebind(cursor, KB_HISTORY_END          );
-    internal__do_hotkey_rebind(cursor, KB_CAMERA_ZOOM_OUT      );
-    internal__do_hotkey_rebind(cursor, KB_CAMERA_ZOOM_IN       );
-    internal__do_hotkey_rebind(cursor, KB_RUN_GAME             );
-    internal__do_hotkey_rebind(cursor, KB_PREFERENCES          );
-    internal__do_hotkey_rebind(cursor, KB_ABOUT                );
-    internal__do_hotkey_rebind(cursor, KB_BUG_REPORT           );
-    internal__do_hotkey_rebind(cursor, KB_HELP                 );
-    internal__do_hotkey_rebind(cursor, KB_TOOL_BRUSH           );
-    internal__do_hotkey_rebind(cursor, KB_TOOL_FILL            );
-    internal__do_hotkey_rebind(cursor, KB_TOOL_SELECT          );
-    internal__do_hotkey_rebind(cursor, KB_FLIP_H               );
-    internal__do_hotkey_rebind(cursor, KB_FLIP_V               );
-    internal__do_hotkey_rebind(cursor, KB_MIRROR_H_TOGGLE      );
-    internal__do_hotkey_rebind(cursor, KB_MIRROR_V_TOGGLE      );
-    internal__do_hotkey_rebind(cursor, KB_GPAK_UNPACK          );
-    internal__do_hotkey_rebind(cursor, KB_GPAK_PACK            );
-    internal__do_hotkey_rebind(cursor, KB_TOGGLE_ENTITY        );
-    internal__do_hotkey_rebind(cursor, KB_TOGGLE_GUIDES        );
-    internal__do_hotkey_rebind(cursor, KB_GRID_TOGGLE          );
-    internal__do_hotkey_rebind(cursor, KB_BOUNDS_TOGGLE        );
-    internal__do_hotkey_rebind(cursor, KB_LAYERS_TOGGLE        );
-    internal__do_hotkey_rebind(cursor, KB_CAMERA_RESET         );
-    internal__do_hotkey_rebind(cursor, KB_CLEAR_SELECT         );
-    internal__do_hotkey_rebind(cursor, KB_DESELECT             );
-    internal__do_hotkey_rebind(cursor, KB_SELECT_ALL           );
-    internal__do_hotkey_rebind(cursor, KB_COPY                 );
-    internal__do_hotkey_rebind(cursor, KB_CUT                  );
-    internal__do_hotkey_rebind(cursor, KB_PASTE                );
-    internal__do_hotkey_rebind(cursor, KB_INCREMENT_TILE       );
-    internal__do_hotkey_rebind(cursor, KB_DECREMENT_TILE       );
-    internal__do_hotkey_rebind(cursor, KB_INCREMENT_GROUP      );
-    internal__do_hotkey_rebind(cursor, KB_DECREMENT_GROUP      );
-    internal__do_hotkey_rebind(cursor, KB_INCREMENT_CATEGORY   );
-    internal__do_hotkey_rebind(cursor, KB_DECREMENT_CATEGORY   );
-    internal__do_hotkey_rebind(cursor, KB_TOGGLE_LAYER_ACTIVE  );
-    internal__do_hotkey_rebind(cursor, KB_TOGGLE_LAYER_TAG     );
-    internal__do_hotkey_rebind(cursor, KB_TOGGLE_LAYER_OVERLAY );
-    internal__do_hotkey_rebind(cursor, KB_TOGGLE_LAYER_BACK1   );
-    internal__do_hotkey_rebind(cursor, KB_TOGGLE_LAYER_BACK2   );
-    internal__do_hotkey_rebind(cursor, KB_CATEGORY_BASIC       );
-    internal__do_hotkey_rebind(cursor, KB_CATEGORY_TAG         );
-    internal__do_hotkey_rebind(cursor, KB_CATEGORY_OVERLAY     );
-    internal__do_hotkey_rebind(cursor, KB_CATEGORY_ENTITY      );
-    internal__do_hotkey_rebind(cursor, KB_CATEGORY_BACK1       );
-    internal__do_hotkey_rebind(cursor, KB_CATEGORY_BACK2       );
-    internal__do_hotkey_rebind(cursor, KB_INCREMENT_TAB        );
-    internal__do_hotkey_rebind(cursor, KB_DECREMENT_TAB        );
-    internal__do_hotkey_rebind(cursor, KB_OPEN_RECENT_TAB      );
-    internal__do_hotkey_rebind(cursor, KB_MOVE_TAB_LEFT        );
-    internal__do_hotkey_rebind(cursor, KB_MOVE_TAB_RIGHT       );
-    internal__do_hotkey_rebind(cursor, KB_LOAD_NEXT_LEVEL      );
-    internal__do_hotkey_rebind(cursor, KB_LOAD_PREV_LEVEL      );
+    internal__do_hotkey_rebind(cursor, gKbLevelNew);
+    internal__do_hotkey_rebind(cursor, gKbLevelOpen);
+    internal__do_hotkey_rebind(cursor, gKbLevelSave);
+    internal__do_hotkey_rebind(cursor, gKbLevelSaveAs);
+    internal__do_hotkey_rebind(cursor, gKbLevelClose);
+    internal__do_hotkey_rebind(cursor, gKbLevelCloseAll);
+    internal__do_hotkey_rebind(cursor, gKbLevelResize);
+    internal__do_hotkey_rebind(cursor, gKbUndo);
+    internal__do_hotkey_rebind(cursor, gKbRedo);
+    internal__do_hotkey_rebind(cursor, gKbHistoryBegin);
+    internal__do_hotkey_rebind(cursor, gKbHistoryEnd);
+    internal__do_hotkey_rebind(cursor, gKbCameraZoomOut);
+    internal__do_hotkey_rebind(cursor, gKbCameraZoomIn);
+    internal__do_hotkey_rebind(cursor, gKbRunGame);
+    internal__do_hotkey_rebind(cursor, gKbPreferences);
+    internal__do_hotkey_rebind(cursor, gKbAbout);
+    internal__do_hotkey_rebind(cursor, gKbBugReport);
+    internal__do_hotkey_rebind(cursor, gKbHelp);
+    internal__do_hotkey_rebind(cursor, gKbToolBrush);
+    internal__do_hotkey_rebind(cursor, gKbToolFill);
+    internal__do_hotkey_rebind(cursor, gKbToolSelect);
+    internal__do_hotkey_rebind(cursor, gKbFlipH);
+    internal__do_hotkey_rebind(cursor, gKbFlipV);
+    internal__do_hotkey_rebind(cursor, gKbMirrorHToggle);
+    internal__do_hotkey_rebind(cursor, gKbMirrorVToggle);
+    internal__do_hotkey_rebind(cursor, gKbGpakUnpack);
+    internal__do_hotkey_rebind(cursor, gKbGpakPack);
+    internal__do_hotkey_rebind(cursor, gKbToggleEntity);
+    internal__do_hotkey_rebind(cursor, gKbToggleGuides);
+    internal__do_hotkey_rebind(cursor, gKbGridToggle);
+    internal__do_hotkey_rebind(cursor, gKbBoundsToggle);
+    internal__do_hotkey_rebind(cursor, gKbLayersToggle);
+    internal__do_hotkey_rebind(cursor, gKbCameraReset);
+    internal__do_hotkey_rebind(cursor, gKbClearSelect);
+    internal__do_hotkey_rebind(cursor, gKbDeselect);
+    internal__do_hotkey_rebind(cursor, gKbSelectAll);
+    internal__do_hotkey_rebind(cursor, gKbCopy);
+    internal__do_hotkey_rebind(cursor, gKbCut);
+    internal__do_hotkey_rebind(cursor, gKbPaste);
+    internal__do_hotkey_rebind(cursor, gKbIncrementTile);
+    internal__do_hotkey_rebind(cursor, gKbDecrementTile);
+    internal__do_hotkey_rebind(cursor, gKbIncrementGroup);
+    internal__do_hotkey_rebind(cursor, gKbDecrementGroup);
+    internal__do_hotkey_rebind(cursor, gKbIncrementCategory);
+    internal__do_hotkey_rebind(cursor, gKbDecrementCategory);
+    internal__do_hotkey_rebind(cursor, gKbToggleLayerActive);
+    internal__do_hotkey_rebind(cursor, gKbToggleLayerTag);
+    internal__do_hotkey_rebind(cursor, gKbToggleLayerOverlay);
+    internal__do_hotkey_rebind(cursor, gKbToggleLayerBack1);
+    internal__do_hotkey_rebind(cursor, gKbToggleLayerBack2);
+    internal__do_hotkey_rebind(cursor, gKbCategoryBasic);
+    internal__do_hotkey_rebind(cursor, gKbCategoryTag);
+    internal__do_hotkey_rebind(cursor, gKbCategoryOverlay);
+    internal__do_hotkey_rebind(cursor, gKbCategoryEntity);
+    internal__do_hotkey_rebind(cursor, gKbCategoryBack1);
+    internal__do_hotkey_rebind(cursor, gKbCategoryBack2);
+    internal__do_hotkey_rebind(cursor, gKbIncrementTab);
+    internal__do_hotkey_rebind(cursor, gKbDecrementTab);
+    internal__do_hotkey_rebind(cursor, gKbMoveTabLeft);
+    internal__do_hotkey_rebind(cursor, gKbMoveTabRight);
+    internal__do_hotkey_rebind(cursor, gKbOpenRecentTab);
+    internal__do_hotkey_rebind(cursor, gKbLoadPrevLevel);
+    internal__do_hotkey_rebind(cursor, gKbLoadNextLevel);
 
     end_panel();
 }
@@ -701,7 +700,7 @@ TEINAPI void internal__do_preferences_hotkeys ()
 TEINAPI void init_preferences_menu ()
 {
     cached_editor_settings = editor_settings;
-    cached_editor_hotkeys  = key_bindings;
+    cached_editor_hotkeys  = gKeyBindings;
 
     color_picker_mouse_pressed = false;
 }
@@ -836,15 +835,15 @@ TEINAPI void restore_preferences ()
 {
     switch (preferences_tab)
     {
-        case (Preferennes_Tab::SETTINGS): restore_editor_settings();     break;
-        case (Preferennes_Tab::HOTKEYS):  restore_editor_key_bindings(); break;
+        case (Preferennes_Tab::SETTINGS): restore_editor_settings(); break;
+        case (Preferennes_Tab::HOTKEYS): RestoreEditorKeyBindings(); break;
     }
 }
 
 TEINAPI void cancel_preferences ()
 {
     // We only want to shot this prompt if the user actually made any changes to preferences.
-    if (editor_settings != cached_editor_settings || key_bindings != cached_editor_hotkeys)
+    if (editor_settings != cached_editor_settings || gKeyBindings != cached_editor_hotkeys)
     {
         // Make sure the user is certain about what they are doing and cancel the
         // action if they decide that they do not actually want to discard changes.
@@ -859,7 +858,7 @@ TEINAPI void cancel_preferences ()
 
     // Restore the settings/hotkeys states from before modifying preferences.
     editor_settings = cached_editor_settings;
-    key_bindings = cached_editor_hotkeys;
+    gKeyBindings = cached_editor_hotkeys;
 
     update_systems_that_rely_on_settings(tile_graphics_changed);
 
@@ -870,8 +869,7 @@ TEINAPI void cancel_preferences ()
 TEINAPI void save_preferences ()
 {
     // No point saving unless there were changes.
-    if (editor_settings != cached_editor_settings ||
-        key_bindings != cached_editor_hotkeys)
+    if (editor_settings != cached_editor_settings || gKeyBindings != cached_editor_hotkeys)
     {
         internal__save_settings();
     }

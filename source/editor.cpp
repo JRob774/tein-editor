@@ -372,7 +372,7 @@ TEINAPI void handle_editor_events ()
         case (SDL_MOUSEWHEEL):
         {
             // Handle camera zoom!
-            if (!is_key_mod_state_active(KMOD_CTRL)) return;
+            if (!IsKeyModStateActive(KMOD_CTRL)) return;
 
             if      (main_event.wheel.y > 0) tab->camera.zoom += (EDITOR_ZOOM_INCREMENT * tab->camera.zoom); // Zoom in.
             else if (main_event.wheel.y < 0) tab->camera.zoom -= (EDITOR_ZOOM_INCREMENT * tab->camera.zoom); // Zoom out.
@@ -399,7 +399,7 @@ TEINAPI void handle_editor_events ()
         case (SDL_KEYDOWN):
         case (SDL_KEYUP):
         {
-            editor.is_panning = is_key_code_active(SDLK_SPACE);
+            editor.is_panning = IsKeyCodeActive(SDLK_SPACE);
         } break;
         case (SDL_MOUSEBUTTONDOWN):
         case (SDL_MOUSEBUTTONUP):

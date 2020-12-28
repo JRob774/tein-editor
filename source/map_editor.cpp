@@ -369,7 +369,7 @@ TEINAPI void do_map_editor ()
     {
         if (!IsAWindowResizing() && internal__mouse_inside_map_editor_viewport())
         {
-            if (!internal__map_clipboard_empty() && is_key_mod_state_active(get_key_binding(KB_PASTE).mod))
+            if (!internal__map_clipboard_empty() && IsKeyModStateActive(GetKeyBinding(gKbPaste).mod))
             {
                 draw_clipboard = true;
             }
@@ -608,7 +608,7 @@ TEINAPI void do_map_editor ()
     {
         if (!IsAWindowResizing() && internal__mouse_inside_map_editor_viewport())
         {
-            if (!internal__map_clipboard_empty() && is_key_mod_state_active(get_key_binding(KB_PASTE).mod))
+            if (!internal__map_clipboard_empty() && IsKeyModStateActive(GetKeyBinding(gKbPaste).mod))
             {
                 internal__draw_map_clipboard();
             }

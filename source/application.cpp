@@ -131,11 +131,11 @@ TEINAPI void init_application (int argc, char** argv)
     SetWindowChild("WINPATH");
     SetWindowChild("WINUPDATE");
 
-    if (!init_renderer           ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
-    if (!load_editor_settings    ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
-    if (!load_editor_key_bindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
-    if (!load_editor_resources   ()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
-    if (!init_tile_panel         ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
+    if (!init_renderer        ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
+    if (!load_editor_settings ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
+    if (!LoadEditorKeyBindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
+    if (!load_editor_resources()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
+    if (!init_tile_panel      ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
 
     init_layer_panel   ();
     init_color_picker  ();
@@ -347,7 +347,7 @@ TEINAPI bool handle_application_events ()
         #endif
 
         HandleWindowEvents();
-        handle_key_binding_events();
+        HandleKeyBindingEvents();
         handle_ui_events();
         handle_tile_panel_events();
         handle_tab_bar_events();

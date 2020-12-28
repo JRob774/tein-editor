@@ -382,17 +382,17 @@ TEINAPI void handle_tile_panel_events ()
                     {
                         if (!mouse_is_over_tab_bar())
                         {
-                            if (is_key_mod_state_active(0))
+                            if (IsKeyModStateActive(0))
                             {
                                 if      (main_event.wheel.y > 0) increment_selected_tile();
                                 else if (main_event.wheel.y < 0) decrement_selected_tile();
                             }
-                            else if (is_key_mod_state_active(KMOD_ALT))
+                            else if (IsKeyModStateActive(KMOD_ALT))
                             {
                                 if      (main_event.wheel.y > 0) increment_selected_group();
                                 else if (main_event.wheel.y < 0) decrement_selected_group();
                             }
-                            else if (is_key_mod_state_active(KMOD_ALT|KMOD_SHIFT))
+                            else if (IsKeyModStateActive(KMOD_ALT|KMOD_SHIFT))
                             {
                                 if      (main_event.wheel.y > 0) increment_selected_category();
                                 else if (main_event.wheel.y < 0) decrement_selected_category();

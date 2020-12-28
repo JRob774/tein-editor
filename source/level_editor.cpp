@@ -393,8 +393,8 @@ TEINAPI void internal__handle_fill ()
     if (tab.tool_info.fill.find_id == tab.tool_info.fill.replace_id) return;
 
     // Determine if we are doing a fill or find/replace.
-    if (is_key_mod_state_active(KMOD_ALT)) internal__replace();
-    else                                   internal__fill();
+    if (IsKeyModStateActive(KMOD_ALT)) internal__replace();
+    else                               internal__fill();
 }
 
 TEINAPI void internal__restore_select_state (const std::vector<Select_Bounds>& select_state)
@@ -1082,7 +1082,7 @@ TEINAPI void do_level_editor ()
     {
         if (!IsAWindowResizing() && mouse_inside_level_editor_viewport())
         {
-            if (!internal__clipboard_empty() && is_key_mod_state_active(get_key_binding(KB_PASTE).mod))
+            if (!internal__clipboard_empty() && IsKeyModStateActive(GetKeyBinding(gKbPaste).mod))
             {
                 internal__draw_mirrored_clipboard();
             }

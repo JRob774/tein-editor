@@ -136,8 +136,8 @@ TEINAPI float get_markdown_h (float w,          std::string text);
 TEINAPI void do_text_box         (float w, float h, UI_Flag flags, std::string& text,                                   std::string default_text = "", UI_Align halign = UI_ALIGN_RIGHT);
 TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& text, float label_w, std::string label, std::string default_text = "", UI_Align halign = UI_ALIGN_RIGHT);
 
-TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding& kb);
-TEINAPI void do_hotkey_rebind_alt  (float w, float h, UI_Flag flags, Key_Binding& kb);
+TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding& kb);
+TEINAPI void do_hotkey_rebind_alt  (float w, float h, UI_Flag flags, KeyBinding& kb);
 
 TEINAPI void do_icon (float w, float h, Texture& tex, const Quad* clip = NULL);
 TEINAPI void do_quad (float w, float h, Vec4 color);

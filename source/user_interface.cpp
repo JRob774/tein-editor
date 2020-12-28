@@ -933,10 +933,10 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
         std::string kb_info;
         if (!kb.empty())
         {
-            kb_info = FormatString("(%s)", get_key_binding_main_string(kb).c_str());
-            if (get_key_binding(kb).alt_code && get_key_binding(kb).alt_mod)
+            kb_info = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
+            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
             {
-                kb_info += FormatString(" or (%s)", get_key_binding_alt_string(kb).c_str());
+                kb_info += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
         std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
@@ -1030,10 +1030,10 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
         std::string kb_info;
         if (!kb.empty())
         {
-            kb_info = FormatString("(%s)", get_key_binding_main_string(kb).c_str());
-            if (get_key_binding(kb).alt_code && get_key_binding(kb).alt_mod)
+            kb_info = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
+            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
             {
-                kb_info += FormatString(" or (%s)", get_key_binding_alt_string(kb).c_str());
+                kb_info += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
         std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
@@ -1771,7 +1771,7 @@ TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& 
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding& kb)
+TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding& kb)
 {
     // Make sure that the necessary components are assigned.
     assert(ui_font);
@@ -1876,7 +1876,7 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding
     }
     else
     {
-        text = get_key_binding_main_string(kb);
+        text = GetKeyBindingMainString(kb);
     }
 
     // Calculate the position of the text and draw it
@@ -1901,7 +1901,7 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, Key_Binding
     ++ui_current_id;
 }
 
-TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding& kb)
+TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& kb)
 {
     // Make sure that the necessary components are assigned.
     assert(ui_font);
@@ -1980,20 +1980,20 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding&
                 k != SDLK_RSHIFT && k != SDLK_LSHIFT &&
                 k != SDLK_LGUI   && k != SDLK_RGUI)
             {
-                kb.alt_code = main_event.key.keysym.sym;
+                kb.altCode = main_event.key.keysym.sym;
 
                 // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
-                kb.alt_mod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
+                kb.altMod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
 
                 // We do not care whether the right or left variants have been pressed.
-                if (kb.alt_mod&KMOD_LCTRL  || kb.alt_mod&KMOD_RCTRL)  kb.alt_mod |= KMOD_CTRL;
-                if (kb.alt_mod&KMOD_LALT   || kb.alt_mod&KMOD_RALT)   kb.alt_mod |= KMOD_ALT;
-                if (kb.alt_mod&KMOD_LSHIFT || kb.alt_mod&KMOD_RSHIFT) kb.alt_mod |= KMOD_SHIFT;
-                if (kb.alt_mod&KMOD_LGUI   || kb.alt_mod&KMOD_RGUI)   kb.alt_mod |= KMOD_GUI;
+                if ((kb.altMod & KMOD_LCTRL ) || (kb.altMod & KMOD_RCTRL )) kb.altMod |= KMOD_CTRL;
+                if ((kb.altMod & KMOD_LALT  ) || (kb.altMod & KMOD_RALT  )) kb.altMod |= KMOD_ALT;
+                if ((kb.altMod & KMOD_LSHIFT) || (kb.altMod & KMOD_RSHIFT)) kb.altMod |= KMOD_SHIFT;
+                if ((kb.altMod & KMOD_LGUI  ) || (kb.altMod & KMOD_RGUI  )) kb.altMod |= KMOD_GUI;
 
                 deselect_active_hotkey_rebind();
 
-                kb.has_alt = true;
+                kb.hasAlt = true;
             }
         }
     }
@@ -2009,7 +2009,7 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, Key_Binding&
     }
     else
     {
-        text = get_key_binding_alt_string(kb);
+        text = GetKeyBindingAltString(kb);
     }
 
     // Calculate the position of the text and draw it
@@ -2440,10 +2440,10 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
         std::string kb_info;
         if (kb.empty())
         {
-            kb_info = FormatString("(%s)", get_key_binding_main_string(kb).c_str());
-            if (get_key_binding(kb).alt_code && get_key_binding(kb).alt_mod)
+            kb_info = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
+            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
             {
-                kb_info += FormatString(" or (%s)", get_key_binding_alt_string(kb).c_str());
+                kb_info += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
         std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
