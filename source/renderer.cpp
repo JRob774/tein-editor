@@ -28,11 +28,11 @@ static float font_draw_scale;
 
 static GLfloat max_gl_texture_size;
 
-static Buffer_Mode immediate_buffer_draw_mode;
+static BufferMode immediate_buffer_draw_mode;
 
-static Vertex_Buffer draw_buffer;
-static Vertex_Buffer tile_buffer;
-static Vertex_Buffer text_buffer;
+static VertexBuffer draw_buffer;
+static VertexBuffer tile_buffer;
+static VertexBuffer text_buffer;
 
 // Batched tile rendering.
 static Vec4     tile_draw_color;
@@ -142,20 +142,20 @@ TEINAPI bool init_renderer ()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
-    create_vertex_buffer(draw_buffer);
-    create_vertex_buffer(tile_buffer);
-    create_vertex_buffer(text_buffer);
+    CreateVertexBuffer(draw_buffer);
+    CreateVertexBuffer(tile_buffer);
+    CreateVertexBuffer(text_buffer);
 
-    immediate_buffer_draw_mode = Buffer_Mode::TRIANGLE_STRIP;
+    immediate_buffer_draw_mode = BufferMode::TRIANGLE_STRIP;
 
     return true;
 }
 
 TEINAPI void quit_renderer ()
 {
-    free_vertex_buffer(draw_buffer);
-    free_vertex_buffer(tile_buffer);
-    free_vertex_buffer(text_buffer);
+    FreeVertexBuffer(draw_buffer);
+    FreeVertexBuffer(tile_buffer);
+    FreeVertexBuffer(text_buffer);
 
     free_shader(untextured_shader);
     free_shader(  textured_shader);
@@ -452,11 +452,11 @@ TEINAPI void draw_line (float x1, float y1, float x2, float y2)
 {
     glUseProgram(untextured_shader);
 
-    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
 
-    draw_vertex_buffer(draw_buffer, Buffer_Mode::LINES);
-    clear_vertex_buffer(draw_buffer);
+    DrawVertexBuffer(draw_buffer, BufferMode::LINES);
+    ClearVertexBuffer(draw_buffer);
 }
 
 TEINAPI void draw_quad (float x1, float y1, float x2, float y2)
@@ -469,26 +469,26 @@ TEINAPI void draw_quad (float x1, float y1, float x2, float y2)
     x2 -= .5f;
     y2 -= .5f;
 
-    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
 
-    draw_vertex_buffer(draw_buffer, Buffer_Mode::LINE_LOOP);
-    clear_vertex_buffer(draw_buffer);
+    DrawVertexBuffer(draw_buffer, BufferMode::LINE_LOOP);
+    ClearVertexBuffer(draw_buffer);
 }
 
 TEINAPI void fill_quad (float x1, float y1, float x2, float y2)
 {
     glUseProgram(untextured_shader);
 
-    put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
-    put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
 
-    draw_vertex_buffer(draw_buffer, Buffer_Mode::TRIANGLE_STRIP);
-    clear_vertex_buffer(draw_buffer);
+    DrawVertexBuffer(draw_buffer, BufferMode::TRIANGLE_STRIP);
+    ClearVertexBuffer(draw_buffer);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -532,13 +532,13 @@ TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* cli
     float x2 = x1 + w;
     float y2 = y1 + h;
 
-    put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tex.color });
-    put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tex.color });
-    put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tex.color });
-    put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tex.color });
+    PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tex.color });
+    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tex.color });
+    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tex.color });
+    PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tex.color });
 
-    draw_vertex_buffer(draw_buffer, Buffer_Mode::TRIANGLE_STRIP);
-    clear_vertex_buffer(draw_buffer);
+    DrawVertexBuffer(draw_buffer, BufferMode::TRIANGLE_STRIP);
+    ClearVertexBuffer(draw_buffer);
 }
 
 TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
@@ -599,25 +599,25 @@ TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
                 float x2 = roundf(x1 + w);
                 float y2 = roundf(y1 + h);
 
-                put_buffer_vertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), fnt.color }); // V0
-                put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
-                put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
-                put_buffer_vertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
-                put_buffer_vertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
-                put_buffer_vertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), fnt.color }); // V3
+                PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), fnt.color }); // V0
+                PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
+                PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
+                PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
+                PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
+                PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), fnt.color }); // V3
 
                 cx += advance;
             } break;
         }
     }
 
-    draw_vertex_buffer(draw_buffer, Buffer_Mode::TRIANGLES);
-    clear_vertex_buffer(draw_buffer);
+    DrawVertexBuffer(draw_buffer, BufferMode::TRIANGLES);
+    ClearVertexBuffer(draw_buffer);
 }
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void begin_draw (Buffer_Mode mode)
+TEINAPI void begin_draw (BufferMode mode)
 {
     immediate_buffer_draw_mode = mode;
 }
@@ -626,15 +626,15 @@ TEINAPI void end_draw ()
 {
     glUseProgram(untextured_shader);
 
-    draw_vertex_buffer(draw_buffer, immediate_buffer_draw_mode);
-    clear_vertex_buffer(draw_buffer);
+    DrawVertexBuffer(draw_buffer, immediate_buffer_draw_mode);
+    ClearVertexBuffer(draw_buffer);
 }
 
 /* -------------------------------------------------------------------------- */
 
 TEINAPI void put_vertex (float x, float y, Vec4 color)
 {
-    put_buffer_vertex(draw_buffer, { Vec2(x,y), Vec2(0,0), color });
+    PutBufferVertex(draw_buffer, { Vec2(x,y), Vec2(0,0), color });
 }
 
 /* -------------------------------------------------------------------------- */
@@ -710,12 +710,12 @@ TEINAPI void draw_batched_tile (float x, float y, const Quad* clip)
     float x2 = x1 + w;
     float y2 = y1 + h;
 
-    put_buffer_vertex(tile_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tile_draw_color }); // V0
-    put_buffer_vertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
-    put_buffer_vertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
-    put_buffer_vertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
-    put_buffer_vertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
-    put_buffer_vertex(tile_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tile_draw_color }); // V3
+    PutBufferVertex(tile_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tile_draw_color }); // V0
+    PutBufferVertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
+    PutBufferVertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
+    PutBufferVertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
+    PutBufferVertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
+    PutBufferVertex(tile_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tile_draw_color }); // V3
 }
 
 TEINAPI void draw_batched_text (float x, float y, std::string text)
@@ -768,12 +768,12 @@ TEINAPI void draw_batched_text (float x, float y, std::string text)
                 float x2 = roundf(x1 + w);
                 float y2 = roundf(y1 + h);
 
-                put_buffer_vertex(text_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), text_draw_color }); // V0
-                put_buffer_vertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
-                put_buffer_vertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
-                put_buffer_vertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
-                put_buffer_vertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
-                put_buffer_vertex(text_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), text_draw_color }); // V3
+                PutBufferVertex(text_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), text_draw_color }); // V0
+                PutBufferVertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
+                PutBufferVertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
+                PutBufferVertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
+                PutBufferVertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
+                PutBufferVertex(text_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), text_draw_color }); // V3
 
                 cx += advance;
             } break;
@@ -790,8 +790,8 @@ TEINAPI void flush_batched_tile ()
 
     glUseProgram(textured_shader);
 
-    draw_vertex_buffer(tile_buffer, Buffer_Mode::TRIANGLES);
-    clear_vertex_buffer(tile_buffer);
+    DrawVertexBuffer(tile_buffer, BufferMode::TRIANGLES);
+    ClearVertexBuffer(tile_buffer);
 
     glDisable(GL_TEXTURE_2D);
 }
@@ -803,8 +803,8 @@ TEINAPI void flush_batched_text ()
 
     glUseProgram(text_shader);
 
-    draw_vertex_buffer(text_buffer, Buffer_Mode::TRIANGLES);
-    clear_vertex_buffer(text_buffer);
+    DrawVertexBuffer(text_buffer, BufferMode::TRIANGLES);
+    ClearVertexBuffer(text_buffer);
 
     glDisable(GL_TEXTURE_2D);
 }

@@ -68,7 +68,7 @@ TEINAPI void fill_quad (float x1, float y1, float x2, float y2);
 TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* clip);
 TEINAPI void draw_text    (const Font&    fnt, float x, float y, std::string text);
 
-TEINAPI void begin_draw (Buffer_Mode mode);
+TEINAPI void begin_draw (BufferMode mode);
 TEINAPI void end_draw   ();
 
 TEINAPI void put_vertex (float x, float y, Vec4 color);

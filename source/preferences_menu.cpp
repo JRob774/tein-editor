@@ -226,7 +226,7 @@ TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float s
     Vec4 max(color.r, color.g, color.b,       1);
     Vec4 min(color.r, color.g, color.b, color.a);
 
-    begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+    begin_draw(BufferMode::TRIANGLE_STRIP);
     put_vertex(x1, y2, min); // BL
     put_vertex(x1, y1, min); // TL
     put_vertex(x2, y2, max); // BR

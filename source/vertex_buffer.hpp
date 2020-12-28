@@ -1,17 +1,6 @@
-/*******************************************************************************
- * Facilities for creating a vertex buffer for storing/drawing vertices.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-enum class Buffer_Mode: GLenum
+enum class BufferMode: GLenum
 {
     POINTS         = GL_POINTS,
     LINE_STRIP     = GL_LINE_STRIP,
@@ -28,11 +17,11 @@ typedef GLuint VAO;
 struct Vertex
 {
     Vec2 position;
-    Vec2 texcoord;
-    Vec4 outcolor;
+    Vec2 texCoord;
+    Vec4 outColor;
 };
 
-struct Vertex_Buffer
+struct VertexBuffer
 {
     VAO vao;
     VBO vbo;
@@ -40,16 +29,8 @@ struct Vertex_Buffer
     std::vector<Vertex> verts;
 };
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void create_vertex_buffer (Vertex_Buffer& buffer);
-TEINAPI void free_vertex_buffer   (Vertex_Buffer& buffer);
-
-TEINAPI void put_buffer_vertex  (Vertex_Buffer& buffer, Vertex vertex);
-TEINAPI void draw_vertex_buffer (Vertex_Buffer& buffer, Buffer_Mode mode);
-
-TEINAPI void clear_vertex_buffer (Vertex_Buffer& buffer);
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI void CreateVertexBuffer (VertexBuffer& buffer);
+TEINAPI void FreeVertexBuffer   (VertexBuffer& buffer);
+TEINAPI void PutBufferVertex    (VertexBuffer& buffer, Vertex vertex);
+TEINAPI void DrawVertexBuffer   (VertexBuffer& buffer, BufferMode mode);
+TEINAPI void ClearVertexBuffer  (VertexBuffer& buffer);

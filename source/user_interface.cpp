@@ -2270,7 +2270,7 @@ TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag f
     set_viewport(panel.viewport);
     ui_panels.push(panel);
 
-    begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+    begin_draw(BufferMode::TRIANGLE_STRIP);
     put_vertex(0,                panel.viewport.h, cl); // BL
     put_vertex(0,                0,                cl); // TL
     put_vertex(panel.viewport.w, panel.viewport.h, cr); // BR
@@ -2319,7 +2319,7 @@ TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+        begin_draw(BufferMode::TRIANGLE_STRIP);
         put_vertex(0,                get_viewport().h, Vec4(0,0,0,0)); // BL
         put_vertex(0,                0   ,             Vec4(0,0,0,0)); // TL
         put_vertex(get_viewport().w, get_viewport().h,         color); // BR
@@ -2386,7 +2386,7 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
     }
 
     // Draw the button's background quad.
-    begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+    begin_draw(BufferMode::TRIANGLE_STRIP);
     put_vertex(cur.x,   cur.y+h, bl); // BL
     put_vertex(cur.x,   cur.y,   bl); // TL
     put_vertex(cur.x+w, cur.y+h, br); // BR
@@ -2404,7 +2404,7 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+        begin_draw(BufferMode::TRIANGLE_STRIP);
         put_vertex(cur.x,   cur.y+h,         color); // BL
         put_vertex(cur.x,   cur.y,           color); // TL
         put_vertex(cur.x+w, cur.y+h, Vec4(0,0,0,0)); // BR

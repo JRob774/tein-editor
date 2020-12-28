@@ -63,7 +63,7 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
     set_draw_color(ui_color_ex_dark);
     fill_quad(x1-1, y1-1, x2+1, y2+1);
 
-    begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+    begin_draw(BufferMode::TRIANGLE_STRIP);
     put_vertex(cursor.x   , cursor.y+ch, min); // BL
     put_vertex(cursor.x   , cursor.y   , max); // TL
     put_vertex(cursor.x+cw, cursor.y+ch, min); // BR
@@ -151,7 +151,7 @@ TEINAPI void internal__do_color_preview (Vec2& cursor, Vec4 c, float size)
     Vec4 max(c.r, c.g, c.b,   1);
     Vec4 min(c.r, c.g, c.b, c.a);
 
-    begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+    begin_draw(BufferMode::TRIANGLE_STRIP);
     put_vertex(x     , y+size, min); // BL
     put_vertex(x     , y     , max); // TL
     put_vertex(x+size, y+size, min); // BR
@@ -242,7 +242,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     Vec4 min(c.r, c.g, c.b, 0);
     Vec4 max(c.r, c.g, c.b, 1);
 
-    begin_draw(Buffer_Mode::TRIANGLE_STRIP);
+    begin_draw(BufferMode::TRIANGLE_STRIP);
     put_vertex(x1, y2, min); // BL
     put_vertex(x1, y1, min); // TL
     put_vertex(x2, y2, max); // BR

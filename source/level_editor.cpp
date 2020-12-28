@@ -1212,7 +1212,7 @@ TEINAPI void do_level_editor ()
     // Draw the tile/spawn grid for the level editor.
     if (editor.grid_visible)
     {
-        begin_draw(Buffer_Mode::LINES);
+        begin_draw(BufferMode::LINES);
         for (float ix=x+DEFAULT_TILE_SIZE; ix<(x+w); ix+=DEFAULT_TILE_SIZE)
         {
             put_vertex(ix, y,   Vec4(gEditorSettings.tileGridColor));
