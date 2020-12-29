@@ -285,8 +285,8 @@ TEINAPI void do_resize ()
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);
 
-    float label_w_w = get_text_width_scaled(get_editor_regular_font(), RESIZE_WIDTH_LABEL);
-    float label_h_w = get_text_width_scaled(get_editor_regular_font(), RESIZE_HEIGHT_LABEL);
+    float label_w_w = GetTextWidthScaled(get_editor_regular_font(), RESIZE_WIDTH_LABEL);
+    float label_h_w = GetTextWidthScaled(get_editor_regular_font(), RESIZE_HEIGHT_LABEL);
 
     float text_box_w = (vw-(RESIZE_XPAD*2));
     float label_w = std::max(label_w_w, label_h_w);

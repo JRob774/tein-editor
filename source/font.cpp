@@ -1,246 +1,218 @@
-/*******************************************************************************
- * Load truetype font data into a packed atlas for easy rendering.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr float gTabLengthInSpaces = 4;
+static constexpr float gFontGlyphCachePad = 6;
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-static constexpr float TAB_LENGTH_IN_SPACES  = 4;
-static constexpr float FONT_GLYPH_CACHE_PADS = 6;
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool internal__set_font_point_size (Font& fnt, int pt)
+namespace Internal
 {
-    // We use the current display's DPI to determine the point size.
-    float hdpi, vdpi;
-    if (SDL_GetDisplayDPI(0, NULL, &hdpi, &vdpi) != 0)
+    TEINAPI bool SetFontPointSize (Font& font, int pointSize)
     {
-        LogError(ERR_MIN, "Failed to determine display DPI! (%s)", SDL_GetError());
-        return false;
-    }
-
-    FT_UInt hres = static_cast<FT_UInt>(hdpi);
-    FT_UInt vres = static_cast<FT_UInt>(vdpi);
-
-    FT_F26Dot6 pt_height = pt * 64;
-
-    if (FT_Set_Char_Size(fnt.face, 0, pt_height, hres, vres) != 0)
-    {
-        LogError(ERR_MIN, "Failed to set font glyph size!");
-        return false;
-    }
-
-    return true;
-}
-
-TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
-{
-    // Make sure the glyph cache size is within the GL texture bounds.
-    // If not we set it to that size and log a low-priority error.
-    GLfloat cache_size = std::min(GetMaxTextureSize(), csz);
-    if (cache_size < csz)
-    {
-        LogError(ERR_MIN, "Font cache size shrunk to %f!", cache_size);
-    }
-
-    if (!internal__set_font_point_size(fnt, pt)) return false;
-    fnt.current_pt_size = pt;
-
-    // An 8-bit buffer that we can easily write our rasterized glyph data
-    // into before building a GPU texture using our built-in texture code.
-    size_t cache_row = static_cast<size_t>(cache_size);
-    size_t cache_bytes = cache_row * cache_row;
-
-    U8* buffer = Malloc(U8, cache_bytes);
-    if (!buffer)
-    {
-        LogError(ERR_MIN, "Failed to create glyph buffer!");
-        return false;
-    }
-    Defer { Free(buffer); };
-
-    memset(buffer, 0, sizeof(U8)*cache_bytes); // We don't want the buffer filled with garbage data!
-
-    fnt.has_kerning = FT_HAS_KERNING(fnt.face);
-    fnt.color       = Vec4(1,1,1,1);
-    fnt.line_gap.insert({ pt, static_cast<float>(fnt.face->size->metrics.height >> 6) });
-
-    // Go through glyph-by-glyph and bake all of the bitmaps to the final
-    // glyph cache texture so that they can easily and quickly be rendered.
-    //
-    // Our current primitive method of packing involves simply moving from
-    // left-to-right and top-to-bottom packing glyphs until we hit end up
-    // hitting the size of the cache and move down to the next glyph row.
-
-    FT_GlyphSlot slot = fnt.face->glyph;
-    FT_Bitmap* bitmap = &slot->bitmap;
-    Vec2       cursor = Vec2(0,0);
-
-    fnt.glyphs.insert(std::pair<int, std::vector<Font_Glyph>>(pt,
-        std::vector<Font_Glyph>(TOTAL_GLYPH_COUNT)));
-    assert(fnt.glyphs.at(fnt.current_pt_size).size() == TOTAL_GLYPH_COUNT);
-
-    for (int i=0; i<TOTAL_GLYPH_COUNT; ++i)
-    {
-        int index = FT_Get_Char_Index(fnt.face, i);
-        if (FT_Load_Glyph(fnt.face, index, FT_LOAD_RENDER) != 0)
+        // We use the current display's DPI to determine the point size.
+        float hDPI,vDPI;
+        if (SDL_GetDisplayDPI(0, NULL, &hDPI, &vDPI) != 0)
         {
-            LogError(ERR_MIN, "Failed to load glyph '%c'!", i);
+            LogError(ERR_MIN, "Failed to determine display DPI! (%s)", SDL_GetError());
             return false;
         }
 
-        float bitmap_advance = static_cast<float>(slot->advance.x >> 6);
-        float bitmap_left    = static_cast<float>(slot->bitmap_left);
-        float bitmap_top     = static_cast<float>(slot->bitmap_top);
-        float bitmap_width   = static_cast<float>(bitmap->width);
-        float bitmap_height  = static_cast<float>(bitmap->rows);
+        FT_UInt hRes = static_cast<FT_UInt>(hDPI);
+        FT_UInt vRes = static_cast<FT_UInt>(vDPI);
 
-        // Move down a row if we have reached the edge of the cache.
-        if (cursor.x + bitmap_width >= cache_size)
+        FT_F26Dot6 pointHeight = pointSize * 64;
+
+        if (FT_Set_Char_Size(font.face, 0, pointHeight, hRes, vRes) != 0)
         {
-            cursor.y += (fnt.line_gap[pt] + FONT_GLYPH_CACHE_PADS);
-            cursor.x = 0.0f;
-            // If we hit the bottom edge then we are out of space.
-            if (cursor.y + bitmap_height >= cache_size)
-            {
-                LogError(ERR_MIN, "Font cache too small!");
-                return false;
-            }
+            LogError(ERR_MIN, "Failed to set font glyph size!");
+            return false;
         }
 
-        fnt.glyphs[pt][i].advance   = bitmap_advance;
-        fnt.glyphs[pt][i].bearing.x = bitmap_left;
-        fnt.glyphs[pt][i].bearing.y = bitmap_top;
-        fnt.glyphs[pt][i].bounds.x  = cursor.x;
-        fnt.glyphs[pt][i].bounds.y  = cursor.y;
-        fnt.glyphs[pt][i].bounds.w  = bitmap_width;
-        fnt.glyphs[pt][i].bounds.h  = bitmap_height+1;
-
-        // Write the bitmap content into our cache buffer line-by-line.
-        size_t cx = static_cast<size_t>(cursor.x), cy = static_cast<size_t>(cursor.y);
-        for (FT_UInt y=0; y<bitmap->rows; ++y)
-        {
-            void* dst = buffer + ((cy+y)*cache_row+cx);
-            void* src = bitmap->buffer + (y*bitmap->pitch);
-
-            memcpy(dst, src, bitmap->pitch);
-        }
-
-        // Move to the right to pack the next glyph for the font.
-        cursor.x += bitmap_width + FONT_GLYPH_CACHE_PADS;
+        return true;
     }
 
-    // We can now convert the buffer into a GPU accelerated texture.
-    int cache_w = static_cast<int>(cache_size);
-    int cache_h = static_cast<int>(cache_size);
+    TEINAPI bool CreateFont (Font& font, int pointSize, float cacheSize)
+    {
+        // Make sure the glyph cache size is within the GL texture bounds.
+        // If not we set it to that size and log a low-priority error.
+        GLfloat finalCacheSize = std::min(GetMaxTextureSize(), cacheSize);
+        if (finalCacheSize < cacheSize)
+        {
+            LogError(ERR_MIN, "Font cache size shrunk to %f!", finalCacheSize);
+        }
 
-    fnt.cache.insert(std::pair<int,Texture>(pt, Texture()));
-    return CreateTexture(fnt.cache[pt], cache_w, cache_h, 1, buffer);
+        if (!Internal::SetFontPointSize(font, pointSize)) return false;
+        font.currentPointSize = pointSize;
+
+        // An 8-bit buffer that we can easily write our rasterized glyph data
+        // into before building a GPU texture using our built-in texture code.
+        size_t cacheRow = static_cast<size_t>(finalCacheSize);
+        size_t cacheBytes = cacheRow * cacheRow;
+
+        U8* buffer = Malloc(U8, cacheBytes);
+        if (!buffer)
+        {
+            LogError(ERR_MIN, "Failed to create glyph buffer!");
+            return false;
+        }
+        Defer { Free(buffer); };
+
+        memset(buffer, 0, sizeof(U8)*cacheBytes); // We don't want the buffer filled with garbage data!
+
+        font.hasKerning = FT_HAS_KERNING(font.face);
+        font.color = Vec4(1,1,1,1);
+        font.lineGap.insert({ pointSize, static_cast<float>(font.face->size->metrics.height >> 6) });
+
+        // Go through glyph-by-glyph and bake all of the bitmaps to the final
+        // glyph cache texture so that they can easily and quickly be rendered.
+        //
+        // Our current primitive method of packing involves simply moving from
+        // left-to-right and top-to-bottom packing glyphs until we hit end up
+        // hitting the size of the cache and move down to the next glyph row.
+
+        FT_GlyphSlot slot = font.face->glyph;
+        FT_Bitmap* bitmap = &slot->bitmap;
+
+        Vec2 cursor = Vec2(0,0);
+
+        font.glyphs.insert({ pointSize, std::vector<FontGlyph>(gTotalGlyphCount) });
+        assert(font.glyphs.at(font.currentPointSize).size() == gTotalGlyphCount);
+
+        for (int i=0; i<gTotalGlyphCount; ++i)
+        {
+            int index = FT_Get_Char_Index(font.face, i);
+            if (FT_Load_Glyph(font.face, index, FT_LOAD_RENDER) != 0)
+            {
+                LogError(ERR_MIN, "Failed to load glyph '%c'!", i);
+                return false;
+            }
+
+            float bitmapAdvance = static_cast<float>(slot->advance.x >> 6);
+            float bitmapLeft = static_cast<float>(slot->bitmap_left);
+            float bitmapTop = static_cast<float>(slot->bitmap_top);
+            float bitmapWidth = static_cast<float>(bitmap->width);
+            float bitmapHeight = static_cast<float>(bitmap->rows);
+
+            // Move down a row if we have reached the edge of the cache.
+            if (cursor.x + bitmapWidth >= finalCacheSize)
+            {
+                cursor.y += (font.lineGap[pointSize] + gFontGlyphCachePad);
+                cursor.x = 0.0f;
+                // If we hit the bottom edge then we are out of space.
+                if (cursor.y + bitmapHeight >= finalCacheSize)
+                {
+                    LogError(ERR_MIN, "Font cache too small!");
+                    return false;
+                }
+            }
+
+            font.glyphs[pointSize][i].advance   = bitmapAdvance;
+            font.glyphs[pointSize][i].bearing.x = bitmapLeft;
+            font.glyphs[pointSize][i].bearing.y = bitmapTop;
+            font.glyphs[pointSize][i].bounds.x  = cursor.x;
+            font.glyphs[pointSize][i].bounds.y  = cursor.y;
+            font.glyphs[pointSize][i].bounds.w  = bitmapWidth;
+            font.glyphs[pointSize][i].bounds.h  = bitmapHeight+1;
+
+            // Write the bitmap content into our cache buffer line-by-line.
+            size_t cx = static_cast<size_t>(cursor.x), cy = static_cast<size_t>(cursor.y);
+            for (FT_UInt y=0; y<bitmap->rows; ++y)
+            {
+                void* dst = buffer + ((cy+y)*cacheRow+cx);
+                void* src = bitmap->buffer + (y*bitmap->pitch);
+                memcpy(dst, src, bitmap->pitch);
+            }
+
+            // Move to the right to pack the next glyph for the font.
+            cursor.x += bitmapWidth + gFontGlyphCachePad;
+        }
+
+        // We can now convert the buffer into a GPU accelerated texture.
+        int cacheWidth = static_cast<int>(finalCacheSize);
+        int cacheHeight = static_cast<int>(finalCacheSize);
+
+        font.cache.insert({ pointSize, Texture() });
+        return CreateTexture(font.cache[pointSize], cacheWidth, cacheHeight, 1, buffer);
+    }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool load_font_from_data (Font& fnt, const std::vector<U8>& file_data, std::vector<int> pt, float csz)
+TEINAPI bool LoadFontFromData (Font& font, const std::vector<U8>& fileData, std::vector<int> pointSizes, float cacheSize)
 {
-    assert(pt.size());
+    assert(pointSizes.size());
 
-    fnt.data.assign(file_data.begin(), file_data.end());
+    font.data.assign(fileData.begin(), fileData.end());
 
-    const FT_Byte* buffer = &fnt.data[0];
-    FT_Long size = static_cast<FT_Long>(fnt.data.size());
+    const FT_Byte* buffer = &font.data[0];
+    FT_Long size = static_cast<FT_Long>(font.data.size());
 
-    if (FT_New_Memory_Face(freetype, buffer, size, 0, &fnt.face) != 0)
+    if (FT_New_Memory_Face(gFreetype, buffer, size, 0, &font.face) != 0)
     {
         LogError(ERR_MIN, "Failed to load font from data!");
         return false;
     }
 
-    for (auto p: pt)
-    {
-        if (!internal__create_font(fnt, p, csz)) return false;
-    }
+    for (auto pointSize: pointSizes) if (!Internal::CreateFont(font, pointSize, cacheSize)) return false;
+    SetFontPointSize(font, pointSizes.at(0));
 
-    set_font_point_size(fnt, pt.at(0));
     return true;
 }
 
-TEINAPI bool load_font_from_file (Font& fnt, std::string file_name, std::vector<int> pt, float csz)
+TEINAPI bool LoadFontFromFile (Font& font, std::string fileName, std::vector<int> pointSizes, float cacheSize)
 {
-    assert(pt.size());
+    assert(pointSizes.size());
 
     // Build an absolute path to the file based on the executable location.
-    file_name = MakePathAbsolute(file_name);
+    fileName = MakePathAbsolute(fileName);
 
-    if (FT_New_Face(freetype, file_name.c_str(), 0, &fnt.face) != 0)
+    if (FT_New_Face(gFreetype, fileName.c_str(), 0, &font.face) != 0)
     {
-        LogError(ERR_MIN, "Failed to load font '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to load font '%s'!", fileName.c_str());
         return false;
     }
 
-    for (auto p: pt)
-    {
-        if (!internal__create_font(fnt, p, csz)) return false;
-    }
+    for (auto pointSize: pointSizes) if (!Internal::CreateFont(font, pointSize, cacheSize)) return false;
+    SetFontPointSize(font, pointSizes.at(0));
 
-    set_font_point_size(fnt, pt.at(0));
     return true;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void free_font (Font& fnt)
+TEINAPI void FreeFont (Font& font)
 {
-    for (auto cache: fnt.cache) FreeTexture(cache.second);
+    for (auto cache: font.cache) FreeTexture(cache.second);
 
-    FT_Done_Face(fnt.face);
+    FT_Done_Face(font.face);
 
-    fnt.cache.clear   ();
-    fnt.data.clear    ();
-    fnt.line_gap.clear();
-    fnt.glyphs.clear  ();
+    font.cache.clear ();
+    font.data.clear();
+    font.lineGap.clear();
+    font.glyphs.clear();
 
-    fnt.current_pt_size = 0;
+    font.currentPointSize = 0;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float get_font_kerning (const Font& fnt, int c, int& i, int& p)
+TEINAPI float GetFontKerning (const Font& font, int c, int& i, int& p)
 {
-    FT_Vector kern = {};
-    i = FT_Get_Char_Index(fnt.face, c);
-    if (fnt.has_kerning && i && p)
+    FT_Vector kerning = {};
+    i = FT_Get_Char_Index(font.face, c);
+    if (font.hasKerning && i && p)
     {
-        FT_Get_Kerning(fnt.face, p, i, FT_KERNING_DEFAULT, &kern);
+        FT_Get_Kerning(font.face, p, i, FT_KERNING_DEFAULT, &kerning);
     }
     p = i;
-    return static_cast<float>(kern.x >> 6);
+    return static_cast<float>(kerning.x >> 6);
 }
 
-TEINAPI float get_font_tab_width (const Font& fnt)
+TEINAPI float GetFontTabWidth (const Font& font)
 {
-    return (fnt.glyphs.at(fnt.current_pt_size).at(32).advance * TAB_LENGTH_IN_SPACES);
+    return (font.glyphs.at(font.currentPointSize).at(32).advance * gTabLengthInSpaces);
 }
 
-TEINAPI float get_glyph_advance (const Font& fnt, int c, int& i, int& p)
+TEINAPI float GetGlyphAdvance (const Font& font, int c, int& i, int& p)
 {
-    auto& glyphs = fnt.glyphs.at(fnt.current_pt_size);
-    if (c >= 0 && c < TOTAL_GLYPH_COUNT)
-    {
-        return (glyphs.at(c).advance + get_font_kerning(fnt, c, i, p));
-    }
+    auto& glyphs = font.glyphs.at(font.currentPointSize);
+    if (c >= 0 && c < gTotalGlyphCount) return (glyphs.at(c).advance + GetFontKerning(font, c, i, p));
     return 0;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float get_text_width (const Font& fnt, std::string text)
+TEINAPI float GetTextWidth (const Font& font, std::string text)
 {
-    float max_width = 0;
+    float maxWidth = 0;
     float width = 0;
 
     int i = 0;
@@ -250,78 +222,49 @@ TEINAPI float get_text_width (const Font& fnt, std::string text)
     {
         switch (*c)
         {
-            default:     { width += get_glyph_advance(fnt, *c, i, p); } break;
-            case ('\t'): { width += get_font_tab_width(fnt);          } break;
             case ('\n'):
             {
-                if (width > max_width)
-                {
-                    max_width = width;
-                }
+                if (width > maxWidth) maxWidth = width;
                 width = 0;
+            } break;
+            case ('\t'):
+            {
+                width += GetFontTabWidth(font);
+            } break;
+            default:
+            {
+                width += GetGlyphAdvance(font, *c, i, p);
             } break;
         }
     }
 
-    return std::max(max_width, width);
+    return std::max(maxWidth, width);
 }
 
-TEINAPI float get_text_height (const Font& fnt, std::string text)
+TEINAPI float GetTextHeight (const Font& font, std::string text)
 {
     if (text.empty()) return 0.0f;
-    float height = fnt.line_gap.at(fnt.current_pt_size);
+    float height = font.lineGap.at(font.currentPointSize);
     for (const char* c=text.c_str(); *c; ++c)
     {
-        if (*c == '\n') height += fnt.line_gap.at(fnt.current_pt_size);
+        if (*c == '\n') height += font.lineGap.at(font.currentPointSize);
     }
     return height;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float get_text_width_scaled (const Font& fnt, std::string text)
+TEINAPI float GetTextWidthScaled (const Font& font, std::string text)
 {
-    return (get_text_width(fnt, text) * GetFontDrawScale());
+    return (GetTextWidth(font, text) * GetFontDrawScale());
 }
 
-TEINAPI float get_text_height_scaled (const Font& fnt, std::string text)
+TEINAPI float GetTextHeightScaled (const Font& font, std::string text)
 {
-    return (get_text_height(fnt, text) * GetFontDrawScale());
+    return (GetTextHeight(font, text) * GetFontDrawScale());
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_font_point_size (Font& fnt, int pt)
+TEINAPI void SetFontPointSize (Font& font, int pointSize)
 {
-    assert(fnt.glyphs.find(pt) != fnt.glyphs.end());
-    internal__set_font_point_size(fnt, pt);
-    fnt.current_pt_size = pt;
+    assert(font.glyphs.find(pointSize) != font.glyphs.end());
+    Internal::SetFontPointSize(font, pointSize);
+    font.currentPointSize = pointSize;
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

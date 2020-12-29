@@ -291,7 +291,7 @@ TEINAPI void internal__align_text (UI_Align horz, UI_Align vert, float& x, float
     }
     switch (vert)
     {
-    case (UI_ALIGN_TOP   ): y += ui_font->line_gap.at(ui_font->current_pt_size); break;
+    case (UI_ALIGN_TOP   ): y += ui_font->lineGap.at(ui_font->currentPointSize); break;
     case (UI_ALIGN_BOTTOM): y += roundf(((h)  -(th/4)));                         break;
     case (UI_ALIGN_CENTER): y += roundf(((h/2)+(th/4)));                         break;
     }
@@ -319,7 +319,7 @@ TEINAPI std::string internal__do_markdown_formatting (std::vector<std::string>& 
             line.at(0) = '>';
         }
 
-        if (get_text_width_scaled(fnt, line) >= w) // Word-wrap.
+        if (GetTextWidthScaled(fnt, line) >= w) // Word-wrap.
         {
             float xoff = 0.0f;
 
@@ -328,7 +328,7 @@ TEINAPI std::string internal__do_markdown_formatting (std::vector<std::string>& 
 
             for (int j=0; j<static_cast<int>(line.length()); ++j)
             {
-                xoff += get_glyph_advance(fnt, line.at(j), i, p);
+                xoff += GetGlyphAdvance(fnt, line.at(j), i, p);
 
                 if (line.at(j) == '\n')
                 {
@@ -852,7 +852,7 @@ TEINAPI float calculate_button_txt_width (std::string text)
     // cursor to position itself might overlap the previous button by 1px.
     constexpr float X_PADDING = 20;
     assert(ui_font);
-    return (ceilf(get_text_width_scaled(*ui_font, text)) + X_PADDING);
+    return (ceilf(GetTextWidthScaled(*ui_font, text)) + X_PADDING);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1003,8 +1003,8 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
 
-    float w2 = get_text_width_scaled(fnt, text);
-    float h2 = fnt.line_gap.at(fnt.current_pt_size) * GetFontDrawScale();
+    float w2 = GetTextWidthScaled(fnt, text);
+    float h2 = fnt.lineGap.at(fnt.currentPointSize) * GetFontDrawScale();
     // Center the text within the button.
     float x = roundf(cur.x + ((w - w2) / 2));
     float y = roundf(cur.y + ((h / 2) + (h2 / 4)));
@@ -1055,7 +1055,7 @@ TEINAPI bool do_button_txt (UI_Action action, float h, UI_Flag flags, std::strin
     // Important to return ceiled value otherwise the next button using the
     // cursor to position itself might overlap the previous button by 1px.
     constexpr float X_PADDING = 20;
-    float w = ceilf(get_text_width_scaled(*ui_font, text)) + X_PADDING;
+    float w = ceilf(GetTextWidthScaled(*ui_font, text)) + X_PADDING;
     return do_button_txt(action, w, h, flags, text, info, kb, name);
 }
 
@@ -1085,8 +1085,8 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
     SetDrawColor(bg); // Draw the label's background.
     FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
 
-    float tw = get_text_width_scaled (fnt, text);
-    float th = get_text_height_scaled(fnt, text);
+    float tw = GetTextWidthScaled (fnt, text);
+    float th = GetTextHeightScaled(fnt, text);
 
     // If text is a single line we calculate how much we can fit in the width
     // and if necessary trim any off and replace the end with and ellipsis.
@@ -1100,7 +1100,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
             if (clipped_text.length() <= 3)
             {
                 clipped_text = "...";
-                tw = get_text_width_scaled(fnt, clipped_text);
+                tw = GetTextWidthScaled(fnt, clipped_text);
             }
             else
             {
@@ -1108,7 +1108,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
                 while (tw > w && clipped_text.length() > 3)
                 {
                     clipped_text.erase(clipped_text.length()-4, 1);
-                    tw = get_text_width_scaled(fnt, clipped_text);
+                    tw = GetTextWidthScaled(fnt, clipped_text);
                 }
             }
         }
@@ -1158,7 +1158,7 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, 
     // Important to return ceiled value otherwise the next label using the
     // cursor to position itself might overlap the previous label by 1px.
     assert(ui_font);
-    float w = ceilf(get_text_width_scaled(*ui_font, text));
+    float w = ceilf(GetTextWidthScaled(*ui_font, text));
     return do_label(horz, vert, w, h, text, bg);
 }
 
@@ -1181,8 +1181,8 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
     SetDrawColor(bg); // Draw the label's background.
     FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
 
-    float tw = get_text_width_scaled (fnt, text);
-    float th = get_text_height_scaled(fnt, text);
+    float tw = GetTextWidthScaled (fnt, text);
+    float th = GetTextHeightScaled(fnt, text);
 
     // If text is a single line we calculate how much we can fit in the width
     // and if necessary trim any off and replace the end with and ellipsis.
@@ -1194,7 +1194,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
             if (clipped_text.length() <= 3)
             {
                 clipped_text = "...";
-                tw = get_text_width_scaled(fnt, clipped_text);
+                tw = GetTextWidthScaled(fnt, clipped_text);
             }
             else
             {
@@ -1202,7 +1202,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
                 while (tw > w && clipped_text.length() > 3)
                 {
                     clipped_text.erase(clipped_text.length()-4, 1);
-                    tw = get_text_width_scaled(fnt, clipped_text);
+                    tw = GetTextWidthScaled(fnt, clipped_text);
                 }
             }
         }
@@ -1242,10 +1242,10 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
         }
     }
 
-    float wx = cur.x + get_text_width_scaled(fnt, clipped_text);
+    float wx = cur.x + GetTextWidthScaled(fnt, clipped_text);
     float wy = cur.y;
-    float ww = get_text_width_scaled (fnt, link);
-    float wh = get_text_height_scaled(fnt, link);
+    float ww = GetTextWidthScaled (fnt, link);
+    float wh = GetTextHeightScaled(fnt, link);
 
     if (internal__handle_widget(wx,wy,ww,wh, false)) LoadWebpage(href);
 
@@ -1268,7 +1268,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
     fnt.color = front;
     DrawText(fnt, x, y, clipped_text);
 
-    x += get_text_width_scaled(fnt, clipped_text);
+    x += GetTextWidthScaled(fnt, clipped_text);
 
     SetDrawColor(shadow);
     DrawLine(x, (y+2)-offset, x+ww, (y+2)-offset);
@@ -1308,7 +1308,7 @@ TEINAPI void do_markdown (float w, float h, std::string text)
     TokenizeString(text, "\r\n", lines);
 
     float x = cur.x;
-    float y = cur.y + fnt.line_gap[fnt.current_pt_size];
+    float y = cur.y + fnt.lineGap[fnt.currentPointSize];
 
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
@@ -1331,12 +1331,12 @@ TEINAPI void do_markdown (float w, float h, std::string text)
         for (size_t i=0; i<sub_lines.size(); ++i)
         {
             x = cur.x;
-            if (i != 0) x += get_text_width_scaled(fnt, ">");
+            if (i != 0) x += GetTextWidthScaled(fnt, ">");
             fnt.color = shadow;
             DrawText(fnt, x, y-offset, sub_lines.at(i));
             fnt.color = front;
             DrawText(fnt, x, y, sub_lines.at(i));
-            y += fnt.line_gap[fnt.current_pt_size];
+            y += fnt.lineGap[fnt.currentPointSize];
         }
     }
 
@@ -1352,7 +1352,7 @@ TEINAPI float get_markdown_h (float w, std::string text)
 
     std::string md_text = internal__do_markdown_formatting(lines, w);
 
-    return get_text_height_scaled(fnt, md_text);
+    return GetTextHeightScaled(fnt, md_text);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1677,8 +1677,8 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
 
     float tx = bx;
     float ty = by;
-    float tw = get_text_width_scaled (fnt, text);
-    float th = get_text_height_scaled(fnt, text);
+    float tw = GetTextWidthScaled (fnt, text);
+    float th = GetTextHeightScaled(fnt, text);
 
     if (th == 0) th = bh;
 
@@ -1693,17 +1693,17 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         if (halign == UI_ALIGN_LEFT)
         {
             std::string sub(text.substr(0, ui_text_box_cursor));
-            float cursor_x = tx+get_text_width_scaled(fnt, sub);
+            float cursor_x = tx+GetTextWidthScaled(fnt, sub);
             if (cursor_x > bx+bw)
             {
-                float diff = abs(bw - get_text_width_scaled(fnt, sub));
+                float diff = abs(bw - GetTextWidthScaled(fnt, sub));
                 x_off = -diff;
             }
         }
         else
         {
             std::string sub(text.substr(0, ui_text_box_cursor));
-            float cursor_x = tx+get_text_width_scaled(fnt, sub);
+            float cursor_x = tx+GetTextWidthScaled(fnt, sub);
             if (cursor_x < bx)
             {
                 x_off = (bx - cursor_x);
@@ -1724,7 +1724,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         BeginScissor(bx-1, by-1, bw+2, bh+2);
 
         std::string sub(text.substr(0, ui_text_box_cursor));
-        float xo = get_text_width_scaled(fnt, sub);
+        float xo = GetTextWidthScaled(fnt, sub);
         float yo = (bh-th)/2; // Center the cursor vertically.
         // Just looks nicer...
         if ((ui_text_box_cursor != 0 && text.length()) || (!text.length()))
@@ -1882,8 +1882,8 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding&
     // Calculate the position of the text and draw it
     float tx = bx;
     float ty = by;
-    float tw = get_text_width_scaled (fnt, text);
-    float th = get_text_height_scaled(fnt, text);
+    float tw = GetTextWidthScaled (fnt, text);
+    float th = GetTextHeightScaled(fnt, text);
 
     internal__align_text(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx, ty, tw, th, bw, bh);
 
@@ -2015,8 +2015,8 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& 
     // Calculate the position of the text and draw it
     float tx = bx;
     float ty = by;
-    float tw = get_text_width_scaled (fnt, text);
-    float th = get_text_height_scaled(fnt, text);
+    float tw = GetTextWidthScaled (fnt, text);
+    float th = GetTextHeightScaled(fnt, text);
 
     internal__align_text(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx, ty, tw, th, bw, bh);
 

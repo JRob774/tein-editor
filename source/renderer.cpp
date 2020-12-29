@@ -482,7 +482,7 @@ TEINAPI void DrawTexture (const Texture& tex, float x, float y, const Quad* clip
 
 TEINAPI void DrawText (const Font& fnt, float x, float y, std::string text)
 {
-    glBindTexture(GL_TEXTURE_2D, fnt.cache.at(fnt.current_pt_size).handle);
+    glBindTexture(GL_TEXTURE_2D, fnt.cache.at(fnt.currentPointSize).handle);
     glEnable(GL_TEXTURE_2D);
 
     Defer { glDisable(GL_TEXTURE_2D); };
@@ -500,24 +500,24 @@ TEINAPI void DrawText (const Font& fnt, float x, float y, std::string text)
 
     float scale = gFontDrawScale;
 
-    const Texture& cache = fnt.cache.at(fnt.current_pt_size);
-    auto& glyphs = fnt.glyphs.at(fnt.current_pt_size);
+    const Texture& cache = fnt.cache.at(fnt.currentPointSize);
+    auto& glyphs = fnt.glyphs.at(fnt.currentPointSize);
 
     for (const char* c=text.c_str(); *c; ++c)
     {
-        if (*c < 0 || *c >= TOTAL_GLYPH_COUNT) continue;
+        if (*c < 0 || *c >= gTotalGlyphCount) continue;
 
-        cx += (get_font_kerning(fnt, *c, index, prevIndex) * scale);
+        cx += (GetFontKerning(fnt, *c, index, prevIndex) * scale);
 
         switch (*c)
         {
             case ('\r'): cx = x;                                                       break;
-            case ('\n'): cx = x, cy += (fnt.line_gap.at(fnt.current_pt_size) * scale); break;
-            case ('\t'): cx += get_font_tab_width(fnt) * scale;                        break;
+            case ('\n'): cx = x, cy += (fnt.lineGap.at(fnt.currentPointSize) * scale); break;
+            case ('\t'): cx += GetFontTabWidth(fnt) * scale;                           break;
 
             default:
             {
-                const Font_Glyph& glyph = glyphs.at(*c);
+                const FontGlyph& glyph = glyphs.at(*c);
                 const Quad& clip = glyph.bounds;
 
                 float bearingX = glyph.bearing.x * scale;
@@ -649,25 +649,25 @@ TEINAPI void DrawBatchedText (float x, float y, std::string text)
     const Font& fnt = *gTextFont;
     float scale = gFontDrawScale;
 
-    const auto& cache = fnt.cache.at(fnt.current_pt_size);
-    const auto& glyphs = fnt.glyphs.at(fnt.current_pt_size);
-    const auto& lineGap = fnt.line_gap.at(fnt.current_pt_size);
+    const auto& cache = fnt.cache.at(fnt.currentPointSize);
+    const auto& glyphs = fnt.glyphs.at(fnt.currentPointSize);
+    const auto& lineGap = fnt.lineGap.at(fnt.currentPointSize);
 
     for (const char* c=text.c_str(); *c; ++c)
     {
-        if (*c < 0 || *c >= TOTAL_GLYPH_COUNT) continue;
+        if (*c < 0 || *c >= gTotalGlyphCount) continue;
 
-        cx += (get_font_kerning(fnt, *c, index, prevIndex) * scale);
+        cx += (GetFontKerning(fnt, *c, index, prevIndex) * scale);
 
         switch (*c)
         {
-            case ('\r'): cx = x;                                  break;
-            case ('\n'): cx = x, cy += (lineGap * scale);         break;
-            case ('\t'): cx += (get_font_tab_width(fnt) * scale); break;
+            case ('\r'): cx = x;                               break;
+            case ('\n'): cx = x, cy += (lineGap * scale);      break;
+            case ('\t'): cx += (GetFontTabWidth(fnt) * scale); break;
 
             default:
             {
-                const Font_Glyph& glyph = glyphs.at(*c);
+                const FontGlyph& glyph = glyphs.at(*c);
                 const Quad& clip = glyph.bounds;
 
                 float bearingX = glyph.bearing.x * scale;
@@ -713,7 +713,7 @@ TEINAPI void FlushBatchedTiles ()
 
 TEINAPI void FlushBatchedText ()
 {
-    glBindTexture(GL_TEXTURE_2D, gTextFont->cache.at(gTextFont->current_pt_size).handle);
+    glBindTexture(GL_TEXTURE_2D, gTextFont->cache.at(gTextFont->currentPointSize).handle);
     glEnable(GL_TEXTURE_2D);
     glUseProgram(gTextShader);
     DrawVertexBuffer(gTextBuffer, BufferMode::TRIANGLES);

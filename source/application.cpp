@@ -87,7 +87,7 @@ TEINAPI void init_application (int argc, char** argv)
     }
     else LogDebug("Initialized SDL2 Library");
 
-    if (FT_Init_FreeType(&freetype) != 0)
+    if (FT_Init_FreeType(&gFreetype) != 0)
     {
         LogError(ERR_MAX, "Failed to initialize FreeType!");
         return;
@@ -183,7 +183,7 @@ TEINAPI void quit_application ()
     QuitDebugSystem();
     QuitErrorSystem();
 
-    FT_Done_FreeType(freetype);
+    FT_Done_FreeType(gFreetype);
     SDL_Quit();
 }
 

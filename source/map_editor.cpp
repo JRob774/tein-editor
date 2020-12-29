@@ -253,8 +253,8 @@ TEINAPI void internal__draw_map_clipboard ()
         // Don't bother drawing text when it's this zoomed out (can't even see it).
         if (tab.camera.zoom >= MAP_EDITOR_TEXT_CUT_OFF)
         {
-            float tw = get_text_width_scaled (fnt, node.lvl);
-            float th = get_text_height_scaled(fnt, node.lvl);
+            float tw = GetTextWidthScaled (fnt, node.lvl);
+            float th = GetTextHeightScaled(fnt, node.lvl);
             float tx = x1+MAP_EDITOR_TEXT_PAD;
             float ty = y1+roundf(((MAP_NODE_H/2)+(th/4)));
 
@@ -431,8 +431,8 @@ TEINAPI void do_map_editor ()
         // Don't bother drawing text when it's this zoomed out (can't even see it).
         if (tab.camera.zoom >= MAP_EDITOR_TEXT_CUT_OFF)
         {
-            float tw = get_text_width_scaled (fnt, node.lvl);
-            float th = get_text_height_scaled(fnt, node.lvl);
+            float tw = GetTextWidthScaled (fnt, node.lvl);
+            float th = GetTextHeightScaled(fnt, node.lvl);
             float tx = x1+MAP_EDITOR_TEXT_PAD;
             float ty = y1+roundf(((MAP_NODE_H/2)+(th/4)));
 
@@ -456,10 +456,10 @@ TEINAPI void do_map_editor ()
                 (tab.map_node_info.active_pos.x == node.x && tab.map_node_info.active_pos.y == node.y))
             {
                 std::string sub(node.lvl.substr(0, tab.map_node_info.cursor));
-                float cursor_x = tx+get_text_width_scaled(fnt, sub);
+                float cursor_x = tx+GetTextWidthScaled(fnt, sub);
                 if (cursor_x > tx+(MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)))
                 {
-                    float diff = abs((MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)) - get_text_width_scaled(fnt, sub));
+                    float diff = abs((MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)) - GetTextWidthScaled(fnt, sub));
                     x_off = -diff;
                 }
             }
@@ -525,25 +525,25 @@ TEINAPI void do_map_editor ()
             float x2 = nx+MAP_NODE_W;
             float y2 = ny+MAP_NODE_H;
 
-            float tw = get_text_width_scaled (fnt, text);
-            float th = get_text_height_scaled(fnt, text);
+            float tw = GetTextWidthScaled (fnt, text);
+            float th = GetTextHeightScaled(fnt, text);
 
             // So the cursor still draws when there is no text present.
-            if (th <= 0) th = fnt.line_gap.at(fnt.current_pt_size) * GetFontDrawScale();
+            if (th <= 0) th = fnt.lineGap.at(fnt.currentPointSize) * GetFontDrawScale();
 
             float tx = x1+MAP_EDITOR_TEXT_PAD;
             float ty = y1+roundf(((MAP_NODE_H/2)+(th/4)));
 
             float x_off = 0;
             std::string sub(text.substr(0, tab.map_node_info.cursor));
-            float cursor_x = tx+get_text_width_scaled(fnt, sub);
+            float cursor_x = tx+GetTextWidthScaled(fnt, sub);
             if (cursor_x > tx+(MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)))
             {
-                float diff = abs((MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)) - get_text_width_scaled(fnt, sub));
+                float diff = abs((MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)) - GetTextWidthScaled(fnt, sub));
                 x_off = -diff;
             }
 
-            float xo = get_text_width_scaled(fnt, sub);
+            float xo = GetTextWidthScaled(fnt, sub);
             float yo = ((y2-y1)-th)/2; // Center the cursor vertically.
             // Just looks nicer...
             if ((tab.map_node_info.cursor != 0 && text.length()) || (!text.length()))
@@ -570,14 +570,14 @@ TEINAPI void do_map_editor ()
 
                     float x_off2 = 0;
                     std::string sub2(text.substr(0, tab.map_node_info.select));
-                    float cursor_x2 = tx+get_text_width_scaled(fnt, sub2);
+                    float cursor_x2 = tx+GetTextWidthScaled(fnt, sub2);
                     if (cursor_x2 > tx+(MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)))
                     {
-                        float diff = abs((MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)) - get_text_width_scaled(fnt, sub2));
+                        float diff = abs((MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)) - GetTextWidthScaled(fnt, sub2));
                         x_off2 = -diff;
                     }
 
-                    float xo2 = get_text_width_scaled(fnt, sub2);
+                    float xo2 = GetTextWidthScaled(fnt, sub2);
                     // Just looks nicer...
                     if ((tab.map_node_info.select != 0 && text.length()) || (!text.length()))
                     {

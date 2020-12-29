@@ -197,19 +197,19 @@ TEINAPI void do_update ()
     constexpr float MAIN_H = 24;
     constexpr float SUB_H = 20;
 
-    set_font_point_size(get_editor_bold_font(), LARGE_FONT_POINT_SIZE);
+    SetFontPointSize(get_editor_bold_font(), gLargeFontPointSize);
     set_ui_font(&get_editor_bold_font());
     do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, MAIN_H, update_title);
 
     cursor.y -= 2;
 
-    set_font_point_size(get_editor_regular_font(), SMALL_FONT_POINT_SIZE);
+    SetFontPointSize(get_editor_regular_font(), gSmallFontPointSize);
     set_ui_font(&get_editor_regular_font());
     do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, SUB_H, "There is a new editor version available!");
 
     cursor.y = YPAD1 + HEADER_SECTION - SUB_H;
 
-    set_font_point_size(get_editor_bold_font(), SMALL_FONT_POINT_SIZE);
+    SetFontPointSize(get_editor_bold_font(), gSmallFontPointSize);
     set_ui_font(&get_editor_bold_font());
     do_label(UI_ALIGN_LEFT,UI_ALIGN_BOTTOM, SUB_H, "Version Changelog:");
 
@@ -233,8 +233,8 @@ TEINAPI void do_update ()
     Vec2 inner_cursor(0,0);
     set_panel_cursor(&inner_cursor);
 
-    set_font_point_size(get_editor_regular_font(), SMALL_FONT_POINT_SIZE);
-    set_font_point_size(get_editor_bold_font(), SMALL_FONT_POINT_SIZE);
+    SetFontPointSize(get_editor_regular_font(), gSmallFontPointSize);
+    SetFontPointSize(get_editor_bold_font(), gSmallFontPointSize);
 
     float label_w = GetViewport().w;
     update_dialog_content_height = get_markdown_h(label_w, update_body) + YPAD3;
@@ -252,8 +252,8 @@ TEINAPI void do_update ()
     end_panel();
 
     // Reset these so they don't interfere with any other part of the editor.
-    set_font_point_size(get_editor_regular_font(), SMALL_FONT_POINT_SIZE);
-    set_font_point_size(get_editor_bold_font(), SMALL_FONT_POINT_SIZE);
+    SetFontPointSize(get_editor_regular_font(), gSmallFontPointSize);
+    SetFontPointSize(get_editor_bold_font(), gSmallFontPointSize);
 }
 
 TEINAPI void handle_update_events ()

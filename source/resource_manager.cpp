@@ -94,8 +94,8 @@ TEINAPI bool load_atlas_resource (std::string file_name, TextureAtlas& atlas)
 TEINAPI bool load_font_resource (std::string file_name, Font& fnt, std::vector<int> pt, float csz)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return load_font_from_file(fnt, abs_file_name, pt, csz);
-    else return load_font_from_data(fnt, gpak_resource_lookup[file_name], pt, csz);
+    if (DoesFileExist(abs_file_name)) return LoadFontFromFile(fnt, abs_file_name, pt, csz);
+    else return LoadFontFromData(fnt, gpak_resource_lookup[file_name], pt, csz);
 }
 
 TEINAPI Shader load_shader_resource (std::string file_name)
@@ -152,12 +152,12 @@ TEINAPI bool load_editor_resources ()
         LogError(ERR_MAX, "Failed to load the checker-x20 image!");
         return false;
     }
-    if (!load_font_resource("fonts/opensans-regular.ttf", resource_font_regular_sans, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
+    if (!load_font_resource("fonts/opensans-regular.ttf", resource_font_regular_sans, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenSans regular font!");
         return false;
     }
-    if (!load_font_resource("fonts/opensans-bold.ttf", resource_font_bold_sans, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
+    if (!load_font_resource("fonts/opensans-bold.ttf", resource_font_bold_sans, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenSans bold font!");
         return false;
@@ -167,12 +167,12 @@ TEINAPI bool load_editor_resources ()
         LogError(ERR_MAX, "Failed to load LiberationMono regular font!");
         return false;
     }
-    if (!load_font_resource("fonts/opendyslexic-regular.ttf", resource_font_regular_dyslexic, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
+    if (!load_font_resource("fonts/opendyslexic-regular.ttf", resource_font_regular_dyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenDyslexic regular font!");
         return false;
     }
-    if (!load_font_resource("fonts/opendyslexic-bold.ttf", resource_font_bold_dyslexic, { SMALL_FONT_POINT_SIZE, LARGE_FONT_POINT_SIZE }))
+    if (!load_font_resource("fonts/opendyslexic-bold.ttf", resource_font_bold_dyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenDyslexic bold font!");
         return false;
@@ -191,12 +191,12 @@ TEINAPI bool load_editor_resources ()
 
 TEINAPI void free_editor_resources ()
 {
-    free_font       (resource_font_mono_dyslexic);
-    free_font       (resource_font_bold_sans);
-    free_font       (resource_font_bold_dyslexic);
-    free_font       (resource_font_regular_libmono);
-    free_font       (resource_font_regular_sans);
-    free_font       (resource_font_regular_dyslexic);
+    FreeFont        (resource_font_mono_dyslexic);
+    FreeFont        (resource_font_bold_sans);
+    FreeFont        (resource_font_bold_dyslexic);
+    FreeFont        (resource_font_regular_libmono);
+    FreeFont        (resource_font_regular_sans);
+    FreeFont        (resource_font_regular_dyslexic);
     FreeTexture     (resource_icons);
     FreeTexture     (resource_checker_14);
     FreeTexture     (resource_checker_16);

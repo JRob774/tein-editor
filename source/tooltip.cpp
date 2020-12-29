@@ -105,10 +105,10 @@ TEINAPI void do_tooltip ()
 
         if (desc.empty()) ypad /= 2; // Looks nicer!
 
-        float nw = get_text_width_scaled (fnt, tooltip_name);
-        float nh = get_text_height_scaled(fnt, tooltip_name);
-        float dw = get_text_width_scaled (fnt, desc        );
-        float dh = get_text_height_scaled(fnt, desc        );
+        float nw = GetTextWidthScaled (fnt, tooltip_name);
+        float nh = GetTextHeightScaled(fnt, tooltip_name);
+        float dw = GetTextWidthScaled (fnt, desc        );
+        float dh = GetTextHeightScaled(fnt, desc        );
 
         Vec2 mouse = GetMousePos();
 
