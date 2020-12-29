@@ -1,32 +1,19 @@
-/*******************************************************************************
- * Loads and manages both packed and loose resources used by the application.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr const char* gResourceLocationFileName = "resource_location.txt";
+static constexpr const char* gResourceGpakFileName = "editor.gpak";
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-static constexpr const char* RESOURCE_LOCATION = "resource_location.txt";
-static constexpr const char* RESOURCE_GPAK = "editor.gpak";
-
-static std::string resource_location;
-static std::string current_editor_font;
+static std::string gResourceLocation;
+static std::string gCurrentEditorFont;
 
 // Maps file names to the data that was stored within the editor GPAK.
-static std::map<std::string, std::vector<U8>> gpak_resource_lookup;
+static std::map<std::string,std::vector<U8>> gGpakResourceLookup;
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool init_resource_manager ()
+TEINAPI bool InitResourceManager ()
 {
-    std::string gpak_file_name(MakePathAbsolute(RESOURCE_GPAK));
-    if (!DoesFileExist(gpak_file_name)) return true;
+    std::string gpakFileName(MakePathAbsolute(gResourceGpakFileName));
+    if (!DoesFileExist(gpakFileName)) return true;
 
     // Return true because we may still function.
-    FILE* gpak = fopen(gpak_file_name.c_str(), "rb");
+    FILE* gpak = fopen(gpakFileName.c_str(), "rb");
     if (!gpak)
     {
         LogError(ERR_MED, "Failed to load editor GPAK!");
@@ -35,10 +22,10 @@ TEINAPI bool init_resource_manager ()
     Defer { fclose(gpak); };
 
     std::vector<GPAK_Entry> entries;
-    U32 entry_count;
+    U32 entryCount;
 
-    fread(&entry_count, sizeof(U32), 1, gpak);
-    entries.resize(entry_count);
+    fread(&entryCount, sizeof(U32), 1, gpak);
+    entries.resize(entryCount);
 
     for (auto& e: entries)
     {
@@ -48,230 +35,188 @@ TEINAPI bool init_resource_manager ()
         fread(&e.file_size,   sizeof(U32),  1,             gpak);
     }
 
-    std::vector<U8> file_buffer;
+    std::vector<U8> fileBuffer;
     for (auto& e: entries)
     {
-        file_buffer.resize(e.file_size);
-        fread(&file_buffer[0], sizeof(U8), e.file_size, gpak);
-        gpak_resource_lookup.insert(std::pair<std::string, std::vector<U8>>(e.name, file_buffer));
+        fileBuffer.resize(e.file_size);
+        fread(&fileBuffer[0], sizeof(U8), e.file_size, gpak);
+        gGpakResourceLookup.insert({ e.name, fileBuffer });
     }
 
     LogDebug("Loaded Editor GPAK");
     return true;
 }
 
-TEINAPI void get_resource_location ()
+TEINAPI void GetResourceLocation ()
 {
-    std::string resource_location_file(GetExecutablePath() + RESOURCE_LOCATION);
-    if (DoesFileExist(resource_location_file))
+    std::string resourceLocationFile(GetExecutablePath() + gResourceLocationFileName);
+    if (DoesFileExist(resourceLocationFile))
     {
-        std::string relative_path(ReadEntireFile(resource_location_file));
-        resource_location = GetExecutablePath() + relative_path;
+        std::string relativePath(ReadEntireFile(resourceLocationFile));
+        gResourceLocation = GetExecutablePath() + relativePath;
         // Remove trailing whitespace, if there is any.
-        resource_location.erase(resource_location.find_last_not_of(" \t\n\r\f\v") + 1);
+        gResourceLocation.erase(gResourceLocation.find_last_not_of(" \t\n\r\f\v") + 1);
     }
 }
-
-/* -------------------------------------------------------------------------- */
 
 // We attempt to load resources from file first, but if they don't exist
 // then we fall-back to loading them from the editor's GPAK file instead.
 
-TEINAPI bool load_texture_resource (std::string file_name, Texture& tex, TextureWrap wrap)
+TEINAPI bool LoadTextureResource (std::string fileName, Texture& texture, TextureWrap wrap)
 {
-    std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return LoadTextureFromFile(tex, abs_file_name, wrap);
-    else return LoadTextureFromData(tex, gpak_resource_lookup[file_name], wrap);
+    std::string absoluteFileName(BuildResourceString(fileName));
+    if (DoesFileExist(absoluteFileName)) return LoadTextureFromFile(texture, absoluteFileName, wrap);
+    else return LoadTextureFromData(texture, gGpakResourceLookup[fileName], wrap);
 }
 
-TEINAPI bool load_atlas_resource (std::string file_name, TextureAtlas& atlas)
+TEINAPI bool LoadAtlasResource (std::string fileName, TextureAtlas& atlas)
 {
-    std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return LoadTextureAtlasFromFile(atlas, abs_file_name);
-    else return LoadTextureAtlasFromData(atlas, gpak_resource_lookup[file_name]);
+    std::string absoluteFileName(BuildResourceString(fileName));
+    if (DoesFileExist(absoluteFileName)) return LoadTextureAtlasFromFile(atlas, absoluteFileName);
+    else return LoadTextureAtlasFromData(atlas, gGpakResourceLookup[fileName]);
 }
 
-TEINAPI bool load_font_resource (std::string file_name, Font& fnt, std::vector<int> pt, float csz)
+TEINAPI bool LoadFontResource (std::string fileName, Font& font, std::vector<int> pointSizes, float cacheSize)
 {
-    std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return LoadFontFromFile(fnt, abs_file_name, pt, csz);
-    else return LoadFontFromData(fnt, gpak_resource_lookup[file_name], pt, csz);
+    std::string absoluteFileName(BuildResourceString(fileName));
+    if (DoesFileExist(absoluteFileName)) return LoadFontFromFile(font, absoluteFileName, pointSizes, cacheSize);
+    else return LoadFontFromData(font, gGpakResourceLookup[fileName], pointSizes, cacheSize);
 }
 
-TEINAPI Shader load_shader_resource (std::string file_name)
+TEINAPI Shader LoadShaderResource (std::string fileName)
 {
-    std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return LoadShaderFromFile(abs_file_name);
-    else return LoadShaderFromData(gpak_resource_lookup[file_name]);
+    std::string absoluteFileName(BuildResourceString(fileName));
+    if (DoesFileExist(absoluteFileName)) return LoadShaderFromFile(absoluteFileName);
+    else return LoadShaderFromData(gGpakResourceLookup[fileName]);
 }
 
-TEINAPI std::vector<U8> load_binary_resource (std::string file_name)
+TEINAPI std::vector<U8> LoadBinaryResource (std::string fileName)
 {
-    std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return ReadBinaryFile(abs_file_name);
-    else return gpak_resource_lookup[file_name];
+    std::string absoluteFileName(BuildResourceString(fileName));
+    if (DoesFileExist(absoluteFileName)) return ReadBinaryFile(absoluteFileName);
+    else return gGpakResourceLookup[fileName];
 }
 
-TEINAPI SDL_Surface* load_surface_resource (std::string file_name)
+TEINAPI SDL_Surface* LoadSurfaceResource (std::string fileName)
 {
-    std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return SDL_LoadBMP(abs_file_name.c_str());
-    else return SDL_LoadBMP_RW(SDL_RWFromConstMem(&gpak_resource_lookup[file_name][0],
-        static_cast<int>(gpak_resource_lookup[file_name].size())), true);
+    std::string absoluteFileName(BuildResourceString(fileName));
+    if (DoesFileExist(absoluteFileName)) return SDL_LoadBMP(absoluteFileName.c_str());
+    else return SDL_LoadBMP_RW(SDL_RWFromConstMem(&gGpakResourceLookup[fileName][0],
+        static_cast<int>(gGpakResourceLookup[fileName].size())), true);
 }
 
-TEINAPI std::string load_string_resource (std::string file_name)
+TEINAPI std::string LoadStringResource (std::string fileName)
 {
-    std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return ReadEntireFile(abs_file_name);
-    else return std::string(gpak_resource_lookup[file_name].begin(),
-        gpak_resource_lookup[file_name].end());
+    std::string absoluteFileName(BuildResourceString(fileName));
+    if (DoesFileExist(absoluteFileName)) return ReadEntireFile(absoluteFileName);
+    else return std::string(gGpakResourceLookup[fileName].begin(),
+        gGpakResourceLookup[fileName].end());
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool load_editor_resources ()
+TEINAPI bool LoadEditorResources ()
 {
-    if (!load_texture_resource("textures/editor_ui/tools.png", resource_icons))
+    if (!LoadTextureResource("textures/editor_ui/tools.png", gResourceIcons))
     {
         LogError(ERR_MAX, "Failed to load editor icons!");
         return false;
     }
-    if (!load_texture_resource("textures/editor_ui/checker_x14.png", resource_checker_14, TEXTURE_WRAP_REPEAT))
+    if (!LoadTextureResource("textures/editor_ui/checker_x14.png", gResourceChecker14, TEXTURE_WRAP_REPEAT))
     {
         LogError(ERR_MAX, "Failed to load the checker-x14 image!");
         return false;
     }
-    if (!load_texture_resource("textures/editor_ui/checker_x16.png", resource_checker_16, TEXTURE_WRAP_REPEAT))
+    if (!LoadTextureResource("textures/editor_ui/checker_x16.png", gResourceChecker16, TEXTURE_WRAP_REPEAT))
     {
         LogError(ERR_MAX, "Failed to load the checker-x16 image!");
         return false;
     }
-    if (!load_texture_resource("textures/editor_ui/checker_x20.png", resource_checker_20, TEXTURE_WRAP_REPEAT))
+    if (!LoadTextureResource("textures/editor_ui/checker_x20.png", gResourceChecker20, TEXTURE_WRAP_REPEAT))
     {
         LogError(ERR_MAX, "Failed to load the checker-x20 image!");
         return false;
     }
-    if (!load_font_resource("fonts/opensans-regular.ttf", resource_font_regular_sans, { gSmallFontPointSize, gLargeFontPointSize }))
+    if (!LoadFontResource("fonts/opensans-regular.ttf", gResourceFontRegularSans, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenSans regular font!");
         return false;
     }
-    if (!load_font_resource("fonts/opensans-bold.ttf", resource_font_bold_sans, { gSmallFontPointSize, gLargeFontPointSize }))
+    if (!LoadFontResource("fonts/opensans-bold.ttf", gResourceFontBoldSans, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenSans bold font!");
         return false;
     }
-    if (!load_font_resource("fonts/liberationmono-regular.ttf", resource_font_regular_libmono))
+    if (!LoadFontResource("fonts/liberationmono-regular.ttf", gResourceFontRegularLibMono))
     {
         LogError(ERR_MAX, "Failed to load LiberationMono regular font!");
         return false;
     }
-    if (!load_font_resource("fonts/opendyslexic-regular.ttf", resource_font_regular_dyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
+    if (!LoadFontResource("fonts/opendyslexic-regular.ttf", gResourceFontRegularDyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenDyslexic regular font!");
         return false;
     }
-    if (!load_font_resource("fonts/opendyslexic-bold.ttf", resource_font_bold_dyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
+    if (!LoadFontResource("fonts/opendyslexic-bold.ttf", gResourceFontBoldDyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
     {
         LogError(ERR_MAX, "Failed to load OpenDyslexic bold font!");
         return false;
     }
-    if (!load_font_resource("fonts/opendyslexic-mono.ttf", resource_font_mono_dyslexic))
+    if (!LoadFontResource("fonts/opendyslexic-mono.ttf", gResourceFontMonoDyslexic))
     {
         LogError(ERR_MAX, "Failed to load OpenDyslexic mono font!");
         return false;
     }
 
-    update_editor_font();
+    UpdateEditorFont();
 
     LogDebug("Loaded Editor Resources");
     return true;
 }
 
-TEINAPI void free_editor_resources ()
+TEINAPI void FreeEditorResources ()
 {
-    FreeFont        (resource_font_mono_dyslexic);
-    FreeFont        (resource_font_bold_sans);
-    FreeFont        (resource_font_bold_dyslexic);
-    FreeFont        (resource_font_regular_libmono);
-    FreeFont        (resource_font_regular_sans);
-    FreeFont        (resource_font_regular_dyslexic);
-    FreeTexture     (resource_icons);
-    FreeTexture     (resource_checker_14);
-    FreeTexture     (resource_checker_16);
-    FreeTexture     (resource_checker_20);
-    FreeTextureAtlas(resource_large);
-    FreeTextureAtlas(resource_small);
+    FreeFont        (gResourceFontMonoDyslexic);
+    FreeFont        (gResourceFontBoldSans);
+    FreeFont        (gResourceFontBoldDyslexic);
+    FreeFont        (gResourceFontRegularLibMono);
+    FreeFont        (gResourceFontRegularSans);
+    FreeFont        (gResourceFontRegularDyslexic);
+    FreeTexture     (gResourceIcons);
+    FreeTexture     (gResourceChecker14);
+    FreeTexture     (gResourceChecker16);
+    FreeTexture     (gResourceChecker20);
+    FreeTextureAtlas(gResourceLarge);
+    FreeTextureAtlas(gResourceSmall);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI std::string build_resource_string (std::string str)
+TEINAPI std::string BuildResourceString (std::string pathName)
 {
-    return (IsPathAbsolute(str)) ? str : (resource_location + str);
+    return (IsPathAbsolute(pathName)) ? pathName : (gResourceLocation + pathName);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void update_editor_font ()
+TEINAPI void UpdateEditorFont ()
 {
-    current_editor_font = gEditorSettings.fontFace;
+    gCurrentEditorFont = gEditorSettings.fontFace;
 }
 
-TEINAPI bool is_editor_font_opensans ()
+TEINAPI bool IsEditorFontOpenSans ()
 {
-    return (current_editor_font != "OpenDyslexic");
+    return (gCurrentEditorFont != "OpenDyslexic");
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Font& get_editor_regular_font ()
+TEINAPI Font& GetEditorRegularFont ()
 {
-    return (is_editor_font_opensans()) ? resource_font_regular_sans : resource_font_regular_dyslexic;
+    return (IsEditorFontOpenSans()) ? gResourceFontRegularSans : gResourceFontRegularDyslexic;
+}
+TEINAPI Font& GetEditorBoldFont ()
+{
+    return (IsEditorFontOpenSans()) ? gResourceFontBoldSans : gResourceFontBoldDyslexic;
 }
 
-TEINAPI Font& get_editor_bold_font ()
+TEINAPI TextureAtlas& GetEditorAtlasLarge ()
 {
-    return (is_editor_font_opensans()) ? resource_font_bold_sans : resource_font_bold_dyslexic;
+    return gResourceLarge;
 }
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI TextureAtlas& get_editor_atlas_large ()
+TEINAPI TextureAtlas& GetEditorAtlasSmall ()
 {
-    return resource_large;
+    return gResourceSmall;
 }
-
-TEINAPI TextureAtlas& get_editor_atlas_small ()
-{
-    return resource_small;
-}
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

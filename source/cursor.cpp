@@ -16,7 +16,7 @@ namespace Internal
 {
     TEINAPI bool LoadCursor (Cursor cursor, const char* fileName, int x, int y)
     {
-        SDL_Surface* surface = load_surface_resource(fileName);
+        SDL_Surface* surface = LoadSurfaceResource(fileName);
         if (!surface)
         {
             LogError(ERR_MIN, "Failed to load cursor file '%s'!", fileName);

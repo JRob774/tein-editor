@@ -67,7 +67,7 @@ TEINAPI bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool
     cursor1.x += pw;
     cursor1.y  = 0.0f;
 
-    if (do_button_img_gradient(NULL, bw,th+1, flags, &CLIP_CROSS, info))
+    if (do_button_img_gradient(NULL, bw,th+1, flags, &gClipCross, info))
     {
         should_close = true;
     }
@@ -105,8 +105,8 @@ TEINAPI void do_tab_bar ()
     float bw = SHIFT_TAB_BUTTON_WIDTH;
     float bh = TAB_BAR_HEIGHT;
 
-    set_ui_texture(&resource_icons);
-    set_ui_font(&get_editor_regular_font());
+    set_ui_texture(&gResourceIcons);
+    set_ui_font(&GetEditorRegularFont());
 
     float whole_tab_bar_w = GetViewport().w - get_toolbar_w() - get_control_panel_w();
 
@@ -155,7 +155,7 @@ TEINAPI void do_tab_bar ()
         set_panel_cursor(&tmp);
         bool l_arrow_active = (starting_tab_offset != 0);
         UI_Flag flags = (l_arrow_active) ? UI_NONE : UI_LOCKED;
-        if (do_button_img(NULL, bw+1,bh, flags, &CLIP_ARROW_LEFT))
+        if (do_button_img(NULL, bw+1,bh, flags, &gClipArrowLeft))
         {
             --starting_tab_offset;
         }
@@ -196,7 +196,7 @@ TEINAPI void do_tab_bar ()
         set_panel_cursor(&tmp);
         bool r_arrow_active = (starting_tab_offset+max_number_of_tabs < editor.tabs.size());
         UI_Flag flags = (r_arrow_active) ? UI_NONE : UI_LOCKED;
-        if (do_button_img(NULL, bw+1,bh, flags, &CLIP_ARROW_RIGHT))
+        if (do_button_img(NULL, bw+1,bh, flags, &gClipArrowRight))
         {
             ++starting_tab_offset;
         }

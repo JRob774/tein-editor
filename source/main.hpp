@@ -88,8 +88,8 @@
 #include "texture.hpp"
 #include "texture_atlas.hpp"
 #include "font.hpp"
-
 #include "shader.hpp"
+
 #include "resource_manager.hpp"
 #include "user_interface.hpp"
 #include "level.hpp"

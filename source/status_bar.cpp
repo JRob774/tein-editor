@@ -94,15 +94,15 @@ TEINAPI void do_status_bar ()
 
     // We ensure that the mouse and select labels are always big enough to
     // show their entire content and they take priority over the tool-tip.
-    float l2_tw = GetTextWidthScaled(get_editor_regular_font(), mouse_str);
+    float l2_tw = GetTextWidthScaled(GetEditorRegularFont(), mouse_str);
     if (l2_w < l2_tw) l2_w = l2_tw;
-    float l3_tw = GetTextWidthScaled(get_editor_regular_font(), select_str);
+    float l3_tw = GetTextWidthScaled(GetEditorRegularFont(), select_str);
     if (l3_w < l3_tw) l3_w = l3_tw;
 
     // Now we can calculate how much space is left for the tool-tip label.
     float l1_w = (status_bar_width - (l2_w + l3_w)) - (advance * 2);
 
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     // Status bar is a horizontal list of editor status information.
     begin_panel(x, y, w, h, UI_NONE, ui_color_medium);

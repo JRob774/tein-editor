@@ -134,7 +134,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     }
     Defer { SDL_FreeSurface(atlas_surface); atlas_surface = NULL; };
 
-    std::string output_txt_name(build_resource_string(output_name) + ".txt");
+    std::string output_txt_name(BuildResourceString(output_name) + ".txt");
     FILE* file = fopen(output_txt_name.c_str(), "w");
     if (!file)
     {
@@ -179,7 +179,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
 
     fprintf(file, "]\n");
 
-    std::string output_png_name(build_resource_string(output_name) + ".png");
+    std::string output_png_name(BuildResourceString(output_name) + ".png");
     stbi_write_png(output_png_name.c_str(), atlas_w,atlas_h, BYTES_PER_PIXEL,
         atlas_surface->pixels, atlas_w*BYTES_PER_PIXEL);
 

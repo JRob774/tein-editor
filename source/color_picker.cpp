@@ -131,7 +131,7 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
 
 TEINAPI void internal__do_color_preview (Vec2& cursor, Vec4 c, float size)
 {
-    const Texture& tex = (static_cast<int>(size) % 14 == 0) ? resource_checker_14 : resource_checker_16;
+    const Texture& tex = (static_cast<int>(size) % 14 == 0) ? gResourceChecker14 : gResourceChecker16;
 
     float x = cursor.x;
     float y = cursor.y;
@@ -237,7 +237,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float ty = cursor.y + (th / 2);
 
     Quad clip1 = { 0, 0, tw, th };
-    DrawTexture(resource_checker_20, tx, ty, &clip1);
+    DrawTexture(gResourceChecker20, tx, ty, &clip1);
 
     Vec4 min(c.r, c.g, c.b, 0);
     Vec4 max(c.r, c.g, c.b, 1);
@@ -268,7 +268,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float ity = iy1 + (ith / 2);
 
     Quad clip2 = { ix1-cursor.x, -2, itw, ith };
-    DrawTexture(resource_checker_20, itx, ity, &clip2);
+    DrawTexture(gResourceChecker20, itx, ity, &clip2);
 
     SetDrawColor(c);
     FillQuad(ix1, iy1, ix2, iy2);
@@ -369,7 +369,7 @@ TEINAPI void do_color_picker ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 

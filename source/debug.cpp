@@ -19,7 +19,7 @@ namespace Internal
         // We only open the debug log once the first debug occurs.
         if (!gDebugLog)
         {
-            std::string debugLogName(build_resource_string(gDebugLogName));
+            std::string debugLogName(BuildResourceString(gDebugLogName));
             CreatePath(StripFileName(debugLogName));
             gDebugLog = fopen(debugLogName.c_str(), "w");
             if (gDebugLog)

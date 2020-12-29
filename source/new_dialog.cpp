@@ -65,7 +65,7 @@ TEINAPI void do_new ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
@@ -134,8 +134,8 @@ TEINAPI void do_new ()
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);
 
-    float label_w_w = GetTextWidthScaled(get_editor_regular_font(), NEW_WIDTH_LABEL);
-    float label_h_w = GetTextWidthScaled(get_editor_regular_font(), NEW_HEIGHT_LABEL);
+    float label_w_w = GetTextWidthScaled(GetEditorRegularFont(), NEW_WIDTH_LABEL);
+    float label_h_w = GetTextWidthScaled(GetEditorRegularFont(), NEW_HEIGHT_LABEL);
 
     float text_box_w = (vw-(NEW_XPAD*2));
     float label_w = std::max(label_w_w, label_h_w);

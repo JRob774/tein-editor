@@ -96,14 +96,14 @@ TEINAPI bool InitRenderer ()
 
     glGetFloatv(GL_MAX_TEXTURE_SIZE, &gMaxGLTextureSize);
 
-    gUntexturedShader = load_shader_resource("shaders/untextured.shader");
+    gUntexturedShader = LoadShaderResource("shaders/untextured.shader");
     if (!gUntexturedShader)
     {
         LogError(ERR_MAX, "Failed to load the untextured shader!");
         return false;
     }
 
-    gTexturedShader = load_shader_resource("shaders/textured.shader");
+    gTexturedShader = LoadShaderResource("shaders/textured.shader");
     if (!gTexturedShader)
     {
         LogError(ERR_MAX, "Failed to load the textured shader!");
@@ -112,7 +112,7 @@ TEINAPI bool InitRenderer ()
 
     // We carry on even on failure because text will still be drawn it
     // will just be extremely ugly... but it's not worth failing over.
-    gTextShader = load_shader_resource("shaders/text.shader");
+    gTextShader = LoadShaderResource("shaders/text.shader");
     if (!gTextShader)
     {
         LogError(ERR_MED, "Failed to load the text shader!");

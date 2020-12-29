@@ -34,7 +34,7 @@ static Quad layer_panel_bounds;
 
 TEINAPI bool internal__do_layer_button (UI_Flag flags, int layer, const char* name, const char* info)
 {
-    const Quad& clip = (flags & UI_INACTIVE) ? CLIP_CROSS : CLIP_EYE;
+    const Quad& clip = (flags & UI_INACTIVE) ? gClipCross : gClipEye;
 
     constexpr float PAD = 5;
     Vec2 cursor(PAD, 0);
@@ -74,7 +74,7 @@ TEINAPI bool internal__do_layer_button (UI_Flag flags, int layer, const char* na
     do_quad(w, h, LAYER_COLORS[layer]);
     cursor.y = 0;
     advance_panel_cursor(PAD);
-    do_icon(24, get_panel_h(), resource_icons, &clip);
+    do_icon(24, get_panel_h(), gResourceIcons, &clip);
     advance_panel_cursor(PAD);
     do_label(UI_ALIGN_LEFT, UI_ALIGN_CENTER, get_panel_h(), name);
 
@@ -133,8 +133,8 @@ TEINAPI void do_layer_panel (bool scrollbar)
 
     Vec2 cursor(0,0);
 
-    set_ui_texture(&resource_icons);
-    set_ui_font(&get_editor_regular_font());
+    set_ui_texture(&gResourceIcons);
+    set_ui_font(&GetEditorRegularFont());
 
     constexpr float PAD = LAYER_PANEL_INNER_PAD;
 

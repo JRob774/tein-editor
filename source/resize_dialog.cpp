@@ -24,15 +24,15 @@ static int current_resize_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
 
 static Resize_Dir resize_dialog_dir = Resize_Dir::CENTER;
 
-static const Quad* nw_clip     = &CLIP_RESIZE_NW;
-static const Quad* n_clip      = &CLIP_RESIZE_N;
-static const Quad* ne_clip     = &CLIP_RESIZE_NE;
-static const Quad* w_clip      = &CLIP_RESIZE_W;
-static const Quad* center_clip = &CLIP_BULLET;
-static const Quad* e_clip      = &CLIP_RESIZE_E;
-static const Quad* sw_clip     = &CLIP_RESIZE_SW;
-static const Quad* s_clip      = &CLIP_RESIZE_S;
-static const Quad* se_clip     = &CLIP_RESIZE_SE;
+static const Quad* nw_clip     = &gClipResizeNW;
+static const Quad* n_clip      = &gClipResizeN;
+static const Quad* ne_clip     = &gClipResizeNE;
+static const Quad* w_clip      = &gClipResizeW;
+static const Quad* center_clip = &gClipBullet;
+static const Quad* e_clip      = &gClipResizeE;
+static const Quad* sw_clip     = &gClipResizeSW;
+static const Quad* s_clip      = &gClipResizeS;
+static const Quad* se_clip     = &gClipResizeSE;
 
 /* -------------------------------------------------------------------------- */
 
@@ -42,111 +42,111 @@ TEINAPI void internal__calculate_dir_clips ()
     {
         case (Resize_Dir::NW):
         {
-            nw_clip     = &CLIP_BULLET;
-            n_clip      = &CLIP_RESIZE_E;
-            ne_clip     = &CLIP_NONE;
-            w_clip      = &CLIP_RESIZE_S;
-            center_clip = &CLIP_RESIZE_SE;
-            e_clip      = &CLIP_NONE;
-            sw_clip     = &CLIP_NONE;
-            s_clip      = &CLIP_NONE;
-            se_clip     = &CLIP_NONE;
+            nw_clip     = &gClipBullet;
+            n_clip      = &gClipResizeE;
+            ne_clip     = &gClipNone;
+            w_clip      = &gClipResizeS;
+            center_clip = &gClipResizeSE;
+            e_clip      = &gClipNone;
+            sw_clip     = &gClipNone;
+            s_clip      = &gClipNone;
+            se_clip     = &gClipNone;
         } break;
         case (Resize_Dir::N):
         {
-            nw_clip     = &CLIP_RESIZE_W;
-            n_clip      = &CLIP_BULLET;
-            ne_clip     = &CLIP_RESIZE_E;
-            w_clip      = &CLIP_RESIZE_SW;
-            center_clip = &CLIP_RESIZE_S;
-            e_clip      = &CLIP_RESIZE_SE;
-            sw_clip     = &CLIP_NONE;
-            s_clip      = &CLIP_NONE;
-            se_clip     = &CLIP_NONE;
+            nw_clip     = &gClipResizeW;
+            n_clip      = &gClipBullet;
+            ne_clip     = &gClipResizeE;
+            w_clip      = &gClipResizeSW;
+            center_clip = &gClipResizeS;
+            e_clip      = &gClipResizeSE;
+            sw_clip     = &gClipNone;
+            s_clip      = &gClipNone;
+            se_clip     = &gClipNone;
         } break;
         case (Resize_Dir::NE):
         {
-            nw_clip     = &CLIP_NONE;
-            n_clip      = &CLIP_RESIZE_W;
-            ne_clip     = &CLIP_BULLET;
-            w_clip      = &CLIP_NONE;
-            center_clip = &CLIP_RESIZE_SW;
-            e_clip      = &CLIP_RESIZE_S;
-            sw_clip     = &CLIP_NONE;
-            s_clip      = &CLIP_NONE;
-            se_clip     = &CLIP_NONE;
+            nw_clip     = &gClipNone;
+            n_clip      = &gClipResizeW;
+            ne_clip     = &gClipBullet;
+            w_clip      = &gClipNone;
+            center_clip = &gClipResizeSW;
+            e_clip      = &gClipResizeS;
+            sw_clip     = &gClipNone;
+            s_clip      = &gClipNone;
+            se_clip     = &gClipNone;
         } break;
         case (Resize_Dir::W):
         {
-            nw_clip     = &CLIP_RESIZE_N;
-            n_clip      = &CLIP_RESIZE_NE;
-            ne_clip     = &CLIP_NONE;
-            w_clip      = &CLIP_BULLET;
-            center_clip = &CLIP_RESIZE_E;
-            e_clip      = &CLIP_NONE;
-            sw_clip     = &CLIP_RESIZE_S;
-            s_clip      = &CLIP_RESIZE_SE;
-            se_clip     = &CLIP_NONE;
+            nw_clip     = &gClipResizeN;
+            n_clip      = &gClipResizeNE;
+            ne_clip     = &gClipNone;
+            w_clip      = &gClipBullet;
+            center_clip = &gClipResizeE;
+            e_clip      = &gClipNone;
+            sw_clip     = &gClipResizeS;
+            s_clip      = &gClipResizeSE;
+            se_clip     = &gClipNone;
         } break;
         case (Resize_Dir::CENTER):
         {
-            nw_clip     = &CLIP_RESIZE_NW;
-            n_clip      = &CLIP_RESIZE_N;
-            ne_clip     = &CLIP_RESIZE_NE;
-            w_clip      = &CLIP_RESIZE_W;
-            center_clip = &CLIP_BULLET;
-            e_clip      = &CLIP_RESIZE_E;
-            sw_clip     = &CLIP_RESIZE_SW;
-            s_clip      = &CLIP_RESIZE_S;
-            se_clip     = &CLIP_RESIZE_SE;
+            nw_clip     = &gClipResizeNW;
+            n_clip      = &gClipResizeN;
+            ne_clip     = &gClipResizeNE;
+            w_clip      = &gClipResizeW;
+            center_clip = &gClipBullet;
+            e_clip      = &gClipResizeE;
+            sw_clip     = &gClipResizeSW;
+            s_clip      = &gClipResizeS;
+            se_clip     = &gClipResizeSE;
         } break;
         case (Resize_Dir::E):
         {
-            nw_clip     = &CLIP_NONE;
-            n_clip      = &CLIP_RESIZE_NW;
-            ne_clip     = &CLIP_RESIZE_N;
-            w_clip      = &CLIP_NONE;
-            center_clip = &CLIP_RESIZE_W;
-            e_clip      = &CLIP_BULLET;
-            sw_clip     = &CLIP_NONE;
-            s_clip      = &CLIP_RESIZE_SW;
-            se_clip     = &CLIP_RESIZE_S;
+            nw_clip     = &gClipNone;
+            n_clip      = &gClipResizeNW;
+            ne_clip     = &gClipResizeN;
+            w_clip      = &gClipNone;
+            center_clip = &gClipResizeW;
+            e_clip      = &gClipBullet;
+            sw_clip     = &gClipNone;
+            s_clip      = &gClipResizeSW;
+            se_clip     = &gClipResizeS;
         } break;
         case (Resize_Dir::SW):
         {
-            nw_clip     = &CLIP_NONE;
-            n_clip      = &CLIP_NONE;
-            ne_clip     = &CLIP_NONE;
-            w_clip      = &CLIP_RESIZE_N;
-            center_clip = &CLIP_RESIZE_NE;
-            e_clip      = &CLIP_NONE;
-            sw_clip     = &CLIP_BULLET;
-            s_clip      = &CLIP_RESIZE_E;
-            se_clip     = &CLIP_NONE;
+            nw_clip     = &gClipNone;
+            n_clip      = &gClipNone;
+            ne_clip     = &gClipNone;
+            w_clip      = &gClipResizeN;
+            center_clip = &gClipResizeNE;
+            e_clip      = &gClipNone;
+            sw_clip     = &gClipBullet;
+            s_clip      = &gClipResizeE;
+            se_clip     = &gClipNone;
         } break;
         case (Resize_Dir::S):
         {
-            nw_clip     = &CLIP_NONE;
-            n_clip      = &CLIP_NONE;
-            ne_clip     = &CLIP_NONE;
-            w_clip      = &CLIP_RESIZE_NW;
-            center_clip = &CLIP_RESIZE_N;
-            e_clip      = &CLIP_RESIZE_NE;
-            sw_clip     = &CLIP_RESIZE_W;
-            s_clip      = &CLIP_BULLET;
-            se_clip     = &CLIP_RESIZE_E;
+            nw_clip     = &gClipNone;
+            n_clip      = &gClipNone;
+            ne_clip     = &gClipNone;
+            w_clip      = &gClipResizeNW;
+            center_clip = &gClipResizeN;
+            e_clip      = &gClipResizeNE;
+            sw_clip     = &gClipResizeW;
+            s_clip      = &gClipBullet;
+            se_clip     = &gClipResizeE;
         } break;
         case (Resize_Dir::SE):
         {
-            nw_clip     = &CLIP_NONE;
-            n_clip      = &CLIP_NONE;
-            ne_clip     = &CLIP_NONE;
-            w_clip      = &CLIP_NONE;
-            center_clip = &CLIP_RESIZE_NW;
-            e_clip      = &CLIP_RESIZE_N;
-            sw_clip     = &CLIP_NONE;
-            s_clip      = &CLIP_RESIZE_W;
-            se_clip     = &CLIP_BULLET;
+            nw_clip     = &gClipNone;
+            n_clip      = &gClipNone;
+            ne_clip     = &gClipNone;
+            w_clip      = &gClipNone;
+            center_clip = &gClipResizeNW;
+            e_clip      = &gClipResizeN;
+            sw_clip     = &gClipNone;
+            s_clip      = &gClipResizeW;
+            se_clip     = &gClipBullet;
         } break;
     }
 }
@@ -242,7 +242,7 @@ TEINAPI void do_resize ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
@@ -285,8 +285,8 @@ TEINAPI void do_resize ()
     set_panel_cursor_dir(UI_DIR_DOWN);
     set_panel_cursor(&cursor);
 
-    float label_w_w = GetTextWidthScaled(get_editor_regular_font(), RESIZE_WIDTH_LABEL);
-    float label_h_w = GetTextWidthScaled(get_editor_regular_font(), RESIZE_HEIGHT_LABEL);
+    float label_w_w = GetTextWidthScaled(GetEditorRegularFont(), RESIZE_WIDTH_LABEL);
+    float label_h_w = GetTextWidthScaled(GetEditorRegularFont(), RESIZE_HEIGHT_LABEL);
 
     float text_box_w = (vw-(RESIZE_XPAD*2));
     float label_w = std::max(label_w_w, label_h_w);

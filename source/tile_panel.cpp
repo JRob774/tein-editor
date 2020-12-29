@@ -109,7 +109,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
     SetDrawColor(ui_color_ex_dark); // The outline/border for the category.
     DrawQuad(0, get_panel_offset().y, w, get_panel_offset().y+h);
 
-    TextureAtlas& atlas = get_editor_atlas_small();
+    TextureAtlas& atlas = GetEditorAtlasSmall();
 
     SetTileBatchTexture(atlas.texture);
     SetTileBatchColor((is_active) ? Vec4(1,1,1,1) : Vec4(1,1,1,TILE_PANEL_INACTIVE_A));
@@ -270,7 +270,7 @@ TEINAPI bool init_tile_panel ()
     try
     {
         // Load all of the tile groups and sort them into their categories.
-        GonObject tile_gon_data = GonObject::LoadFromBuffer(load_string_resource(TILE_DATA_FILE))["tiles"];
+        GonObject tile_gon_data = GonObject::LoadFromBuffer(LoadStringResource(TILE_DATA_FILE))["tiles"];
 
         for (auto& it: tile_gon_data.children_map)
         {
@@ -295,7 +295,7 @@ TEINAPI bool init_tile_panel ()
         }
 
         // Load flip mappings between the tile IDs for smart level flipping.
-        GonObject flip_gon_data = GonObject::LoadFromBuffer(load_string_resource(FLIP_DATA_FILE))["flip"];
+        GonObject flip_gon_data = GonObject::LoadFromBuffer(LoadStringResource(FLIP_DATA_FILE))["flip"];
 
         internal__load_flip_data(flip_gon_data["horz"], tile_panel.flip_map_horz);
         internal__load_flip_data(flip_gon_data["vert"], tile_panel.flip_map_vert);
@@ -320,7 +320,7 @@ TEINAPI bool init_tile_panel ()
 
 TEINAPI void do_tile_panel (bool scrollbar)
 {
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     Vec2 cursor(TILE_PANEL_INNER_PAD, 0);
     tile_panel.bounds = { 0, 0, get_panel_w(), get_panel_h() };
@@ -416,18 +416,18 @@ TEINAPI float get_tile_panel_height ()
 
 TEINAPI void reload_tile_graphics ()
 {
-    FreeTextureAtlas(resource_large);
-    FreeTextureAtlas(resource_small);
+    FreeTextureAtlas(gResourceLarge);
+    FreeTextureAtlas(gResourceSmall);
 
     if (gEditorSettings.tileGraphics == "new")
     {
-        load_atlas_resource("textures/editor_icons/new_large.txt", resource_large);
-        load_atlas_resource("textures/editor_icons/new_small.txt", resource_small);
+        LoadAtlasResource("textures/editor_icons/new_large.txt", gResourceLarge);
+        LoadAtlasResource("textures/editor_icons/new_small.txt", gResourceSmall);
     }
     else
     {
-        load_atlas_resource("textures/editor_icons/old_large.txt", resource_large);
-        load_atlas_resource("textures/editor_icons/old_small.txt", resource_small);
+        LoadAtlasResource("textures/editor_icons/old_large.txt", gResourceLarge);
+        LoadAtlasResource("textures/editor_icons/old_small.txt", gResourceSmall);
     }
 }
 

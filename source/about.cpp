@@ -11,7 +11,7 @@
 
 TEINAPI void do_about ()
 {
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     begin_panel(gWindowBorder,gWindowBorder,GetViewport().w-(gWindowBorder*2),GetViewport().h-(gWindowBorder*2), UI_NONE, ui_color_ex_dark);
     begin_panel(1,1,GetViewport().w-2,GetViewport().h-2, UI_NONE, ui_color_medium);

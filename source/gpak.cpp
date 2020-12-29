@@ -328,7 +328,7 @@ TEINAPI void do_unpack ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
@@ -398,7 +398,7 @@ TEINAPI void do_pack ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 

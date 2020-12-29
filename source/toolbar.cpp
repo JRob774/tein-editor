@@ -44,7 +44,7 @@ TEINAPI void internal__do_level_toolbar ()
     float bw = TOOLBAR_WIDTH - (TOOLBAR_INNER_PAD * 2);
     float bh = 25;
 
-    set_ui_texture(&resource_icons);
+    set_ui_texture(&gResourceIcons);
 
     UI_Flag brush_flags    = UI_NONE;
     UI_Flag fill_flags     = UI_NONE;
@@ -99,15 +99,15 @@ TEINAPI void internal__do_level_toolbar ()
     set_panel_cursor(&cursor);
     set_panel_cursor_dir(UI_DIR_DOWN);
 
-    do_button_img(tb_set_tool_to_brush,  bw,bh, brush_flags,     &CLIP_BRUSH,           TB_INFO_BRUSH,           gKbToolBrush,     "Brush");
-    do_button_img(tb_set_tool_to_fill,   bw,bh, fill_flags,      &CLIP_FILL,            TB_INFO_FILL,            gKbToolFill,      "Fill");
-    do_button_img(tb_set_tool_to_select, bw,bh, select_flags,    &CLIP_SELECT,          TB_INFO_SELECT,          gKbToolSelect,    "Select");
-    do_button_img(tb_toggle_grid,        bw,bh, grid_flags,      &CLIP_GRID,            TB_INFO_GRID,            gKbGridToggle,    "Grid");
-    do_button_img(tb_toggle_bounds,      bw,bh, bounds_flags,    &CLIP_BOUNDS,          TB_INFO_BOUNDS,          gKbBoundsToggle,  "Bounds");
-    do_button_img(tb_toggle_layer_trans, bw,bh, layer_flags,     &CLIP_LAYERS,          TB_INFO_LAYERS,          gKbLayersToggle,  "Layer Transparency");
-    do_button_img(tb_reset_camera,       bw,bh, UI_NONE,         &CLIP_CAMERA,          TB_INFO_CAMERA,          gKbCameraReset,   "Reset Camera");
-    do_button_img(tb_toggle_entity,      bw,bh, entity_flags,    &CLIP_ENTITY,          TB_INFO_ENTITY,          gKbToggleEntity,  "Toggle Large Entities");
-    do_button_img(tb_toggle_guides,      bw,bh, guide_flags,     &CLIP_GUIDES,          TB_INFO_GUIDES,          gKbToggleGuides,  "Toggle Entity Guides");
+    do_button_img(tb_set_tool_to_brush,  bw,bh, brush_flags,     &gClipBrush,           TB_INFO_BRUSH,           gKbToolBrush,     "Brush");
+    do_button_img(tb_set_tool_to_fill,   bw,bh, fill_flags,      &gClipFill,            TB_INFO_FILL,            gKbToolFill,      "Fill");
+    do_button_img(tb_set_tool_to_select, bw,bh, select_flags,    &gClipSelect,          TB_INFO_SELECT,          gKbToolSelect,    "Select");
+    do_button_img(tb_toggle_grid,        bw,bh, grid_flags,      &gClipGrid,            TB_INFO_GRID,            gKbGridToggle,    "Grid");
+    do_button_img(tb_toggle_bounds,      bw,bh, bounds_flags,    &gClipBounds,          TB_INFO_BOUNDS,          gKbBoundsToggle,  "Bounds");
+    do_button_img(tb_toggle_layer_trans, bw,bh, layer_flags,     &gClipLayers,          TB_INFO_LAYERS,          gKbLayersToggle,  "Layer Transparency");
+    do_button_img(tb_reset_camera,       bw,bh, UI_NONE,         &gClipCamera,          TB_INFO_CAMERA,          gKbCameraReset,   "Reset Camera");
+    do_button_img(tb_toggle_entity,      bw,bh, entity_flags,    &gClipEntity,          TB_INFO_ENTITY,          gKbToggleEntity,  "Toggle Large Entities");
+    do_button_img(tb_toggle_guides,      bw,bh, guide_flags,     &gClipGuides,          TB_INFO_GUIDES,          gKbToggleGuides,  "Toggle Entity Guides");
 
     // If not all buttons will fit on the screen we will double the width of the
     // toolbar and then place the buttons side-to-side instead of straight down.
@@ -124,15 +124,15 @@ TEINAPI void internal__do_level_toolbar ()
         cursor.y = TOOLBAR_INNER_PAD;
     }
 
-    do_button_img(tb_resize,             bw,bh, UI_NONE,         &CLIP_RESIZE,          TB_INFO_RESIZE,          gKbLevelResize,   "Resize");
-    do_button_img(tb_flip_level_h,       bw,bh, flip_h_flags,    &CLIP_FLIP_H,          TB_INFO_FLIP_H,          gKbFlipH,         "Flip Horizontal");
-    do_button_img(tb_flip_level_v,       bw,bh, flip_v_flags,    &CLIP_FLIP_V,          TB_INFO_FLIP_V,          gKbFlipV,         "Flip Vertical");
-    do_button_img(tb_toggle_mirror_h,    bw,bh, mirror_h_flags,  &CLIP_MIRROR_H,        TB_INFO_MIRROR_H,        gKbMirrorHToggle, "Mirror Horizontal");
-    do_button_img(tb_toggle_mirror_v,    bw,bh, mirror_v_flags,  &CLIP_MIRROR_V,        TB_INFO_MIRROR_V,        gKbMirrorVToggle, "Mirror Vertical");
-    do_button_img(tb_cut,                bw,bh, cut_flags,       &CLIP_CUT,             TB_INFO_CUT,             gKbCut,           "Cut");
-    do_button_img(tb_copy,               bw,bh, copy_flags,      &CLIP_COPY,            TB_INFO_COPY,            gKbCopy,          "Copy");
-    do_button_img(tb_deselect,           bw,bh, deselect_flags,  &CLIP_DESELECT,        TB_INFO_DESELECT,        gKbDeselect,      "Deselect");
-    do_button_img(tb_clear_select,       bw,bh, clear_flags,     &CLIP_CLEAR,           TB_INFO_CLEAR,           gKbClearSelect,   "Clear Selection");
+    do_button_img(tb_resize,             bw,bh, UI_NONE,         &gClipResize,          TB_INFO_RESIZE,          gKbLevelResize,   "Resize");
+    do_button_img(tb_flip_level_h,       bw,bh, flip_h_flags,    &gClipFlipH,           TB_INFO_FLIP_H,          gKbFlipH,         "Flip Horizontal");
+    do_button_img(tb_flip_level_v,       bw,bh, flip_v_flags,    &gClipFlipV,           TB_INFO_FLIP_V,          gKbFlipV,         "Flip Vertical");
+    do_button_img(tb_toggle_mirror_h,    bw,bh, mirror_h_flags,  &gClipMirrorH,         TB_INFO_MIRROR_H,        gKbMirrorHToggle, "Mirror Horizontal");
+    do_button_img(tb_toggle_mirror_v,    bw,bh, mirror_v_flags,  &gClipMirrorV,         TB_INFO_MIRROR_V,        gKbMirrorVToggle, "Mirror Vertical");
+    do_button_img(tb_cut,                bw,bh, cut_flags,       &gClipCut,             TB_INFO_CUT,             gKbCut,           "Cut");
+    do_button_img(tb_copy,               bw,bh, copy_flags,      &gClipCopy,            TB_INFO_COPY,            gKbCopy,          "Copy");
+    do_button_img(tb_deselect,           bw,bh, deselect_flags,  &gClipDeselect,        TB_INFO_DESELECT,        gKbDeselect,      "Deselect");
+    do_button_img(tb_clear_select,       bw,bh, clear_flags,     &gClipClear,           TB_INFO_CLEAR,           gKbClearSelect,   "Clear Selection");
 
     end_panel();
 }
@@ -147,7 +147,7 @@ TEINAPI void internal__do_map_toolbar ()
     float bw = TOOLBAR_WIDTH - (TOOLBAR_INNER_PAD * 2);
     float bh = 25;
 
-    set_ui_texture(&resource_icons);
+    set_ui_texture(&gResourceIcons);
 
     Tab& tab = get_current_tab();
 
@@ -170,11 +170,11 @@ TEINAPI void internal__do_map_toolbar ()
     set_panel_cursor(&cursor);
     set_panel_cursor_dir(UI_DIR_DOWN);
 
-    do_button_img(tb_reset_camera, bw,bh, UI_NONE,        &CLIP_CAMERA,   TB_INFO_CAMERA,   gKbCameraReset, "Reset Camera"   );
-    do_button_img(tb_cut,          bw,bh, cut_flags,      &CLIP_CUT,      TB_INFO_CUT,      gKbCut,         "Cut"            );
-    do_button_img(tb_copy,         bw,bh, copy_flags,     &CLIP_COPY,     TB_INFO_COPY,     gKbCopy,        "Copy"           );
-    do_button_img(tb_deselect,     bw,bh, deselect_flags, &CLIP_DESELECT, TB_INFO_DESELECT, gKbDeselect,    "Deselect"       );
-    do_button_img(tb_clear_select, bw,bh, clear_flags,    &CLIP_CLEAR,    TB_INFO_CLEAR,    gKbClearSelect, "Clear Selection");
+    do_button_img(tb_reset_camera, bw,bh, UI_NONE,        &gClipCamera,   TB_INFO_CAMERA,   gKbCameraReset, "Reset Camera"   );
+    do_button_img(tb_cut,          bw,bh, cut_flags,      &gClipCut,      TB_INFO_CUT,      gKbCut,         "Cut"            );
+    do_button_img(tb_copy,         bw,bh, copy_flags,     &gClipCopy,     TB_INFO_COPY,     gKbCopy,        "Copy"           );
+    do_button_img(tb_deselect,     bw,bh, deselect_flags, &gClipDeselect, TB_INFO_DESELECT, gKbDeselect,    "Deselect"       );
+    do_button_img(tb_clear_select, bw,bh, clear_flags,    &gClipClear,    TB_INFO_CLEAR,    gKbClearSelect, "Clear Selection");
 
     end_panel();
 }

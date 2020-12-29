@@ -94,7 +94,7 @@ TEINAPI void do_tooltip ()
             }
         }
 
-        Font& fnt = get_editor_regular_font();
+        Font& fnt = GetEditorRegularFont();
         set_ui_font(&fnt);
 
         constexpr float XPAD = 4;

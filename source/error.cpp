@@ -37,7 +37,7 @@ namespace Internal
         // We only open the error log once the first error occurs.
         if (!gErrorLog)
         {
-            std::string errorLogName(build_resource_string(gErrorLogName));
+            std::string errorLogName(BuildResourceString(gErrorLogName));
             CreatePath(StripFileName(errorLogName));
             gErrorLog = fopen(errorLogName.c_str(), "a");
         }

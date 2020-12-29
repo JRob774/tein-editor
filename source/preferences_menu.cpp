@@ -218,7 +218,7 @@ TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float s
     float tx = x1 + (tw/2);
     float ty = y1 + (th/2);
 
-    const Texture& tex = (static_cast<int>(th) % 14 == 0) ? resource_checker_14 : resource_checker_16;
+    const Texture& tex = (static_cast<int>(th) % 14 == 0) ? gResourceChecker14 : gResourceChecker16;
 
     Quad clip = { 0, 0, tw, th };
     DrawTexture(tex, tx, ty, &clip);
@@ -456,24 +456,24 @@ TEINAPI void internal__do_preferences_settings ()
     internal__next_section(cursor);
 
     internal__do_settings_label(sw, gSettingFontFace);
-    UI_Flag sans_flags = (is_editor_font_opensans()) ? UI_NONE : UI_INACTIVE;
-    UI_Flag dysl_flags = (is_editor_font_opensans()) ? UI_INACTIVE : UI_NONE;
-    set_ui_font(&resource_font_regular_sans);
+    UI_Flag sans_flags = (IsEditorFontOpenSans()) ? UI_NONE : UI_INACTIVE;
+    UI_Flag dysl_flags = (IsEditorFontOpenSans()) ? UI_INACTIVE : UI_NONE;
+    set_ui_font(&gResourceFontRegularSans);
     if (do_button_txt(NULL, bw,sh, sans_flags, "OpenSans"))
     {
         gEditorSettings.fontFace = "OpenSans";
-        update_editor_font();
+        UpdateEditorFont();
     }
-    set_ui_font(&resource_font_regular_dyslexic);
+    set_ui_font(&gResourceFontRegularDyslexic);
     if (do_button_txt(NULL, bw,sh, dysl_flags, "OpenDyslexic"))
     {
         gEditorSettings.fontFace = "OpenDyslexic";
-        update_editor_font();
+        UpdateEditorFont();
     }
     internal__next_section(cursor);
 
     // Reset the font to being the default for the editor.
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     internal__do_settings_label(sw, gSettingTileGraphics);
     UI_Flag tile_graphics_new_flags = (gEditorSettings.tileGraphics == "new") ? UI_NONE : UI_INACTIVE;
@@ -714,7 +714,7 @@ TEINAPI void do_preferences_menu ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&get_editor_regular_font());
+    set_ui_font(&GetEditorRegularFont());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 

@@ -590,7 +590,7 @@ TEINAPI void internal__draw_cursor (int x, int y, Tile_ID id)
         SetDrawColor(gEditorSettings.cursorColor);
         FillQuad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
 
-        TextureAtlas& atlas = get_editor_atlas_large();
+        TextureAtlas& atlas = GetEditorAtlasLarge();
 
         atlas.texture.color.a = GHOSTED_CURSOR_ALPHA;
         DrawTexture(atlas.texture, gx+DEFAULT_TILE_SIZE_HALF, gy+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
@@ -673,7 +673,7 @@ TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
 
 TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
 {
-    TextureAtlas& atlas = get_editor_atlas_large();
+    TextureAtlas& atlas = GetEditorAtlasLarge();
 
     SetTileBatchTexture(atlas.texture);
     SetTileBatchColor(Vec4(1,1,1,GHOSTED_CURSOR_ALPHA));
@@ -1032,7 +1032,7 @@ TEINAPI void do_level_editor ()
 
     BeginScissor(scx, scy, scw, sch);
 
-    TextureAtlas& atlas = get_editor_atlas_large();
+    TextureAtlas& atlas = GetEditorAtlasLarge();
     SetTileBatchTexture(atlas.texture);
 
     // Draw all of the tiles for the level, layer-by-layer.

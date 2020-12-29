@@ -309,7 +309,7 @@ TEINAPI bool internal__is_ui_mouse_r_down ()
 
 TEINAPI std::string internal__do_markdown_formatting (std::vector<std::string>& lines, float w)
 {
-    Font& fnt = get_editor_regular_font();
+    Font& fnt = GetEditorRegularFont();
 
     std::string text;
     for (auto& line: lines)
@@ -1289,7 +1289,7 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
 
 TEINAPI void do_markdown (float w, float h, std::string text)
 {
-    Font& fnt = get_editor_regular_font();
+    Font& fnt = GetEditorRegularFont();
 
     UI_Flag flags = ui_panels.top().flags;
 
@@ -1345,7 +1345,7 @@ TEINAPI void do_markdown (float w, float h, std::string text)
 
 TEINAPI float get_markdown_h (float w, std::string text)
 {
-    Font& fnt = get_editor_regular_font();
+    Font& fnt = GetEditorRegularFont();
 
     std::vector<std::string> lines;
     TokenizeString(text, "\r\n", lines);

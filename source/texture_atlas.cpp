@@ -3,7 +3,7 @@ namespace Internal
     TEINAPI bool CreateTextureAtlas (TextureAtlas& atlas, GonObject gon)
     {
         std::string textureFile(gon["texture"].String());
-        if (!load_texture_resource(textureFile, atlas.texture))
+        if (!LoadTextureResource(textureFile, atlas.texture))
         {
             LogError(ERR_MIN, "Failed to load texture atlas image!");
             return false;

@@ -54,8 +54,8 @@ TEINAPI void do_hotbar ()
     // Height for the toolbar buttons.
     float bh = HOTBAR_HEIGHT - gWindowBorder;
 
-    set_ui_texture(&resource_icons);
-    set_ui_font(&get_editor_regular_font());
+    set_ui_texture(&gResourceIcons);
+    set_ui_font(&GetEditorRegularFont());
 
     UI_Flag save_flags     = UI_NONE;
     UI_Flag save_as_flags  = UI_NONE;
@@ -176,28 +176,28 @@ TEINAPI void do_hotbar ()
     }
     else
     {
-    do_button_img(hb_new,          bw,bh,  UI_NONE,         &CLIP_NEW,            HB_INFO_NEW,          gKbLevelNew,      HB_NAME_NEW        );
-    do_button_img(hb_load,         bw,bh,  UI_NONE,         &CLIP_LOAD,           HB_INFO_LOAD,         gKbLevelOpen,     HB_NAME_LOAD       );
-    do_button_img(hb_save,         bw,bh,  save_flags,      &CLIP_SAVE,           HB_INFO_SAVE,         gKbLevelSave,     HB_NAME_SAVE       );
-    do_button_img(hb_save,         bw,bh,  save_as_flags,   &CLIP_SAVE_AS,        HB_INFO_SAVE_AS,      gKbLevelSaveAs,   HB_NAME_SAVE_AS    );
-    do_button_img(hb_undo_action,  bw,bh,  undo_flags,      &CLIP_UNDO,           HB_INFO_UNDO,         gKbUndo,          HB_NAME_UNDO       );
-    do_button_img(hb_redo_action,  bw,bh,  redo_flags,      &CLIP_REDO,           HB_INFO_REDO,         gKbRedo,          HB_NAME_REDO       );
-    do_button_img(hb_zoom_out,     bw,bh,  zoom_out_flags,  &CLIP_ZOOM_OUT,       HB_INFO_ZOOM_OUT,     gKbCameraZoomOut, HB_NAME_ZOOM_OUT   );
-    do_button_img(hb_zoom_in,      bw,bh,  zoom_in_flags,   &CLIP_ZOOM_IN,        HB_INFO_ZOOM_IN,      gKbCameraZoomIn,  HB_NAME_ZOOM_IN    );
-    do_button_img(hb_gpak_pack,    bw,bh,  pack_flags,      &CLIP_PACK,           HB_INFO_PACK,         gKbGpakPack,      HB_NAME_PACK       );
-    do_button_img(hb_gpak_unpack,  bw,bh,  unpack_flags,    &CLIP_UNPACK,         HB_INFO_UNPACK,       gKbGpakUnpack,    HB_NAME_UNPACK     );
-    do_button_img(hb_run_game,     bw,bh,  UI_NONE,         &CLIP_RUN,            HB_INFO_RUN_GAME,     gKbRunGame,       HB_NAME_RUN_GAME   );
-    do_button_img(hb_preferences,  bw,bh,  UI_NONE,         &CLIP_SETTINGS,       HB_INFO_PREFERENCES,  gKbPreferences,   HB_NAME_PREFERENCES);
-    do_button_img(hb_about,        bw,bh,  UI_NONE,         &CLIP_ABOUT,          HB_INFO_ABOUT,        gKbAbout,         HB_NAME_ABOUT      );
-    do_button_img(hb_bug_report,   bw,bh,  UI_NONE,         &CLIP_BUG,            HB_INFO_BUG_REPORT,   gKbBugReport,     HB_NAME_BUG_REPORT );
-    do_button_img(hb_help,         bw,bh,  UI_NONE,         &CLIP_HELP,           HB_INFO_HELP,         gKbHelp,          HB_NAME_HELP       );
+    do_button_img(hb_new,          bw,bh,  UI_NONE,         &gClipNew,            HB_INFO_NEW,          gKbLevelNew,      HB_NAME_NEW        );
+    do_button_img(hb_load,         bw,bh,  UI_NONE,         &gClipLoad,           HB_INFO_LOAD,         gKbLevelOpen,     HB_NAME_LOAD       );
+    do_button_img(hb_save,         bw,bh,  save_flags,      &gClipSave,           HB_INFO_SAVE,         gKbLevelSave,     HB_NAME_SAVE       );
+    do_button_img(hb_save,         bw,bh,  save_as_flags,   &gClipSaveAs,         HB_INFO_SAVE_AS,      gKbLevelSaveAs,   HB_NAME_SAVE_AS    );
+    do_button_img(hb_undo_action,  bw,bh,  undo_flags,      &gClipUndo,           HB_INFO_UNDO,         gKbUndo,          HB_NAME_UNDO       );
+    do_button_img(hb_redo_action,  bw,bh,  redo_flags,      &gClipRedo,           HB_INFO_REDO,         gKbRedo,          HB_NAME_REDO       );
+    do_button_img(hb_zoom_out,     bw,bh,  zoom_out_flags,  &gClipZoomOut,        HB_INFO_ZOOM_OUT,     gKbCameraZoomOut, HB_NAME_ZOOM_OUT   );
+    do_button_img(hb_zoom_in,      bw,bh,  zoom_in_flags,   &gClipZoomIn,         HB_INFO_ZOOM_IN,      gKbCameraZoomIn,  HB_NAME_ZOOM_IN    );
+    do_button_img(hb_gpak_pack,    bw,bh,  pack_flags,      &gClipPack,           HB_INFO_PACK,         gKbGpakPack,      HB_NAME_PACK       );
+    do_button_img(hb_gpak_unpack,  bw,bh,  unpack_flags,    &gClipUnpack,         HB_INFO_UNPACK,       gKbGpakUnpack,    HB_NAME_UNPACK     );
+    do_button_img(hb_run_game,     bw,bh,  UI_NONE,         &gClipRun,            HB_INFO_RUN_GAME,     gKbRunGame,       HB_NAME_RUN_GAME   );
+    do_button_img(hb_preferences,  bw,bh,  UI_NONE,         &gClipSettings,       HB_INFO_PREFERENCES,  gKbPreferences,   HB_NAME_PREFERENCES);
+    do_button_img(hb_about,        bw,bh,  UI_NONE,         &gClipAbout,          HB_INFO_ABOUT,        gKbAbout,         HB_NAME_ABOUT      );
+    do_button_img(hb_bug_report,   bw,bh,  UI_NONE,         &gClipBug,            HB_INFO_BUG_REPORT,   gKbBugReport,     HB_NAME_BUG_REPORT );
+    do_button_img(hb_help,         bw,bh,  UI_NONE,         &gClipHelp,           HB_INFO_HELP,         gKbHelp,          HB_NAME_HELP       );
     }
 
     // Right-aligned update button.
     if (are_there_updates())
     {
         cursor.x = GetViewport().w - (bw-1);
-        do_button_img(hb_update, bw,bh, UI_NONE, &CLIP_UPDATE, HB_INFO_UPDATE, "", HB_NAME_UPDATE);
+        do_button_img(hb_update, bw,bh, UI_NONE, &gClipUpdate, HB_INFO_UPDATE, "", HB_NAME_UPDATE);
     }
 
     end_panel();

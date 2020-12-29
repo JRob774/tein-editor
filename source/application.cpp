@@ -54,7 +54,7 @@ TEINAPI void init_application (int argc, char** argv)
     // set this to false and we will never enter the main application loop.
     main_running = true;
 
-    get_resource_location();
+    GetResourceLocation();
 
     BeginDebugSection("Editor:");
     LogDebug("Version %d.%d.%d", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH);
@@ -96,9 +96,9 @@ TEINAPI void init_application (int argc, char** argv)
 
     internal__dump_debug_application_info();
 
-    if (!init_resource_manager()) { LogError(ERR_MAX, "Failed to setup the resource manager!"); return; }
-    if (!init_ui_system       ()) { LogError(ERR_MAX, "Failed to setup the UI system!"       ); return; }
-    if (!InitWindow           ()) { LogError(ERR_MAX, "Failed to setup the window system!"   ); return; }
+    if (!InitResourceManager()) { LogError(ERR_MAX, "Failed to setup the resource manager!"); return; }
+    if (!init_ui_system     ()) { LogError(ERR_MAX, "Failed to setup the UI system!"       ); return; }
+    if (!InitWindow         ()) { LogError(ERR_MAX, "Failed to setup the window system!"   ); return; }
 
     if (!RegisterWindow("WINPREFERENCES", "Preferences"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!" ); return; }
     if (!RegisterWindow("WINCOLOR"      , "Color Picker"    , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create color picker window!"); return; }
@@ -134,7 +134,7 @@ TEINAPI void init_application (int argc, char** argv)
     if (!InitRenderer         ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
     if (!LoadEditorSettings   ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
     if (!LoadEditorKeyBindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
-    if (!load_editor_resources()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
+    if (!LoadEditorResources  ()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
     if (!init_tile_panel      ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
 
     init_layer_panel   ();
@@ -175,7 +175,7 @@ TEINAPI void quit_application ()
     quit_editor();
 
     FreeEditorCursors();
-    free_editor_resources();
+    FreeEditorResources();
 
     QuitRenderer();
     QuitWindow();

@@ -227,7 +227,7 @@ TEINAPI void internal__draw_map_clipboard ()
 
     IVec2 m = internal__mouse_to_node_position_int();
 
-    Font& fnt = (is_editor_font_opensans()) ? resource_font_regular_libmono : resource_font_mono_dyslexic;
+    Font& fnt = (IsEditorFontOpenSans()) ? gResourceFontRegularLibMono : gResourceFontMonoDyslexic;
     SetTextBatchFont(fnt);
 
     for (auto node: map_editor.clipboard)
@@ -377,7 +377,7 @@ TEINAPI void do_map_editor ()
     }
 
     // DRAW NODES
-    Font& fnt = (is_editor_font_opensans()) ? resource_font_regular_libmono : resource_font_mono_dyslexic;
+    Font& fnt = (IsEditorFontOpenSans()) ? gResourceFontRegularLibMono : gResourceFontMonoDyslexic;
     SetTextBatchFont(fnt);
     for (auto node: tab.map)
     {
