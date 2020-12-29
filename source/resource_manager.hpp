@@ -71,18 +71,18 @@ static constexpr Quad CLIP_BUG         = { 192,  48, 24, 24 };
 // can use it in the level editor in case a level is loaded that has IDs we
 // no longer recognise -- just so that the user doesn't think they're empty.
 
-static Texture       resource_icons;
-static Font          resource_font_regular_sans;
-static Font          resource_font_regular_dyslexic;
-static Font          resource_font_regular_libmono;
-static Font          resource_font_mono_dyslexic;
-static Font          resource_font_bold_sans;
-static Font          resource_font_bold_dyslexic;
-static Texture       resource_checker_14;
-static Texture       resource_checker_16;
-static Texture       resource_checker_20;
-static Texture_Atlas resource_large;
-static Texture_Atlas resource_small;
+static Texture      resource_icons;
+static Font         resource_font_regular_sans;
+static Font         resource_font_regular_dyslexic;
+static Font         resource_font_regular_libmono;
+static Font         resource_font_mono_dyslexic;
+static Font         resource_font_bold_sans;
+static Font         resource_font_bold_dyslexic;
+static Texture      resource_checker_14;
+static Texture      resource_checker_16;
+static Texture      resource_checker_20;
+static TextureAtlas resource_large;
+static TextureAtlas resource_small;
 
 /* -------------------------------------------------------------------------- */
 
@@ -90,7 +90,7 @@ TEINAPI bool init_resource_manager ();
 TEINAPI void get_resource_location ();
 
 TEINAPI bool            load_texture_resource (std::string file_name, Texture& tex, TextureWrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
-TEINAPI bool            load_atlas_resource   (std::string file_name, Texture_Atlas& atlas);
+TEINAPI bool            load_atlas_resource   (std::string file_name, TextureAtlas& atlas);
 TEINAPI bool            load_font_resource    (std::string file_name, Font& fnt, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
 TEINAPI Shader          load_shader_resource  (std::string file_name);
 TEINAPI std::vector<U8> load_binary_resource  (std::string file_name);
@@ -108,8 +108,8 @@ TEINAPI bool is_editor_font_opensans ();
 TEINAPI Font& get_editor_regular_font ();
 TEINAPI Font& get_editor_bold_font    ();
 
-TEINAPI Texture_Atlas& get_editor_atlas_large ();
-TEINAPI Texture_Atlas& get_editor_atlas_small ();
+TEINAPI TextureAtlas& get_editor_atlas_large ();
+TEINAPI TextureAtlas& get_editor_atlas_small ();
 
 /* -------------------------------------------------------------------------- */
 

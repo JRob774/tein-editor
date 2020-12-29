@@ -14,13 +14,13 @@ static constexpr Tile_ID CAMERA_ID            = 20000;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI Quad& internal__get_tile_graphic_clip (Texture_Atlas& atlas, Tile_ID id)
+TEINAPI Quad& internal__get_tile_graphic_clip (TextureAtlas& atlas, Tile_ID id)
 {
-    if (level_editor.large_tiles && atlas.clips.count(id + ALT_OFFSET))
+    if (level_editor.large_tiles && atlas.clips.count(id + gAltOffset))
     {
-        id += ALT_OFFSET;
+        id += gAltOffset;
     }
-    return get_atlas_clip(atlas, id);
+    return GetAtlasClip(atlas, id);
 }
 
 TEINAPI bool internal__are_active_layers_in_bounds_empty (int x, int y, int w, int h)
@@ -590,7 +590,7 @@ TEINAPI void internal__draw_cursor (int x, int y, Tile_ID id)
         SetDrawColor(gEditorSettings.cursorColor);
         FillQuad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
 
-        Texture_Atlas& atlas = get_editor_atlas_large();
+        TextureAtlas& atlas = get_editor_atlas_large();
 
         atlas.texture.color.a = GHOSTED_CURSOR_ALPHA;
         DrawTexture(atlas.texture, gx+DEFAULT_TILE_SIZE_HALF, gy+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
@@ -673,7 +673,7 @@ TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
 
 TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
 {
-    Texture_Atlas& atlas = get_editor_atlas_large();
+    TextureAtlas& atlas = get_editor_atlas_large();
 
     SetTileBatchTexture(atlas.texture);
     SetTileBatchColor(Vec4(1,1,1,GHOSTED_CURSOR_ALPHA));
@@ -1032,7 +1032,7 @@ TEINAPI void do_level_editor ()
 
     BeginScissor(scx, scy, scw, sch);
 
-    Texture_Atlas& atlas = get_editor_atlas_large();
+    TextureAtlas& atlas = get_editor_atlas_large();
     SetTileBatchTexture(atlas.texture);
 
     // Draw all of the tiles for the level, layer-by-layer.

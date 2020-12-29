@@ -172,7 +172,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
 
         std::string id_str(StripFilePathAndExt(files[i].c_str()));
         int id = std::stoi(id_str);
-        if (id_str.find("-alt") != std::string::npos) id += ALT_OFFSET;
+        if (id_str.find("-alt") != std::string::npos) id += gAltOffset;
 
         fprintf(file, "{ id %d  clip [ %d %d %d %d ] }\n", id, rx,ry,rw,rh);
     }

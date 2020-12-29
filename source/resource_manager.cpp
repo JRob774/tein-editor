@@ -84,11 +84,11 @@ TEINAPI bool load_texture_resource (std::string file_name, Texture& tex, Texture
     else return LoadTextureFromData(tex, gpak_resource_lookup[file_name], wrap);
 }
 
-TEINAPI bool load_atlas_resource (std::string file_name, Texture_Atlas& atlas)
+TEINAPI bool load_atlas_resource (std::string file_name, TextureAtlas& atlas)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return load_texture_atlas_from_file(atlas, abs_file_name);
-    else return load_texture_atlas_from_data(atlas, gpak_resource_lookup[file_name]);
+    if (DoesFileExist(abs_file_name)) return LoadTextureAtlasFromFile(atlas, abs_file_name);
+    else return LoadTextureAtlasFromData(atlas, gpak_resource_lookup[file_name]);
 }
 
 TEINAPI bool load_font_resource (std::string file_name, Font& fnt, std::vector<int> pt, float csz)
@@ -191,18 +191,18 @@ TEINAPI bool load_editor_resources ()
 
 TEINAPI void free_editor_resources ()
 {
-    free_font         (resource_font_mono_dyslexic);
-    free_font         (resource_font_bold_sans);
-    free_font         (resource_font_bold_dyslexic);
-    free_font         (resource_font_regular_libmono);
-    free_font         (resource_font_regular_sans);
-    free_font         (resource_font_regular_dyslexic);
-    FreeTexture       (resource_icons);
-    FreeTexture       (resource_checker_14);
-    FreeTexture       (resource_checker_16);
-    FreeTexture       (resource_checker_20);
-    free_texture_atlas(resource_large);
-    free_texture_atlas(resource_small);
+    free_font       (resource_font_mono_dyslexic);
+    free_font       (resource_font_bold_sans);
+    free_font       (resource_font_bold_dyslexic);
+    free_font       (resource_font_regular_libmono);
+    free_font       (resource_font_regular_sans);
+    free_font       (resource_font_regular_dyslexic);
+    FreeTexture     (resource_icons);
+    FreeTexture     (resource_checker_14);
+    FreeTexture     (resource_checker_16);
+    FreeTexture     (resource_checker_20);
+    FreeTextureAtlas(resource_large);
+    FreeTextureAtlas(resource_small);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -238,12 +238,12 @@ TEINAPI Font& get_editor_bold_font ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI Texture_Atlas& get_editor_atlas_large ()
+TEINAPI TextureAtlas& get_editor_atlas_large ()
 {
     return resource_large;
 }
 
-TEINAPI Texture_Atlas& get_editor_atlas_small ()
+TEINAPI TextureAtlas& get_editor_atlas_small ()
 {
     return resource_small;
 }

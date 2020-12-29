@@ -1,92 +1,50 @@
-/*******************************************************************************
- * Texture atlas system for handling multiple images within a single texture.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool internal__create_texture_atlas (Texture_Atlas& atlas, GonObject gon)
+namespace Internal
 {
-    std::string texture_file(gon["texture"].String());
-    if (!load_texture_resource(texture_file, atlas.texture))
+    TEINAPI bool CreateTextureAtlas (TextureAtlas& atlas, GonObject gon)
     {
-        LogError(ERR_MIN, "Failed to load texture atlas image!");
-        return false;
-    }
-
-    for (const auto& obj: gon["clips"].children_array)
-    {
-        S32   id        = std::stoi(obj["id"].String());
-        auto& clip_data = obj["clip"].children_array;
-        Quad clip
+        std::string textureFile(gon["texture"].String());
+        if (!load_texture_resource(textureFile, atlas.texture))
         {
-        static_cast<float>(clip_data[0].Number()),
-        static_cast<float>(clip_data[1].Number()),
-        static_cast<float>(clip_data[2].Number()),
-        static_cast<float>(clip_data[3].Number())
-        };
-        atlas.clips.insert(std::pair<S32, Quad>(id, clip));
+            LogError(ERR_MIN, "Failed to load texture atlas image!");
+            return false;
+        }
+
+        for (const auto& obj: gon["clips"].children_array)
+        {
+            S32 id = std::stoi(obj["id"].String());
+            auto& clipData = obj["clip"].children_array;
+            Quad clip
+            {
+            static_cast<float>(clipData[0].Number()),
+            static_cast<float>(clipData[1].Number()),
+            static_cast<float>(clipData[2].Number()),
+            static_cast<float>(clipData[3].Number())
+            };
+            atlas.clips.insert({ id, clip });
+        }
+
+        return true;
     }
-
-    return true;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool load_texture_atlas_from_file (Texture_Atlas& atlas, std::string file_name)
+TEINAPI bool LoadTextureAtlasFromData (TextureAtlas& atlas, const std::vector<U8>& fileData)
 {
-    file_name = MakePathAbsolute(file_name);
-    return internal__create_texture_atlas(atlas, GonObject::Load(file_name));
+    std::string buffer(fileData.begin(), fileData.end());
+    return Internal::CreateTextureAtlas(atlas, GonObject::LoadFromBuffer(buffer));
 }
-TEINAPI bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vector<U8>& file_data)
+TEINAPI bool LoadTextureAtlasFromFile (TextureAtlas& atlas, std::string fileName)
 {
-    std::string buffer(file_data.begin(), file_data.end());
-    return internal__create_texture_atlas(atlas, GonObject::LoadFromBuffer(buffer));
+    fileName = MakePathAbsolute(fileName);
+    return Internal::CreateTextureAtlas(atlas, GonObject::Load(fileName));
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void free_texture_atlas (Texture_Atlas& atlas)
+TEINAPI void FreeTextureAtlas (TextureAtlas& atlas)
 {
     FreeTexture(atlas.texture);
     atlas.clips.clear();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Quad& get_atlas_clip (Texture_Atlas& atlas, S32 key)
+TEINAPI Quad& GetAtlasClip (TextureAtlas& atlas, S32 key)
 {
     return atlas.clips[key];
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

@@ -85,8 +85,8 @@
 #include "settings.hpp"
 #include "vertex_buffer.hpp"
 #include "renderer.hpp"
-
 #include "texture.hpp"
+
 #include "texture_atlas.hpp"
 #include "font.hpp"
 #include "shader.hpp"

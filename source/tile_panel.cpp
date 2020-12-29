@@ -109,7 +109,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
     SetDrawColor(ui_color_ex_dark); // The outline/border for the category.
     DrawQuad(0, get_panel_offset().y, w, get_panel_offset().y+h);
 
-    Texture_Atlas& atlas = get_editor_atlas_small();
+    TextureAtlas& atlas = get_editor_atlas_small();
 
     SetTileBatchTexture(atlas.texture);
     SetTileBatchColor((is_active) ? Vec4(1,1,1,1) : Vec4(1,1,1,TILE_PANEL_INACTIVE_A));
@@ -162,7 +162,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
         float ey = tile_cursor.y + (TILE_PANEL_ITEM_SIZE/2);
 
         Tile_ID selected_id = tile_group.tile[tile_group.selected_index];
-        DrawBatchedTile(ex, ey, &get_atlas_clip(atlas, selected_id));
+        DrawBatchedTile(ex, ey, &GetAtlasClip(atlas, selected_id));
 
         EndScissor();
 
@@ -416,8 +416,8 @@ TEINAPI float get_tile_panel_height ()
 
 TEINAPI void reload_tile_graphics ()
 {
-    free_texture_atlas(resource_large);
-    free_texture_atlas(resource_small);
+    FreeTextureAtlas(resource_large);
+    FreeTextureAtlas(resource_small);
 
     if (gEditorSettings.tileGraphics == "new")
     {
