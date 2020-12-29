@@ -58,9 +58,9 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
     float y2 = cursor.y + ch;
 
     // The dark and light border surrounding the channel quad.
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(x1-2, y1-2, x2+2, y2+2);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(x1-1, y1-1, x2+1, y2+1);
 
     BeginDraw(BufferMode::TRIANGLE_STRIP);
@@ -73,7 +73,7 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
     float percent = std::clamp(roundf(channel*100), 0.0f, 100.0f);
     std::string channel_str(std::to_string(static_cast<int>(percent)));
     cursor.y += (ch + ypad);
-    do_text_box(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, channel_str, "0");
+    DoTextBox(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, channel_str, "0");
     if (atoi(channel_str.c_str()) > 100) channel_str = "100";
     float new_channel = static_cast<float>(atoi(channel_str.c_str())) / 100;
     if (channel != new_channel) channel = new_channel;
@@ -97,9 +97,9 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
         case (Channel_Type::B): cur.b = channel; break;
     }
 
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(ix1-2, iy1-2, ix2+2, iy2+2);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(ix1-1, iy1-1, ix2+1, iy2+1);
     SetDrawColor(cur);
     FillQuad(ix1-0, iy1-0, ix2+0, iy2+0);
@@ -107,11 +107,11 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
     // Handle the indicator both being selected, deselected, and moved.
     if (color_picker_mouse_pressed)
     {
-        if (mouse_in_ui_bounds_xywh(ix1-1, iy1-1, cw+2, 7))
+        if (MouseInUiBoundsXYWH(ix1-1, iy1-1, cw+2, 7))
         {
             color_picker_active_channel = type;
         }
-        else if (mouse_in_ui_bounds_xywh(cursor.x, cursor.y, cw, ch))
+        else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, cw, ch))
         {
             color_picker_active_channel = type;
             // Determine where the click was and jump to that position.
@@ -121,7 +121,7 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
     }
     if (color_picker_active_channel == type)
     {
-        channel -= (ui_get_relative_mouse().y / ch);
+        channel -= (UiGetRelativeMouse().y / ch);
         channel = std::clamp(channel, 0.0f, 1.0f);
     }
 
@@ -137,9 +137,9 @@ TEINAPI void internal__do_color_preview (Vec2& cursor, Vec4 c, float size)
     float y = cursor.y;
 
     // The dark and light border surrounding the color.
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(x-2, y-2, x+size+2, y+size+2);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(x-1, y-1, x+size+1, y+size+1);
 
     float tx = x + (size / 2);
@@ -165,23 +165,23 @@ TEINAPI void internal__do_swatch_panel (Vec2& cursor)
 
     cursor.y += COLOR_PICKER_SWATCH_LG + COLOR_PICKER_YPAD;
 
-    SetDrawColor(ui_color_med_dark);
-    DrawQuad(cursor.x, cursor.y, cursor.x+COLOR_PICKER_SWATCH_LG, get_panel_h()-COLOR_PICKER_YPAD);
+    SetDrawColor(gUiColorMedDark);
+    DrawQuad(cursor.x, cursor.y, cursor.x+COLOR_PICKER_SWATCH_LG, GetPanelHeight()-COLOR_PICKER_YPAD);
 
     float x = cursor.x                                  +1;
     float y = cursor.y                                  +1;
     float w = COLOR_PICKER_SWATCH_LG                    -2;
-    float h = (get_panel_h()-COLOR_PICKER_YPAD)-cursor.y-2;
+    float h = (GetPanelHeight()-COLOR_PICKER_YPAD)-cursor.y-2;
 
     Vec2 cursor2(COLOR_PICKER_SWATCH_XPAD, COLOR_PICKER_SWATCH_YPAD);
-    begin_panel(x, y, w, h, UI_NONE);
+    BeginPanel(x, y, w, h, UI_NONE);
 
     for (auto& c: color_picker_swatches)
     {
         internal__do_color_preview(cursor2, c, COLOR_PICKER_SWATCH_SM);
         if (color_picker_mouse_pressed)
         {
-            if (mouse_in_ui_bounds_xywh(cursor2.x, cursor2.y, COLOR_PICKER_SWATCH_SM, COLOR_PICKER_SWATCH_SM))
+            if (MouseInUiBoundsXYWH(cursor2.x, cursor2.y, COLOR_PICKER_SWATCH_SM, COLOR_PICKER_SWATCH_SM))
             {
                 *current_color_picker_color = c;
             }
@@ -191,7 +191,7 @@ TEINAPI void internal__do_swatch_panel (Vec2& cursor)
         cursor2.y += COLOR_PICKER_SWATCH_GAP;
     }
 
-    end_panel();
+    EndPanel();
 }
 
 TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
@@ -205,16 +205,16 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     cursor.x =  xpad;
     cursor.y = (ypad*3.25f) + ch + COLOR_PICKER_TEXT_BOX_H;
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    do_separator((cw*3)+(xpad*6));
+    SetPanelCursorDir(UI_DIR_DOWN);
+    DoSeparator((cw*3)+(xpad*6));
     cursor.y -= 1;
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UI_DIR_RIGHT);
 
     cursor.y += (ypad*1.25f);
 
     float percent = std::clamp(roundf(c.a*100), 0.0f, 100.0f);
     std::string alpha_str(std::to_string(static_cast<int>(percent)));
-    do_text_box(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, alpha_str, "0");
+    DoTextBox(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, alpha_str, "0");
     if (atoi(alpha_str.c_str()) > 100) alpha_str = "100";
     float new_alpha = static_cast<float>(atoi(alpha_str.c_str())) / 100;
     if (c.a != new_alpha) c.a = new_alpha;
@@ -226,9 +226,9 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float x2 = cursor.x + ((cw*2)+(xpad*5));
     float y2 = cursor.y + COLOR_PICKER_ALPHA_H;
 
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(x1-2, y1-2, x2+2, y2+2);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(x1-1, y1-1, x2+1, y2+1);
 
     float tw = x2-x1;
@@ -257,9 +257,9 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float ix2 = pos        +2;
     float iy2 = cursor.y+th+2;
 
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(ix1-2, iy1-2, ix2+2, iy2+2);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(ix1-1, iy1-1, ix2+1, iy2+1);
 
     float itw = ix2-ix1;
@@ -276,11 +276,11 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     // Handle the indicator both being selected, deselected, and moved.
     if (color_picker_mouse_pressed)
     {
-        if (mouse_in_ui_bounds_xywh(ix1-1, iy1-1, 7, th+2))
+        if (MouseInUiBoundsXYWH(ix1-1, iy1-1, 7, th+2))
         {
             color_picker_active_channel = Channel_Type::A;
         }
-        else if (mouse_in_ui_bounds_xywh(cursor.x, cursor.y, tw, th))
+        else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, tw, th))
         {
             color_picker_active_channel = Channel_Type::A;
             // Determine where the click was and jump to that position.
@@ -290,7 +290,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     }
     if (color_picker_active_channel == Channel_Type::A)
     {
-        c.a += (ui_get_relative_mouse().x / tw);
+        c.a += (UiGetRelativeMouse().x / tw);
         c.a = std::clamp(c.a, 0.0f, 1.0f);
     }
 }
@@ -369,9 +369,9 @@ TEINAPI void do_color_picker ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     float bb = COLOR_PICKER_BOTTOM_BORDER;
 
@@ -383,38 +383,38 @@ TEINAPI void do_color_picker ()
 
     // Bottom buttons for okaying or cancelling the color picker.
     Vec2 btn_cursor(0, gWindowBorder);
-    begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
+    BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&btn_cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&btn_cursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - (bw*2);
 
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, "Okay"  )) internal__okay_color();
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, "Save"  )) internal__save_color_swatch();
-    if (do_button_txt(NULL, bw2,bh, UI_NONE, "Cancel")) internal__cancel_color();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Okay"  )) internal__okay_color();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Save"  )) internal__save_color_swatch();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) internal__cancel_color();
 
     // Add a separator to the left for symmetry.
     btn_cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     p2.x =                  1;
     p2.y =                  1;
     p2.w = vw             - 2;
     p2.h = vh - p2.y - bb - 1;
 
-    begin_panel(p2, UI_NONE, ui_color_medium);
+    BeginPanel(p2, UI_NONE, gUiColorMedium);
 
     assert(current_color_picker_color);
 
     Vec4& c = *current_color_picker_color; // So much shorter to type out...
     Vec2 cursor(COLOR_PICKER_XPAD, COLOR_PICKER_YPAD);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
     // Draw the three R G B channel selectors/sliders.
     Vec4 r_min(  0, c.g, c.b, 1);
@@ -437,8 +437,8 @@ TEINAPI void do_color_picker ()
     // Draw the alpha/opacity text box section.
     internal__do_alpha_channel(cursor, c);
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 }
 
 TEINAPI void cancel_color_picker ()
@@ -473,7 +473,7 @@ TEINAPI void handle_color_picker_events ()
         } break;
         case (SDL_KEYDOWN):
         {
-            if (!text_box_is_active())
+            if (!TextBoxIsActive())
             {
                 switch (main_event.key.keysym.sym)
                 {

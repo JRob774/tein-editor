@@ -102,21 +102,21 @@ TEINAPI void do_status_bar ()
     // Now we can calculate how much space is left for the tool-tip label.
     float l1_w = (status_bar_width - (l2_w + l3_w)) - (advance * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
     // Status bar is a horizontal list of editor status information.
-    begin_panel(x, y, w, h, UI_NONE, ui_color_medium);
+    BeginPanel(x, y, w, h, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor(&cursor);
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
 
-    do_label(UI_ALIGN_LEFT,  UI_ALIGN_CENTER, l1_w, h, message);
-    advance_panel_cursor(STATUS_BAR_INNER_PAD);
-    do_label(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, l2_w, h, mouse_str);
-    advance_panel_cursor(STATUS_BAR_INNER_PAD);
-    do_label(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, l3_w, h, select_str);
+    DoLabel(UI_ALIGN_LEFT,  UI_ALIGN_CENTER, l1_w, h, message);
+    AdvancePanelCursor(STATUS_BAR_INNER_PAD);
+    DoLabel(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, l2_w, h, mouse_str);
+    AdvancePanelCursor(STATUS_BAR_INNER_PAD);
+    DoLabel(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, l3_w, h, select_str);
 
-    end_panel();
+    EndPanel();
 
     // Reset the pushed status bar message for the next update.
     status_bar_pushed_message.clear();

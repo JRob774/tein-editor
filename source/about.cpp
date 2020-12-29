@@ -11,18 +11,18 @@
 
 TEINAPI void do_about ()
 {
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(gWindowBorder,gWindowBorder,GetViewport().w-(gWindowBorder*2),GetViewport().h-(gWindowBorder*2), UI_NONE, ui_color_ex_dark);
-    begin_panel(1,1,GetViewport().w-2,GetViewport().h-2, UI_NONE, ui_color_medium);
+    BeginPanel(gWindowBorder,gWindowBorder,GetViewport().w-(gWindowBorder*2),GetViewport().h-(gWindowBorder*2), UI_NONE, gUiColorExDark);
+    BeginPanel(1,1,GetViewport().w-2,GetViewport().h-2, UI_NONE, gUiColorMedium);
 
     constexpr float XPAD = 4;
     constexpr float YPAD = 4;
 
     Vec2 cursor(XPAD, YPAD);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
 
     #if defined(BUILD_DEBUG)
     const char* build = "Debug";
@@ -36,14 +36,14 @@ TEINAPI void do_about ()
     constexpr const char* CHANGELOG = "https://github.com/thatb0y/tein-editor/blob/master/CHANGES.md";
     std::string changelog_url(FormatString("%s#v%d.%d.%d", CHANGELOG, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
 
-    do_label_hyperlink(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, FormatString("The End is Nigh Editor (v%d.%d.%d) %s Build ", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH, build), "(Changelog)", changelog_url);
-    do_label          (UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Copyright (C) 2020 Joshua Robertson");
-    advance_panel_cursor(lh/2);
-    do_label_hyperlink(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Flame icon made by Those Icons from ", "Flaticon", "https://www.flaticon.com/");
-    do_label          (UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Editor icon made by Radley McTuneston");
+    DoLabelHyperlink(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, FormatString("The End is Nigh Editor (v%d.%d.%d) %s Build ", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH, build), "(Changelog)", changelog_url);
+    DoLabel         (UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Copyright (C) 2020 Joshua Robertson");
+    AdvancePanelCursor(lh/2);
+    DoLabelHyperlink(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Flame icon made by Those Icons from ", "Flaticon", "https://www.flaticon.com/");
+    DoLabel         (UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Editor icon made by Radley McTuneston");
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 }
 
 TEINAPI void handle_about_events ()

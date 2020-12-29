@@ -158,11 +158,11 @@ TEINAPI void internal__do_resize_alignment (Vec2& cursor)
     // Do the long horizontal separator first.
     float w = GetViewport().w - (RESIZE_XPAD*2);
 
-    advance_panel_cursor(RESIZE_YPAD*1.5f);
-    do_separator(w);
-    advance_panel_cursor(RESIZE_YPAD*1.5f);
+    AdvancePanelCursor(RESIZE_YPAD*1.5f);
+    DoSeparator(w);
+    AdvancePanelCursor(RESIZE_YPAD*1.5f);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UI_DIR_RIGHT);
 
     float bw = 25;
     float bh = 25;
@@ -177,28 +177,28 @@ TEINAPI void internal__do_resize_alignment (Vec2& cursor)
     float qx2 = cursor.x + (bw * 3) + 1;
     float qy2 = cursor.y + (bh * 3) + 1;
 
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(qx1, qy1, qx2, qy2);
 
     Resize_Dir old_dir = resize_dialog_dir;
 
-    if (do_button_img(NULL, bw,bh, UI_NONE, nw_clip    )) resize_dialog_dir = Resize_Dir::NW;
-    if (do_button_img(NULL, bw,bh, UI_NONE, n_clip     )) resize_dialog_dir = Resize_Dir::N;
-    if (do_button_img(NULL, bw,bh, UI_NONE, ne_clip    )) resize_dialog_dir = Resize_Dir::NE;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, nw_clip    )) resize_dialog_dir = Resize_Dir::NW;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, n_clip     )) resize_dialog_dir = Resize_Dir::N;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, ne_clip    )) resize_dialog_dir = Resize_Dir::NE;
 
     cursor.x  = x;
     cursor.y += bh;
 
-    if (do_button_img(NULL, bw,bh, UI_NONE, w_clip     )) resize_dialog_dir = Resize_Dir::W;
-    if (do_button_img(NULL, bw,bh, UI_NONE, center_clip)) resize_dialog_dir = Resize_Dir::CENTER;
-    if (do_button_img(NULL, bw,bh, UI_NONE, e_clip     )) resize_dialog_dir = Resize_Dir::E;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, w_clip     )) resize_dialog_dir = Resize_Dir::W;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, center_clip)) resize_dialog_dir = Resize_Dir::CENTER;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, e_clip     )) resize_dialog_dir = Resize_Dir::E;
 
     cursor.x  = x;
     cursor.y += bh;
 
-    if (do_button_img(NULL, bw,bh, UI_NONE, sw_clip    )) resize_dialog_dir = Resize_Dir::SW;
-    if (do_button_img(NULL, bw,bh, UI_NONE, s_clip     )) resize_dialog_dir = Resize_Dir::S;
-    if (do_button_img(NULL, bw,bh, UI_NONE, se_clip    )) resize_dialog_dir = Resize_Dir::SE;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, sw_clip    )) resize_dialog_dir = Resize_Dir::SW;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, s_clip     )) resize_dialog_dir = Resize_Dir::S;
+    if (DoImageButton(NULL, bw,bh, UI_NONE, se_clip    )) resize_dialog_dir = Resize_Dir::SE;
 
     if (old_dir != resize_dialog_dir)
     {
@@ -242,9 +242,9 @@ TEINAPI void do_resize ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     float bb = RESIZE_BOTTOM_BORDER;
 
@@ -256,34 +256,34 @@ TEINAPI void do_resize ()
 
     // Bottom buttons for okaying or cancelling the resize.
     Vec2 btn_cursor(0, gWindowBorder);
-    begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
+    BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&btn_cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&btn_cursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, "Resize")) internal__okay_resize();
-    if (do_button_txt(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_resize();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Resize")) internal__okay_resize();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_resize();
 
     // Add a separator to the left for symmetry.
     btn_cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     p2.x =                  1;
     p2.y =                  1;
     p2.w = vw             - 2;
     p2.h = vh - p2.y - bb - 1;
 
-    begin_panel(p2, UI_NONE, ui_color_medium);
+    BeginPanel(p2, UI_NONE, gUiColorMedium);
 
     Vec2 cursor(RESIZE_XPAD, RESIZE_YPAD);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
 
     float label_w_w = GetTextWidthScaled(GetEditorRegularFont(), RESIZE_WIDTH_LABEL);
     float label_h_w = GetTextWidthScaled(GetEditorRegularFont(), RESIZE_HEIGHT_LABEL);
@@ -294,9 +294,9 @@ TEINAPI void do_resize ()
     std::string w_str(std::to_string(current_resize_width));
     std::string h_str(std::to_string(current_resize_height));
 
-    do_text_box_labeled(text_box_w, RESIZE_TEXT_BOX_H, UI_NUMERIC, w_str, label_w, RESIZE_WIDTH_LABEL, "0");
-    advance_panel_cursor(RESIZE_YPAD);
-    do_text_box_labeled(text_box_w, RESIZE_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, RESIZE_HEIGHT_LABEL, "0");
+    DoTextBoxLabeled(text_box_w, RESIZE_TEXT_BOX_H, UI_NUMERIC, w_str, label_w, RESIZE_WIDTH_LABEL, "0");
+    AdvancePanelCursor(RESIZE_YPAD);
+    DoTextBoxLabeled(text_box_w, RESIZE_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, RESIZE_HEIGHT_LABEL, "0");
 
     if (atoi(w_str.c_str()) > MAXIMUM_LEVEL_WIDTH)
     {
@@ -322,8 +322,8 @@ TEINAPI void do_resize ()
 
     internal__do_resize_alignment(cursor);
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 }
 
 TEINAPI void cancel_resize ()
@@ -337,7 +337,7 @@ TEINAPI void handle_resize_events ()
 {
     if (!IsWindowFocused("WINRESIZE")) return;
 
-    if (!text_box_is_active())
+    if (!TextBoxIsActive())
     {
         if (main_event.type == SDL_KEYDOWN)
         {

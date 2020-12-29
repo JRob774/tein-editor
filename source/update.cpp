@@ -146,7 +146,7 @@ TEINAPI void do_update ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     float bb = PATH_DIALOG_BOTTOM_BORDER;
 
@@ -158,31 +158,31 @@ TEINAPI void do_update ()
 
     // Bottom buttons for okaying or cancelling the path dialog.
     Vec2 btn_cursor(0, gWindowBorder);
-    begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
+    BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&btn_cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&btn_cursor);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, "Download")) internal__update_dialog_update();
-    if (do_button_txt(NULL, bw2,bh, UI_NONE, "Cancel"  )) internal__update_dialog_cancel();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Download")) internal__update_dialog_update();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel"  )) internal__update_dialog_cancel();
 
     // Add a separator to the left for symmetry.
     btn_cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     p2.x =                  1;
     p2.y =                  1;
     p2.w = vw             - 2;
     p2.h = vh - p2.y - bb - 1;
 
-    begin_panel(p2, UI_NONE, ui_color_medium);
+    BeginPanel(p2, UI_NONE, gUiColorMedium);
 
     constexpr float HEADER_SECTION = 68;
 
@@ -191,27 +191,27 @@ TEINAPI void do_update ()
 
     Vec2 cursor(XPAD1, YPAD1);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
 
     constexpr float MAIN_H = 24;
     constexpr float SUB_H = 20;
 
     SetFontPointSize(GetEditorBoldFont(), gLargeFontPointSize);
-    set_ui_font(&GetEditorBoldFont());
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, MAIN_H, update_title);
+    SetUiFont(&GetEditorBoldFont());
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, MAIN_H, update_title);
 
     cursor.y -= 2;
 
     SetFontPointSize(GetEditorRegularFont(), gSmallFontPointSize);
-    set_ui_font(&GetEditorRegularFont());
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, SUB_H, "There is a new editor version available!");
+    SetUiFont(&GetEditorRegularFont());
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, SUB_H, "There is a new editor version available!");
 
     cursor.y = YPAD1 + HEADER_SECTION - SUB_H;
 
     SetFontPointSize(GetEditorBoldFont(), gSmallFontPointSize);
-    set_ui_font(&GetEditorBoldFont());
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_BOTTOM, SUB_H, "Version Changelog:");
+    SetUiFont(&GetEditorBoldFont());
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_BOTTOM, SUB_H, "Version Changelog:");
 
     constexpr float SCROLLBAR_WIDTH = 12;
 
@@ -223,33 +223,33 @@ TEINAPI void do_update ()
     float pw = GetViewport().w - (XPAD2*2) - 1 - SCROLLBAR_WIDTH;
     float ph = GetViewport().h - py - YPAD2;
 
-    begin_panel(px,py,pw,ph, UI_NONE, ui_color_ex_dark);
+    BeginPanel(px,py,pw,ph, UI_NONE, gUiColorExDark);
 
     constexpr float XPAD3 = 6;
     constexpr float YPAD3 = 4;
 
-    begin_panel(XPAD3,YPAD3,pw-(XPAD3*2),ph-(YPAD3*2), UI_NONE);
+    BeginPanel(XPAD3,YPAD3,pw-(XPAD3*2),ph-(YPAD3*2), UI_NONE);
 
     Vec2 inner_cursor(0,0);
-    set_panel_cursor(&inner_cursor);
+    SetPanelCursor(&inner_cursor);
 
     SetFontPointSize(GetEditorRegularFont(), gSmallFontPointSize);
     SetFontPointSize(GetEditorBoldFont(), gSmallFontPointSize);
 
     float label_w = GetViewport().w;
-    update_dialog_content_height = get_markdown_h(label_w, update_body) + YPAD3;
+    update_dialog_content_height = GetMarkdownHeight(label_w, update_body) + YPAD3;
     float sx = GetViewport().w + XPAD3 + 1;
     float sy = 0 - YPAD3;
     float sw = SCROLLBAR_WIDTH;
     float sh = GetViewport().h + (YPAD3*2);
-    do_scrollbar(sx, sy, sw, sh, update_dialog_content_height, update_dialog_scroll_offset);
+    DoScrollbar(sx, sy, sw, sh, update_dialog_content_height, update_dialog_scroll_offset);
 
-    do_markdown(label_w, update_dialog_content_height, update_body);
+    DoMarkdown(label_w, update_dialog_content_height, update_body);
 
-    end_panel();
-    end_panel();
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
+    EndPanel();
+    EndPanel();
 
     // Reset these so they don't interfere with any other part of the editor.
     SetFontPointSize(GetEditorRegularFont(), gSmallFontPointSize);

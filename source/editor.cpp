@@ -408,7 +408,7 @@ TEINAPI void handle_editor_events ()
             if (editor.dialog_box) return;
 
             bool pressed = (main_event.button.state == SDL_PRESSED);
-            if (pressed && is_there_a_hit_ui_element()) return;
+            if (pressed && IsThereAHitUiElement()) return;
 
             if (main_event.button.button == SDL_BUTTON_MIDDLE)
             {

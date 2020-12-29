@@ -140,7 +140,7 @@ TEINAPI Vec4 get_tileset_main_color (std::string tileset)
         {
             return palette_main_lookup[tileset];
         }
-        return ((is_ui_light()) ? ui_color_ex_dark : ui_color_ex_dark);
+        return gUiColorExDark;
     }
     return Vec4(0,0,0,1);
 }

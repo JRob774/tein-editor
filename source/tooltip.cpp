@@ -95,7 +95,7 @@ TEINAPI void do_tooltip ()
         }
 
         Font& fnt = GetEditorRegularFont();
-        set_ui_font(&fnt);
+        SetUiFont(&fnt);
 
         constexpr float XPAD = 4;
         constexpr float YPAD = 8;
@@ -121,20 +121,20 @@ TEINAPI void do_tooltip ()
         if (tx+tw >= GetRenderTargetWidth()) tx = mouse.x - tw;
         if (ty+th >= GetRenderTargetHeight()) ty = mouse.y - th;
 
-        begin_panel(tx, ty, tw, th, UI_NONE, Vec4(0,0,0,.8f));
+        BeginPanel(tx, ty, tw, th, UI_NONE, Vec4(0,0,0,.8f));
 
         Vec2 cursor(xpad, ypad);
 
-        set_panel_cursor(&cursor);
-        set_panel_cursor_dir(UI_DIR_DOWN);
+        SetPanelCursor(&cursor);
+        SetPanelCursorDir(UI_DIR_DOWN);
 
         // The set panel flags are just a hack to get the text drawing nicely in the tooltip box..
-        set_panel_flags(UI_TOOLTIP);
-        do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, tw, nh, tooltip_name);
-        set_panel_flags(UI_TOOLTIP|UI_DARKEN);
-        do_label(UI_ALIGN_LEFT,UI_ALIGN_TOP, tw, dh+ypad, desc);
+        SetPanelFlags(UI_TOOLTIP);
+        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, tw, nh, tooltip_name);
+        SetPanelFlags(UI_TOOLTIP|UI_DARKEN);
+        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_TOP, tw, dh+ypad, desc);
 
-        end_panel();
+        EndPanel();
     }
 }
 

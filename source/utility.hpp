@@ -3,6 +3,15 @@
 // We use static linkage for faster compilation times as we use unity/jumbo build.
 #define TEINAPI static
 
+typedef  uint8_t  U8;
+typedef uint16_t U16;
+typedef uint32_t U32;
+typedef uint64_t U64;
+typedef   int8_t  S8;
+typedef  int16_t S16;
+typedef  int32_t S32;
+typedef  int64_t S64;
+
 // C++ implementation of defer functionality. This can be used to defer blocks of
 // code to be executed during exit of the current scope. Useful for freeing any
 // resources that have been allocated without worrying about multiple paths or
@@ -37,18 +46,33 @@ struct DeferHelp
     DeferType<T> operator+ (T type) { return type; }
 };
 
+// A macro for generating bitflag operators for enumerations as they do not work by default in C++.
+// The implementation of this macro is based off of winnt.h's DEFINE_ENUM_FLAG_OPERATORS() macro.
+
+template<size_t S> struct EnumIntegralSizeType;
+
+template<> struct EnumIntegralSizeType<1> { typedef  S8 type; };
+template<> struct EnumIntegralSizeType<2> { typedef S16 type; };
+template<> struct EnumIntegralSizeType<4> { typedef S32 type; };
+template<> struct EnumIntegralSizeType<8> { typedef S64 type; };
+
+template<typename T> struct GetEnumIntegralSizeType
+{
+    typedef typename EnumIntegralSizeType<sizeof(T)>::type type;
+};
+
+#define GenerateEnumBitflagOperators(t)                                                                                              \
+inline t& operator |= (t& a, t b) { return (t&)( (GetEnumIntegralSizeType<t>::type&)(a) |= (GetEnumIntegralSizeType<t>::type)(b)); } \
+inline t& operator &= (t& a, t b) { return (t&)( (GetEnumIntegralSizeType<t>::type&)(a) &= (GetEnumIntegralSizeType<t>::type)(b)); } \
+inline t& operator ^= (t& a, t b) { return (t&)( (GetEnumIntegralSizeType<t>::type&)(a) ^= (GetEnumIntegralSizeType<t>::type)(b)); } \
+inline t  operator |  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::type )(a) |  (GetEnumIntegralSizeType<t>::type)(b)); } \
+inline t  operator &  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::type )(a) &  (GetEnumIntegralSizeType<t>::type)(b)); } \
+inline t  operator ^  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::type )(a) ^  (GetEnumIntegralSizeType<t>::type)(b)); } \
+inline t  operator ~  (t  a     ) { return (t )(~(GetEnumIntegralSizeType<t>::type )(a));                                          }
+
 // We wrap the C functions malloc and free because C++ does not implicitly cast from void* so this macro handles the cast.
 #define Malloc(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
 #define Free(pt) free((pt))
-
-typedef  uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef   int8_t  S8;
-typedef  int16_t S16;
-typedef  int32_t S32;
-typedef  int64_t S64;
 
 typedef glm::vec2   Vec2;
 typedef glm::vec3   Vec3;

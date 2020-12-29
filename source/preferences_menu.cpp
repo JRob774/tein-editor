@@ -135,34 +135,34 @@ TEINAPI void internal__next_section (Vec2& cursor)
 
 TEINAPI void internal__do_settings_label (float w, const char* key)
 {
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_SETTINGS_NAMES.at(key));
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_SETTINGS_NAMES.at(key));
 
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
-    do_separator(PREFERENCES_SECTION_H);
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
+    DoSeparator(PREFERENCES_SECTION_H);
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
 }
 
 TEINAPI void internal__do_half_settings_label (float w, const char* key)
 {
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_SETTINGS_NAMES.at(key));
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_SETTINGS_NAMES.at(key));
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
 }
 
 TEINAPI void internal__do_half_separator (Vec2& cursor)
 {
-    advance_panel_cursor((PREFERENCES_INNER_XPAD/2)+1);
-    do_separator(PREFERENCES_SECTION_H);
+    AdvancePanelCursor((PREFERENCES_INNER_XPAD/2)+1);
+    DoSeparator(PREFERENCES_SECTION_H);
     cursor.x -= 1;
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
 }
 
 TEINAPI void internal__do_hotkeys_label (float w, const char* key)
 {
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_HOTKEYS_NAMES.at(key));
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,PREFERENCES_SECTION_H, PREFERENCES_HOTKEYS_NAMES.at(key));
 
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
-    do_separator(PREFERENCES_SECTION_H);
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
+    DoSeparator(PREFERENCES_SECTION_H);
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -172,24 +172,24 @@ TEINAPI void internal__begin_settings_area (const char* title, Vec2& cursor)
     float w = GetViewport().w;
     float h = PREFERENCES_SECTION_H;
 
-    do_label(UI_ALIGN_CENTER,UI_ALIGN_CENTER, w,h, title);
+    DoLabel(UI_ALIGN_CENTER,UI_ALIGN_CENTER, w,h, title);
     internal__next_section(cursor);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
+    SetPanelCursorDir(UI_DIR_DOWN);
 
-    advance_panel_cursor(PREFERENCES_INNER_YPAD);
-    do_separator(w);
-    advance_panel_cursor(PREFERENCES_INNER_YPAD);
+    AdvancePanelCursor(PREFERENCES_INNER_YPAD);
+    DoSeparator(w);
+    AdvancePanelCursor(PREFERENCES_INNER_YPAD);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UI_DIR_RIGHT);
     cursor.x = 0;
 }
 
 TEINAPI void internal__end_settings_area ()
 {
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    advance_panel_cursor(PREFERENCES_INNER_YPAD);
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    AdvancePanelCursor(PREFERENCES_INNER_YPAD);
+    SetPanelCursorDir(UI_DIR_RIGHT);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -197,15 +197,15 @@ TEINAPI void internal__end_settings_area ()
 TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float sh, Vec4& color)
 {
     // If we were presses we want to open the color picker with our color.
-    if (preferences_mouse_pressed && mouse_in_ui_bounds_xywh(cursor.x, cursor.y, sw, sh))
+    if (preferences_mouse_pressed && MouseInUiBoundsXYWH(cursor.x, cursor.y, sw, sh))
     {
         open_color_picker(&color);
     }
 
     cursor.y += 3;
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(cursor.x+0, cursor.y+0, cursor.x+sw-0, cursor.y+sh-0);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(cursor.x+1, cursor.y+1, cursor.x+sw-1, cursor.y+sh-1);
 
     float x1 = cursor.x   +2;
@@ -234,7 +234,7 @@ TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float s
     EndDraw();
 
     cursor.y -= 3;
-    advance_panel_cursor(sw);
+    AdvancePanelCursor(sw);
 }
 
 TEINAPI void internal__do_color_setting_row (Vec2& cursor, float w, const char* key1, const char* key2, Vec4& c1, Vec4& c2)
@@ -262,20 +262,20 @@ TEINAPI void internal__do_hotkey_label_titles (Vec2& cursor)
     float lw1 = (roundf((GetViewport().w-(PREFERENCES_INNER_XPAD*2)) / 3) - (PREFERENCES_INNER_XPAD/2));
     float lw2 = roundf((vw-(lw1*2))-roundf((PREFERENCES_INNER_XPAD*2.5f)+2));
 
-    do_quad(vw, sh, ui_color_medium);
+    DoQuad(vw, sh, gUiColorMedium);
 
     cursor.x  = PREFERENCES_INNER_XPAD;
     cursor.y += PREFERENCES_INNER_YPAD;
 
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw1,PREFERENCES_SECTION_H, "Hotkey Action");
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw1,PREFERENCES_SECTION_H, "Hotkey Action");
 
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
-    advance_panel_cursor(1);
-    advance_panel_cursor(PREFERENCES_INNER_XPAD/2);
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
+    AdvancePanelCursor(1);
+    AdvancePanelCursor(PREFERENCES_INNER_XPAD/2);
 
-    do_label(UI_ALIGN_RIGHT,UI_ALIGN_CENTER, lw2,PREFERENCES_SECTION_H, "Main Binding");
+    DoLabel(UI_ALIGN_RIGHT,UI_ALIGN_CENTER, lw2,PREFERENCES_SECTION_H, "Main Binding");
     cursor.x += roundf(PREFERENCES_INNER_XPAD/3);
-    do_label(UI_ALIGN_RIGHT,UI_ALIGN_CENTER, lw2,PREFERENCES_SECTION_H, "Alternate Binding");
+    DoLabel(UI_ALIGN_RIGHT,UI_ALIGN_CENTER, lw2,PREFERENCES_SECTION_H, "Alternate Binding");
 
     cursor.x = 0;
 
@@ -295,7 +295,7 @@ TEINAPI void internal__do_hotkey_rebind (Vec2& cursor, const char* key)
     float lw = (roundf((GetViewport().w-(PREFERENCES_INNER_XPAD*2)) / 3) - (PREFERENCES_INNER_XPAD/2));
     float tw = roundf((vw-(lw*2))-roundf((PREFERENCES_INNER_XPAD*2.5f)+2));
 
-    do_quad(vw, sh, ui_color_medium);
+    DoQuad(vw, sh, gUiColorMedium);
     cursor.x = PREFERENCES_INNER_XPAD;
 
     internal__do_hotkeys_label(lw, key);
@@ -303,9 +303,9 @@ TEINAPI void internal__do_hotkey_rebind (Vec2& cursor, const char* key)
     // It says text box inset but we're using for the hotkey rebind as well...
     float th = sh-(PREFERENCES_TEXT_BOX_INSET*2);
     cursor.y += PREFERENCES_TEXT_BOX_INSET;
-    do_hotkey_rebind_main(tw,th, UI_NONE, gKeyBindings.at(key));
+    DoHotkeyRebindMain(tw,th, UI_NONE, gKeyBindings.at(key));
     cursor.x += roundf(PREFERENCES_INNER_XPAD/3);
-    do_hotkey_rebind_alt(tw,th, UI_NONE, gKeyBindings.at(key));
+    DoHotkeyRebindAlt(tw,th, UI_NONE, gKeyBindings.at(key));
     cursor.y -= PREFERENCES_TEXT_BOX_INSET;
 
     internal__next_section(cursor);
@@ -420,8 +420,8 @@ TEINAPI void internal__do_preferences_settings ()
     float xpad = PREFERENCES_INNER_XPAD;
     float ypad = PREFERENCES_INNER_YPAD;
 
-    begin_panel(0, 0, vw, vh, UI_NONE, ui_color_medium);
-    begin_panel(xpad, ypad, vw-(xpad*2), vh-(ypad*2), UI_NONE);
+    BeginPanel(0, 0, vw, vh, UI_NONE, gUiColorMedium);
+    BeginPanel(xpad, ypad, vw-(xpad*2), vh-(ypad*2), UI_NONE);
 
     // We redefine as these will now be different.
     vw = GetViewport().w;
@@ -435,37 +435,37 @@ TEINAPI void internal__do_preferences_settings ()
 
     Vec2 cursor(0,0);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
     internal__begin_settings_area("User Interface", cursor);
 
     internal__do_settings_label(sw, gSettingUITheme);
-    UI_Flag dark_flags  = (is_ui_light()) ? UI_INACTIVE : UI_NONE;
-    UI_Flag light_flags = (is_ui_light()) ? UI_NONE : UI_INACTIVE;
-    if (do_button_txt(NULL, bw,sh, dark_flags,  "Dark"))
+    UiFlag dark_flags  = (IsUiLight()) ? UI_INACTIVE : UI_NONE;
+    UiFlag light_flags = (IsUiLight()) ? UI_NONE : UI_INACTIVE;
+    if (DoTextButton(NULL, bw,sh, dark_flags,  "Dark"))
     {
         gEditorSettings.uiTheme = "dark";
-        load_ui_theme();
+        LoadUiTheme();
     }
-    if (do_button_txt(NULL, bw,sh, light_flags, "Light"))
+    if (DoTextButton(NULL, bw,sh, light_flags, "Light"))
     {
         gEditorSettings.uiTheme = "light";
-        load_ui_theme();
+        LoadUiTheme();
     }
     internal__next_section(cursor);
 
     internal__do_settings_label(sw, gSettingFontFace);
-    UI_Flag sans_flags = (IsEditorFontOpenSans()) ? UI_NONE : UI_INACTIVE;
-    UI_Flag dysl_flags = (IsEditorFontOpenSans()) ? UI_INACTIVE : UI_NONE;
-    set_ui_font(&gResourceFontRegularSans);
-    if (do_button_txt(NULL, bw,sh, sans_flags, "OpenSans"))
+    UiFlag sans_flags = (IsEditorFontOpenSans()) ? UI_NONE : UI_INACTIVE;
+    UiFlag dysl_flags = (IsEditorFontOpenSans()) ? UI_INACTIVE : UI_NONE;
+    SetUiFont(&gResourceFontRegularSans);
+    if (DoTextButton(NULL, bw,sh, sans_flags, "OpenSans"))
     {
         gEditorSettings.fontFace = "OpenSans";
         UpdateEditorFont();
     }
-    set_ui_font(&gResourceFontRegularDyslexic);
-    if (do_button_txt(NULL, bw,sh, dysl_flags, "OpenDyslexic"))
+    SetUiFont(&gResourceFontRegularDyslexic);
+    if (DoTextButton(NULL, bw,sh, dysl_flags, "OpenDyslexic"))
     {
         gEditorSettings.fontFace = "OpenDyslexic";
         UpdateEditorFont();
@@ -473,12 +473,12 @@ TEINAPI void internal__do_preferences_settings ()
     internal__next_section(cursor);
 
     // Reset the font to being the default for the editor.
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
     internal__do_settings_label(sw, gSettingTileGraphics);
-    UI_Flag tile_graphics_new_flags = (gEditorSettings.tileGraphics == "new") ? UI_NONE : UI_INACTIVE;
-    UI_Flag tile_graphics_old_flags = (gEditorSettings.tileGraphics == "new") ? UI_INACTIVE : UI_NONE;
-    if (do_button_txt(NULL, bw,sh, tile_graphics_new_flags, "New"))
+    UiFlag tile_graphics_new_flags = (gEditorSettings.tileGraphics == "new") ? UI_NONE : UI_INACTIVE;
+    UiFlag tile_graphics_old_flags = (gEditorSettings.tileGraphics == "new") ? UI_INACTIVE : UI_NONE;
+    if (DoTextButton(NULL, bw,sh, tile_graphics_new_flags, "New"))
     {
         if (gEditorSettings.tileGraphics != "new")
         {
@@ -486,7 +486,7 @@ TEINAPI void internal__do_preferences_settings ()
             reload_tile_graphics();
         }
     }
-    if (do_button_txt(NULL, bw,sh, tile_graphics_old_flags, "Old"))
+    if (DoTextButton(NULL, bw,sh, tile_graphics_old_flags, "Old"))
     {
         if (gEditorSettings.tileGraphics != "old")
         {
@@ -497,28 +497,28 @@ TEINAPI void internal__do_preferences_settings ()
     internal__next_section(cursor);
 
     internal__do_settings_label(sw, gSettingCustomCursors);
-    UI_Flag cursor_enabled_flags  = (CustomCursorsEnabled()) ? UI_NONE : UI_INACTIVE;
-    UI_Flag cursor_disabled_flags = (CustomCursorsEnabled()) ? UI_INACTIVE : UI_NONE;
-    if (do_button_txt(NULL, bw,sh, cursor_enabled_flags,  "Enabled"))
+    UiFlag cursor_enabled_flags  = (CustomCursorsEnabled()) ? UI_NONE : UI_INACTIVE;
+    UiFlag cursor_disabled_flags = (CustomCursorsEnabled()) ? UI_INACTIVE : UI_NONE;
+    if (DoTextButton(NULL, bw,sh, cursor_enabled_flags,  "Enabled"))
     {
         gEditorSettings.customCursors = true;
         LoadEditorCursors();
     }
-    if (do_button_txt(NULL, bw,sh, cursor_disabled_flags, "Disabled"))
+    if (DoTextButton(NULL, bw,sh, cursor_disabled_flags, "Disabled"))
     {
         gEditorSettings.customCursors = false;
         LoadEditorCursors();
     }
     internal__next_section(cursor);
 
-    UI_Flag tooltips_enabled_flags  = (gEditorSettings.showTooltips) ? UI_NONE : UI_INACTIVE;
-    UI_Flag tooltips_disabled_flags = (gEditorSettings.showTooltips) ? UI_INACTIVE : UI_NONE;
+    UiFlag tooltips_enabled_flags  = (gEditorSettings.showTooltips) ? UI_NONE : UI_INACTIVE;
+    UiFlag tooltips_disabled_flags = (gEditorSettings.showTooltips) ? UI_INACTIVE : UI_NONE;
     internal__do_settings_label(sw, gSettingShowTooltips);
-    if (do_button_txt(NULL, bw,sh, tooltips_enabled_flags,  "Enabled"))
+    if (DoTextButton(NULL, bw,sh, tooltips_enabled_flags,  "Enabled"))
     {
         gEditorSettings.showTooltips = true;
     }
-    if (do_button_txt(NULL, bw,sh, tooltips_disabled_flags, "Disabled"))
+    if (DoTextButton(NULL, bw,sh, tooltips_disabled_flags, "Disabled"))
     {
         gEditorSettings.showTooltips = false;
     }
@@ -529,14 +529,14 @@ TEINAPI void internal__do_preferences_settings ()
     internal__begin_settings_area("Level Backups", cursor);
 
     internal__do_settings_label(sw, gSettingAutoBackup);
-    UI_Flag backup_enabled_flags  = (gEditorSettings.autoBackup) ? UI_NONE : UI_INACTIVE;
-    UI_Flag backup_disabled_flags = (gEditorSettings.autoBackup) ? UI_INACTIVE : UI_NONE;
-    if (do_button_txt(NULL, bw,sh, backup_enabled_flags,  "Enabled"))
+    UiFlag backup_enabled_flags  = (gEditorSettings.autoBackup) ? UI_NONE : UI_INACTIVE;
+    UiFlag backup_disabled_flags = (gEditorSettings.autoBackup) ? UI_INACTIVE : UI_NONE;
+    if (DoTextButton(NULL, bw,sh, backup_enabled_flags,  "Enabled"))
     {
         gEditorSettings.autoBackup = true;
         update_backup_timer();
     }
-    if (do_button_txt(NULL, bw,sh, backup_disabled_flags, "Disabled"))
+    if (DoTextButton(NULL, bw,sh, backup_disabled_flags, "Disabled"))
     {
         gEditorSettings.autoBackup = false;
         update_backup_timer();
@@ -544,25 +544,25 @@ TEINAPI void internal__do_preferences_settings ()
     internal__next_section(cursor);
 
     internal__do_settings_label(sw, gSettingUnlimitedBackups);
-    UI_Flag unlimited_enabled_flags  = (gEditorSettings.unlimitedBackups) ? UI_NONE : UI_INACTIVE;
-    UI_Flag unlimited_disabled_flags = (gEditorSettings.unlimitedBackups) ? UI_INACTIVE : UI_NONE;
-    if (do_button_txt(NULL, bw,sh, unlimited_enabled_flags,  "Enabled"))
+    UiFlag unlimited_enabled_flags  = (gEditorSettings.unlimitedBackups) ? UI_NONE : UI_INACTIVE;
+    UiFlag unlimited_disabled_flags = (gEditorSettings.unlimitedBackups) ? UI_INACTIVE : UI_NONE;
+    if (DoTextButton(NULL, bw,sh, unlimited_enabled_flags,  "Enabled"))
     {
         gEditorSettings.unlimitedBackups = true;
     }
-    if (do_button_txt(NULL, bw,sh, unlimited_disabled_flags, "Disabled"))
+    if (DoTextButton(NULL, bw,sh, unlimited_disabled_flags, "Disabled"))
     {
         gEditorSettings.unlimitedBackups = false;
     }
     internal__next_section(cursor);
 
     internal__do_settings_label(sw, gSettingBackupInterval);
-    if (!gEditorSettings.autoBackup) set_panel_flags(UI_LOCKED);
+    if (!gEditorSettings.autoBackup) SetPanelFlags(UI_LOCKED);
     cursor.y += PREFERENCES_TEXT_BOX_INSET;
     std::string backup_interval_str(std::to_string(gEditorSettings.backupInterval));
-    do_text_box(vw-cursor.x,th, UI_NUMERIC, backup_interval_str, "0");
+    DoTextBox(vw-cursor.x,th, UI_NUMERIC, backup_interval_str, "0");
     cursor.y -= PREFERENCES_TEXT_BOX_INSET;
-    if (!gEditorSettings.autoBackup) set_panel_flags(UI_NONE);
+    if (!gEditorSettings.autoBackup) SetPanelFlags(UI_NONE);
     if (atoll(backup_interval_str.c_str()) > INT_MAX)
     {
         backup_interval_str = std::to_string(INT_MAX);
@@ -576,12 +576,12 @@ TEINAPI void internal__do_preferences_settings ()
     internal__next_section(cursor);
 
     internal__do_settings_label(sw, gSettingBackupCount);
-    if (gEditorSettings.unlimitedBackups) set_panel_flags(UI_LOCKED);
+    if (gEditorSettings.unlimitedBackups) SetPanelFlags(UI_LOCKED);
     cursor.y += PREFERENCES_TEXT_BOX_INSET;
     std::string backup_count_str(std::to_string(gEditorSettings.backupCount));
-    do_text_box(vw-cursor.x,th, UI_NUMERIC, backup_count_str, "0");
+    DoTextBox(vw-cursor.x,th, UI_NUMERIC, backup_count_str, "0");
     cursor.y -= PREFERENCES_TEXT_BOX_INSET;
-    if (gEditorSettings.unlimitedBackups) set_panel_flags(UI_NONE);
+    if (gEditorSettings.unlimitedBackups) SetPanelFlags(UI_NONE);
     if (atoll(backup_count_str.c_str()) > INT_MAX)
     {
         backup_count_str = std::to_string(INT_MAX);
@@ -605,8 +605,8 @@ TEINAPI void internal__do_preferences_settings ()
 
     internal__end_settings_area();
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -616,15 +616,15 @@ TEINAPI void internal__do_preferences_hotkeys ()
     float vw = GetViewport().w;
     float vh = GetViewport().h;
 
-    begin_panel(0, 0, vw, vh, UI_NONE);
+    BeginPanel(0, 0, vw, vh, UI_NONE);
 
     Vec2 cursor(0,0);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
     float content_height = (PREFERENCES_HOTKEYS_NAMES.size() * (PREFERENCES_SECTION_H+1)) + (PREFERENCES_SECTION_H+(PREFERENCES_INNER_YPAD*2));
-    do_scrollbar(vw-PREFERENCES_SCROLLBAR_WIDTH+1, -1, PREFERENCES_SCROLLBAR_WIDTH, vh+2, content_height, preferences_scroll_offset);
+    DoScrollbar(vw-PREFERENCES_SCROLLBAR_WIDTH+1, -1, PREFERENCES_SCROLLBAR_WIDTH, vh+2, content_height, preferences_scroll_offset);
 
     internal__do_hotkey_label_titles(cursor);
 
@@ -692,7 +692,7 @@ TEINAPI void internal__do_preferences_hotkeys ()
     internal__do_hotkey_rebind(cursor, gKbLoadPrevLevel);
     internal__do_hotkey_rebind(cursor, gKbLoadNextLevel);
 
-    end_panel();
+    EndPanel();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -714,9 +714,9 @@ TEINAPI void do_preferences_menu ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     Vec2 cursor;
 
@@ -733,33 +733,33 @@ TEINAPI void do_preferences_menu ()
 
     // Top tabs for switching from the settings and key bindings menu.
     cursor = Vec2(0,0);
-    begin_panel(0, 0, vw, pvfh, UI_NONE, ui_color_medium);
+    BeginPanel(0, 0, vw, pvfh, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
-    UI_Flag settings_flags = (preferences_tab == Preferennes_Tab::SETTINGS) ? UI_HIGHLIGHT : UI_INACTIVE;
-    UI_Flag hotkeys_flags  = (preferences_tab == Preferennes_Tab::HOTKEYS)  ? UI_HIGHLIGHT : UI_INACTIVE;
+    UiFlag settings_flags = (preferences_tab == Preferennes_Tab::SETTINGS) ? UI_HIGHLIGHT : UI_INACTIVE;
+    UiFlag hotkeys_flags  = (preferences_tab == Preferennes_Tab::HOTKEYS)  ? UI_HIGHLIGHT : UI_INACTIVE;
 
-    if (do_button_txt(NULL, tw,th, settings_flags, "Settings")) preferences_tab = Preferennes_Tab::SETTINGS;
-    if (do_button_txt(NULL, tw,th, hotkeys_flags,  "Hotkeys"))  preferences_tab = Preferennes_Tab::HOTKEYS;
+    if (DoTextButton(NULL, tw,th, settings_flags, "Settings")) preferences_tab = Preferennes_Tab::SETTINGS;
+    if (DoTextButton(NULL, tw,th, hotkeys_flags,  "Hotkeys"))  preferences_tab = Preferennes_Tab::HOTKEYS;
 
     // Just in case of weird rounding manually add the right separator.
     cursor.x = vw;
-    do_separator(bh);
+    DoSeparator(bh);
 
     // Add a separator to the left for symmetry.
     cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     // Bottom buttons for saving and exiting or cancelling changes.
     cursor = Vec2(0, gWindowBorder);
-    begin_panel(0, vh-pvfh, vw, pvfh, UI_NONE, ui_color_medium);
+    BeginPanel(0, vh-pvfh, vw, pvfh, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
     std::string restore_message;
     switch (preferences_tab)
@@ -771,30 +771,30 @@ TEINAPI void do_preferences_menu ()
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - (bw*2);
 
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, "Save and Exit"  )) save_preferences   ();
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, restore_message  )) restore_preferences();
-    if (do_button_txt(NULL, bw2,bh, UI_NONE, "Cancel and Exit")) cancel_preferences ();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Save and Exit"  )) save_preferences   ();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, restore_message  )) restore_preferences();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel and Exit")) cancel_preferences ();
 
     // Add a separator to the left for symmetry.
     cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     p2.x =                                  1;
     p2.y = pvfh                           + 1;
     p2.w = GetViewport().w               - 2;
     p2.h = GetViewport().h - p2.y - pvfh - 1;
 
-    begin_panel(p2, UI_NONE);
+    BeginPanel(p2, UI_NONE);
     switch (preferences_tab)
     {
         case (Preferennes_Tab::SETTINGS): internal__do_preferences_settings(); break;
         case (Preferennes_Tab::HOTKEYS):  internal__do_preferences_hotkeys();  break;
     }
-    end_panel();
+    EndPanel();
 
-    end_panel();
+    EndPanel();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -817,7 +817,7 @@ TEINAPI void handle_preferences_menu_events ()
         } break;
         case (SDL_KEYDOWN):
         {
-            if (!text_box_is_active() && !hotkey_is_active())
+            if (!TextBoxIsActive() && !HotkeyIsActive())
             {
                 switch (main_event.key.keysym.sym)
                 {

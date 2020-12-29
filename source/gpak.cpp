@@ -328,9 +328,9 @@ TEINAPI void do_unpack ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -340,20 +340,20 @@ TEINAPI void do_unpack ()
     p2.w = vw        - 2;
     p2.h = vh - p2.y - 1;
 
-    begin_panel(p2, UI_NONE, ui_color_medium);
+    BeginPanel(p2, UI_NONE, gUiColorMedium);
 
     constexpr float XPAD = 8;
     constexpr float YPAD = 4;
 
     Vec2 cursor(XPAD, YPAD);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
 
     constexpr float LABEL_H = 24;
     constexpr float BAR_H = 20;
 
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LABEL_H, "Unpacking GPAK...");
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LABEL_H, "Unpacking GPAK...");
 
     cursor.y += (YPAD*2);
 
@@ -365,9 +365,9 @@ TEINAPI void do_unpack ()
     float x2 = cursor.x + current_width;
     float y2 = cursor.y + BAR_H;
 
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(x1-2, y1-2, cursor.x+total_width+2, y2+2);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(x1-1, y1-1, cursor.x+total_width+1, y2+1);
 
     BeginDraw(BufferMode::TRIANGLE_STRIP);
@@ -377,8 +377,8 @@ TEINAPI void do_unpack ()
     PutVertex(x2, y1, GPAK_PROGRESS_BAR_MAX_COLOR); // TR
     EndDraw();
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 
     if (is_gpak_unpack_complete())
     {
@@ -398,9 +398,9 @@ TEINAPI void do_pack ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -410,20 +410,20 @@ TEINAPI void do_pack ()
     p2.w = vw        - 2;
     p2.h = vh - p2.y - 1;
 
-    begin_panel(p2, UI_NONE, ui_color_medium);
+    BeginPanel(p2, UI_NONE, gUiColorMedium);
 
     constexpr float XPAD = 8;
     constexpr float YPAD = 4;
 
     Vec2 cursor(XPAD, YPAD);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
 
     constexpr float LABEL_H = 24;
     constexpr float BAR_H = 20;
 
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LABEL_H, "Packing GPAK...");
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LABEL_H, "Packing GPAK...");
 
     cursor.y += (YPAD*2);
 
@@ -435,9 +435,9 @@ TEINAPI void do_pack ()
     float x2 = cursor.x + current_width;
     float y2 = cursor.y + BAR_H;
 
-    SetDrawColor(ui_color_light);
+    SetDrawColor(gUiColorLight);
     FillQuad(x1-2, y1-2, cursor.x+total_width+2, y2+2);
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(x1-1, y1-1, cursor.x+total_width+1, y2+1);
 
     BeginDraw(BufferMode::TRIANGLE_STRIP);
@@ -447,8 +447,8 @@ TEINAPI void do_pack ()
     PutVertex(x2, y1, GPAK_PROGRESS_BAR_MAX_COLOR); // TR
     EndDraw();
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 
     if (is_gpak_pack_complete())
     {

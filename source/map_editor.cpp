@@ -85,7 +85,7 @@ TEINAPI U32 internal__map_cursor_blink_callback (U32 interval, void* user_data)
 TEINAPI void internal__init_map_editor_cursor ()
 {
     map_editor.cursor_visible = true;
-    map_editor.cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__map_cursor_blink_callback, NULL);
+    map_editor.cursor_blink_timer = SDL_AddTimer(gUiCursorBlinkInterval, internal__map_cursor_blink_callback, NULL);
     if (!map_editor.cursor_blink_timer)
     {
         LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
@@ -323,7 +323,7 @@ TEINAPI void do_map_editor ()
     // To account for the control panel disappearing.
     p1.w += 1;
 
-    begin_panel(p1.x, p1.y, p1.w, p1.h, UI_NONE, gEditorSettings.backgroundColor);
+    BeginPanel(p1.x, p1.y, p1.w, p1.h, UI_NONE, gEditorSettings.backgroundColor);
 
     // We cache the mouse position so that systems such as paste which can
     // potentially happen outside of this section of code (where the needed
@@ -420,7 +420,7 @@ TEINAPI void do_map_editor ()
                     (tab.map_node_info.active_pos.x == node.x && tab.map_node_info.active_pos.y == node.y)))
                 {
                     active_node_pos_been_drawn = true;
-                    bg = ui_color_ex_light;
+                    bg = gUiColorExLight;
                 }
             }
         }
@@ -505,7 +505,7 @@ TEINAPI void do_map_editor ()
             IVec2 m = internal__mouse_to_node_position_int();
             float nx = tab.map_node_info.active_pos.x * MAP_NODE_W;
             float ny = tab.map_node_info.active_pos.y * MAP_NODE_H;
-            SetDrawColor(((is_ui_light()) ? Vec4(1,1,1,1) : ui_color_ex_light));
+            SetDrawColor(((IsUiLight()) ? Vec4(1,1,1,1) : gUiColorExLight));
             FillQuad(nx,ny,nx+MAP_NODE_W,ny+MAP_NODE_H);
         }
     }
@@ -594,9 +594,9 @@ TEINAPI void do_map_editor ()
             {
                 if (map_editor.cursor_visible)
                 {
-                    SetDrawColor(internal__get_node_shadow_color(ui_color_ex_light));
+                    SetDrawColor(internal__get_node_shadow_color(gUiColorExLight));
                     DrawLine(tx+xo+x_off+1, y1+yo+1, tx+xo+x_off+1, y1+yo+th+1);
-                    SetDrawColor(internal__get_node_text_color(ui_color_ex_light));
+                    SetDrawColor(internal__get_node_text_color(gUiColorExLight));
                     DrawLine(tx+xo+x_off, y1+yo, tx+xo+x_off, y1+yo+th);
                 }
             }
@@ -632,7 +632,7 @@ TEINAPI void do_map_editor ()
 
     pop_editor_camera_transform();
 
-    end_panel();
+    EndPanel();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -962,7 +962,7 @@ TEINAPI void handle_map_editor_events ()
             }
             // Start the blinking of the cursor.
             map_editor.cursor_visible = true;
-            map_editor.cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__map_cursor_blink_callback, NULL);
+            map_editor.cursor_blink_timer = SDL_AddTimer(gUiCursorBlinkInterval, internal__map_cursor_blink_callback, NULL);
             if (!map_editor.cursor_blink_timer) {
                 LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }

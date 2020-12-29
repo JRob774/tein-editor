@@ -76,10 +76,10 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
     bool is_active = internal__is_category_active(category_index);
 
     Vec2 label_cur(0,0);
-    begin_panel(x, y, w, h, (is_active) ? UI_NONE : UI_INACTIVE);
+    BeginPanel(x, y, w, h, (is_active) ? UI_NONE : UI_INACTIVE);
 
-    set_panel_cursor(&label_cur);
-    set_panel_cursor_dir(UI_DIR_DOWN);
+    SetPanelCursor(&label_cur);
+    SetPanelCursorDir(UI_DIR_DOWN);
 
     const char* label_name = NULL;
     switch (category_index)
@@ -92,8 +92,8 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
         case (TILE_CATEGORY_BACK2  ): label_name = "Back 2";  break;
     }
 
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w, TILE_PANEL_LABEL_H, label_name);
-    end_panel();
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w, TILE_PANEL_LABEL_H, label_name);
+    EndPanel();
 
     cursor.y += TILE_PANEL_LABEL_H;
 
@@ -104,10 +104,10 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
     h = (rows * TILE_PANEL_ITEM_SIZE) + category_pad + total_item_pad;
 
     Vec2 cur(TILE_PANEL_INNER_PAD, TILE_PANEL_INNER_PAD);
-    begin_panel(x, y, w, h, UI_NONE, ui_color_med_dark);
+    BeginPanel(x, y, w, h, UI_NONE, gUiColorMedDark);
 
-    SetDrawColor(ui_color_ex_dark); // The outline/border for the category.
-    DrawQuad(0, get_panel_offset().y, w, get_panel_offset().y+h);
+    SetDrawColor(gUiColorExDark); // The outline/border for the category.
+    DrawQuad(0, GetPanelOffset().y, w, GetPanelOffset().y+h);
 
     TextureAtlas& atlas = GetEditorAtlasSmall();
 
@@ -117,20 +117,20 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
     for (size_t i=0; i<category.size(); ++i)
     {
         Vec2 tile_cursor = cur;
-        tile_cursor.y += get_panel_offset().y;
+        tile_cursor.y += GetPanelOffset().y;
 
         const Tile_Group& tile_group = category[i];
         Quad tile_group_bounds = { tile_cursor.x, tile_cursor.y, TILE_PANEL_ITEM_SIZE, TILE_PANEL_ITEM_SIZE };
 
         if (is_active)
         {
-            bool in_bounds = mouse_in_ui_bounds_xywh(tile_group_bounds);
+            bool in_bounds = MouseInUiBoundsXYWH(tile_group_bounds);
             if (in_bounds)
             {
                 push_status_bar_message("Tile Group: %s", tile_group.name.c_str());
                 set_current_tooltip(tile_group.name, tile_group.desc);
             }
-            if (tile_panel.mouse_down && !is_there_a_hit_ui_element())
+            if (tile_panel.mouse_down && !IsThereAHitUiElement())
             {
                 if (in_bounds)
                 {
@@ -150,7 +150,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
             // If we are the currently selected group then we draw the highlight.
             if ((category_index == tile_panel.selected_category) && (i == tile_panel.selected_group))
             {
-                SetDrawColor(ui_color_light);
+                SetDrawColor(gUiColorLight);
                 FillQuad(qx, qy, qx+qw, qy+qh);
             }
         }
@@ -178,7 +178,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
 
     FlushBatchedTiles();
 
-    end_panel();
+    EndPanel();
 
     // Set the cursor for the next category (if there is one).
     cursor.x  = TILE_PANEL_INNER_PAD;
@@ -320,16 +320,16 @@ TEINAPI bool init_tile_panel ()
 
 TEINAPI void do_tile_panel (bool scrollbar)
 {
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
     Vec2 cursor(TILE_PANEL_INNER_PAD, 0);
-    tile_panel.bounds = { 0, 0, get_panel_w(), get_panel_h() };
+    tile_panel.bounds = { 0, 0, GetPanelWidth(), GetPanelHeight() };
     if (is_layer_panel_present())
     {
         tile_panel.bounds.h = roundf(tile_panel.bounds.h - get_layer_panel_height());
     }
 
-    begin_panel(tile_panel.bounds, UI_NONE, ui_color_medium);
+    BeginPanel(tile_panel.bounds, UI_NONE, gUiColorMedium);
 
     if (scrollbar)
     {
@@ -340,7 +340,7 @@ TEINAPI void do_tile_panel (bool scrollbar)
 
         Quad sb = { x,y,w,h };
 
-        do_scrollbar(sb, tile_panel.content_height, tile_panel.scroll_offset);
+        DoScrollbar(sb, tile_panel.content_height, tile_panel.scroll_offset);
     }
 
     for (auto& it: tile_panel.category)
@@ -348,7 +348,7 @@ TEINAPI void do_tile_panel (bool scrollbar)
         internal__do_tile_panel_category(cursor, it.first, it.second);
     }
 
-    end_panel();
+    EndPanel();
 }
 
 /* -------------------------------------------------------------------------- */

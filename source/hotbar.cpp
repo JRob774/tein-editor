@@ -54,17 +54,17 @@ TEINAPI void do_hotbar ()
     // Height for the toolbar buttons.
     float bh = HOTBAR_HEIGHT - gWindowBorder;
 
-    set_ui_texture(&gResourceIcons);
-    set_ui_font(&GetEditorRegularFont());
+    SetUiTexture(&gResourceIcons);
+    SetUiFont(&GetEditorRegularFont());
 
-    UI_Flag save_flags     = UI_NONE;
-    UI_Flag save_as_flags  = UI_NONE;
-    UI_Flag undo_flags     = UI_NONE;
-    UI_Flag redo_flags     = UI_NONE;
-    UI_Flag zoom_out_flags = UI_NONE;
-    UI_Flag zoom_in_flags  = UI_NONE;
-    UI_Flag pack_flags     = UI_NONE;
-    UI_Flag unpack_flags   = UI_NONE;
+    UiFlag save_flags     = UI_NONE;
+    UiFlag save_as_flags  = UI_NONE;
+    UiFlag undo_flags     = UI_NONE;
+    UiFlag redo_flags     = UI_NONE;
+    UiFlag zoom_out_flags = UI_NONE;
+    UiFlag zoom_in_flags  = UI_NONE;
+    UiFlag pack_flags     = UI_NONE;
+    UiFlag unpack_flags   = UI_NONE;
 
     pack_flags   = (is_gpak_pack_complete  ()) ? UI_NONE : UI_LOCKED;
     unpack_flags = (is_gpak_unpack_complete()) ? UI_NONE : UI_LOCKED;
@@ -128,79 +128,79 @@ TEINAPI void do_hotbar ()
     }
 
     // The hotbar is a horizontal list of available actions.
-    begin_panel(0, 0, GetViewport().w, HOTBAR_HEIGHT, UI_NONE, ui_color_medium);
+    BeginPanel(0, 0, GetViewport().w, HOTBAR_HEIGHT, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor(&cursor);
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
 
     // We want these to be the same width as the toolbar (looks nice).
     float bw = TOOLBAR_WIDTH+1;
 
     float width = 0;
 
-    width += calculate_button_txt_width(HB_NAME_NEW        );
-    width += calculate_button_txt_width(HB_NAME_LOAD       );
-    width += calculate_button_txt_width(HB_NAME_SAVE       );
-    width += calculate_button_txt_width(HB_NAME_SAVE_AS    );
-    width += calculate_button_txt_width(HB_NAME_UNDO       );
-    width += calculate_button_txt_width(HB_NAME_REDO       );
-    width += calculate_button_txt_width(HB_NAME_ZOOM_OUT   );
-    width += calculate_button_txt_width(HB_NAME_ZOOM_IN    );
-    width += calculate_button_txt_width(HB_NAME_PACK       );
-    width += calculate_button_txt_width(HB_NAME_UNPACK     );
-    width += calculate_button_txt_width(HB_NAME_RUN_GAME   );
-    width += calculate_button_txt_width(HB_NAME_PREFERENCES);
-    width += calculate_button_txt_width(HB_NAME_ABOUT      );
-    width += calculate_button_txt_width(HB_NAME_BUG_REPORT );
-    width += calculate_button_txt_width(HB_NAME_HELP       );
+    width += CalculateTextButtonWidth(HB_NAME_NEW        );
+    width += CalculateTextButtonWidth(HB_NAME_LOAD       );
+    width += CalculateTextButtonWidth(HB_NAME_SAVE       );
+    width += CalculateTextButtonWidth(HB_NAME_SAVE_AS    );
+    width += CalculateTextButtonWidth(HB_NAME_UNDO       );
+    width += CalculateTextButtonWidth(HB_NAME_REDO       );
+    width += CalculateTextButtonWidth(HB_NAME_ZOOM_OUT   );
+    width += CalculateTextButtonWidth(HB_NAME_ZOOM_IN    );
+    width += CalculateTextButtonWidth(HB_NAME_PACK       );
+    width += CalculateTextButtonWidth(HB_NAME_UNPACK     );
+    width += CalculateTextButtonWidth(HB_NAME_RUN_GAME   );
+    width += CalculateTextButtonWidth(HB_NAME_PREFERENCES);
+    width += CalculateTextButtonWidth(HB_NAME_ABOUT      );
+    width += CalculateTextButtonWidth(HB_NAME_BUG_REPORT );
+    width += CalculateTextButtonWidth(HB_NAME_HELP       );
     width += (are_there_updates()) ? bw : 0;
 
     // Display text or icons depending on what we have room for.
     if (width < GetViewport().w)
     {
-    do_button_txt(hb_new,             bh,  UI_NONE,         HB_NAME_NEW,          HB_INFO_NEW,          gKbLevelNew                          );
-    do_button_txt(hb_load,            bh,  UI_NONE,         HB_NAME_LOAD,         HB_INFO_LOAD,         gKbLevelOpen                         );
-    do_button_txt(hb_save,            bh,  save_flags,      HB_NAME_SAVE,         HB_INFO_SAVE,         gKbLevelSave                         );
-    do_button_txt(hb_save_as,         bh,  save_as_flags,   HB_NAME_SAVE_AS,      HB_INFO_SAVE_AS,      gKbLevelSaveAs                       );
-    do_button_txt(hb_undo_action,     bh,  undo_flags,      HB_NAME_UNDO,         HB_INFO_UNDO,         gKbUndo                              );
-    do_button_txt(hb_redo_action,     bh,  redo_flags,      HB_NAME_REDO,         HB_INFO_REDO,         gKbRedo                              );
-    do_button_txt(hb_zoom_out,        bh,  zoom_out_flags,  HB_NAME_ZOOM_OUT,     HB_INFO_ZOOM_OUT,     gKbCameraZoomOut                     );
-    do_button_txt(hb_zoom_in,         bh,  zoom_in_flags,   HB_NAME_ZOOM_IN,      HB_INFO_ZOOM_IN,      gKbCameraZoomIn                      );
-    do_button_txt(hb_gpak_pack,       bh,  pack_flags,      HB_NAME_PACK,         HB_INFO_PACK,         gKbGpakPack                          );
-    do_button_txt(hb_gpak_unpack,     bh,  unpack_flags,    HB_NAME_UNPACK,       HB_INFO_UNPACK,       gKbGpakUnpack                        );
-    do_button_txt(hb_run_game,        bh,  UI_NONE,         HB_NAME_RUN_GAME,     HB_INFO_RUN_GAME,     gKbRunGame                           );
-    do_button_txt(hb_preferences,     bh,  UI_NONE,         HB_NAME_PREFERENCES,  HB_INFO_PREFERENCES,  gKbPreferences                       );
-    do_button_txt(hb_about,           bh,  UI_NONE,         HB_NAME_ABOUT,        HB_INFO_ABOUT,        gKbAbout                             );
-    do_button_txt(hb_bug_report,      bh,  UI_NONE,         HB_NAME_BUG_REPORT,   HB_INFO_BUG_REPORT,   gKbBugReport                         );
-    do_button_txt(hb_help,            bh,  UI_NONE,         HB_NAME_HELP,         HB_INFO_HELP,         gKbHelp                              );
+    DoTextButton(hb_new,             bh,  UI_NONE,         HB_NAME_NEW,          HB_INFO_NEW,          gKbLevelNew                          );
+    DoTextButton(hb_load,            bh,  UI_NONE,         HB_NAME_LOAD,         HB_INFO_LOAD,         gKbLevelOpen                         );
+    DoTextButton(hb_save,            bh,  save_flags,      HB_NAME_SAVE,         HB_INFO_SAVE,         gKbLevelSave                         );
+    DoTextButton(hb_save_as,         bh,  save_as_flags,   HB_NAME_SAVE_AS,      HB_INFO_SAVE_AS,      gKbLevelSaveAs                       );
+    DoTextButton(hb_undo_action,     bh,  undo_flags,      HB_NAME_UNDO,         HB_INFO_UNDO,         gKbUndo                              );
+    DoTextButton(hb_redo_action,     bh,  redo_flags,      HB_NAME_REDO,         HB_INFO_REDO,         gKbRedo                              );
+    DoTextButton(hb_zoom_out,        bh,  zoom_out_flags,  HB_NAME_ZOOM_OUT,     HB_INFO_ZOOM_OUT,     gKbCameraZoomOut                     );
+    DoTextButton(hb_zoom_in,         bh,  zoom_in_flags,   HB_NAME_ZOOM_IN,      HB_INFO_ZOOM_IN,      gKbCameraZoomIn                      );
+    DoTextButton(hb_gpak_pack,       bh,  pack_flags,      HB_NAME_PACK,         HB_INFO_PACK,         gKbGpakPack                          );
+    DoTextButton(hb_gpak_unpack,     bh,  unpack_flags,    HB_NAME_UNPACK,       HB_INFO_UNPACK,       gKbGpakUnpack                        );
+    DoTextButton(hb_run_game,        bh,  UI_NONE,         HB_NAME_RUN_GAME,     HB_INFO_RUN_GAME,     gKbRunGame                           );
+    DoTextButton(hb_preferences,     bh,  UI_NONE,         HB_NAME_PREFERENCES,  HB_INFO_PREFERENCES,  gKbPreferences                       );
+    DoTextButton(hb_about,           bh,  UI_NONE,         HB_NAME_ABOUT,        HB_INFO_ABOUT,        gKbAbout                             );
+    DoTextButton(hb_bug_report,      bh,  UI_NONE,         HB_NAME_BUG_REPORT,   HB_INFO_BUG_REPORT,   gKbBugReport                         );
+    DoTextButton(hb_help,            bh,  UI_NONE,         HB_NAME_HELP,         HB_INFO_HELP,         gKbHelp                              );
     }
     else
     {
-    do_button_img(hb_new,          bw,bh,  UI_NONE,         &gClipNew,            HB_INFO_NEW,          gKbLevelNew,      HB_NAME_NEW        );
-    do_button_img(hb_load,         bw,bh,  UI_NONE,         &gClipLoad,           HB_INFO_LOAD,         gKbLevelOpen,     HB_NAME_LOAD       );
-    do_button_img(hb_save,         bw,bh,  save_flags,      &gClipSave,           HB_INFO_SAVE,         gKbLevelSave,     HB_NAME_SAVE       );
-    do_button_img(hb_save,         bw,bh,  save_as_flags,   &gClipSaveAs,         HB_INFO_SAVE_AS,      gKbLevelSaveAs,   HB_NAME_SAVE_AS    );
-    do_button_img(hb_undo_action,  bw,bh,  undo_flags,      &gClipUndo,           HB_INFO_UNDO,         gKbUndo,          HB_NAME_UNDO       );
-    do_button_img(hb_redo_action,  bw,bh,  redo_flags,      &gClipRedo,           HB_INFO_REDO,         gKbRedo,          HB_NAME_REDO       );
-    do_button_img(hb_zoom_out,     bw,bh,  zoom_out_flags,  &gClipZoomOut,        HB_INFO_ZOOM_OUT,     gKbCameraZoomOut, HB_NAME_ZOOM_OUT   );
-    do_button_img(hb_zoom_in,      bw,bh,  zoom_in_flags,   &gClipZoomIn,         HB_INFO_ZOOM_IN,      gKbCameraZoomIn,  HB_NAME_ZOOM_IN    );
-    do_button_img(hb_gpak_pack,    bw,bh,  pack_flags,      &gClipPack,           HB_INFO_PACK,         gKbGpakPack,      HB_NAME_PACK       );
-    do_button_img(hb_gpak_unpack,  bw,bh,  unpack_flags,    &gClipUnpack,         HB_INFO_UNPACK,       gKbGpakUnpack,    HB_NAME_UNPACK     );
-    do_button_img(hb_run_game,     bw,bh,  UI_NONE,         &gClipRun,            HB_INFO_RUN_GAME,     gKbRunGame,       HB_NAME_RUN_GAME   );
-    do_button_img(hb_preferences,  bw,bh,  UI_NONE,         &gClipSettings,       HB_INFO_PREFERENCES,  gKbPreferences,   HB_NAME_PREFERENCES);
-    do_button_img(hb_about,        bw,bh,  UI_NONE,         &gClipAbout,          HB_INFO_ABOUT,        gKbAbout,         HB_NAME_ABOUT      );
-    do_button_img(hb_bug_report,   bw,bh,  UI_NONE,         &gClipBug,            HB_INFO_BUG_REPORT,   gKbBugReport,     HB_NAME_BUG_REPORT );
-    do_button_img(hb_help,         bw,bh,  UI_NONE,         &gClipHelp,           HB_INFO_HELP,         gKbHelp,          HB_NAME_HELP       );
+    DoImageButton(hb_new,          bw,bh,  UI_NONE,         &gClipNew,            HB_INFO_NEW,          gKbLevelNew,      HB_NAME_NEW        );
+    DoImageButton(hb_load,         bw,bh,  UI_NONE,         &gClipLoad,           HB_INFO_LOAD,         gKbLevelOpen,     HB_NAME_LOAD       );
+    DoImageButton(hb_save,         bw,bh,  save_flags,      &gClipSave,           HB_INFO_SAVE,         gKbLevelSave,     HB_NAME_SAVE       );
+    DoImageButton(hb_save,         bw,bh,  save_as_flags,   &gClipSaveAs,         HB_INFO_SAVE_AS,      gKbLevelSaveAs,   HB_NAME_SAVE_AS    );
+    DoImageButton(hb_undo_action,  bw,bh,  undo_flags,      &gClipUndo,           HB_INFO_UNDO,         gKbUndo,          HB_NAME_UNDO       );
+    DoImageButton(hb_redo_action,  bw,bh,  redo_flags,      &gClipRedo,           HB_INFO_REDO,         gKbRedo,          HB_NAME_REDO       );
+    DoImageButton(hb_zoom_out,     bw,bh,  zoom_out_flags,  &gClipZoomOut,        HB_INFO_ZOOM_OUT,     gKbCameraZoomOut, HB_NAME_ZOOM_OUT   );
+    DoImageButton(hb_zoom_in,      bw,bh,  zoom_in_flags,   &gClipZoomIn,         HB_INFO_ZOOM_IN,      gKbCameraZoomIn,  HB_NAME_ZOOM_IN    );
+    DoImageButton(hb_gpak_pack,    bw,bh,  pack_flags,      &gClipPack,           HB_INFO_PACK,         gKbGpakPack,      HB_NAME_PACK       );
+    DoImageButton(hb_gpak_unpack,  bw,bh,  unpack_flags,    &gClipUnpack,         HB_INFO_UNPACK,       gKbGpakUnpack,    HB_NAME_UNPACK     );
+    DoImageButton(hb_run_game,     bw,bh,  UI_NONE,         &gClipRun,            HB_INFO_RUN_GAME,     gKbRunGame,       HB_NAME_RUN_GAME   );
+    DoImageButton(hb_preferences,  bw,bh,  UI_NONE,         &gClipSettings,       HB_INFO_PREFERENCES,  gKbPreferences,   HB_NAME_PREFERENCES);
+    DoImageButton(hb_about,        bw,bh,  UI_NONE,         &gClipAbout,          HB_INFO_ABOUT,        gKbAbout,         HB_NAME_ABOUT      );
+    DoImageButton(hb_bug_report,   bw,bh,  UI_NONE,         &gClipBug,            HB_INFO_BUG_REPORT,   gKbBugReport,     HB_NAME_BUG_REPORT );
+    DoImageButton(hb_help,         bw,bh,  UI_NONE,         &gClipHelp,           HB_INFO_HELP,         gKbHelp,          HB_NAME_HELP       );
     }
 
     // Right-aligned update button.
     if (are_there_updates())
     {
         cursor.x = GetViewport().w - (bw-1);
-        do_button_img(hb_update, bw,bh, UI_NONE, &gClipUpdate, HB_INFO_UPDATE, "", HB_NAME_UPDATE);
+        DoImageButton(hb_update, bw,bh, UI_NONE, &gClipUpdate, HB_INFO_UPDATE, "", HB_NAME_UPDATE);
     }
 
-    end_panel();
+    EndPanel();
 }
 
 /* -------------------------------------------------------------------------- */

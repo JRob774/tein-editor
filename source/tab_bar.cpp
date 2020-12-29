@@ -30,7 +30,7 @@ TEINAPI bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool
     float xpad = 6;
 
     float tw = w;
-    float th = get_panel_h();
+    float th = GetPanelHeight();
 
     Vec2 cursor1(0, 0);
     Vec2 cursor2(xpad, 0);
@@ -44,37 +44,37 @@ TEINAPI bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool
     // level's name gets cut off by the width of the final level tab.
     if (tab.unsaved_changes) name.insert(0, "* ");
 
-    UI_Flag flags = (current) ? UI_HIGHLIGHT : UI_INACTIVE;
-    begin_panel(get_panel_cursor().x, 0, tw, th, flags, ui_color_medium);
+    UiFlag flags = (current) ? UI_HIGHLIGHT : UI_INACTIVE;
+    BeginPanel(GetPanelCursor().x, 0, tw, th, flags, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor1);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor1);
 
     // We display the level tab's full file name in the status bar on hover.
     std::string info((tab.name.empty()) ? "Untitled" : tab.name);
-    if (begin_click_panel_gradient(NULL, pw,th+1.0f, flags, info))
+    if (BeginClickPanelGradient(NULL, pw,th+1.0f, flags, info))
     {
         set_current_tab(index);
     }
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor2);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor2);
 
-    do_label(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw,th, name);
+    DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw,th, name);
 
-    end_panel();
+    EndPanel();
 
     cursor1.x += pw;
     cursor1.y  = 0.0f;
 
-    if (do_button_img_gradient(NULL, bw,th+1, flags, &gClipCross, info))
+    if (DoImageButtonGradient(NULL, bw,th+1, flags, &gClipCross, info))
     {
         should_close = true;
     }
 
-    end_panel();
+    EndPanel();
 
-    advance_panel_cursor(tw+1);
+    AdvancePanelCursor(tw+1);
     return should_close;
 }
 
@@ -105,8 +105,8 @@ TEINAPI void do_tab_bar ()
     float bw = SHIFT_TAB_BUTTON_WIDTH;
     float bh = TAB_BAR_HEIGHT;
 
-    set_ui_texture(&gResourceIcons);
-    set_ui_font(&GetEditorRegularFont());
+    SetUiTexture(&gResourceIcons);
+    SetUiFont(&GetEditorRegularFont());
 
     float whole_tab_bar_w = GetViewport().w - get_toolbar_w() - get_control_panel_w();
 
@@ -150,29 +150,29 @@ TEINAPI void do_tab_bar ()
     // THE LEFT ARROW BUTTON
     if (are_there_any_tabs())
     {
-        begin_panel(x, y, bw,bh, UI_NONE);
+        BeginPanel(x, y, bw,bh, UI_NONE);
         Vec2 tmp(0,0);
-        set_panel_cursor(&tmp);
+        SetPanelCursor(&tmp);
         bool l_arrow_active = (starting_tab_offset != 0);
-        UI_Flag flags = (l_arrow_active) ? UI_NONE : UI_LOCKED;
-        if (do_button_img(NULL, bw+1,bh, flags, &gClipArrowLeft))
+        UiFlag flags = (l_arrow_active) ? UI_NONE : UI_LOCKED;
+        if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowLeft))
         {
             --starting_tab_offset;
         }
-        end_panel();
+        EndPanel();
     }
 
     // THE LIST OF TABS
     Vec2 cursor(0,0);
 
-    Vec4 color = (are_there_any_tabs()) ? ui_color_med_dark : ui_color_ex_dark;
-    begin_panel(x+bw+1, y, pw, ph, UI_NONE, color);
+    Vec4 color = (are_there_any_tabs()) ? gUiColorMedDark : gUiColorExDark;
+    BeginPanel(x+bw+1, y, pw, ph, UI_NONE, color);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
     // Check to see if the mouse is in the panel, if it is then the mouse scroll wheel will scroll through tabs.
-    can_scroll_in_tab_bar = (mouse_in_ui_bounds_xywh(0, 0, pw, ph) && IsKeyModStateActive(KMOD_NONE));
+    can_scroll_in_tab_bar = (MouseInUiBoundsXYWH(0, 0, pw, ph) && IsKeyModStateActive(KMOD_NONE));
 
     size_t index_to_close = NO_TAB_TO_CLOSE;
     size_t last = std::min(editor.tabs.size(), starting_tab_offset+max_number_of_tabs);
@@ -186,21 +186,21 @@ TEINAPI void do_tab_bar ()
         }
     }
 
-    end_panel();
+    EndPanel();
 
     // THE RIGHT ARROW BUTTON
     if (are_there_any_tabs())
     {
-        begin_panel(x+bw+2+pw, 0, bw,bh, UI_NONE);
+        BeginPanel(x+bw+2+pw, 0, bw,bh, UI_NONE);
         Vec2 tmp(0,0);
-        set_panel_cursor(&tmp);
+        SetPanelCursor(&tmp);
         bool r_arrow_active = (starting_tab_offset+max_number_of_tabs < editor.tabs.size());
-        UI_Flag flags = (r_arrow_active) ? UI_NONE : UI_LOCKED;
-        if (do_button_img(NULL, bw+1,bh, flags, &gClipArrowRight))
+        UiFlag flags = (r_arrow_active) ? UI_NONE : UI_LOCKED;
+        if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowRight))
         {
             ++starting_tab_offset;
         }
-        end_panel();
+        EndPanel();
     }
 
     // If a level needs to be closed then we do it now.

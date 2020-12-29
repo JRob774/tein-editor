@@ -32,14 +32,14 @@ static Quad layer_panel_bounds;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI bool internal__do_layer_button (UI_Flag flags, int layer, const char* name, const char* info)
+TEINAPI bool internal__do_layer_button (UiFlag flags, int layer, const char* name, const char* info)
 {
     const Quad& clip = (flags & UI_INACTIVE) ? gClipCross : gClipEye;
 
     constexpr float PAD = 5;
     Vec2 cursor(PAD, 0);
 
-    float bw = get_panel_w();
+    float bw = GetPanelWidth();
     float bh = LAYER_PANEL_BUTTON_H;
 
     // If not inactive then we need to determine if this is the active layer.
@@ -62,23 +62,23 @@ TEINAPI bool internal__do_layer_button (UI_Flag flags, int layer, const char* na
         }
     }
 
-    bool result = begin_click_panel(NULL, bw,bh, flags, info);
+    bool result = BeginClickPanel(NULL, bw,bh, flags, info);
 
-    set_panel_cursor(&cursor);
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
 
     float w = 10;
     float h = (LAYER_PANEL_BUTTON_H-4)-1; // -1 due to separator!
 
     cursor.y = (bh-h)/2;
-    do_quad(w, h, LAYER_COLORS[layer]);
+    DoQuad(w, h, LAYER_COLORS[layer]);
     cursor.y = 0;
-    advance_panel_cursor(PAD);
-    do_icon(24, get_panel_h(), gResourceIcons, &clip);
-    advance_panel_cursor(PAD);
-    do_label(UI_ALIGN_LEFT, UI_ALIGN_CENTER, get_panel_h(), name);
+    AdvancePanelCursor(PAD);
+    DoIcon(24, GetPanelHeight(), gResourceIcons, &clip);
+    AdvancePanelCursor(PAD);
+    DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, GetPanelHeight(), name);
 
-    end_panel();
+    EndPanel();
     return result;
 }
 
@@ -128,28 +128,28 @@ TEINAPI void do_layer_panel (bool scrollbar)
 
     layer_panel_bounds.x = 0;
     layer_panel_bounds.y = get_tile_panel_height();
-    layer_panel_bounds.w = get_panel_w();
-    layer_panel_bounds.h = get_panel_h() - get_tile_panel_height();
+    layer_panel_bounds.w = GetPanelWidth();
+    layer_panel_bounds.h = GetPanelHeight() - get_tile_panel_height();
 
     Vec2 cursor(0,0);
 
-    set_ui_texture(&gResourceIcons);
-    set_ui_font(&GetEditorRegularFont());
+    SetUiTexture(&gResourceIcons);
+    SetUiFont(&GetEditorRegularFont());
 
     constexpr float PAD = LAYER_PANEL_INNER_PAD;
 
-    begin_panel(layer_panel_bounds, UI_NONE, ui_color_medium);
-    begin_panel(PAD, PAD, CONTROL_PANEL_WIDTH-(PAD*2), layer_panel_bounds.h-(PAD*2), UI_NONE, ui_color_med_dark);
+    BeginPanel(layer_panel_bounds, UI_NONE, gUiColorMedium);
+    BeginPanel(PAD, PAD, CONTROL_PANEL_WIDTH-(PAD*2), layer_panel_bounds.h-(PAD*2), UI_NONE, gUiColorMedDark);
 
     // NOTE: We do this to add a 1px border around the actual layer buttons in
     // the case that the panel is too small and needs a scrollbar it looks
     // nicer. Its a bit hacky and at some point we should probs have a feature
     // to add a padding border around a panel but for now we just do this...
-    begin_panel(1, 1, get_panel_w()-2, get_panel_h()-2, UI_NONE, ui_color_med_dark);
-    layer_panel_panel_height = get_panel_h();
+    BeginPanel(1, 1, GetPanelWidth()-2, GetPanelHeight()-2, UI_NONE, gUiColorMedDark);
+    layer_panel_panel_height = GetPanelHeight();
 
-    set_panel_cursor(&cursor);
-    set_panel_cursor_dir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
 
     if (scrollbar)
     {
@@ -158,7 +158,7 @@ TEINAPI void do_layer_panel (bool scrollbar)
         float sw =  CONTROL_PANEL_SCROLLBAR_WIDTH - CONTROL_PANEL_INNER_PAD;
         float sh =  2 + GetViewport().h;
 
-        do_scrollbar(sx,sy,sw,sh, layer_panel_content_height, layer_panel_scroll_offset);
+        DoScrollbar(sx,sy,sw,sh, layer_panel_content_height, layer_panel_scroll_offset);
     }
 
     bool all_layers_were_inactive = are_all_layers_inactive();
@@ -176,7 +176,7 @@ TEINAPI void do_layer_panel (bool scrollbar)
             case (LEVEL_LAYER_BACK2  ): layer_name = "Back 2";  break;
         }
 
-        UI_Flag tile_flag = (tab.tile_layer_active[i]) ? UI_NONE : UI_INACTIVE;
+        UiFlag tile_flag = (tab.tile_layer_active[i]) ? UI_NONE : UI_INACTIVE;
         if (internal__do_layer_button(tile_flag, i, layer_name, TILE_LAYER_INFO))
         {
             internal__toggle_layer(i);
@@ -190,10 +190,10 @@ TEINAPI void do_layer_panel (bool scrollbar)
         reset_selected_group();
     }
 
-    end_panel();
+    EndPanel();
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 }
 
 /* -------------------------------------------------------------------------- */

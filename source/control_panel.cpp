@@ -30,10 +30,10 @@ TEINAPI void do_control_panel ()
 
     if (current_tab_is_level())
     {
-        begin_panel(control_panel_bounds, UI_NONE);
+        BeginPanel(control_panel_bounds, UI_NONE);
         do_tile_panel (scrollbar);
         do_layer_panel(scrollbar);
-        end_panel();
+        EndPanel();
     }
 }
 

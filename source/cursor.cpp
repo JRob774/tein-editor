@@ -53,7 +53,7 @@ TEINAPI bool LoadEditorCursors ()
 {
     // We have a special case for the beam cursor as we want a specific
     // version based on whether a light or dark UI is currently loaded.
-    const char* CursorFileBeam = (is_ui_light()) ? gCursorFileBeamD : gCursorFileBeamL;
+    const char* CursorFileBeam = (IsUiLight()) ? gCursorFileBeamD : gCursorFileBeamL;
 
     bool cursorsWereLoaded = gCursorsLoaded;
 

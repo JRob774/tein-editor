@@ -29,9 +29,9 @@ TEINAPI void do_path ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     float bb = PATH_DIALOG_BOTTOM_BORDER;
 
@@ -43,52 +43,52 @@ TEINAPI void do_path ()
 
     // Bottom buttons for okaying or cancelling the path dialog.
     Vec2 btn_cursor(0, gWindowBorder);
-    begin_panel(0, vh-bb, vw, bb, UI_NONE, ui_color_medium);
+    BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&btn_cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&btn_cursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, "Okay"  )) okay_path  ();
-    if (do_button_txt(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_path();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Okay"  )) okay_path  ();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_path();
 
     // Add a separator to the left for symmetry.
     btn_cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     p2.x =                  1;
     p2.y =                  1;
     p2.w = vw             - 2;
     p2.h = vh - p2.y - bb - 1;
 
-    begin_panel(p2, UI_NONE, ui_color_medium);
+    BeginPanel(p2, UI_NONE, gUiColorMedium);
 
     constexpr float XPAD = 8;
     constexpr float YPAD = 4;
 
     Vec2 cursor(XPAD, YPAD);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
 
     constexpr float BUTTON_W = 80;
     constexpr float LABEL_H = 24;
 
     cursor.x += 2;
-    do_label(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LABEL_H, "Please locate 'The End is Nigh' executable:");
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LABEL_H, "Please locate 'The End is Nigh' executable:");
     cursor.x -= 2;
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UI_DIR_RIGHT);
 
     float tw = GetViewport().w - BUTTON_W - (XPAD*2);
     float th = 24;
 
     cursor.y += 2;
-    do_text_box(tw,th, UI_FILEPATH, temp_game_path, "", UI_ALIGN_LEFT);
+    DoTextBox(tw,th, UI_FILEPATH, temp_game_path, "", UI_ALIGN_LEFT);
     cursor.y += 1;
 
     float btnh = th-2;
@@ -99,10 +99,10 @@ TEINAPI void do_path ()
     float y2 = cursor.y + btnh     + 1;
 
     // Create a nice border so the button's bounds are actually visible!
-    SetDrawColor(ui_color_ex_dark);
+    SetDrawColor(gUiColorExDark);
     FillQuad(x1, y1, x2, y2);
 
-    if (do_button_txt(NULL, BUTTON_W,btnh, UI_SINGLE, "Search"))
+    if (DoTextButton(NULL, BUTTON_W,btnh, UI_SINGLE, "Search"))
     {
         auto result = OpenDialog(DialogType::EXE, false);
         if (!result.empty())
@@ -111,8 +111,8 @@ TEINAPI void do_path ()
         }
     }
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 }
 
 TEINAPI void okay_path ()
@@ -141,7 +141,7 @@ TEINAPI void handle_path_events ()
 {
     if (!IsWindowFocused("WINPATH")) return;
 
-    if (!text_box_is_active())
+    if (!TextBoxIsActive())
     {
         if (main_event.type == SDL_KEYDOWN)
         {

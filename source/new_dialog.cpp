@@ -65,9 +65,9 @@ TEINAPI void do_new ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    set_ui_font(&GetEditorRegularFont());
+    SetUiFont(&GetEditorRegularFont());
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     Vec2 cursor;
 
@@ -81,58 +81,58 @@ TEINAPI void do_new ()
 
     // Top tabs for switching type of file to create.
     cursor = Vec2(0,0);
-    begin_panel(0, 0, vw, nvfh, UI_NONE, ui_color_medium);
+    BeginPanel(0, 0, vw, nvfh, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
-    UI_Flag level_flags = (current_tab_type == Tab_Type::LEVEL) ? UI_HIGHLIGHT : UI_INACTIVE;
-    UI_Flag map_flags   = (current_tab_type == Tab_Type::MAP  ) ? UI_HIGHLIGHT : UI_INACTIVE;
+    UiFlag level_flags = (current_tab_type == Tab_Type::LEVEL) ? UI_HIGHLIGHT : UI_INACTIVE;
+    UiFlag map_flags   = (current_tab_type == Tab_Type::MAP  ) ? UI_HIGHLIGHT : UI_INACTIVE;
 
-    if (do_button_txt(NULL, bw,bh, level_flags, "Level"    )) current_tab_type = Tab_Type::LEVEL;
-    if (do_button_txt(NULL, bw,bh, map_flags,   "World Map")) current_tab_type = Tab_Type::MAP;
+    if (DoTextButton(NULL, bw,bh, level_flags, "Level"    )) current_tab_type = Tab_Type::LEVEL;
+    if (DoTextButton(NULL, bw,bh, map_flags,   "World Map")) current_tab_type = Tab_Type::MAP;
 
     // Just in case of weird rounding manually add the right separator.
     cursor.x = vw;
-    do_separator(bh);
+    DoSeparator(bh);
 
     // Add a separator to the left for symmetry.
     cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     // Bottom buttons for okaying or cancelling the resize.
     cursor = Vec2(0, gWindowBorder);
-    begin_panel(0, vh-nvfh, vw, nvfh, UI_NONE, ui_color_medium);
+    BeginPanel(0, vh-nvfh, vw, nvfh, UI_NONE, gUiColorMedium);
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursor(&cursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (do_button_txt(NULL, bw ,bh, UI_NONE, "Create")) internal__okay_new();
-    if (do_button_txt(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_new();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Create")) internal__okay_new();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_new();
 
     // Add a separator to the left for symmetry.
     cursor.x = 1;
-    do_separator(bh);
+    DoSeparator(bh);
 
-    end_panel();
+    EndPanel();
 
     p2.x =                    1;
     p2.y = nvfh             + 1;
     p2.w = vw               - 2;
     p2.h = vh - p2.y - nvfh - 1;
 
-    UI_Flag panel_flags = (current_tab_type == Tab_Type::LEVEL) ? UI_NONE : UI_LOCKED;
-    begin_panel(p2, panel_flags, ui_color_medium);
+    UiFlag panel_flags = (current_tab_type == Tab_Type::LEVEL) ? UI_NONE : UI_LOCKED;
+    BeginPanel(p2, panel_flags, gUiColorMedium);
 
     cursor = Vec2(NEW_XPAD, NEW_YPAD);
 
-    set_panel_cursor_dir(UI_DIR_DOWN);
-    set_panel_cursor(&cursor);
+    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursor(&cursor);
 
     float label_w_w = GetTextWidthScaled(GetEditorRegularFont(), NEW_WIDTH_LABEL);
     float label_h_w = GetTextWidthScaled(GetEditorRegularFont(), NEW_HEIGHT_LABEL);
@@ -143,9 +143,9 @@ TEINAPI void do_new ()
     std::string w_str(std::to_string(current_new_width));
     std::string h_str(std::to_string(current_new_height));
 
-    do_text_box_labeled(text_box_w, NEW_TEXT_BOX_H, UI_NUMERIC, w_str, label_w, NEW_WIDTH_LABEL, "0");
-    advance_panel_cursor(NEW_YPAD);
-    do_text_box_labeled(text_box_w, NEW_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, NEW_HEIGHT_LABEL, "0");
+    DoTextBoxLabeled(text_box_w, NEW_TEXT_BOX_H, UI_NUMERIC, w_str, label_w, NEW_WIDTH_LABEL, "0");
+    AdvancePanelCursor(NEW_YPAD);
+    DoTextBoxLabeled(text_box_w, NEW_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, NEW_HEIGHT_LABEL, "0");
 
     if (atoi(w_str.c_str()) > MAXIMUM_LEVEL_WIDTH)
     {
@@ -169,9 +169,9 @@ TEINAPI void do_new ()
         current_new_height = new_new_height;
     }
 
-    end_panel();
+    EndPanel();
 
-    end_panel();
+    EndPanel();
 }
 
 TEINAPI void cancel_new ()
@@ -185,7 +185,7 @@ TEINAPI void handle_new_events ()
 {
     if (IsWindowFocused("WINNEW"))
     {
-        if (!text_box_is_active())
+        if (!TextBoxIsActive())
         {
             if (main_event.type == SDL_KEYDOWN)
             {

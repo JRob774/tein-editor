@@ -345,7 +345,7 @@ TEINAPI void RestoreEditorKeyBindings ()
 
 TEINAPI void HandleKeyBindingEvents ()
 {
-    if (!text_box_is_active() || IsWindowFocused("WINMAIN"))
+    if (!TextBoxIsActive() || IsWindowFocused("WINMAIN"))
     {
         // We only care about key press events, anything else is ignored.
         if (main_event.type == SDL_KEYDOWN)
@@ -390,7 +390,7 @@ TEINAPI std::string GetKeyBindingAltString (std::string name)
 
 TEINAPI bool IsKeyBindingActive (std::string name)
 {
-    if (text_box_is_active() || !IsWindowFocused("WINMAIN")) return false;
+    if (TextBoxIsActive() || !IsWindowFocused("WINMAIN")) return false;
 
     // If the key binding doesn't exist then it can't be active.
     if (!gKeyBindings.count(name))
@@ -404,7 +404,7 @@ TEINAPI bool IsKeyBindingActive (std::string name)
 
 TEINAPI bool IsKeyModStateActive (int mod)
 {
-    if (text_box_is_active() || !IsWindowFocused("WINMAIN")) return false;
+    if (TextBoxIsActive() || !IsWindowFocused("WINMAIN")) return false;
 
     // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
     int currentMod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));

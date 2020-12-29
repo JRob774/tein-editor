@@ -1,490 +1,452 @@
-/*******************************************************************************
- * Implementation of the immediate-mode graphical-user-interface facilities.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-static const Vec4 UI_D_COLOR_BLACK     = {  .00f,  .00f, 0.00f, 1 };
-static const Vec4 UI_D_COLOR_EX_DARK   = {  .20f,  .20f, 0.20f, 1 };
-static const Vec4 UI_D_COLOR_DARK      = {  .20f,  .20f, 0.20f, 1 };
-static const Vec4 UI_D_COLOR_MED_DARK  = {  .25f,  .25f, 0.25f, 1 };
-static const Vec4 UI_D_COLOR_MEDIUM    = {  .33f,  .33f, 0.33f, 1 };
-static const Vec4 UI_D_COLOR_MED_LIGHT = {  .43f,  .43f, 0.43f, 1 };
-static const Vec4 UI_D_COLOR_LIGHT     = {  .60f,  .60f, 0.60f, 1 };
-static const Vec4 UI_D_COLOR_EX_LIGHT  = {  .90f,  .90f, 0.90f, 1 };
-static const Vec4 UI_D_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
-static const Vec4 UI_L_COLOR_BLACK     = {  .15f,  .15f,  .15f, 1 };
-static const Vec4 UI_L_COLOR_EX_DARK   = {  .35f,  .35f,  .35f, 1 };
-static const Vec4 UI_L_COLOR_DARK      = {  .55f,  .55f,  .55f, 1 };
-static const Vec4 UI_L_COLOR_MED_DARK  = {  .70f,  .70f,  .70f, 1 };
-static const Vec4 UI_L_COLOR_MEDIUM    = {  .80f,  .80f,  .80f, 1 };
-static const Vec4 UI_L_COLOR_MED_LIGHT = {  .93f,  .93f,  .93f, 1 };
-static const Vec4 UI_L_COLOR_LIGHT     = {  .93f,  .93f,  .93f, 1 };
-static const Vec4 UI_L_COLOR_EX_LIGHT  = {  .96f,  .96f,  .96f, 1 };
-static const Vec4 UI_L_COLOR_WHITE     = { 1.00f, 1.00f, 1.00f, 1 };
-
-/* -------------------------------------------------------------------------- */
+static const Vec4 gUiDarkColorBlack     = Vec4( .00f,  .00f, 0.00f, 1.0f);
+static const Vec4 gUiDarkColorExDark    = Vec4( .20f,  .20f, 0.20f, 1.0f);
+static const Vec4 gUiDarkColorDark      = Vec4( .20f,  .20f, 0.20f, 1.0f);
+static const Vec4 gUiDarkColorMedDark   = Vec4( .25f,  .25f, 0.25f, 1.0f);
+static const Vec4 gUiDarkColorMedium    = Vec4( .33f,  .33f, 0.33f, 1.0f);
+static const Vec4 gUiDarkColorMedLight  = Vec4( .43f,  .43f, 0.43f, 1.0f);
+static const Vec4 gUiDarkColorLight     = Vec4( .60f,  .60f, 0.60f, 1.0f);
+static const Vec4 gUiDarkColorExLight   = Vec4( .90f,  .90f, 0.90f, 1.0f);
+static const Vec4 gUiDarkColorWhite     = Vec4(1.00f, 1.00f, 1.00f, 1.0f);
+static const Vec4 gUiLightColorBlack    = Vec4( .15f,  .15f,  .15f, 1.0f);
+static const Vec4 gUiLightColorExDark   = Vec4( .35f,  .35f,  .35f, 1.0f);
+static const Vec4 gUiLightColorDark     = Vec4( .55f,  .55f,  .55f, 1.0f);
+static const Vec4 gUiLightColorMedDark  = Vec4( .70f,  .70f,  .70f, 1.0f);
+static const Vec4 gUiLightColorMedium   = Vec4( .80f,  .80f,  .80f, 1.0f);
+static const Vec4 gUiLightColorMedLight = Vec4( .93f,  .93f,  .93f, 1.0f);
+static const Vec4 gUiLightColorLight    = Vec4( .93f,  .93f,  .93f, 1.0f);
+static const Vec4 gUiLightColorExLight  = Vec4( .96f,  .96f,  .96f, 1.0f);
+static const Vec4 gUiLightColorWhite    = Vec4(1.00f, 1.00f, 1.00f, 1.0f);
 
 struct Panel
 {
-    Quad absolute_bounds; // Panel position and size on the window.
-    Quad viewport;        // Viewport clipped inside parent.
-    Vec2 relative_offset; // Panel position relative to its viewport.
+    Quad absoluteBounds; // Panel position and size on the window.
+    Quad viewport;       // Viewport clipped inside parent.
+    Vec2 relativeOffset; // Panel position relative to its viewport.
 
-    UI_Flag flags;        // Flags that get applied to a panel's content.
+    UiFlag flags;        // Flags that get applied to a panel's content.
 
-    Vec2*  cursor;
-    UI_Dir cursor_dir;
+    Vec2* cursor;
+    UiDir cursorDir;
 
-    bool cursor_advance_enabled;
+    bool cursorAdvanceEnabled;
 };
 
-/* -------------------------------------------------------------------------- */
+typedef U32 UiID;
 
-typedef U32 UI_ID;
+static constexpr UiID gUiInvalidID = UINT32_MAX;
 
-static constexpr UI_ID UI_INVALID_ID = UINT32_MAX;
+static std::stack<Panel> gUiPanels;
 
-static std::stack<Panel> ui_panels;
+static UiID gUiCurrentID;
 
-static UI_ID ui_current_id;
+static UiID gUiHotID;
+static UiID gUiHitID;
 
-static UI_ID ui_hot_id;
-static UI_ID ui_hit_id;
+static UiID gUiActiveTextBox;
+static UiID gUiHotTextBox;
+static size_t gUiTextBoxCursor;
 
-static UI_ID  ui_active_text_box;
-static UI_ID  ui_hot_text_box;
-static size_t ui_text_box_cursor;
+static UiID gUiHotHyperlink;
 
-static UI_ID ui_hot_hyperlink;
+static UiID gUiActiveHotkeyRebind;
 
-static UI_ID ui_active_hotkey_rebind;
+static Texture* gUiTexture;
+static Font* gUiFont;
 
-static Texture* ui_texture;
-static Font*    ui_font;
+static Vec2 gUiMouseRelative;
 
-static Vec2 ui_mouse_relative;
+static bool gUiMouseLeftUp;
+static bool gUiMouseLeftDown;
+static bool gUiMouseRightUp;
+static bool gUiMouseRightDown;
 
-static bool ui_mouse_up;
-static bool ui_mouse_down;
-
-static bool ui_mouse_r_up;
-static bool ui_mouse_r_down;
-
-static bool ui_is_light;
+static bool gUiIsLight;
 
 // We also store the active window ID at the time of the tab press so that the
 // system does not move from window-to-window when the user presseses tab.
-static WindowID ui_text_box_tab_window_id;
-static bool      ui_make_next_text_box_active;
-static bool      ui_tab_handled;
+static WindowID gUiTextBoxTabWindowID;
+static bool gUiMakeNextTextBoxActive;
+static bool gUiTabHandled;
 
-enum class UI_Text_Event_Type: U32 { TEXT, KEY };
+enum class UiTextEventType: U32 { TEXT, KEY };
 
-struct UI_Text_Event
+struct UiTextEvent
 {
-    UI_Text_Event_Type type;
-
+    UiTextEventType type;
     std::string text;
     SDL_Keycode key;
 };
 
-static std::vector<UI_Text_Event> ui_text_events;
+static std::vector<UiTextEvent> gUiTextEvents;
 
-static SDL_TimerID ui_cursor_blink_timer;
-static bool        ui_cursor_visible;
+static SDL_TimerID gUiCursorBlinkTimer;
+static bool gUiCursorVisible;
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI U32 internal__cursor_blink_callback (U32 interval, void* user_data)
+namespace Internal
 {
-    PushEditorEvent(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
-    return interval;
-}
+    TEINAPI U32 CursorBlinkCallback (U32 interval, void* userData)
+    {
+        PushEditorEvent(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
+        return interval;
+    }
 
-TEINAPI bool internal__is_hot ()
-{
-    return (ui_current_id == ui_hot_id);
-}
+    TEINAPI bool IsHot ()
+    {
+        return (gUiCurrentID == gUiHotID);
+    }
+    TEINAPI bool IsHit ()
+    {
+        return (gUiCurrentID == gUiHitID);
+    }
 
-TEINAPI bool internal__is_hit ()
-{
-    return (ui_current_id == ui_hit_id);
-}
+    TEINAPI bool IsValidFilePath (char c)
+    {
+        return (std::string("<>\"|?*").find(c) == std::string::npos);
+    }
 
-TEINAPI bool internal__is_file_path (char c)
-{
-    return (std::string("<>\"|?*").find(c) == std::string::npos);
-}
-
-TEINAPI Quad internal__get_clipped_bounds (float x, float y, float w, float h)
-{
     // Clip the widget's bounds to be within the panel's visible area.
     // This stops the user being able to click on invisible portions.
     //
     // We also make the bounds relative to the window, so that they can
     // properly be compared with the mouse cursor without any issues.
-    const Quad& v = GetViewport();
-    Quad clipped_bounds;
-
-    clipped_bounds.x1 = std::max(x,        0.0f) + v.x;
-    clipped_bounds.y1 = std::max(y,        0.0f) + v.y;
-    clipped_bounds.x2 = std::min(x + (w-1), v.w) + v.x;
-    clipped_bounds.y2 = std::min(y + (h-1), v.h) + v.y;
-
-    return clipped_bounds;
-}
-
-TEINAPI Quad internal__get_clipped_bounds (Quad& p)
-{
-    // Clip the widget's bounds to be within the panel's visible area.
-    // This stops the user being able to click on invisible portions.
-    //
-    // We also make the bounds relative to the window, so that they can
-    // properly be compared with the mouse cursor without any issues.
-    const Quad& v = GetViewport();
-    Quad clipped_bounds;
-
-    clipped_bounds.x1 = std::max(p.x,          0.0f) + v.x;
-    clipped_bounds.y1 = std::max(p.y,          0.0f) + v.y;
-    clipped_bounds.x2 = std::min(p.x + (p.w-1), v.w) + v.x;
-    clipped_bounds.y2 = std::min(p.y + (p.h-1), v.h) + v.y;
-
-    return clipped_bounds;
-}
-
-TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool locked)
-{
-    bool result = false;
-
-    // Don't bother handling widgets during resize to avoid ugly redraw stuff.
-    if (!IsAWindowResizing())
+    TEINAPI Quad GetClippedBounds (float x, float y, float w, float h)
     {
-        if (GetRenderTarget()->focus && GetRenderTarget()->mouse)
+        const Quad& v = GetViewport();
+        Quad clippedBounds;
+
+        clippedBounds.x1 = std::max(x,        0.0f) + v.x;
+        clippedBounds.y1 = std::max(y,        0.0f) + v.y;
+        clippedBounds.x2 = std::min(x + (w-1), v.w) + v.x;
+        clippedBounds.y2 = std::min(y + (h-1), v.h) + v.y;
+
+        return clippedBounds;
+    }
+    TEINAPI Quad GetClippedBounds (Quad& p)
+    {
+        const Quad& v = GetViewport();
+        Quad clippedBounds;
+
+        clippedBounds.x1 = std::max(p.x,          0.0f) + v.x;
+        clippedBounds.y1 = std::max(p.y,          0.0f) + v.y;
+        clippedBounds.x2 = std::min(p.x + (p.w-1), v.w) + v.x;
+        clippedBounds.y2 = std::min(p.y + (p.h-1), v.h) + v.y;
+
+        return clippedBounds;
+    }
+
+    TEINAPI bool HandleWidget (float x, float y, float w, float h, bool locked)
+    {
+        bool result = false;
+
+        // Don't bother handling widgets during resize to avoid ugly redraw stuff.
+        if (!IsAWindowResizing())
         {
-            Quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
-            Vec2 mouse = GetMousePos();
-
-            // Determine the hot and active states for the global UI context.
-            bool inside = PointInBoundsXYXY(mouse, clipped_bounds);
-            if (!locked && ui_hit_id == ui_current_id)
+            if (GetRenderTarget()->focus && GetRenderTarget()->mouse)
             {
-                if (ui_mouse_up)
+                Quad clippedBounds = GetClippedBounds(x,y,w,h);
+                Vec2 mouse = GetMousePos();
+
+                // Determine the hot and active states for the global UI context.
+                bool inside = PointInBoundsXYXY(mouse, clippedBounds);
+                if (!locked && (gUiHitID == gUiCurrentID))
                 {
-                    if (ui_hot_id == ui_current_id)
+                    if (gUiMouseLeftUp)
                     {
-                        result = true;
-                    }
-                    ui_hit_id = UI_INVALID_ID;
-                }
-            }
-            if (ui_hot_id == ui_current_id)
-            {
-                if (!locked && inside)
-                {
-                    if (ui_mouse_down)
-                    {
-                        ui_hit_id = ui_current_id;
-                    }
-                }
-                else
-                {
-                    ui_hot_id = UI_INVALID_ID;
-                }
-            }
-            if (inside)
-            {
-                ui_hot_id = ui_current_id;
-            }
-        }
-    }
-
-    // If true then the widget being checked was activated this frame.
-    return result;
-}
-
-TEINAPI bool internal__handle_widget (Quad b, bool locked)
-{
-    return internal__handle_widget(b.x, b.y, b.w, b.h, locked);
-}
-
-TEINAPI Vec2& internal__get_cursor_ref (Panel& panel)
-{
-    assert(panel.cursor);
-    return *panel.cursor;
-}
-
-TEINAPI Vec2 internal__get_cursor (Panel& panel)
-{
-    assert(panel.cursor);
-    return *panel.cursor;
-}
-
-TEINAPI Vec2 internal__get_relative_cursor (Panel& panel)
-{
-    Vec2 cur = internal__get_cursor(panel);
-
-    cur.x += panel.relative_offset.x;
-    cur.y += panel.relative_offset.y;
-
-    return cur;
-}
-
-TEINAPI void internal__draw_separator (Vec2 cursor, UI_Dir dir, float w, float h, Vec4 color)
-{
-    float x1 = cursor.x;
-    float y1 = cursor.y;
-    float x2 = cursor.x;
-    float y2 = cursor.y;
-
-    switch (dir)
-    {
-    case (UI_DIR_UP   ): { x1+=1; x2+=(w-1); y1+=1; y2+= 1;    } break;
-    case (UI_DIR_RIGHT): { x1+=w; x2+= w;    y1+=1; y2+=(h-1); } break;
-    case (UI_DIR_DOWN ): { x1+=1; x2+=(w-1); y1+=h; y2+= h;    } break;
-    case (UI_DIR_LEFT ): { x1+=1; x2+= 1;    y1+=1; y2+=(h-1); } break;
-    }
-
-    SetDrawColor(color);
-    DrawLine(x1, y1, x2, y2);
-}
-
-TEINAPI void internal__advance_ui_cursor_start (Panel& panel, float w, float h)
-{
-    if (!panel.cursor_advance_enabled) return;
-
-    Vec2& cur = internal__get_cursor_ref(panel);
-
-    switch (panel.cursor_dir)
-    {
-    case(UI_DIR_UP  ): cur.y -= h; break;
-    case(UI_DIR_LEFT): cur.x -= w; break;
-    }
-}
-
-TEINAPI void internal__advance_ui_cursor_end (Panel& panel, float w, float h)
-{
-    if (!panel.cursor_advance_enabled) return;
-
-    Vec2& cur = internal__get_cursor_ref(panel);
-
-    switch (panel.cursor_dir)
-    {
-    case(UI_DIR_RIGHT): cur.x += w; break;
-    case(UI_DIR_DOWN ): cur.y += h; break;
-    }
-}
-
-TEINAPI void internal__align_text (UI_Align horz, UI_Align vert, float& x, float& y, float tw, float th, float w, float h)
-{
-    // Determine how to place the text based on alignment.
-    switch (horz)
-    {
-    case (UI_ALIGN_LEFT  ): /* No need to do anything. */                        break;
-    case (UI_ALIGN_RIGHT ): x += roundf( (w-tw));                                break;
-    case (UI_ALIGN_CENTER): x += roundf(((w-tw)/2));                             break;
-    }
-    switch (vert)
-    {
-    case (UI_ALIGN_TOP   ): y += ui_font->lineGap.at(ui_font->currentPointSize); break;
-    case (UI_ALIGN_BOTTOM): y += roundf(((h)  -(th/4)));                         break;
-    case (UI_ALIGN_CENTER): y += roundf(((h/2)+(th/4)));                         break;
-    }
-}
-
-TEINAPI bool internal__is_ui_mouse_down ()
-{
-    return (GetRenderTarget()->focus) ? ui_mouse_down : false;
-}
-
-TEINAPI bool internal__is_ui_mouse_r_down ()
-{
-    return (GetRenderTarget()->focus) ? ui_mouse_r_down : false;
-}
-
-TEINAPI std::string internal__do_markdown_formatting (std::vector<std::string>& lines, float w)
-{
-    Font& fnt = GetEditorRegularFont();
-
-    std::string text;
-    for (auto& line: lines)
-    {
-        if (line.at(0) == '*') // Looks nicer.
-        {
-            line.at(0) = '>';
-        }
-
-        if (GetTextWidthScaled(fnt, line) >= w) // Word-wrap.
-        {
-            float xoff = 0.0f;
-
-            int i = 0;
-            int p = 0;
-
-            for (int j=0; j<static_cast<int>(line.length()); ++j)
-            {
-                xoff += GetGlyphAdvance(fnt, line.at(j), i, p);
-
-                if (line.at(j) == '\n')
-                {
-                    xoff = 0.0f;
-                }
-
-                if (xoff >= w)
-                {
-                    for (int k=j; k>=0; --k)
-                    {
-                        if (line.at(k) == '\n' || k == 0)
+                        if (gUiHotID == gUiCurrentID)
                         {
-                            line.at(k) = '\n';
-                            xoff = 0.0f;
-                            j = k;
-                            break;
+                            result = true;
                         }
-                        if (line.at(k) == ' ')
+                        gUiHitID = gUiInvalidID;
+                    }
+                }
+                if (gUiHotID == gUiCurrentID)
+                {
+                    if (!locked && inside)
+                    {
+                        if (gUiMouseLeftDown)
                         {
-                            line.insert(k, "\n");
-                            xoff = 0.0f;
-                            break;
+                            gUiHitID = gUiCurrentID;
+                        }
+                    }
+                    else
+                    {
+                        gUiHotID = gUiInvalidID;
+                    }
+                }
+                if (inside)
+                {
+                    gUiHotID = gUiCurrentID;
+                }
+            }
+        }
+
+        // If true then the widget being checked was activated this frame.
+        return result;
+    }
+
+    TEINAPI bool HandleWidget (Quad b, bool locked)
+    {
+        return HandleWidget(b.x,b.y,b.w,b.h, locked);
+    }
+
+    TEINAPI Vec2& GetCursorRef (Panel& panel)
+    {
+        assert(panel.cursor);
+        return *panel.cursor;
+    }
+    TEINAPI Vec2 GetCursor (Panel& panel)
+    {
+        assert(panel.cursor);
+        return *panel.cursor;
+    }
+
+    TEINAPI Vec2 GetRelativeCursor (Panel& panel)
+    {
+        Vec2 cur = GetCursor(panel);
+        cur.x += panel.relativeOffset.x;
+        cur.y += panel.relativeOffset.y;
+        return cur;
+    }
+
+    TEINAPI void DrawSeparator (Vec2 cursor, UiDir dir, float w, float h, Vec4 color)
+    {
+        float x1 = cursor.x;
+        float y1 = cursor.y;
+        float x2 = cursor.x;
+        float y2 = cursor.y;
+
+        switch (dir)
+        {
+            case (UI_DIR_UP   ): { x1+=1; x2+=(w-1); y1+=1; y2+= 1;    } break;
+            case (UI_DIR_RIGHT): { x1+=w; x2+= w;    y1+=1; y2+=(h-1); } break;
+            case (UI_DIR_DOWN ): { x1+=1; x2+=(w-1); y1+=h; y2+= h;    } break;
+            case (UI_DIR_LEFT ): { x1+=1; x2+= 1;    y1+=1; y2+=(h-1); } break;
+        }
+
+        SetDrawColor(color);
+        DrawLine(x1,y1,x2,y2);
+    }
+
+    TEINAPI void AdvanceUiCursorStart (Panel& panel, float w, float h)
+    {
+        if (!panel.cursorAdvanceEnabled) return;
+        Vec2& cur = GetCursorRef(panel);
+        switch (panel.cursorDir)
+        {
+            case(UI_DIR_UP): cur.y -= h; break;
+            case(UI_DIR_LEFT): cur.x -= w; break;
+        }
+    }
+    TEINAPI void AdvanceUiCursorEnd (Panel& panel, float w, float h)
+    {
+        if (!panel.cursorAdvanceEnabled) return;
+        Vec2& cur = GetCursorRef(panel);
+        switch (panel.cursorDir)
+        {
+            case(UI_DIR_RIGHT): cur.x += w; break;
+            case(UI_DIR_DOWN): cur.y += h; break;
+        }
+    }
+
+    TEINAPI void AlignText (UiAlign horz, UiAlign vert, float& x, float& y, float tw, float th, float w, float h)
+    {
+        // Determine how to place the text based on alignment.
+        switch (horz)
+        {
+            case (UI_ALIGN_LEFT  ): /* No need to do anything. */ break;
+            case (UI_ALIGN_RIGHT ): x += roundf( (w-tw));         break;
+            case (UI_ALIGN_CENTER): x += roundf(((w-tw)/2));      break;
+        }
+        switch (vert)
+        {
+            case (UI_ALIGN_TOP   ): y += gUiFont->lineGap.at(gUiFont->currentPointSize); break;
+            case (UI_ALIGN_BOTTOM): y += roundf(((h)  -(th/4)));                         break;
+            case (UI_ALIGN_CENTER): y += roundf(((h/2)+(th/4)));                         break;
+        }
+    }
+
+    TEINAPI bool IsUiMouseLeftDown ()
+    {
+        return ((GetRenderTarget()->focus) ? gUiMouseLeftDown : false);
+    }
+    TEINAPI bool IsUiMouseRightDown ()
+    {
+        return ((GetRenderTarget()->focus) ? gUiMouseRightDown : false);
+    }
+
+    TEINAPI std::string DoMarkdownFormatting (std::vector<std::string>& lines, float w)
+    {
+        Font& font = GetEditorRegularFont();
+
+        std::string text;
+        for (auto& line: lines)
+        {
+            if (line.at(0) == '*') // Looks nicer.
+            {
+                line.at(0) = '>';
+            }
+
+            if (GetTextWidthScaled(font, line) >= w) // Word-wrap.
+            {
+                float xOff = 0.0f;
+
+                int i = 0;
+                int p = 0;
+
+                for (int j=0; j<static_cast<int>(line.length()); ++j)
+                {
+                    xOff += GetGlyphAdvance(font, line.at(j), i,p);
+
+                    if (line.at(j) == '\n')
+                    {
+                        xOff = 0.0f;
+                    }
+
+                    if (xOff >= w)
+                    {
+                        for (int k=j; k>=0; --k)
+                        {
+                            if (line.at(k) == '\n' || k == 0)
+                            {
+                                line.at(k) = '\n';
+                                xOff = 0.0f;
+                                j = k;
+                                break;
+                            }
+                            if (line.at(k) == ' ')
+                            {
+                                line.insert(k, "\n");
+                                xOff = 0.0f;
+                                break;
+                            }
                         }
                     }
                 }
             }
+
+            text += line + "\n";
         }
 
-        text += line + "\n";
-    }
+        if (text.back() == '\n')
+        {
+            text.pop_back();
+        }
 
-    if (text.back() == '\n')
-    {
-        text.pop_back();
+        return text;
     }
-
-    return text;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool init_ui_system ()
+TEINAPI bool InitUiSystem ()
 {
-    ui_hot_id = UI_INVALID_ID;
-    ui_hit_id = UI_INVALID_ID;
+    gUiHotID = gUiInvalidID;
+    gUiHitID = gUiInvalidID;
 
-    ui_active_text_box = UI_INVALID_ID;
-    ui_hot_text_box    = UI_INVALID_ID;
-    ui_text_box_cursor = std::string::npos;
+    gUiActiveTextBox = gUiInvalidID;
+    gUiHotTextBox = gUiInvalidID;
+    gUiTextBoxCursor = std::string::npos;
 
-    ui_hot_hyperlink = UI_INVALID_ID;
+    gUiHotHyperlink = gUiInvalidID;
 
-    ui_active_hotkey_rebind = UI_INVALID_ID;
+    gUiActiveHotkeyRebind = gUiInvalidID;
 
-    ui_texture = NULL;
-    ui_font    = NULL;
+    gUiTexture = NULL;
+    gUiFont = NULL;
 
-    ui_mouse_relative = Vec2(0,0);
+    gUiMouseRelative = Vec2(0,0);
 
-    ui_mouse_up     = false;
-    ui_mouse_down   = false;
-    ui_mouse_r_up   = false;
-    ui_mouse_r_down = false;
+    gUiMouseLeftUp = false;
+    gUiMouseLeftDown = false;
+    gUiMouseRightUp = false;
+    gUiMouseRightDown = false;
 
-    ui_text_box_tab_window_id    = 0;
-    ui_make_next_text_box_active = false;
-    ui_tab_handled               = false;
+    gUiTextBoxTabWindowID = 0;
+    gUiMakeNextTextBoxActive = false;
+    gUiTabHandled = false;
 
-    ui_cursor_blink_timer = NULL;
-    ui_cursor_visible     = true;
+    gUiCursorBlinkTimer = NULL;
+    gUiCursorVisible = true;
 
     return true;
 }
 
-TEINAPI void load_ui_theme ()
+TEINAPI void LoadUiTheme ()
 {
     std::string theme = gEditorSettings.uiTheme;
+
     if (theme == "dark")
     {
-        ui_color_black     = UI_D_COLOR_BLACK;
-        ui_color_ex_dark   = UI_D_COLOR_EX_DARK;
-        ui_color_dark      = UI_D_COLOR_DARK;
-        ui_color_med_dark  = UI_D_COLOR_MED_DARK;
-        ui_color_medium    = UI_D_COLOR_MEDIUM;
-        ui_color_med_light = UI_D_COLOR_MED_LIGHT;
-        ui_color_light     = UI_D_COLOR_LIGHT;
-        ui_color_ex_light  = UI_D_COLOR_EX_LIGHT;
-        ui_color_white     = UI_D_COLOR_WHITE;
-        ui_is_light        = false;
+        gUiColorBlack = gUiDarkColorBlack;
+        gUiColorExDark = gUiDarkColorExDark;
+        gUiColorDark = gUiDarkColorDark;
+        gUiColorMedDark = gUiDarkColorMedDark;
+        gUiColorMedium = gUiDarkColorMedium;
+        gUiColorMedLight = gUiDarkColorMedLight;
+        gUiColorLight = gUiDarkColorLight;
+        gUiColorExLight = gUiDarkColorExLight;
+        gUiColorWhite = gUiDarkColorWhite;
+        gUiIsLight = false;
     }
     else
     {
-        ui_color_black     = UI_L_COLOR_BLACK;
-        ui_color_ex_dark   = UI_L_COLOR_EX_DARK;
-        ui_color_dark      = UI_L_COLOR_DARK;
-        ui_color_med_dark  = UI_L_COLOR_MED_DARK;
-        ui_color_medium    = UI_L_COLOR_MEDIUM;
-        ui_color_med_light = UI_L_COLOR_MED_LIGHT;
-        ui_color_light     = UI_L_COLOR_LIGHT;
-        ui_color_ex_light  = UI_L_COLOR_EX_LIGHT;
-        ui_color_white     = UI_L_COLOR_WHITE;
-        ui_is_light        = true;
+        gUiColorBlack = gUiLightColorBlack;
+        gUiColorExDark = gUiLightColorExDark;
+        gUiColorDark = gUiLightColorDark;
+        gUiColorMedDark = gUiLightColorMedDark;
+        gUiColorMedium = gUiLightColorMedium;
+        gUiColorMedLight = gUiLightColorMedLight;
+        gUiColorLight = gUiLightColorLight;
+        gUiColorExLight = gUiLightColorExLight;
+        gUiColorWhite = gUiLightColorWhite;
+        gUiIsLight = true;
     }
 
     // Reload cursors because the beam cursor changes based on theme.
     LoadEditorCursors();
 
     // These colors, if default, also depend on the UI theme.
-    Vec4 default_background_color = ui_color_light;
-    Vec4 default_tile_grid_color = is_ui_light() ? ui_color_black : ui_color_ex_dark;
+    Vec4 defaultBackgroundColor = gUiColorLight;
+    Vec4 defaultTileGridColor = IsUiLight() ? gUiColorBlack : gUiColorExDark;
 
-    if (gEditorSettings.backgroundColorDefaulted)
-    {
-        gEditorSettings.backgroundColor = default_background_color;
-    }
-    if (gEditorSettings.tileGridColorDefaulted)
-    {
-        gEditorSettings.tileGridColor = default_tile_grid_color;
-    }
+    if (gEditorSettings.backgroundColorDefaulted) gEditorSettings.backgroundColor = defaultBackgroundColor;
+    if (gEditorSettings.tileGridColorDefaulted) gEditorSettings.tileGridColor = defaultTileGridColor;
 }
 
-TEINAPI void reset_ui_state ()
+TEINAPI void ResetUiState ()
 {
     // Reset the internal UI ID back to the beginning for a new update/cycle.
-    ui_current_id = 0;
+    gUiCurrentID = 0;
 
-    ui_text_events.clear();
-    ui_tab_handled = false;
+    gUiTextEvents.clear();
+    gUiTabHandled = false;
 
     // We do this during every event otherwise we can end up with some weird
     // values provided by SDL_GetRelativeMouseState, so we just cache here.
-    int imx, imy; SDL_GetRelativeMouseState(&imx, &imy);
-    ui_mouse_relative = IVec2(imx, imy);
+    int mouseX, mouseY;
+    SDL_GetRelativeMouseState(&mouseX, &mouseY);
+    gUiMouseRelative = IVec2(mouseX, mouseY);
 
-    ui_mouse_down   = false;
-    ui_mouse_up     = false;
-    ui_mouse_r_down = false;
-    ui_mouse_r_up   = false;
+    gUiMouseLeftDown = false;
+    gUiMouseLeftUp = false;
+    gUiMouseRightDown = false;
+    gUiMouseRightUp = false;
 }
 
-TEINAPI void handle_ui_events ()
+TEINAPI void HandleUiEvents ()
 {
-    bool prev_down = ui_mouse_down;
-    bool prev_up = ui_mouse_up;
+    bool prevDown = gUiMouseLeftDown;
+    bool prevUp = gUiMouseLeftUp;
 
     switch (main_event.type)
     {
         case (SDL_MOUSEBUTTONDOWN):
         {
-            if      (main_event.button.button == SDL_BUTTON_LEFT ) ui_mouse_down   = true;
-            else if (main_event.button.button == SDL_BUTTON_RIGHT) ui_mouse_r_down = true;
+            if (main_event.button.button == SDL_BUTTON_LEFT) gUiMouseLeftDown = true;
+            else if (main_event.button.button == SDL_BUTTON_RIGHT) gUiMouseRightDown = true;
         } break;
         case (SDL_MOUSEBUTTONUP):
         {
-            if      (main_event.button.button == SDL_BUTTON_LEFT ) ui_mouse_up     = true;
-            else if (main_event.button.button == SDL_BUTTON_RIGHT) ui_mouse_r_up   = true;
+            if (main_event.button.button == SDL_BUTTON_LEFT) gUiMouseLeftUp = true;
+            else if (main_event.button.button == SDL_BUTTON_RIGHT) gUiMouseRightUp = true;
         } break;
         case (SDL_WINDOWEVENT):
         {
@@ -492,39 +454,39 @@ TEINAPI void handle_ui_events ()
             // We also do not want the current hit and hot IDs to persist to the new window.
             if (main_event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
             {
-                deselect_active_text_box();
-                deselect_active_hotkey_rebind();
+                DeselectActiveTextBox();
+                DeselectActiveHotkeyRebind();
 
-                ui_hot_id = UI_INVALID_ID;
-                ui_hit_id = UI_INVALID_ID;
+                gUiHotID = gUiInvalidID;
+                gUiHitID = gUiInvalidID;
             }
         } break;
         case (SDL_USEREVENT):
         {
             if (main_event.user.code == EDITOR_EVENT_BLINK_CURSOR)
             {
-                ui_cursor_visible = !ui_cursor_visible;
+                gUiCursorVisible = !gUiCursorVisible;
             }
         } break;
     }
 
     // Handle events specifically for UI text boxes.
-    if (ui_active_text_box != UI_INVALID_ID)
+    if (gUiActiveTextBox != gUiInvalidID)
     {
-        UI_Text_Event text_event;
+        UiTextEvent textEvent;
         switch (main_event.type)
         {
             case (SDL_TEXTINPUT):
             {
-                text_event.type = UI_Text_Event_Type::TEXT;
-                text_event.text = main_event.text.text;
-                ui_text_events.push_back(text_event);
+                textEvent.type = UiTextEventType::TEXT;
+                textEvent.text = main_event.text.text;
+                gUiTextEvents.push_back(textEvent);
             } break;
             case (SDL_KEYDOWN):
             {
-                text_event.type = UI_Text_Event_Type::KEY;
-                text_event.key  = main_event.key.keysym.sym;
-                ui_text_events.push_back(text_event);
+                textEvent.type = UiTextEventType::KEY;
+                textEvent.key = main_event.key.keysym.sym;
+                gUiTextEvents.push_back(textEvent);
             } break;
         }
     }
@@ -535,358 +497,316 @@ TEINAPI void handle_ui_events ()
             // We do this so we can focus on the first text box in the window!
             if (main_event.key.keysym.sym == SDLK_TAB)
             {
-                ui_make_next_text_box_active = true;
-                ui_text_box_tab_window_id = GetFocusedWindow().id;
+                gUiMakeNextTextBoxActive = true;
+                gUiTextBoxTabWindowID = GetFocusedWindow().id;
             }
         }
     }
 
     // The UI has not changed state so we don't have to worry about redraws.
-    if (prev_down == ui_mouse_down && prev_up == ui_mouse_up) return;
+    if ((prevDown == gUiMouseLeftDown) && (prevUp == gUiMouseLeftUp)) return;
 
     // This event exists to perform a second redraw of the user interface. Due
     // to the fact we are using an immediate mode GUI, there is a frame delay
     // that causes some gross visual issues due to our program being mainly
     // event-driven. This method of redrawing again prevents the issue easily.
-    should_push_ui_redraw_event = true;
+    gShouldPushUiRedrawEvent = true;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool is_ui_light ()
+TEINAPI bool IsUiLight ()
 {
-    return ui_is_light;
+    return gUiIsLight;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Vec2 ui_get_relative_mouse ()
+TEINAPI Vec2 UiGetRelativeMouse ()
 {
-    return ui_mouse_relative;
+    return gUiMouseRelative;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool mouse_in_ui_bounds_xywh (float x, float y, float w, float h)
+TEINAPI bool MouseInUiBoundsXYWH (float x, float y, float w, float h)
 {
-    Quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
+    Quad clippedBounds = Internal::GetClippedBounds(x,y,w,h);
     Vec2 mouse = GetMousePos();
-    return PointInBoundsXYXY(mouse, clipped_bounds);
+    return PointInBoundsXYXY(mouse, clippedBounds);
 }
-
-TEINAPI bool mouse_in_ui_bounds_xywh (Quad b)
+TEINAPI bool MouseInUiBoundsXYWH (Quad b)
 {
-    return mouse_in_ui_bounds_xywh(b.x, b.y, b.w, b.h);
+    return MouseInUiBoundsXYWH(b.x,b.y,b.w,b.h);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_ui_texture (Texture* tex)
+TEINAPI void SetUiTexture (Texture* texture)
 {
-    ui_texture = tex;
+    gUiTexture = texture;
 }
-
-TEINAPI void set_ui_font (Font* fnt)
+TEINAPI void SetUiFont (Font* font)
 {
-    ui_font = fnt;
+    gUiFont = font;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool is_there_a_hot_ui_element ()
+TEINAPI bool IsThereAHotUiElement ()
 {
-    return (ui_hot_id != UI_INVALID_ID);
+    return (gUiHotID != gUiInvalidID);
 }
-
-TEINAPI bool is_there_a_hit_ui_element ()
+TEINAPI bool IsThereAHitUiElement ()
 {
-    return (ui_hit_id != UI_INVALID_ID);
+    return (gUiHitID != gUiInvalidID);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void deselect_active_text_box (std::string& text, std::string default_text)
+TEINAPI void DeselectActiveTextBox (std::string& text, std::string defaultText)
 {
     // If specified and the text box is empty on exit then we assign
     // the content of the text box to be the passed in default value.
-    if (!default_text.empty() && !text.length()) text = default_text;
-    deselect_active_text_box();
+    if (!defaultText.empty() && !text.length()) text = defaultText;
+    DeselectActiveTextBox();
 }
-
-TEINAPI void deselect_active_text_box ()
+TEINAPI void DeselectActiveTextBox ()
 {
-    if (ui_cursor_blink_timer)
+    if (gUiCursorBlinkTimer)
     {
-        SDL_RemoveTimer(ui_cursor_blink_timer);
-        ui_cursor_blink_timer = NULL;
+        SDL_RemoveTimer(gUiCursorBlinkTimer);
+        gUiCursorBlinkTimer = NULL;
     }
 
-    ui_text_box_cursor = std::string::npos;
-    ui_active_text_box = UI_INVALID_ID;
+    gUiTextBoxCursor = std::string::npos;
+    gUiActiveTextBox = gUiInvalidID;
 
     SDL_StopTextInput();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool text_box_is_active ()
+TEINAPI bool TextBoxIsActive ()
 {
-    return (ui_active_text_box != UI_INVALID_ID);
+    return (gUiActiveTextBox != gUiInvalidID);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool hotkey_is_active ()
+TEINAPI bool HotkeyIsActive ()
 {
-    return (ui_active_hotkey_rebind != UI_INVALID_ID);
+    return (gUiActiveHotkeyRebind != gUiInvalidID);
 }
 
-TEINAPI void deselect_active_hotkey_rebind ()
+TEINAPI void DeselectActiveHotkeyRebind ()
 {
-    ui_active_hotkey_rebind = UI_INVALID_ID;
+    gUiActiveHotkeyRebind = gUiInvalidID;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, Vec4 c)
+TEINAPI void BeginPanel (float x, float y, float w, float h, UiFlag flags, Vec4 color)
 {
     Panel panel;
 
     // The method of adding a new panel varies depending on whether the panel
     // is a child to an existing panel or if it is a lone panel in the window.
-    panel.absolute_bounds = { x, y, w, h };
-    if (ui_panels.size() > 0)
+    panel.absoluteBounds = { x,y,w,h };
+    if (gUiPanels.size() > 0)
     {
-        const Quad& p_ab = ui_panels.top().absolute_bounds;
-        const Quad& p_v  = ui_panels.top().viewport;
-        const Vec2& p_ro = ui_panels.top().relative_offset;
+        const Quad& pAbsolute = gUiPanels.top().absoluteBounds;
+        const Vec2& pOffset = gUiPanels.top().relativeOffset;
+        const Quad& pViewport = gUiPanels.top().viewport;
 
-        Quad& c_ab = panel.absolute_bounds;
-        Quad& c_v  = panel.viewport;
-        Vec2& c_ro = panel.relative_offset;
+        Quad& cAbsolute = panel.absoluteBounds;
+        Vec2& cOffset = panel.relativeOffset;
+        Quad& cViewport = panel.viewport;
 
-        c_ab.x += p_ab.x + p_ro.x;
-        c_ab.y += p_ab.y + p_ro.y;
+        cAbsolute.x += pAbsolute.x + pOffset.x;
+        cAbsolute.y += pAbsolute.y + pOffset.y;
 
-        c_v = c_ab;
+        cViewport = cAbsolute;
 
         // We also clip the panel's viewport to be inside of the
         // parent panel to avoid issues with overlapping/spill.
-        float dx = c_v.x - p_v.x;
-        float dy = c_v.y - p_v.y;
+        float dX = cViewport.x - pViewport.x;
+        float dY = cViewport.y - pViewport.y;
 
-        if (c_v.x < p_v.x) c_v.x = p_v.x, c_v.w -= roundf(abs(dx)), dx = c_v.x - p_v.x;
-        if (c_v.y < p_v.y) c_v.y = p_v.y, c_v.h -= roundf(abs(dy)), dy = c_v.y - p_v.y;
+        if (cViewport.x < pViewport.x) cViewport.x = pViewport.x, cViewport.w -= roundf(abs(dX)), dX = cViewport.x - pViewport.x;
+        if (cViewport.y < pViewport.y) cViewport.y = pViewport.y, cViewport.h -= roundf(abs(dY)), dY = cViewport.y - pViewport.y;
 
-        if (c_v.x+c_v.w > p_v.x+p_v.w) c_v.w = p_v.w - roundf(abs(dx));
-        if (c_v.y+c_v.h > p_v.y+p_v.h) c_v.h = p_v.h - roundf(abs(dy));
+        if (cViewport.x+cViewport.w > pViewport.x+pViewport.w) cViewport.w = pViewport.w - roundf(abs(dX));
+        if (cViewport.y+cViewport.h > pViewport.y+pViewport.h) cViewport.h = pViewport.h - roundf(abs(dY));
 
-        if (c_v.w < 0) c_v.w = 0;
-        if (c_v.h < 0) c_v.h = 0;
+        if (cViewport.w < 0) cViewport.w = 0;
+        if (cViewport.h < 0) cViewport.h = 0;
 
         // And determine the panel's offset to its viewport.
-        c_ro.x = c_ab.x - c_v.x;
-        c_ro.y = c_ab.y - c_v.y;
+        cOffset.x = cAbsolute.x - cViewport.x;
+        cOffset.y = cAbsolute.y - cViewport.y;
 
         // Inherit the parent panel's flags.
-        panel.flags = flags | ui_panels.top().flags;
+        panel.flags = flags | gUiPanels.top().flags;
     }
     else
     {
-        panel.viewport = panel.absolute_bounds;
-        panel.relative_offset = Vec2(0,0);
+        panel.viewport = panel.absoluteBounds;
+        panel.relativeOffset = Vec2(0,0);
         panel.flags = flags;
     }
 
     panel.cursor = NULL;
-    panel.cursor_dir = UI_DIR_RIGHT;
-    panel.cursor_advance_enabled = true;
+    panel.cursorDir = UI_DIR_RIGHT;
+    panel.cursorAdvanceEnabled = true;
 
     SetViewport(panel.viewport);
-    ui_panels.push(panel);
+    gUiPanels.push(panel);
 
-    SetDrawColor(c);
+    SetDrawColor(color);
     FillQuad(0, 0, panel.viewport.w, panel.viewport.h);
 }
 
-TEINAPI void begin_panel (Quad bounds, UI_Flag flags, Vec4 c)
+TEINAPI void BeginPanel (Quad bounds, UiFlag flags, Vec4 color)
 {
-    begin_panel(bounds.x, bounds.y, bounds.w, bounds.h, flags, c);
+    BeginPanel(bounds.x,bounds.y,bounds.w,bounds.h, flags, color);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flags, std::string info)
+TEINAPI bool BeginClickPanel (UiAction action, float w, float h, UiFlag flags, std::string info)
 {
-    Panel& parent = ui_panels.top();
+    Panel& parent = gUiPanels.top();
 
-    Vec2 rcur = internal__get_relative_cursor(parent);
-    Vec2 cur = internal__get_cursor(parent);
+    Vec2 relCursor = Internal::GetRelativeCursor(parent);
+    Vec2 cursor = Internal::GetCursor(parent);
 
     // Cache the panel's flags so they are easily accessible.
-    bool locked    = (flags&UI_LOCKED);
-    bool highlight = (flags&UI_HIGHLIGHT);
+    bool locked = (flags & UI_LOCKED);
+    bool highlight = (flags & UI_HIGHLIGHT);
 
-    bool result = internal__handle_widget(rcur.x, rcur.y, w, h, locked);
+    bool result = Internal::HandleWidget(relCursor.x, relCursor.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    Vec4 back = ui_color_medium;
+    Vec4 back = gUiColorMedium;
 
-    if      (locked)             back = ui_color_med_dark;
-    else if (internal__is_hit()) back = ui_color_dark;
-    else if (internal__is_hot()) back = ui_color_med_light;
+    if      (locked)            back = gUiColorMedDark;
+    else if (Internal::IsHit()) back = gUiColorDark;
+    else if (Internal::IsHot()) back = gUiColorMedLight;
 
-    begin_panel(cur.x, cur.y, w, h, flags, back);
-    internal__advance_ui_cursor_start(parent, w, h);
+    BeginPanel(cursor.x, cursor.y, w, h, flags, back);
+    Internal::AdvanceUiCursorStart(parent, w, h);
 
-    if (highlight && !internal__is_hit())
+    if (highlight && !Internal::IsHit())
     {
-        Vec4 color = ui_color_med_light;
+        Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
 
-    Vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
-    Vec2 cursor = ui_panels.top().relative_offset;
+    Vec4 separatorColor = (locked) ? gUiColorDark : gUiColorMedDark;
+    Vec2 offset = gUiPanels.top().relativeOffset;
 
-    internal__draw_separator(cursor, parent.cursor_dir, w, h, separator_color);
-    internal__advance_ui_cursor_end(parent, w, h);
+    Internal::DrawSeparator(offset, parent.cursorDir, w, h, separatorColor);
+    Internal::AdvanceUiCursorEnd(parent, w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && internal__is_hot())
+    if (!locked && !info.empty() && Internal::IsHot())
     {
         push_status_bar_message(info.c_str());
     }
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 
     return result;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void end_panel ()
+TEINAPI void EndPanel ()
 {
-    ui_panels.pop();
+    gUiPanels.pop();
 
     // We either go back to a previous nested panel or this is the last panel
     // and we go back to placing things relative to the entire program window.
-    if (ui_panels.size() > 0) SetViewport(ui_panels.top().viewport);
+    if (gUiPanels.size() > 0) SetViewport(gUiPanels.top().viewport);
     else SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float get_panel_w ()
+TEINAPI float GetPanelWidth ()
 {
-    return ui_panels.top().absolute_bounds.w;
+    return gUiPanels.top().absoluteBounds.w;
+}
+TEINAPI float GetPanelHeight ()
+{
+    return gUiPanels.top().absoluteBounds.h;
 }
 
-TEINAPI float get_panel_h ()
+TEINAPI Vec2 GetPanelOffset ()
 {
-    return ui_panels.top().absolute_bounds.h;
+    return gUiPanels.top().relativeOffset;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Vec2 get_panel_offset ()
+TEINAPI Vec2 GetPanelCursor ()
 {
-    return ui_panels.top().relative_offset;
+    return Internal::GetCursor(gUiPanels.top());
 }
 
-TEINAPI Vec2 get_panel_cursor ()
+TEINAPI void DisablePanelCursorAdvance ()
 {
-    return internal__get_cursor(ui_panels.top());
+    gUiPanels.top().cursorAdvanceEnabled = false;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void disable_panel_cursor_advance ()
+TEINAPI void EnablePanelCursorAdvance ()
 {
-    ui_panels.top().cursor_advance_enabled = false;
+    gUiPanels.top().cursorAdvanceEnabled = true;
 }
 
-TEINAPI void enable_panel_cursor_advance ()
+TEINAPI void AdvancePanelCursor (float advance)
 {
-    ui_panels.top().cursor_advance_enabled = true;
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), advance, advance);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), advance, advance);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void advance_panel_cursor (float advance)
+TEINAPI void SetPanelCursor (Vec2* cursor)
 {
-    internal__advance_ui_cursor_start(ui_panels.top(), advance, advance);
-    internal__advance_ui_cursor_end(ui_panels.top(), advance, advance);
+    gUiPanels.top().cursor = cursor;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_panel_cursor (Vec2* cursor)
+TEINAPI void SetPanelCursorDir (UiDir dir)
 {
-    ui_panels.top().cursor = cursor;
+    gUiPanels.top().cursorDir = dir;
 }
 
-TEINAPI void set_panel_cursor_dir (UI_Dir dir)
+TEINAPI void SetPanelFlags (UiFlag flags)
 {
-    ui_panels.top().cursor_dir = dir;
+    gUiPanels.top().flags = flags;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_panel_flags (UI_Flag flags)
+TEINAPI UiFlag GetPanelFlags ()
 {
-    ui_panels.top().flags = flags;
+    return gUiPanels.top().flags;
 }
 
-TEINAPI UI_Flag get_panel_flags ()
-{
-    return ui_panels.top().flags;
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float calculate_button_txt_width (std::string text)
+TEINAPI float CalculateTextButtonWidth (std::string text)
 {
     // Important to return ceiled value otherwise the next button using the
     // cursor to position itself might overlap the previous button by 1px.
-    constexpr float X_PADDING = 20;
-    assert(ui_font);
-    return (ceilf(GetTextWidthScaled(*ui_font, text)) + X_PADDING);
+    constexpr float XPadding = 20;
+    assert(gUiFont);
+    return (ceilf(GetTextWidthScaled(*gUiFont, text)) + XPadding);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, const Quad* clip, std::string info, std::string kb, std::string name)
+TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, const Quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_texture);
+    assert(gUiTexture);
 
-    flags |= ui_panels.top().flags;
+    flags |= gUiPanels.top().flags;
 
-    bool inactive  = (flags & UI_INACTIVE);
-    bool locked    = (flags & UI_LOCKED);
+    bool inactive = (flags & UI_INACTIVE);
+    bool locked = (flags & UI_LOCKED);
     bool highlight = (flags & UI_HIGHLIGHT);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Texture& tex = *ui_texture;
-    Vec2     cur = internal__get_relative_cursor(ui_panels.top());
+    Texture& texture = *gUiTexture;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     // We scissor the contents to avoid image overspill.
-    BeginScissor(cur.x, cur.y, w, h);
+    BeginScissor(cursor.x, cursor.y, w, h);
     Defer { EndScissor(); };
 
-    bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
+    bool result = Internal::HandleWidget(cursor.x, cursor.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    Vec4 front  = (ui_is_light) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
-    Vec4 back   =  ui_color_medium;
-    Vec4 shadow = (ui_is_light) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
+    Vec4 front = (IsUiLight()) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
+    Vec4 back = gUiColorMedium;
+    Vec4 shadow = (IsUiLight()) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
 
-    if      (locked)             back = ui_color_med_dark;
-    else if (internal__is_hit()) back = ui_color_dark;
-    else if (internal__is_hot()) back = ui_color_med_light;
+    if      (locked)            back = gUiColorMedDark;
+    else if (Internal::IsHit()) back = gUiColorDark;
+    else if (Internal::IsHot()) back = gUiColorMedLight;
 
     if (locked || inactive)
     {
@@ -895,11 +815,11 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
     }
 
     SetDrawColor(back); // Draw the button's background quad.
-    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
+    FillQuad(cursor.x, cursor.y, cursor.x + w, cursor.y + h);
 
-    if (highlight && !internal__is_hit())
+    if (highlight && !Internal::IsHit())
     {
-        Vec4 color = ui_color_med_light;
+        Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
@@ -908,83 +828,84 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
     // The ((w)-1) and ((h)-1) are used to ensure the separator does
     // not mess with the centering of the image based on direction.
 
-    UI_Dir dir = ui_panels.top().cursor_dir;
+    UiDir dir = gUiPanels.top().cursorDir;
 
     float w2 = (dir == UI_DIR_RIGHT || dir == UI_DIR_LEFT) ? ((w)-1) : (w);
     float h2 = (dir == UI_DIR_UP    || dir == UI_DIR_DOWN) ? ((h)-1) : (h);
 
     // Center the image within the button.
-    float x = roundf(cur.x + (w2 / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
-    float y = roundf(cur.y + (h2 / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
+    float x = roundf(cursor.x + (w2 / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
+    float y = roundf(cursor.y + (h2 / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    tex.color = shadow;
-    DrawTexture(tex, x, y-offset, clip);
-    tex.color = front;
-    DrawTexture(tex, x, y, clip);
+    texture.color = shadow;
+    DrawTexture(texture, x, y-offset, clip);
+    texture.color = front;
+    DrawTexture(texture, x, y, clip);
 
-    internal__draw_separator(internal__get_relative_cursor(ui_panels.top()), ui_panels.top().cursor_dir, w, h, ui_color_med_dark);
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::DrawSeparator(Internal::GetRelativeCursor(gUiPanels.top()), gUiPanels.top().cursorDir, w, h, gUiColorMedDark);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && internal__is_hot())
+    if (!locked && !info.empty() && Internal::IsHot())
     {
-        std::string kb_info;
+        std::string kbInfo;
         if (!kb.empty())
         {
-            kb_info = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
+            kbInfo = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
             if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
             {
-                kb_info += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
+                kbInfo += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
-        std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
-        push_status_bar_message(info_text.c_str());
+        std::string infoText((kbInfo.empty()) ? info : FormatString("%s %s", kbInfo.c_str(), info.c_str()));
+        push_status_bar_message(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
-    if (!locked && !name.empty() && internal__is_hot())
+    if (!locked && !name.empty() && Internal::IsHot())
     {
         set_current_tooltip(name);
     }
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 
     return result;
 }
 
-TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, std::string text, std::string info, std::string kb, std::string name)
+TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std::string text, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_font);
+    assert(gUiFont);
 
-    flags |= ui_panels.top().flags;
+    flags |= gUiPanels.top().flags;
 
-    bool inactive  = (flags & UI_INACTIVE);
-    bool locked    = (flags & UI_LOCKED);
+    bool inactive = (flags & UI_INACTIVE);
+    bool locked = (flags & UI_LOCKED);
     bool highlight = (flags & UI_HIGHLIGHT);
-    bool single    = (flags & UI_SINGLE);
+    bool single = (flags & UI_SINGLE);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Font& fnt = *ui_font;
-    Vec2  cur = internal__get_relative_cursor(ui_panels.top());
+    Font& font = *gUiFont;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     // We scissor the contents to avoid text overspill.
-    BeginScissor(cur.x, cur.y, w, h);
+    BeginScissor(cursor.x, cursor.y, w, h);
     Defer { EndScissor(); };
 
     // Locked buttons cannot be interacted with.
-    bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
+    bool result = Internal::HandleWidget(cursor.x, cursor.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    Vec4 front  = (ui_is_light) ? ui_color_black    : ui_color_ex_light;
-    Vec4 back   = ui_color_medium;
-    Vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
+    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
+    Vec4 back = gUiColorMedium;
+    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
 
-    if      (locked)             back = ui_color_med_dark;
-    else if (internal__is_hit()) back = ui_color_dark;
-    else if (internal__is_hot()) back = ui_color_med_light;
+    if      (locked)            back = gUiColorMedDark;
+    else if (Internal::IsHit()) back = gUiColorDark;
+    else if (Internal::IsHot()) back = gUiColorMedLight;
 
     if (locked || inactive)
     {
@@ -993,136 +914,134 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
     }
 
     SetDrawColor(back); // Draw the button's background quad.
-    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
+    FillQuad(cursor.x, cursor.y, cursor.x + w, cursor.y + h);
 
-    if (highlight && !internal__is_hit())
+    if (highlight && !Internal::IsHit())
     {
-        Vec4 color = ui_color_med_light;
+        Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
 
-    float w2 = GetTextWidthScaled(fnt, text);
-    float h2 = fnt.lineGap.at(fnt.currentPointSize) * GetFontDrawScale();
+    float w2 = GetTextWidthScaled(font, text);
+    float h2 = font.lineGap.at(font.currentPointSize) * GetFontDrawScale();
     // Center the text within the button.
-    float x = roundf(cur.x + ((w - w2) / 2));
-    float y = roundf(cur.y + ((h / 2) + (h2 / 4)));
+    float x = roundf(cursor.x + ((w - w2) / 2));
+    float y = roundf(cursor.y + ((h / 2) + (h2 / 4)));
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    fnt.color = shadow;
-    DrawText(fnt, x, y-offset, text);
-    fnt.color = front;
-    DrawText(fnt, x, y, text);
+    font.color = shadow;
+    DrawText(font, x, y-offset, text);
+    font.color = front;
+    DrawText(font, x, y, text);
 
     if (!single)
     {
-        internal__draw_separator(internal__get_relative_cursor(ui_panels.top()),
-            ui_panels.top().cursor_dir, w, h, ui_color_med_dark);
+        Internal::DrawSeparator(Internal::GetRelativeCursor(gUiPanels.top()), gUiPanels.top().cursorDir, w, h, gUiColorMedDark);
     }
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && internal__is_hot())
+    if (!locked && !info.empty() && Internal::IsHot())
     {
-        std::string kb_info;
+        std::string kbInfo;
         if (!kb.empty())
         {
-            kb_info = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
+            kbInfo = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
             if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
             {
-                kb_info += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
+                kbInfo += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
-        std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
-        push_status_bar_message(info_text.c_str());
+        std::string infoText((kbInfo.empty()) ? info : FormatString("%s %s", kbInfo.c_str(), info.c_str()));
+        push_status_bar_message(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
-    if (!locked && !name.empty() && internal__is_hot())
+    if (!locked && !name.empty() && Internal::IsHot())
     {
         set_current_tooltip(name);
     }
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 
     return result;
 }
 
-TEINAPI bool do_button_txt (UI_Action action, float h, UI_Flag flags, std::string text, std::string info, std::string kb, std::string name)
+TEINAPI bool DoTextButton (UiAction action, float h, UiFlag flags, std::string text, std::string info, std::string kb, std::string name)
 {
     // Important to return ceiled value otherwise the next button using the
     // cursor to position itself might overlap the previous button by 1px.
-    constexpr float X_PADDING = 20;
-    float w = ceilf(GetTextWidthScaled(*ui_font, text)) + X_PADDING;
-    return do_button_txt(action, w, h, flags, text, info, kb, name);
+    constexpr float XPadding = 20;
+    float w = ceilf(GetTextWidthScaled(*gUiFont, text)) + XPadding;
+    return DoTextButton(action, w, h, flags, text, info, kb, name);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::string text, Vec4 bg)
+TEINAPI void DoLabel (UiAlign horz, UiAlign vert, float w, float h, std::string text, Vec4 bgColor)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_font);
+    assert(gUiFont);
 
-    UI_Flag flags = ui_panels.top().flags;
+    UiFlag flags = gUiPanels.top().flags;
 
     bool inactive = (flags & UI_INACTIVE);
-    bool locked   = (flags & UI_LOCKED  );
-    bool tooltip  = (flags & UI_TOOLTIP );
-    bool darken   = (flags & UI_DARKEN  );
+    bool locked = (flags & UI_LOCKED);
+    bool tooltip = (flags & UI_TOOLTIP);
+    bool darken = (flags & UI_DARKEN);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Font& fnt = *ui_font;
-    Vec2  cur = internal__get_relative_cursor(ui_panels.top());
+    Font& font = *gUiFont;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     // We scissor the contents to avoid text overspill.
-    BeginScissor(cur.x, cur.y, w, h);
+    BeginScissor(cursor.x, cursor.y, w, h);
     Defer { EndScissor(); };
 
-    SetDrawColor(bg); // Draw the label's background.
-    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
+    SetDrawColor(bgColor); // Draw the label's background.
+    FillQuad(cursor.x, cursor.y, cursor.x + w, cursor.y + h);
 
-    float tw = GetTextWidthScaled (fnt, text);
-    float th = GetTextHeightScaled(fnt, text);
+    float tw = GetTextWidthScaled(font, text);
+    float th = GetTextHeightScaled(font, text);
 
     // If text is a single line we calculate how much we can fit in the width
     // and if necessary trim any off and replace the end with and ellipsis.
-    bool text_clipped = false;
-    std::string clipped_text(text);
-    if (std::count(clipped_text.begin(), clipped_text.end(), '\n') <= 1)
+    bool textClipped = false;
+    std::string clippedText(text);
+    if (std::count(clippedText.begin(), clippedText.end(), '\n') <= 1)
     {
         if (tw > w) // Our text goes out of the label bounds.
         {
-            text_clipped = true;
-            if (clipped_text.length() <= 3)
+            textClipped = true;
+            if (clippedText.length() <= 3)
             {
-                clipped_text = "...";
-                tw = GetTextWidthScaled(fnt, clipped_text);
+                clippedText = "...";
+                tw = GetTextWidthScaled(font, clippedText);
             }
             else
             {
-                clipped_text.replace(clipped_text.length()-3, 3, "...");
-                while (tw > w && clipped_text.length() > 3)
+                clippedText.replace(clippedText.length()-3, 3, "...");
+                while (tw > w && clippedText.length() > 3)
                 {
-                    clipped_text.erase(clipped_text.length()-4, 1);
-                    tw = GetTextWidthScaled(fnt, clipped_text);
+                    clippedText.erase(clippedText.length()-4, 1);
+                    tw = GetTextWidthScaled(font, clippedText);
                 }
             }
         }
     }
 
-    float x = cur.x;
-    float y = cur.y;
+    float x = cursor.x;
+    float y = cursor.y;
 
-    internal__align_text(horz, vert, x, y, tw, th, w, h);
+    Internal::AlignText(horz, vert, x,y, tw,th, w,h);
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    Vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    Vec4 front = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
+    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
 
     if (locked || inactive)
     {
@@ -1132,97 +1051,96 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
 
     if (tooltip)
     {
-        shadow = UI_D_COLOR_BLACK;
-        front = UI_D_COLOR_EX_LIGHT;
+        shadow = gUiDarkColorBlack;
+        front = gUiDarkColorExLight;
         if (darken)
         {
             front = Vec4(.7f,.7f,.7f, 1);
         }
     }
 
-    fnt.color = shadow;
-    DrawText(fnt, x, y-offset, clipped_text);
-    fnt.color = front;
-    DrawText(fnt, x, y, clipped_text);
+    font.color = shadow;
+    DrawText(font, x, y-offset, clippedText);
+    font.color = front;
+    DrawText(font, x, y, clippedText);
 
-    Quad clipped_bounds = internal__get_clipped_bounds(cur.x, cur.y, w, h);
+    Quad clippedBounds = Internal::GetClippedBounds(cursor.x, cursor.y, w, h);
     Vec2 mouse = GetMousePos();
-    bool inside = PointInBoundsXYXY(mouse, clipped_bounds);
-    if (text_clipped && inside) set_current_tooltip(text);
+    bool inside = PointInBoundsXYXY(mouse, clippedBounds);
+    if (textClipped && inside) set_current_tooltip(text);
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 }
 
-TEINAPI void do_label (UI_Align horz, UI_Align vert, float h, std::string text, Vec4 bg)
+TEINAPI void DoLabel (UiAlign horz, UiAlign vert, float h, std::string text, Vec4 bgColor)
 {
     // Important to return ceiled value otherwise the next label using the
     // cursor to position itself might overlap the previous label by 1px.
-    assert(ui_font);
-    float w = ceilf(GetTextWidthScaled(*ui_font, text));
-    return do_label(horz, vert, w, h, text, bg);
+    assert(gUiFont);
+    float w = ceilf(GetTextWidthScaled(*gUiFont, text));
+    return DoLabel(horz, vert, w, h, text, bgColor);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h, std::string text, std::string link, std::string href, Vec4 bg)
+TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std::string text, std::string link, std::string href, Vec4 bgColor)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_font);
+    assert(gUiFont);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Font& fnt = *ui_font;
-    Vec2  cur = internal__get_relative_cursor(ui_panels.top());
+    Font& font = *gUiFont;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     // We scissor the contents to avoid text overspill.
-    BeginScissor(cur.x, cur.y, w, h);
+    BeginScissor(cursor.x, cursor.y, w, h);
     Defer { EndScissor(); };
 
-    SetDrawColor(bg); // Draw the label's background.
-    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
+    SetDrawColor(bgColor); // Draw the label's background.
+    FillQuad(cursor.x, cursor.y, cursor.x + w, cursor.y + h);
 
-    float tw = GetTextWidthScaled (fnt, text);
-    float th = GetTextHeightScaled(fnt, text);
+    float tw = GetTextWidthScaled(font, text);
+    float th = GetTextHeightScaled(font, text);
 
     // If text is a single line we calculate how much we can fit in the width
     // and if necessary trim any off and replace the end with and ellipsis.
-    std::string clipped_text(text);
-    if (std::count(clipped_text.begin(), clipped_text.end(), '\n') <= 1)
+    std::string clippedText(text);
+    if (std::count(clippedText.begin(), clippedText.end(), '\n') <= 1)
     {
         if (tw > w) // Our text goes out of the label bounds.
         {
-            if (clipped_text.length() <= 3)
+            if (clippedText.length() <= 3)
             {
-                clipped_text = "...";
-                tw = GetTextWidthScaled(fnt, clipped_text);
+                clippedText = "...";
+                tw = GetTextWidthScaled(font, clippedText);
             }
             else
             {
-                clipped_text.replace(clipped_text.length()-3, 3, "...");
-                while (tw > w && clipped_text.length() > 3)
+                clippedText.replace(clippedText.length()-3, 3, "...");
+                while (tw > w && clippedText.length() > 3)
                 {
-                    clipped_text.erase(clipped_text.length()-4, 1);
-                    tw = GetTextWidthScaled(fnt, clipped_text);
+                    clippedText.erase(clippedText.length()-4, 1);
+                    tw = GetTextWidthScaled(font, clippedText);
                 }
             }
         }
     }
 
     // Handle setting the application's cursor to the correct graphic.
-    if (internal__is_hot())
+    if (Internal::IsHot())
     {
-        ui_hot_hyperlink = ui_current_id;
+        gUiHotHyperlink = gUiCurrentID;
         SetCursorType(Cursor::POINTER);
     }
     else
     {
-        if (ui_hot_hyperlink == ui_current_id)
+        if (gUiHotHyperlink == gUiCurrentID)
         {
-            ui_hot_hyperlink = UI_INVALID_ID;
+            gUiHotHyperlink = gUiInvalidID;
         }
 
         // We have this check so that we can know it's okay to set the cursor back to arrow as no text box elements are hot.
-        if (ui_hot_hyperlink == UI_INVALID_ID && ui_hot_text_box == UI_INVALID_ID)
+        if (gUiHotHyperlink == gUiInvalidID && gUiHotTextBox == gUiInvalidID)
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to hyperlinks. Could be cleaned.
@@ -1230,9 +1148,9 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
             {
                 switch (level_editor.tool_type)
                 {
-                case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH);  break;
-                case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL);   break;
-                case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
+                    case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH);  break;
+                    case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL);   break;
+                    case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
                 }
             }
             else
@@ -1242,78 +1160,78 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
         }
     }
 
-    float wx = cur.x + GetTextWidthScaled(fnt, clipped_text);
-    float wy = cur.y;
-    float ww = GetTextWidthScaled (fnt, link);
-    float wh = GetTextHeightScaled(fnt, link);
+    float wx = cursor.x + GetTextWidthScaled(font, clippedText);
+    float wy = cursor.y;
+    float ww = GetTextWidthScaled(font, link);
+    float wh = GetTextHeightScaled(font, link);
 
-    if (internal__handle_widget(wx,wy,ww,wh, false)) LoadWebpage(href);
+    if (Internal::HandleWidget(wx,wy,ww,wh, false)) LoadWebpage(href);
 
-    float x = cur.x;
-    float y = cur.y;
+    float x = cursor.x;
+    float y = cursor.y;
 
-    internal__align_text(horz, vert, x, y, tw, th, w, h);
+    Internal::AlignText(horz, vert, x,y, tw,th, w,h);
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    Vec4 shadow     = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    Vec4 front      = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    Vec4 link_color = front;
+    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
+    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
+    Vec4 linkColor = front;
 
-    if      (internal__is_hit()) link_color = (ui_is_light) ? ui_color_ex_dark : ui_color_white;
-    else if (internal__is_hot()) link_color = (ui_is_light) ? ui_color_ex_dark : ui_color_white;
+    if (Internal::IsHit() || Internal::IsHot())
+    {
+        linkColor = (IsUiLight()) ? gUiColorExDark : gUiColorWhite;
+    }
 
-    fnt.color = shadow;
-    DrawText(fnt, x, y-offset, clipped_text);
-    fnt.color = front;
-    DrawText(fnt, x, y, clipped_text);
+    font.color = shadow;
+    DrawText(font, x, y-offset, clippedText);
+    font.color = front;
+    DrawText(font, x, y, clippedText);
 
-    x += GetTextWidthScaled(fnt, clipped_text);
+    x += GetTextWidthScaled(font, clippedText);
 
     SetDrawColor(shadow);
     DrawLine(x, (y+2)-offset, x+ww, (y+2)-offset);
-    SetDrawColor(link_color);
+    SetDrawColor(linkColor);
     DrawLine(x, y+2, x+ww, y+2);
 
-    fnt.color = shadow;
-    DrawText(fnt, x, y-offset, link);
-    fnt.color = link_color;
-    DrawText(fnt, x, y, link);
+    font.color = shadow;
+    DrawText(font, x, y-offset, link);
+    font.color = linkColor;
+    DrawText(font, x, y, link);
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_markdown (float w, float h, std::string text)
+TEINAPI void DoMarkdown (float w, float h, std::string text)
 {
-    Font& fnt = GetEditorRegularFont();
+    Font& font = GetEditorRegularFont();
 
-    UI_Flag flags = ui_panels.top().flags;
+    UiFlag flags = gUiPanels.top().flags;
 
     bool inactive = (flags & UI_INACTIVE);
-    bool locked   = (flags & UI_LOCKED  );
+    bool locked = (flags & UI_LOCKED);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     // We scissor the contents to avoid text overspill.
-    BeginScissor(cur.x, cur.y, w, h);
+    BeginScissor(cursor.x, cursor.y, w, h);
     Defer { EndScissor(); };
 
     std::vector<std::string> lines;
     TokenizeString(text, "\r\n", lines);
 
-    float x = cur.x;
-    float y = cur.y + fnt.lineGap[fnt.currentPointSize];
+    float x = cursor.x;
+    float y = cursor.y + font.lineGap[font.currentPointSize];
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    Vec4 shadow = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    Vec4 front = (ui_is_light) ? ui_color_black : ui_color_ex_light;
+    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
+    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
 
     if (locked || inactive)
     {
@@ -1321,113 +1239,109 @@ TEINAPI void do_markdown (float w, float h, std::string text)
         front.a = .5f;
     }
 
-    internal__do_markdown_formatting(lines, w);
+    Internal::DoMarkdownFormatting(lines, w);
 
     for (auto& line: lines)
     {
-        std::vector<std::string> sub_lines;
-        TokenizeString(line, "\r\n", sub_lines);
+        std::vector<std::string> subLines;
+        TokenizeString(line, "\r\n", subLines);
 
-        for (size_t i=0; i<sub_lines.size(); ++i)
+        for (size_t i=0; i<subLines.size(); ++i)
         {
-            x = cur.x;
-            if (i != 0) x += GetTextWidthScaled(fnt, ">");
-            fnt.color = shadow;
-            DrawText(fnt, x, y-offset, sub_lines.at(i));
-            fnt.color = front;
-            DrawText(fnt, x, y, sub_lines.at(i));
-            y += fnt.lineGap[fnt.currentPointSize];
+            x = cursor.x;
+            if (i != 0) x += GetTextWidthScaled(font, ">");
+            font.color = shadow;
+            DrawText(font, x, y-offset, subLines.at(i));
+            font.color = front;
+            DrawText(font, x, y, subLines.at(i));
+            y += font.lineGap[font.currentPointSize];
         }
     }
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 }
 
-TEINAPI float get_markdown_h (float w, std::string text)
+TEINAPI float GetMarkdownHeight (float w, std::string text)
 {
-    Font& fnt = GetEditorRegularFont();
-
+    Font& font = GetEditorRegularFont();
     std::vector<std::string> lines;
     TokenizeString(text, "\r\n", lines);
-
-    std::string md_text = internal__do_markdown_formatting(lines, w);
-
-    return GetTextHeightScaled(fnt, md_text);
+    std::string markdownText = Internal::DoMarkdownFormatting(lines, w);
+    return GetTextHeightScaled(font, markdownText);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, std::string default_text, UI_Align halign)
+TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::string defaultText, UiAlign hAlign)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_font);
+    assert(gUiFont);
 
-    flags |= ui_panels.top().flags;
+    flags |= gUiPanels.top().flags;
     bool locked = (flags & UI_LOCKED);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Font& fnt = *ui_font;
-    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Font& font = *gUiFont;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     if (!locked)
     {
-        if (internal__handle_widget(cur.x, cur.y, w, h, locked)) {
+        if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked)) {
             // If the cursor was blinking before then reset the timer.
-            if (ui_cursor_blink_timer)
+            if (gUiCursorBlinkTimer)
             {
-                SDL_RemoveTimer(ui_cursor_blink_timer);
-                ui_cursor_blink_timer = NULL;
+                SDL_RemoveTimer(gUiCursorBlinkTimer);
+                gUiCursorBlinkTimer = NULL;
             }
 
             // Start the blinking of the cursor.
-            ui_cursor_visible = true;
-            ui_cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__cursor_blink_callback, NULL);
-            if (!ui_cursor_blink_timer)
+            gUiCursorVisible = true;
+            gUiCursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::CursorBlinkCallback, NULL);
+            if (!gUiCursorBlinkTimer)
             {
                 LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }
 
-            ui_text_box_cursor = text.length();
-            ui_active_text_box = ui_current_id;
+            gUiTextBoxCursor = text.length();
+            gUiActiveTextBox = gUiCurrentID;
 
             SDL_StartTextInput();
         }
     }
-    else if (ui_active_text_box == ui_current_id)
+    else if (gUiActiveTextBox == gUiCurrentID)
     {
-        deselect_active_text_box(text, default_text);
+        DeselectActiveTextBox(text, defaultText);
     }
 
     // If we are the active text box and the mouse was pressed this update
     // and we're not hit then that means the press was outside of us and
     // therefore we need to become deselected and can no longer be active.
-    if (ui_active_text_box == ui_current_id && internal__is_ui_mouse_down() && !internal__is_hit())
+    if (gUiActiveTextBox == gUiCurrentID && Internal::IsUiMouseLeftDown() && !Internal::IsHit())
     {
-        deselect_active_text_box(text, default_text);
+        DeselectActiveTextBox(text, defaultText);
     }
     // If the right mouse button is pressed then we just always deselect.
-    if (ui_active_text_box == ui_current_id && internal__is_ui_mouse_r_down())
+    if (gUiActiveTextBox == gUiCurrentID && Internal::IsUiMouseRightDown())
     {
-        deselect_active_text_box(text, default_text);
+        DeselectActiveTextBox(text, defaultText);
     }
 
     // Handle setting the application's cursor to the correct graphic.
-    if (internal__is_hot())
+    if (Internal::IsHot())
     {
-        ui_hot_text_box = ui_current_id;
+        gUiHotTextBox = gUiCurrentID;
         SetCursorType(Cursor::BEAM);
     }
     else
     {
-        if (ui_hot_text_box == ui_current_id)
+        if (gUiHotTextBox == gUiCurrentID)
         {
-            ui_hot_text_box = UI_INVALID_ID;
+            gUiHotTextBox = gUiInvalidID;
         }
 
         // We have this check so that we can know it's okay to set
         // the cursor back to arrow as no text box elements are hot.
-        if (ui_hot_text_box == UI_INVALID_ID && ui_hot_hyperlink == UI_INVALID_ID)
+        if ((gUiHotTextBox == gUiInvalidID) && (gUiHotHyperlink == gUiInvalidID))
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to text boxes. Could be cleaned.
@@ -1435,9 +1349,9 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
             {
                 switch (level_editor.tool_type)
                 {
-                case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH ); break;
-                case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL  ); break;
-                case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
+                    case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH ); break;
+                    case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL  ); break;
+                    case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
                 }
             }
             else
@@ -1447,193 +1361,191 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         }
     }
 
-    if (!locked && ui_make_next_text_box_active && GetRenderTarget()->id == ui_text_box_tab_window_id)
+    if (!locked && gUiMakeNextTextBoxActive && GetRenderTarget()->id == gUiTextBoxTabWindowID)
     {
-        ui_text_box_cursor = std::string::npos;
-        ui_active_text_box = ui_current_id;
-
-        ui_make_next_text_box_active = false;
-        ui_text_box_tab_window_id = 0;
+        gUiTextBoxCursor = std::string::npos;
+        gUiActiveTextBox = gUiCurrentID;
+        gUiMakeNextTextBoxActive = false;
+        gUiTextBoxTabWindowID = 0;
     }
 
-    Vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    Vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    Vec4 outline = ui_color_dark;
-    Vec4 back    = ui_color_med_dark;
+    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
+    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
+    Vec4 outline = gUiColorDark;
+    Vec4 back = gUiColorMedDark;
 
     if (locked)
     {
-        outline = ui_color_med_dark;
-        back = ui_color_medium;
-
+        outline = gUiColorMedDark;
+        back = gUiColorMedium;
         shadow.a = .5f;
         front.a = .5f;
     }
 
     SetDrawColor(outline); // Draw the text box's outline quad.
-    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
+    FillQuad(cursor.x, cursor.y, cursor.x+w, cursor.y+h);
     SetDrawColor(back); // Draw the text box's background quad.
-    FillQuad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
+    FillQuad(cursor.x+1, cursor.y+1, cursor.x+w-1, cursor.y+h-1);
 
-    constexpr float X_PAD = 5;
-    constexpr float Y_PAD = 2;
+    constexpr float XPad = 5;
+    constexpr float YPad = 2;
 
-    float bx = cur.x+(X_PAD  );
-    float by = cur.y+(Y_PAD  );
-    float bw = w    -(X_PAD*2);
-    float bh = h    -(Y_PAD*2);
+    float bx = cursor.x+(XPad  );
+    float by = cursor.y+(YPad  );
+    float bw = w       -(XPad*2);
+    float bh = h       -(YPad*2);
 
     // Handle text input events if we are the active text box.
-    if (ui_active_text_box == ui_current_id)
+    if (gUiActiveTextBox == gUiCurrentID)
     {
         // Make sure that the cursor is in the bounds of the string.
-        if (ui_text_box_cursor > text.length())
+        if (gUiTextBoxCursor > text.length())
         {
-            ui_text_box_cursor = text.length();
+            gUiTextBoxCursor = text.length();
         }
 
         if (GetRenderTarget()->focus)
         {
-            std::string old_text = text;
-            size_t old_cursor = ui_text_box_cursor;
+            std::string oldText = text;
+            size_t oldCursor = gUiTextBoxCursor;
 
-            for (auto& text_event: ui_text_events)
+            for (auto& textEvent: gUiTextEvents)
             {
-                switch (text_event.type)
+                switch (textEvent.type)
                 {
-                    case (UI_Text_Event_Type::TEXT):
+                    case (UiTextEventType::TEXT):
                     {
-                        bool invalid_text = false;
-                        for (auto c: text_event.text)
+                        bool invalidText = false;
+                        for (auto c: textEvent.text)
                         {
-                            if ((flags&UI_ALPHANUM)   && !isalnum               (c)) invalid_text = true;
-                            if ((flags&UI_ALPHABETIC) && !isalpha               (c)) invalid_text = true;
-                            if ((flags&UI_NUMERIC)    && !isdigit               (c)) invalid_text = true;
-                            if ((flags&UI_FILEPATH)   && !internal__is_file_path(c)) invalid_text = true;
+                            if ((flags & UI_ALPHANUM) && !isalnum(c)) invalidText = true;
+                            if ((flags & UI_ALPHABETIC) && !isalpha(c)) invalidText = true;
+                            if ((flags & UI_NUMERIC) && !isdigit(c)) invalidText = true;
+                            if ((flags & UI_FILEPATH) && !Internal::IsValidFilePath(c)) invalidText = true;
                         }
-                        if (invalid_text)
+                        if (invalidText)
                         {
                             break;
                         }
                         // Clear out the default text and enter what the user actually wants.
-                        if (!default_text.empty() && (text == default_text))
+                        if (!defaultText.empty() && (text == defaultText))
                         {
-                            ui_text_box_cursor = 0;
+                            gUiTextBoxCursor = 0;
                             text.clear();
                         }
-                        for (auto c: text_event.text)
+                        for (auto c: textEvent.text)
                         {
-                            auto pos = text.begin()+(ui_text_box_cursor++);
+                            auto pos = text.begin()+(gUiTextBoxCursor++);
                             text.insert(pos, c);
                         }
                     } break;
-                    case (UI_Text_Event_Type::KEY):
+                    case (UiTextEventType::KEY):
                     {
-                        switch (text_event.key)
+                        switch (textEvent.key)
                         {
                             case (SDLK_TAB):
                             {
-                                if (!ui_tab_handled)
+                                if (!gUiTabHandled)
                                 {
-                                    ui_make_next_text_box_active = true;
-                                    ui_text_box_tab_window_id = GetRenderTarget()->id;
-                                    ui_tab_handled = true;
+                                    gUiMakeNextTextBoxActive = true;
+                                    gUiTextBoxTabWindowID = GetRenderTarget()->id;
+                                    gUiTabHandled = true;
                                 }
                             } break;
                             case (SDLK_LEFT):
                             {
-                                if (ui_text_box_cursor > 0)
+                                if (gUiTextBoxCursor > 0)
                                 {
-                                    --ui_text_box_cursor;
+                                    --gUiTextBoxCursor;
                                 }
                             } break;
                             case (SDLK_RIGHT): {
-                                if (ui_text_box_cursor < text.length())
+                                if (gUiTextBoxCursor < text.length())
                                 {
-                                    ++ui_text_box_cursor;
+                                    ++gUiTextBoxCursor;
                                 }
                             } break;
                             case (SDLK_UP):
                             {
-                                if (flags&UI_NUMERIC)
+                                if (flags & UI_NUMERIC)
                                 {
                                     if (atoi(text.c_str()) < INT_MAX)
                                     {
                                         text = std::to_string(atoi(text.c_str())+1);
-                                        ui_text_box_cursor = text.length();
+                                        gUiTextBoxCursor = text.length();
                                     }
                                 }
                             } break;
                             case (SDLK_DOWN):
                             {
-                                if (flags&UI_NUMERIC)
+                                if (flags & UI_NUMERIC)
                                 {
                                     if (atoi(text.c_str()) > 0)
                                     {
                                         text = std::to_string(atoi(text.c_str())-1);
-                                        ui_text_box_cursor = text.length();
+                                        gUiTextBoxCursor = text.length();
                                     }
                                 }
                             } break;
                             case (SDLK_HOME):
                             {
-                                ui_text_box_cursor = 0;
+                                gUiTextBoxCursor = 0;
                             } break;
                             case (SDLK_END):
                             {
-                                ui_text_box_cursor = text.length();
+                                gUiTextBoxCursor = text.length();
                             } break;
                             case (SDLK_BACKSPACE):
                             {
-                                if (ui_text_box_cursor != 0)
+                                if (gUiTextBoxCursor != 0)
                                 {
-                                    text.erase(--ui_text_box_cursor, 1);
+                                    text.erase(--gUiTextBoxCursor, 1);
                                 }
                             } break;
                             case (SDLK_DELETE):
                             {
-                                if (ui_text_box_cursor < text.length())
+                                if (gUiTextBoxCursor < text.length())
                                 {
-                                    text.erase(ui_text_box_cursor, 1);
+                                    text.erase(gUiTextBoxCursor, 1);
                                 }
                             } break;
                             case (SDLK_RETURN):
                             {
-                                deselect_active_text_box(text, default_text);
+                                DeselectActiveTextBox(text, defaultText);
                             } break;
                             case (SDLK_v):
                             {
-                                if (SDL_GetModState()&KMOD_CTRL)
+                                if (SDL_GetModState() & KMOD_CTRL)
                                 {
                                     if (SDL_HasClipboardText())
                                     {
-                                        char* clipboard_text = SDL_GetClipboardText();
-                                        if (clipboard_text)
+                                        char* clipboardText = SDL_GetClipboardText();
+                                        if (clipboardText)
                                         {
-                                            Defer { SDL_free(clipboard_text); }; // Docs say we need to free!
+                                            Defer { SDL_free(clipboardText); }; // Docs say we need to free!
 
-                                            bool add_text = true;
-                                            std::string t(clipboard_text);
+                                            bool addText = true;
+                                            std::string t(clipboardText);
 
                                             for (auto c: t)
                                             {
-                                                if ((flags&UI_ALPHANUM)   && !isalnum               (c)) { add_text = false; break; }
-                                                if ((flags&UI_ALPHABETIC) && !isalpha               (c)) { add_text = false; break; }
-                                                if ((flags&UI_NUMERIC)    && !isdigit               (c)) { add_text = false; break; }
-                                                if ((flags&UI_FILEPATH)   && !internal__is_file_path(c)) { add_text = false; break; }
+                                                if ((flags & UI_ALPHANUM) && !isalnum(c)) { addText = false; break; }
+                                                if ((flags & UI_ALPHABETIC) && !isalpha(c)) { addText = false; break; }
+                                                if ((flags & UI_NUMERIC) && !isdigit(c)) { addText = false; break; }
+                                                if ((flags & UI_FILEPATH) && !Internal::IsValidFilePath(c)) { addText = false; break; }
                                             }
 
-                                            if (add_text)
+                                            if (addText)
                                             {
                                                 // Clear out the default text and enter what the user actually wants.
-                                                if (!default_text.empty() && text == default_text)
+                                                if (!defaultText.empty() && text == defaultText)
                                                 {
-                                                    ui_text_box_cursor = 0;
+                                                    gUiTextBoxCursor = 0;
                                                     text.clear();
                                                 }
 
-                                                text.insert(ui_text_box_cursor, t);
-                                                ui_text_box_cursor += t.length();
+                                                text.insert(gUiTextBoxCursor, t);
+                                                gUiTextBoxCursor += t.length();
                                             }
                                         }
                                     }
@@ -1644,21 +1556,21 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
                 }
             }
 
-            ui_text_events.clear();
+            gUiTextEvents.clear();
 
             // Reset the cursor blink interval.
-            if (old_text != text || old_cursor != ui_text_box_cursor)
+            if (oldText != text || oldCursor != gUiTextBoxCursor)
             {
                 // If the cursor was blinking before then reset the timer.
-                if (ui_cursor_blink_timer)
+                if (gUiCursorBlinkTimer)
                 {
-                    SDL_RemoveTimer(ui_cursor_blink_timer);
-                    ui_cursor_blink_timer = NULL;
+                    SDL_RemoveTimer(gUiCursorBlinkTimer);
+                    gUiCursorBlinkTimer = NULL;
                 }
                 // Start the blinking of the cursor.
-                ui_cursor_visible = true;
-                ui_cursor_blink_timer = SDL_AddTimer(UI_CURSOR_BLINK_INTERVAL, internal__cursor_blink_callback, NULL);
-                if (!ui_cursor_blink_timer)
+                gUiCursorVisible = true;
+                gUiCursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::CursorBlinkCallback, NULL);
+                if (!gUiCursorBlinkTimer)
                 {
                     LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
                 }
@@ -1666,178 +1578,176 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         }
 
         // Cursor should always be at the end of the default text.
-        if (!default_text.empty() && text == default_text)
+        if (!defaultText.empty() && text == defaultText)
         {
-            ui_text_box_cursor = text.length();
+            gUiTextBoxCursor = text.length();
         }
     }
 
     // We scissor the contents to avoid text overspill.
-    BeginScissor(bx, by, bw, bh);
+    BeginScissor(bx,by,bw,bh);
 
     float tx = bx;
     float ty = by;
-    float tw = GetTextWidthScaled (fnt, text);
-    float th = GetTextHeightScaled(fnt, text);
+    float tw = GetTextWidthScaled(font, text);
+    float th = GetTextHeightScaled(font, text);
 
     if (th == 0) th = bh;
 
-    internal__align_text(halign, UI_ALIGN_CENTER, tx, ty, tw, th, bw, bh);
+    Internal::AlignText(hAlign, UI_ALIGN_CENTER, tx,ty, tw,th, bw,bh);
 
-    float x_off = 0;
-    float y_off = (ui_is_light) ? -1.0f : 1.0f;
+    float xOff = 0;
+    float yOff = (IsUiLight()) ? -1.0f : 1.0f;
 
     // Adjust text position/offsetrun based on the current cursor.
-    if (ui_active_text_box == ui_current_id)
+    if (gUiActiveTextBox == gUiCurrentID)
     {
-        if (halign == UI_ALIGN_LEFT)
+        if (hAlign == UI_ALIGN_LEFT)
         {
-            std::string sub(text.substr(0, ui_text_box_cursor));
-            float cursor_x = tx+GetTextWidthScaled(fnt, sub);
-            if (cursor_x > bx+bw)
+            std::string sub(text.substr(0, gUiTextBoxCursor));
+            float cursorX = tx+GetTextWidthScaled(font, sub);
+            if (cursorX > bx+bw)
             {
-                float diff = abs(bw - GetTextWidthScaled(fnt, sub));
-                x_off = -diff;
+                float diff = abs(bw - GetTextWidthScaled(font, sub));
+                xOff = -diff;
             }
         }
         else
         {
-            std::string sub(text.substr(0, ui_text_box_cursor));
-            float cursor_x = tx+GetTextWidthScaled(fnt, sub);
-            if (cursor_x < bx)
+            std::string sub(text.substr(0, gUiTextBoxCursor));
+            float cursorX = tx+GetTextWidthScaled(font, sub);
+            if (cursorX < bx)
             {
-                x_off = (bx - cursor_x);
+                xOff = (bx - cursorX);
             }
         }
     }
 
-    fnt.color = shadow;
-    DrawText(fnt, tx+x_off, ty-y_off, text);
-    fnt.color = front;
-    DrawText(fnt, tx+x_off, ty, text);
+    font.color = shadow;
+    DrawText(font, tx+xOff, ty-yOff, text);
+    font.color = front;
+    DrawText(font, tx+xOff, ty, text);
 
     EndScissor();
 
     // If we're active then draw the text box cursor as well.
-    if (ui_active_text_box == ui_current_id && ui_cursor_visible)
+    if ((gUiActiveTextBox == gUiCurrentID) && gUiCursorVisible)
     {
         BeginScissor(bx-1, by-1, bw+2, bh+2);
 
-        std::string sub(text.substr(0, ui_text_box_cursor));
-        float xo = GetTextWidthScaled(fnt, sub);
+        std::string sub(text.substr(0, gUiTextBoxCursor));
+        float xo = GetTextWidthScaled(font, sub);
         float yo = (bh-th)/2; // Center the cursor vertically.
         // Just looks nicer...
-        if ((ui_text_box_cursor != 0 && text.length()) || (!text.length()))
+        if ((gUiTextBoxCursor != 0 && text.length()) || (!text.length()))
         {
             xo += 1;
         }
-        SetDrawColor((ui_is_light) ? ui_color_black : ui_color_ex_light);
-        DrawLine(tx+xo+x_off, by+yo, tx+xo+x_off, by+yo+th);
+        SetDrawColor((IsUiLight()) ? gUiColorBlack : gUiColorExLight);
+        DrawLine(tx+xo+xOff, by+yo, tx+xo+yOff, by+yo+th);
 
         EndScissor();
     }
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 }
 
-TEINAPI void do_text_box_labeled (float w, float h, UI_Flag flags, std::string& text, float label_w, std::string label, std::string default_text, UI_Align halign)
+TEINAPI void DoTextBoxLabeled (float w, float h, UiFlag flags, std::string& text, float labelWidth, std::string label, std::string defaultText, UiAlign hAlign)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_font);
+    assert(gUiFont);
 
-    float lw = label_w;
+    float lw = labelWidth;
     float tw = w - lw;
 
     if (tw < 0) return; // Won't draw anything!
 
     // Cache this stuff because we are going to temporarily change it.
-    Vec2 cursor = *ui_panels.top().cursor;
-    UI_Dir dir = ui_panels.top().cursor_dir;
+    Vec2 cursor = *gUiPanels.top().cursor;
+    UiDir dir = gUiPanels.top().cursorDir;
 
-    set_panel_cursor_dir(UI_DIR_RIGHT);
-    do_label(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw, h, label);
+    SetPanelCursorDir(UI_DIR_RIGHT);
+    DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw, h, label);
 
-    set_panel_cursor_dir(dir);
-    do_text_box(tw, h, flags, text, default_text, halign);
+    SetPanelCursorDir(dir);
+    DoTextBox(tw, h, flags, text, defaultText, hAlign);
 
     // Reset the X location of the cursor for the caller.
     if (dir == UI_DIR_UP || dir == UI_DIR_DOWN)
     {
-        ui_panels.top().cursor->x = cursor.x;
+        gUiPanels.top().cursor->x = cursor.x;
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding& kb)
+TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_font);
+    assert(gUiFont);
 
-    flags |= ui_panels.top().flags;
+    flags |= gUiPanels.top().flags;
     bool locked = (flags & UI_LOCKED);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Font& fnt = *ui_font;
-    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Font& font = *gUiFont;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     if (!locked)
     {
-        if (internal__handle_widget(cur.x, cur.y, w, h, locked))
+        if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked))
         {
-            ui_active_hotkey_rebind = ui_current_id;
+            gUiActiveHotkeyRebind = gUiCurrentID;
         }
     }
-    else if (ui_active_hotkey_rebind == ui_current_id)
+    else if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
-        deselect_active_hotkey_rebind();
+        DeselectActiveHotkeyRebind();
     }
 
     // If we are the active KB rebind and the mouse was pressed this update
     // and we're not hit then that means the press was outside of us and
     // therefore we need to become deselected and can no longer be active.
-    if (ui_active_hotkey_rebind == ui_current_id && internal__is_ui_mouse_down() && !internal__is_hit())
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseLeftDown() && !Internal::IsHit())
     {
-        deselect_active_hotkey_rebind();
+        DeselectActiveHotkeyRebind();
     }
     // If the right mouse button is pressed then we just always deselect.
-    if (ui_active_hotkey_rebind == ui_current_id && internal__is_ui_mouse_r_down())
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseRightDown())
     {
-        deselect_active_hotkey_rebind();
+        DeselectActiveHotkeyRebind();
     }
 
-    Vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    Vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    Vec4 outline = ui_color_dark;
-    Vec4 back    = ui_color_med_dark;
+    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
+    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
+    Vec4 outline = gUiColorDark;
+    Vec4 back = gUiColorMedDark;
 
     if (locked)
     {
-        outline = ui_color_med_dark;
-        back = ui_color_medium;
-
+        outline = gUiColorMedDark;
+        back = gUiColorMedium;
         shadow.a = .5f;
         front.a = .5f;
     }
 
     SetDrawColor(outline); // Draw the rebind's outline quad.
-    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
+    FillQuad(cursor.x, cursor.y, cursor.x+w, cursor.y+h);
     SetDrawColor(back); // Draw the rebind's background quad.
-    FillQuad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
+    FillQuad(cursor.x+1, cursor.y+1, cursor.x+w-1, cursor.y+h-1);
 
-    constexpr float X_PAD = 5;
-    constexpr float Y_PAD = 2;
+    constexpr float XPad = 5;
+    constexpr float YPad = 2;
 
-    float bx = cur.x+(X_PAD  );
-    float by = cur.y+(Y_PAD  );
-    float bw = w    -(X_PAD*2);
-    float bh = h    -(Y_PAD*2);
+    float bx = cursor.x+(XPad  );
+    float by = cursor.y+(YPad  );
+    float bw = w       -(XPad*2);
+    float bh = h       -(YPad*2);
 
     // If we're active then we check if the user has entered a new binding.
-    if (ui_active_hotkey_rebind == ui_current_id)
+    if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
         if (main_event.type == SDL_KEYDOWN)
         {
@@ -1860,17 +1770,17 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding&
                 if (kb.mod&KMOD_LSHIFT || kb.mod&KMOD_RSHIFT) kb.mod |= KMOD_SHIFT;
                 if (kb.mod&KMOD_LGUI   || kb.mod&KMOD_RGUI)   kb.mod |= KMOD_GUI;
 
-                deselect_active_hotkey_rebind();
+                DeselectActiveHotkeyRebind();
             }
         }
     }
 
     // We scissor the contents to avoid text overspill.
-    BeginScissor(bx, by, bw, bh);
+    BeginScissor(bx,by,bw,bh);
 
     // The text to display depends on if we're active or not.
     std::string text;
-    if (ui_active_hotkey_rebind == ui_current_id)
+    if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
         text = "Enter new key binding...";
     }
@@ -1882,93 +1792,93 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding&
     // Calculate the position of the text and draw it
     float tx = bx;
     float ty = by;
-    float tw = GetTextWidthScaled (fnt, text);
-    float th = GetTextHeightScaled(fnt, text);
+    float tw = GetTextWidthScaled(font, text);
+    float th = GetTextHeightScaled(font, text);
 
-    internal__align_text(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx, ty, tw, th, bw, bh);
+    Internal::AlignText(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx,ty, tw,th, bw,bh);
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    fnt.color = shadow;
-    DrawText(fnt, tx, ty-offset, text);
-    fnt.color = front;
-    DrawText(fnt, tx, ty, text);
+    font.color = shadow;
+    DrawText(font, tx, ty-offset, text);
+    font.color = front;
+    DrawText(font, tx, ty, text);
 
     EndScissor();
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 }
 
-TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& kb)
+TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_font);
+    assert(gUiFont);
 
     // Cache the rebind's flags so they are easily accessible.
-    flags |= ui_panels.top().flags;
+    flags |= gUiPanels.top().flags;
     bool locked = (flags & UI_LOCKED);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Font& fnt = *ui_font;
-    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Font& font = *gUiFont;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     if (!locked)
     {
-        if (internal__handle_widget(cur.x, cur.y, w, h, locked))
+        if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked))
         {
-            ui_active_hotkey_rebind = ui_current_id;
+            gUiActiveHotkeyRebind = gUiCurrentID;
         }
     }
-    else if (ui_active_hotkey_rebind == ui_current_id)
+    else if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
-        deselect_active_hotkey_rebind();
+        DeselectActiveHotkeyRebind();
     }
 
     // If we are the active KB rebind and the mouse was pressed this update
     // and we're not hit then that means the press was outside of us and
     // therefore we need to become deselected and can no longer be active.
-    if (ui_active_hotkey_rebind == ui_current_id && internal__is_ui_mouse_down() && !internal__is_hit())
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseLeftDown() && !Internal::IsHit())
     {
-        deselect_active_hotkey_rebind();
+        DeselectActiveHotkeyRebind();
     }
     // If the right mouse button is pressed then we just always deselect.
-    if (ui_active_hotkey_rebind == ui_current_id && internal__is_ui_mouse_r_down())
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseRightDown())
     {
-        deselect_active_hotkey_rebind();
+        DeselectActiveHotkeyRebind();
     }
 
-    Vec4 front   = (ui_is_light) ? ui_color_black : ui_color_ex_light;
-    Vec4 shadow  = (ui_is_light) ? ui_color_ex_light : ui_color_black;
-    Vec4 outline = ui_color_dark;
-    Vec4 back    = ui_color_med_dark;
+    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
+    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
+    Vec4 outline = gUiColorDark;
+    Vec4 back = gUiColorMedDark;
 
     if (locked)
     {
-        outline = ui_color_med_dark;
-        back = ui_color_medium;
-
+        outline = gUiColorMedDark;
+        back = gUiColorMedium;
         shadow.a = .5f;
         front.a = .5f;
     }
 
     SetDrawColor(outline); // Draw the rebind's outline quad.
-    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
+    FillQuad(cursor.x, cursor.y, cursor.x+w, cursor.y+h);
     SetDrawColor(back); // Draw the rebind's background quad.
-    FillQuad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
+    FillQuad(cursor.x+1, cursor.y+1, cursor.x+w-1, cursor.y+h-1);
 
-    constexpr float X_PAD = 5;
-    constexpr float Y_PAD = 2;
+    constexpr float XPad = 5;
+    constexpr float YPad = 2;
 
-    float bx = cur.x+(X_PAD  );
-    float by = cur.y+(Y_PAD  );
-    float bw = w    -(X_PAD*2);
-    float bh = h    -(Y_PAD*2);
+    float bx = cursor.x+(XPad  );
+    float by = cursor.y+(YPad  );
+    float bw = w       -(XPad*2);
+    float bh = h       -(YPad*2);
 
     // If we're active then we check if the user has entered a new binding.
-    if (ui_active_hotkey_rebind == ui_current_id)
+    if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
         if (main_event.type == SDL_KEYDOWN)
         {
@@ -1991,7 +1901,7 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& 
                 if ((kb.altMod & KMOD_LSHIFT) || (kb.altMod & KMOD_RSHIFT)) kb.altMod |= KMOD_SHIFT;
                 if ((kb.altMod & KMOD_LGUI  ) || (kb.altMod & KMOD_RGUI  )) kb.altMod |= KMOD_GUI;
 
-                deselect_active_hotkey_rebind();
+                DeselectActiveHotkeyRebind();
 
                 kb.hasAlt = true;
             }
@@ -1999,11 +1909,11 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& 
     }
 
     // We scissor the contents to avoid text overspill.
-    BeginScissor(bx, by, bw, bh);
+    BeginScissor(bx,by,bw,bh);
 
     // The text to display depends on if we're active or not.
     std::string text;
-    if (ui_active_hotkey_rebind == ui_current_id)
+    if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
         text = "Enter new key binding...";
     }
@@ -2015,44 +1925,44 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& 
     // Calculate the position of the text and draw it
     float tx = bx;
     float ty = by;
-    float tw = GetTextWidthScaled (fnt, text);
-    float th = GetTextHeightScaled(fnt, text);
+    float tw = GetTextWidthScaled(font, text);
+    float th = GetTextHeightScaled(font, text);
 
-    internal__align_text(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx, ty, tw, th, bw, bh);
+    Internal::AlignText(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx,ty, tw,th, bw,bh);
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    fnt.color = shadow;
-    DrawText(fnt, tx, ty-offset, text);
-    fnt.color = front;
-    DrawText(fnt, tx, ty, text);
+    font.color = shadow;
+    DrawText(font, tx, ty-offset, text);
+    font.color = front;
+    DrawText(font, tx, ty, text);
 
     EndScissor();
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 }
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI void do_icon (float w, float h, Texture& tex, const Quad* clip)
+TEINAPI void DoIcon (float w, float h, Texture& texture, const Quad* clip)
 {
-    UI_ID flags = ui_panels.top().flags;
+    UiID flags = gUiPanels.top().flags;
 
-    bool inactive = (flags&UI_INACTIVE);
-    bool locked   = (flags&UI_LOCKED);
+    bool inactive = (flags & UI_INACTIVE);
+    bool locked = (flags & UI_LOCKED);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     // We scissor the contents to avoid image overspill.
-    BeginScissor(cur.x, cur.y, w, h);
+    BeginScissor(cursor.x, cursor.y, w, h);
     Defer { EndScissor(); };
 
-    Vec4 front  = (ui_is_light) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
-    Vec4 shadow = (ui_is_light) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
+    Vec4 front = (IsUiLight()) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
+    Vec4 shadow = (IsUiLight()) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
 
     if (locked || inactive)
     {
@@ -2060,113 +1970,109 @@ TEINAPI void do_icon (float w, float h, Texture& tex, const Quad* clip)
         front.a = .5f;
     }
 
-    UI_Dir dir = ui_panels.top().cursor_dir;
+    UiDir dir = gUiPanels.top().cursorDir;
 
     // Center the image within the space.
-    float x = roundf(cur.x + (w / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
-    float y = roundf(cur.y + (h / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
+    float x = roundf(cursor.x + (w / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
+    float y = roundf(cursor.y + (h / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    tex.color = shadow;
-    DrawTexture(tex, x, y-offset, clip);
-    tex.color = front;
-    DrawTexture(tex, x, y, clip);
+    texture.color = shadow;
+    DrawTexture(texture, x, y-offset, clip);
+    texture.color = front;
+    DrawTexture(texture, x, y, clip);
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 }
 
-TEINAPI void do_quad (float w, float h, Vec4 color)
+TEINAPI void DoQuad (float w, float h, Vec4 color)
 {
-    UI_ID flags = ui_panels.top().flags;
+    UiID flags = gUiPanels.top().flags;
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Vec2 cur = internal__get_relative_cursor(ui_panels.top());
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
-    bool inactive = (flags&UI_INACTIVE);
-    bool locked   = (flags&UI_LOCKED);
+    bool inactive = (flags & UI_INACTIVE);
+    bool locked = (flags & UI_LOCKED);
 
     if (locked || inactive) color.a = .5f;
 
     SetDrawColor(color);
-    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
+    FillQuad(cursor.x, cursor.y, cursor.x+w, cursor.y+h);
 
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_separator (float size)
+TEINAPI void DoSeparator (float size)
 {
-    float w = (ui_panels.top().cursor_dir == UI_DIR_RIGHT || ui_panels.top().cursor_dir == UI_DIR_LEFT) ? 0 : size;
-    float h = (ui_panels.top().cursor_dir == UI_DIR_UP    || ui_panels.top().cursor_dir == UI_DIR_DOWN) ? 0 : size;
+    float w = (gUiPanels.top().cursorDir == UI_DIR_RIGHT || gUiPanels.top().cursorDir == UI_DIR_LEFT) ? 0 : size;
+    float h = (gUiPanels.top().cursorDir == UI_DIR_UP    || gUiPanels.top().cursorDir == UI_DIR_DOWN) ? 0 : size;
 
-    internal__advance_ui_cursor_start(ui_panels.top(), 1, 1);
-    internal__draw_separator(internal__get_relative_cursor(ui_panels.top()), ui_panels.top().cursor_dir, w, h, ui_color_med_dark);
-    internal__advance_ui_cursor_end(ui_panels.top(), 1, 1);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), 1, 1);
+    Internal::DrawSeparator(Internal::GetRelativeCursor(gUiPanels.top()), gUiPanels.top().cursorDir, w, h, gUiColorMedDark);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), 1, 1);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_scrollbar (Quad bounds, float content_height, float& scroll_offset)
+TEINAPI void DoScrollbar (Quad bounds, float contentHeight, float& scrollOffset)
 {
-    do_scrollbar(bounds.x, bounds.y, bounds.w, bounds.h, content_height, scroll_offset);
+    DoScrollbar(bounds.x, bounds.y, bounds.w, bounds.h, contentHeight, scrollOffset);
 }
 
-TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_height, float& scroll_offset)
+TEINAPI void DoScrollbar (float x, float y, float w, float h, float contentHeight, float& scrollOffset)
 {
     // Allows scrollbars to be outside the panel they are scrolling.
     SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-    Defer { SetViewport(ui_panels.top().viewport); };
+    Defer { SetViewport(gUiPanels.top().viewport); };
 
-    x += ui_panels.top().viewport.x;
-    y += ui_panels.top().viewport.y;
+    x += gUiPanels.top().viewport.x;
+    y += gUiPanels.top().viewport.y;
 
     // We scissor the contents to avoid any overspill.
-    BeginScissor(x, y, w, h);
+    BeginScissor(x,y,w,h);
     Defer { EndScissor(); };
 
-    constexpr float PAD = 1;
+    constexpr float Pad = 1;
 
-    float bx = x +  PAD;
-    float by = y +  PAD;
-    float bw = w - (PAD*2);
+    float bx = x +  Pad;
+    float by = y +  Pad;
+    float bw = w - (Pad*2);
     float bh = h;
 
     // Determine the percentage of content visible.
-    float percent_visible = get_panel_h() / content_height;
-    if (percent_visible > 1) percent_visible = 1;
+    float percentVisible = GetPanelHeight() / contentHeight;
+    if (percentVisible > 1) percentVisible = 1;
 
     // Represent this amount in the scrollbar.
-    bh = (bh*percent_visible) - (PAD*2);
+    bh = (bh*percentVisible) - (Pad*2);
 
     // Ensure the normalized scroll offset is in bounds.
-    float ndc_h = (h-bh-(PAD*2)) / (h-(PAD*2));
-    scroll_offset = std::clamp(scroll_offset, 0.0f, ndc_h);
+    float ndcHeight = (h-bh-(Pad*2)) / (h-(Pad*2));
+    scrollOffset = std::clamp(scrollOffset, 0.0f, ndcHeight);
 
     // Convert the normalized scroll offset into pixel offset.
-    by += scroll_offset * (h-(PAD*2));
+    by += scrollOffset * (h-(Pad*2));
 
-    internal__handle_widget(bx, by, bw, bh, false);
+    Internal::HandleWidget(bx,by, bw,bh, false);
 
     // Adjust the offset by however much the mouse has moved.
-    if (internal__is_hit())
+    if (Internal::IsHit())
     {
-        scroll_offset += (ui_mouse_relative.y / (h-(PAD*2)));
-        scroll_offset = std::clamp(scroll_offset, 0.0f, ndc_h);
+        scrollOffset += (gUiMouseRelative.y / (h-(Pad*2)));
+        scrollOffset = std::clamp(scrollOffset, 0.0f, ndcHeight);
     }
 
-    SetDrawColor(ui_color_ex_dark);
-    FillQuad(x, y, x+w, y+h);
+    SetDrawColor(gUiColorExDark);
+    FillQuad(x,y,x+w,y+h);
 
-    Vec4 color = ui_color_med_dark;
+    Vec4 color = gUiColorMedDark;
 
-    if      (internal__is_hit()) color = ui_color_med_light;
-    else if (internal__is_hot()) color = ui_color_medium;
+    if (Internal::IsHit()) color = gUiColorMedLight;
+    else if (Internal::IsHot()) color = gUiColorMedium;
 
     SetDrawColor(color);
-    FillQuad(bx, by, bx+bw, by+bh);
+    FillQuad(bx,by,bx+bw,by+bh);
 
     // Draw the three lines on the scrollbar (avoid overspill).
     //
@@ -2174,14 +2080,14 @@ TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_hei
     // adding these lines just looks sort of gross and cluttered.
     if (bh > 10)
     {
-        constexpr float LINE_GAP = 2;
+        constexpr float LineGap = 2;
 
-        BeginScissor(bx, by, bw, bh);
-        SetDrawColor(ui_color_ex_dark);
+        BeginScissor(bx,by,bw,bh);
+        SetDrawColor(gUiColorExDark);
 
-        float y1 = by+(bh/2) - LINE_GAP;
+        float y1 = by+(bh/2) - LineGap;
         float y2 = by+(bh/2);
-        float y3 = by+(bh/2) + LINE_GAP;
+        float y3 = by+(bh/2) + LineGap;
 
         DrawLine(bx+1, y1, bx+bw-1, y1);
         DrawLine(bx+1, y2, bx+bw-1, y2);
@@ -2196,188 +2102,183 @@ TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_hei
     // scrolling there can be offset issues which result in
     // moving past the content bounds so we just perform manual
     // adjustment of the scroll in order to correct this issue.
-    float final_offset = roundf(content_height * scroll_offset);
-    float resulting_height = content_height - final_offset;
-    if (scroll_offset != 0 && resulting_height < get_panel_h())
+    float finalOffset = roundf(contentHeight * scrollOffset);
+    float resultingHeight = contentHeight - finalOffset;
+    if (scrollOffset != 0 && resultingHeight < GetPanelHeight())
     {
-        float difference = get_panel_h() - resulting_height;
-        ui_panels.top().relative_offset.y -= (final_offset - difference);
+        float difference = GetPanelHeight() - resultingHeight;
+        gUiPanels.top().relativeOffset.y -= (finalOffset - difference);
     }
     else
     {
-        ui_panels.top().relative_offset.y -= roundf(content_height * scroll_offset);
+        gUiPanels.top().relativeOffset.y -= roundf(contentHeight * scrollOffset);
     }
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag flags, Vec4 cl, Vec4 cr)
+TEINAPI void BeginPanelGradient (float x, float y, float w, float h, UiFlag flags, Vec4 leftColor, Vec4 rightColor)
 {
     Panel panel;
 
     // The method of adding a new panel varies depending on whether the panel
     // is a child to an existing panel or if it is a lone panel in the window.
-    panel.absolute_bounds = { x, y, w, h };
-    if (ui_panels.size() > 0)
+    panel.absoluteBounds = { x,y,w,h };
+    if (gUiPanels.size() > 0)
     {
-        const Quad& p_ab = ui_panels.top().absolute_bounds;
-        const Quad& p_v  = ui_panels.top().viewport;
-        const Vec2& p_ro = ui_panels.top().relative_offset;
+        const Quad& pAbsolute = gUiPanels.top().absoluteBounds;
+        const Vec2& pOffset = gUiPanels.top().relativeOffset;
+        const Quad& pViewport = gUiPanels.top().viewport;
 
-        Quad& c_ab = panel.absolute_bounds;
-        Quad& c_v  = panel.viewport;
-        Vec2& c_ro = panel.relative_offset;
+        Quad& cAbsolute = panel.absoluteBounds;
+        Vec2& cOffset = panel.relativeOffset;
+        Quad& cViewport = panel.viewport;
 
-        c_ab.x += p_ab.x + p_ro.x;
-        c_ab.y += p_ab.y + p_ro.y;
+        cAbsolute.x += pAbsolute.x + pOffset.x;
+        cAbsolute.y += pAbsolute.y + pOffset.y;
 
-        c_v = c_ab;
+        cViewport = cAbsolute;
 
         // We also clip the panel's viewport to be inside of the
         // parent panel to avoid issues with overlapping/spill.
-        float dx = c_v.x - p_v.x;
-        float dy = c_v.y - p_v.y;
+        float dX = cViewport.x - pViewport.x;
+        float dY = cViewport.y - pViewport.y;
 
-        if (c_v.x < p_v.x) c_v.x = p_v.x, c_v.w -= roundf(abs(dx)), dx = c_v.x - p_v.x;
-        if (c_v.y < p_v.y) c_v.y = p_v.y, c_v.h -= roundf(abs(dy)), dy = c_v.y - p_v.y;
+        if (cViewport.x < pViewport.x) cViewport.x = pViewport.x, cViewport.w -= roundf(abs(dX)), dX = cViewport.x - pViewport.x;
+        if (cViewport.y < pViewport.y) cViewport.y = pViewport.y, cViewport.h -= roundf(abs(dY)), dY = cViewport.y - pViewport.y;
 
-        if (c_v.x+c_v.w > p_v.x+p_v.w) c_v.w = p_v.w - roundf(abs(dx));
-        if (c_v.y+c_v.h > p_v.y+p_v.h) c_v.h = p_v.h - roundf(abs(dy));
+        if (cViewport.x+cViewport.w > pViewport.x+pViewport.w) cViewport.w = pViewport.w - roundf(abs(dX));
+        if (cViewport.y+cViewport.h > pViewport.y+pViewport.h) cViewport.h = pViewport.h - roundf(abs(dY));
 
-        if (c_v.w < 0) c_v.w = 0;
-        if (c_v.h < 0) c_v.h = 0;
+        if (cViewport.w < 0) cViewport.w = 0;
+        if (cViewport.h < 0) cViewport.h = 0;
 
         // And determine the panel's offset to its viewport.
-        c_ro.x = c_ab.x - c_v.x;
-        c_ro.y = c_ab.y - c_v.y;
+        cOffset.x = cAbsolute.x - cViewport.x;
+        cOffset.y = cAbsolute.y - cViewport.y;
 
         // Inherit the parent panel's flags.
-        panel.flags = flags | ui_panels.top().flags;
+        panel.flags = flags | gUiPanels.top().flags;
     }
     else
     {
-        panel.viewport = panel.absolute_bounds;
-        panel.relative_offset = Vec2(0,0);
+        panel.viewport = panel.absoluteBounds;
+        panel.relativeOffset = Vec2(0,0);
         panel.flags = flags;
     }
 
     panel.cursor = NULL;
-    panel.cursor_dir = UI_DIR_RIGHT;
-    panel.cursor_advance_enabled = true;
+    panel.cursorDir = UI_DIR_RIGHT;
+    panel.cursorAdvanceEnabled = true;
 
     SetViewport(panel.viewport);
-    ui_panels.push(panel);
+    gUiPanels.push(panel);
 
     BeginDraw(BufferMode::TRIANGLE_STRIP);
-    PutVertex(0,                panel.viewport.h, cl); // BL
-    PutVertex(0,                0,                cl); // TL
-    PutVertex(panel.viewport.w, panel.viewport.h, cr); // BR
-    PutVertex(panel.viewport.w, 0,                cr); // TR
+    PutVertex(0,                panel.viewport.h, leftColor); // BL
+    PutVertex(0,                0,                leftColor); // TL
+    PutVertex(panel.viewport.w, panel.viewport.h, rightColor); // BR
+    PutVertex(panel.viewport.w, 0,                rightColor); // TR
     EndDraw();
 }
 
-TEINAPI void begin_panel_gradient (Quad bounds, UI_Flag flags, Vec4 cl, Vec4 cr)
+TEINAPI void BeginPanelGradient (Quad bounds, UiFlag flags, Vec4 leftColor, Vec4 rightColor)
 {
-    begin_panel_gradient(bounds.x, bounds.y, bounds.w, bounds.h, flags, cl, cr);
+    BeginPanelGradient(bounds.x, bounds.y, bounds.w, bounds.h, flags, leftColor, rightColor);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_Flag flags, std::string info)
+TEINAPI bool BeginClickPanelGradient (UiAction action, float w, float h, UiFlag flags, std::string info)
 {
-    Panel& parent = ui_panels.top();
+    Panel& parent = gUiPanels.top();
 
-    Vec2 rcur = internal__get_relative_cursor(parent);
-    Vec2 cur = internal__get_cursor(parent);
+    Vec2 relCursor = Internal::GetRelativeCursor(parent);
+    Vec2 cursor = Internal::GetCursor(parent);
 
-    bool locked    = (flags&UI_LOCKED);
-    bool highlight = (flags&UI_HIGHLIGHT);
+    bool locked = (flags & UI_LOCKED);
+    bool highlight = (flags & UI_HIGHLIGHT);
 
-    bool result = internal__handle_widget(rcur.x, rcur.y, w, h, locked);
+    bool result = Internal::HandleWidget(relCursor.x, relCursor.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    Vec4 bl = ui_color_medium;
-    Vec4 br = ui_color_medium;
+    Vec4 bgLeft = gUiColorMedium;
+    Vec4 bgRight = gUiColorMedium;
 
-    if      (locked)             bl = ui_color_med_dark, br = ui_color_med_dark;
-    else if (internal__is_hit()) bl = ui_color_dark;
-    else if (internal__is_hot()) bl = ui_color_med_light;
+    if      (locked)            bgLeft = gUiColorMedDark, bgRight = gUiColorMedDark;
+    else if (Internal::IsHit()) bgLeft = gUiColorDark;
+    else if (Internal::IsHot()) bgLeft = gUiColorMedLight;
 
-    begin_panel_gradient(cur.x, cur.y, w, h, flags, bl, br);
-    internal__advance_ui_cursor_start(parent, w, h);
+    BeginPanelGradient(cursor.x, cursor.y, w, h, flags, bgLeft, bgRight);
+    Internal::AdvanceUiCursorStart(parent, w, h);
 
-    if (highlight && !internal__is_hit())
+    if (highlight && !Internal::IsHit())
     {
-        Vec4 color = ui_color_med_light;
+        Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
-    if (highlight && internal__is_hit())
+    if (highlight && Internal::IsHit())
     {
-        Vec4 color = ui_color_med_light;
+        Vec4 color = gUiColorMedLight;
         color.a = .66f;
         BeginDraw(BufferMode::TRIANGLE_STRIP);
-        PutVertex(0,                GetViewport().h, Vec4(0,0,0,0)); // BL
-        PutVertex(0,                0   ,             Vec4(0,0,0,0)); // TL
+        PutVertex(0,               GetViewport().h, Vec4(0,0,0,0)); // BL
+        PutVertex(0,               0,               Vec4(0,0,0,0)); // TL
         PutVertex(GetViewport().w, GetViewport().h,         color); // BR
-        PutVertex(GetViewport().w, 0,                        color); // TR
+        PutVertex(GetViewport().w, 0,                       color); // TR
         EndDraw();
     }
 
-    Vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
-    Vec2 cursor = ui_panels.top().relative_offset;
+    Vec4 separatorColor = (locked) ? gUiColorDark : gUiColorMedDark;
+    Vec2 offset = gUiPanels.top().relativeOffset;
 
-    internal__draw_separator(cursor, parent.cursor_dir, w, h, separator_color);
-    internal__advance_ui_cursor_end(parent, w, h);
+    Internal::DrawSeparator(offset, parent.cursorDir, w, h, separatorColor);
+    Internal::AdvanceUiCursorEnd(parent, w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && internal__is_hot())
+    if (!locked && !info.empty() && Internal::IsHot())
     {
         push_status_bar_message(info.c_str());
     }
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 
     return result;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag flags, const Quad* clip, std::string info, std::string kb, std::string name)
+TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag flags, const Quad* clip, std::string info, std::string kb, std::string name)
 {
     // Make sure that the necessary components are assigned.
-    assert(ui_texture);
+    assert(gUiTexture);
 
-    flags |= ui_panels.top().flags;
+    flags |= gUiPanels.top().flags;
 
-    bool inactive  = (flags&UI_INACTIVE);
-    bool locked    = (flags&UI_LOCKED);
-    bool highlight = (flags&UI_HIGHLIGHT);
+    bool inactive = (flags & UI_INACTIVE);
+    bool locked = (flags & UI_LOCKED);
+    bool highlight = (flags & UI_HIGHLIGHT);
 
-    internal__advance_ui_cursor_start(ui_panels.top(), w, h);
+    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
-    Texture& tex = *ui_texture;
-    Vec2     cur = internal__get_relative_cursor(ui_panels.top());
+    Texture& texture = *gUiTexture;
+
+    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
     // We scissor the contents to avoid image overspill.
-    BeginScissor(cur.x, cur.y, w, h);
+    BeginScissor(cursor.x, cursor.y, w, h);
     Defer { EndScissor(); };
 
     // Locked buttons cannot be interacted with.
-    bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
+    bool result = Internal::HandleWidget(cursor.x, cursor.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
 
-    Vec4 front  = (ui_is_light) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
-    Vec4 bl     =  ui_color_medium;
-    Vec4 br     =  ui_color_medium;
-    Vec4 shadow = (ui_is_light) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
+    Vec4 front = (IsUiLight()) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
+    Vec4 bgLeft = gUiColorMedium;
+    Vec4 bgRight = gUiColorMedium;
+    Vec4 shadow = (IsUiLight()) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
 
-    if      (locked)             br = ui_color_med_dark, bl = ui_color_med_dark;
-    else if (internal__is_hit()) br = ui_color_dark;
-    else if (internal__is_hot()) br = ui_color_med_light;
+    if      (locked)            bgRight = gUiColorMedDark, bgLeft = gUiColorMedDark;
+    else if (Internal::IsHit()) bgRight = gUiColorDark;
+    else if (Internal::IsHot()) bgRight = gUiColorMedLight;
 
     if (locked || inactive)
     {
@@ -2387,103 +2288,75 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
 
     // Draw the button's background quad.
     BeginDraw(BufferMode::TRIANGLE_STRIP);
-    PutVertex(cur.x,   cur.y+h, bl); // BL
-    PutVertex(cur.x,   cur.y,   bl); // TL
-    PutVertex(cur.x+w, cur.y+h, br); // BR
-    PutVertex(cur.x+w, cur.y,   br); // TR
+    PutVertex(cursor.x,   cursor.y+h, bgLeft); // BL
+    PutVertex(cursor.x,   cursor.y,   bgLeft); // TL
+    PutVertex(cursor.x+w, cursor.y+h, bgRight); // BR
+    PutVertex(cursor.x+w, cursor.y,   bgRight); // TR
     EndDraw();
 
-    if (highlight && !internal__is_hit())
+    if (highlight && !Internal::IsHit())
     {
-        Vec4 color = ui_color_med_light;
+        Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
-    if (highlight && internal__is_hit())
+    if (highlight && Internal::IsHit())
     {
-        Vec4 color = ui_color_med_light;
+        Vec4 color = gUiColorMedLight;
         color.a = .66f;
         BeginDraw(BufferMode::TRIANGLE_STRIP);
-        PutVertex(cur.x,   cur.y+h,         color); // BL
-        PutVertex(cur.x,   cur.y,           color); // TL
-        PutVertex(cur.x+w, cur.y+h, Vec4(0,0,0,0)); // BR
-        PutVertex(cur.x+w, cur.y,   Vec4(0,0,0,0)); // TR
+        PutVertex(cursor.x,   cursor.y+h,         color); // BL
+        PutVertex(cursor.x,   cursor.y,           color); // TL
+        PutVertex(cursor.x+w, cursor.y+h, Vec4(0,0,0,0)); // BR
+        PutVertex(cursor.x+w, cursor.y,   Vec4(0,0,0,0)); // TR
         EndDraw();
     }
 
     // The ((w)-1) and ((h)-1) are used to ensure the separator does
     // not mess with the centering of the image based on direction.
 
-    UI_Dir dir = ui_panels.top().cursor_dir;
+    UiDir dir = gUiPanels.top().cursorDir;
 
     float w2 = (dir == UI_DIR_RIGHT || dir == UI_DIR_LEFT) ? ((w)-1) : (w);
     float h2 = (dir == UI_DIR_UP    || dir == UI_DIR_DOWN) ? ((h)-1) : (h);
 
     // Center the image within the button.
-    float x = roundf(cur.x + (w2 / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
-    float y = roundf(cur.y + (h2 / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
+    float x = roundf(cursor.x + (w2 / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
+    float y = roundf(cursor.y + (h2 / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
 
-    float offset = (ui_is_light) ? -1.0f : 1.0f;
+    float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
-    tex.color = shadow;
-    DrawTexture(tex, x, y-offset, clip);
-    tex.color = front;
-    DrawTexture(tex, x, y, clip);
+    texture.color = shadow;
+    DrawTexture(texture, x, y-offset, clip);
+    texture.color = front;
+    DrawTexture(texture, x, y, clip);
 
-    internal__draw_separator(internal__get_relative_cursor(ui_panels.top()), ui_panels.top().cursor_dir, w, h, ui_color_med_dark);
-    internal__advance_ui_cursor_end(ui_panels.top(), w, h);
+    Internal::DrawSeparator(Internal::GetRelativeCursor(gUiPanels.top()), gUiPanels.top().cursorDir, w, h, gUiColorMedDark);
+    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && internal__is_hot())
+    if (!locked && !info.empty() && Internal::IsHot())
     {
-        std::string kb_info;
+        std::string kbInfo;
         if (kb.empty())
         {
-            kb_info = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
+            kbInfo = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
             if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
             {
-                kb_info += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
+                kbInfo += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
-        std::string info_text((kb_info.empty()) ? info : FormatString("%s %s", kb_info.c_str(), info.c_str()));
-        push_status_bar_message(info_text.c_str());
+        std::string infoText((kbInfo.empty()) ? info : FormatString("%s %s", kbInfo.c_str(), info.c_str()));
+        push_status_bar_message(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
-    if (!locked && !name.empty() && internal__is_hot())
+    if (!locked && !name.empty() && Internal::IsHot())
     {
         set_current_tooltip(name);
     }
 
-    ++ui_current_id;
+    ++gUiCurrentID;
 
     return result;
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

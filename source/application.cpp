@@ -97,7 +97,7 @@ TEINAPI void init_application (int argc, char** argv)
     internal__dump_debug_application_info();
 
     if (!InitResourceManager()) { LogError(ERR_MAX, "Failed to setup the resource manager!"); return; }
-    if (!init_ui_system     ()) { LogError(ERR_MAX, "Failed to setup the UI system!"       ); return; }
+    if (!InitUiSystem       ()) { LogError(ERR_MAX, "Failed to setup the UI system!"       ); return; }
     if (!InitWindow         ()) { LogError(ERR_MAX, "Failed to setup the window system!"   ); return; }
 
     if (!RegisterWindow("WINPREFERENCES", "Preferences"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!" ); return; }
@@ -155,7 +155,7 @@ TEINAPI void init_application (int argc, char** argv)
     // We do this so we do an extra redraw on start-up making sure certain
     // things end up being initialized/setup. This fixes the scrollbars
     // appearing in the control panel sub-panels when they are not needed.
-    should_push_ui_redraw_event = true;
+    gShouldPushUiRedrawEvent = true;
 
     // We don't do this in our debug builds because it will get annoying.
     #if !defined(BUILD_DEBUG)
@@ -197,7 +197,7 @@ TEINAPI void do_application ()
     SetRenderTarget(&GetWindowFromName("WINMAIN"));
     SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
 
-    RenderClear(ui_color_medium);
+    RenderClear(gUiColorMedium);
 
     Quad p1, p2;
 
@@ -206,7 +206,7 @@ TEINAPI void do_application ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    begin_panel(p1, UI_NONE, ui_color_ex_dark);
+    BeginPanel(p1, UI_NONE, gUiColorExDark);
 
     do_hotbar();
 
@@ -215,7 +215,7 @@ TEINAPI void do_application ()
     p2.w = GetViewport().w        - 2;
     p2.h = GetViewport().h - p2.y - 1;
 
-    begin_panel(p2, UI_NONE);
+    BeginPanel(p2, UI_NONE);
 
     do_control_panel();
     do_toolbar();
@@ -223,8 +223,8 @@ TEINAPI void do_application ()
     do_editor();
     do_status_bar();
 
-    end_panel();
-    end_panel();
+    EndPanel();
+    EndPanel();
 
     do_tooltip();
 
@@ -234,7 +234,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINPREFERENCES"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_preferences_menu();
         RenderPresent();
     }
@@ -243,7 +243,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINCOLOR"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_color_picker();
         RenderPresent();
     }
@@ -252,7 +252,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINABOUT"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_about();
         RenderPresent();
     }
@@ -261,7 +261,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINNEW"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_new();
         RenderPresent();
     }
@@ -270,7 +270,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINRESIZE"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_resize();
         RenderPresent();
     }
@@ -279,7 +279,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINUNPACK"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_unpack();
         RenderPresent();
     }
@@ -288,7 +288,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINPACK"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_pack();
         RenderPresent();
     }
@@ -297,7 +297,7 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINPATH"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_path();
         RenderPresent();
     }
@@ -306,16 +306,16 @@ TEINAPI void do_application ()
     {
         SetRenderTarget(&GetWindowFromName("WINUPDATE"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(ui_color_medium);
+        RenderClear(gUiColorMedium);
         do_update();
         RenderPresent();
     }
 
     // IMPORTANT: Otherwise the UI will not redraw very well!
-    if (should_push_ui_redraw_event)
+    if (gShouldPushUiRedrawEvent)
     {
         PushEditorEvent(EDITOR_EVENT_UI_REDRAW, NULL, NULL);
-        should_push_ui_redraw_event = false;
+        gShouldPushUiRedrawEvent = false;
     }
 }
 
@@ -330,7 +330,7 @@ TEINAPI bool handle_application_events ()
         return false;
     }
 
-    reset_ui_state();
+    ResetUiState();
 
     // We need to poll events afterwards so that we can process
     // multiple events that may have occurred on the same frame.
@@ -348,7 +348,7 @@ TEINAPI bool handle_application_events ()
 
         HandleWindowEvents();
         HandleKeyBindingEvents();
-        handle_ui_events();
+        HandleUiEvents();
         handle_tile_panel_events();
         handle_tab_bar_events();
         handle_editor_events();

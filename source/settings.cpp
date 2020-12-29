@@ -91,7 +91,7 @@ TEINAPI void UpdateSystemsThatRelyOnSettings (bool tileGraphicsChanged)
 {
     update_backup_timer();
     UpdateEditorFont();
-    load_ui_theme();
+    LoadUiTheme();
     if (tileGraphicsChanged)
     {
         reload_tile_graphics();
@@ -150,8 +150,8 @@ TEINAPI bool LoadEditorSettings ()
     UpdateSystemsThatRelyOnSettings(true);
 
     // Load the colors afterwards because some of them depend on the UI theme.
-    Vec4 defaultBackgroundColor = ui_color_light;
-    Vec4 defaultTileGridColor = is_ui_light() ? ui_color_black : ui_color_ex_dark;
+    Vec4 defaultBackgroundColor = gUiColorLight;
+    Vec4 defaultTileGridColor = (IsUiLight() ? gUiColorBlack : gUiColorExDark);
 
     gEditorSettings.backgroundColor  = Internal::GetSettingsColor(gon, gSettingBackgroundColor,  defaultBackgroundColor, &gEditorSettings.backgroundColorDefaulted);
     gEditorSettings.selectColor      = Internal::GetSettingsColor(gon, gSettingSelectColor,      gSettingsDefaultSelectColor);
@@ -182,8 +182,8 @@ TEINAPI void RestoreEditorSettings ()
     UpdateSystemsThatRelyOnSettings(tileGraphicsChanged);
 
     // Restore the colors afterwards because some of them depend on the UI theme.
-    Vec4 defaultBackgroundColor = ui_color_light;
-    Vec4 defaultTileGridColor = is_ui_light() ? ui_color_black : ui_color_ex_dark;
+    Vec4 defaultBackgroundColor = gUiColorLight;
+    Vec4 defaultTileGridColor = (IsUiLight() ? gUiColorBlack : gUiColorExDark);
 
     gEditorSettings.backgroundColor  = defaultBackgroundColor;
     gEditorSettings.selectColor      = gSettingsDefaultSelectColor;

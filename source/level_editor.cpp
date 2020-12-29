@@ -634,7 +634,7 @@ TEINAPI void internal__draw_mirrored_cursor ()
     EndStencil();
 }
 
-TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
+TEINAPI void internal__draw_clipboard_highlight (UiDir xdir, UiDir ydir)
 {
     BeginStencil();
     for (auto& clipboard: level_editor.clipboard)
@@ -671,7 +671,7 @@ TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
     EndStencil();
 }
 
-TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
+TEINAPI void internal__draw_clipboard (UiDir xdir, UiDir ydir)
 {
     TextureAtlas& atlas = GetEditorAtlasLarge();
 
@@ -946,7 +946,7 @@ TEINAPI void do_level_editor ()
     p1.w = GetViewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
     p1.h = GetViewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
 
-    begin_panel(p1.x, p1.y, p1.w, p1.h, UI_NONE);
+    BeginPanel(p1.x, p1.y, p1.w, p1.h, UI_NONE);
 
     // We cache the mouse position so that systems such as paste which can
     // potentially happen outside of this section of code (where the needed
@@ -1012,7 +1012,7 @@ TEINAPI void do_level_editor ()
     // and looks quite ugly. This method ensures it always remains 1px thick.
     float px = (1 / tab.camera.zoom);
 
-    SetDrawColor(ui_color_black);
+    SetDrawColor(gUiColorBlack);
     FillQuad(x-px, y-px, x+w+px, y+h+px);
     SetDrawColor(gEditorSettings.backgroundColor);
     FillQuad(x, y, x+w, y+h);
@@ -1310,14 +1310,14 @@ TEINAPI void do_level_editor ()
     FillQuad(x, y, x+w, y+h);
 
     StencilModeDraw();
-    SetDrawColor(ui_color_black);
+    SetDrawColor(gUiColorBlack);
     FillQuad(x-px, y-px, x+w+px, y+h+px);
 
     EndStencil();
 
     pop_editor_camera_transform();
 
-    end_panel();
+    EndPanel();
 
     SetTextureDrawScale(1,1);
 }
@@ -1347,7 +1347,7 @@ TEINAPI void handle_level_editor_events ()
             if (editor.dialog_box) return;
 
             bool pressed = (main_event.button.state == SDL_PRESSED);
-            if (pressed && is_there_a_hit_ui_element()) return;
+            if (pressed && IsThereAHitUiElement()) return;
 
             switch (main_event.button.button)
             {
