@@ -52,7 +52,7 @@ TEINAPI bool load_texture_atlas_from_data (Texture_Atlas& atlas, const std::vect
 
 TEINAPI void free_texture_atlas (Texture_Atlas& atlas)
 {
-    free_texture(atlas.texture);
+    FreeTexture(atlas.texture);
     atlas.clips.clear();
 }
 

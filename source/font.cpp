@@ -140,7 +140,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
     int cache_h = static_cast<int>(cache_size);
 
     fnt.cache.insert(std::pair<int,Texture>(pt, Texture()));
-    return create_texture(fnt.cache[pt], cache_w, cache_h, 1, buffer);
+    return CreateTexture(fnt.cache[pt], cache_w, cache_h, 1, buffer);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -195,7 +195,7 @@ TEINAPI bool load_font_from_file (Font& fnt, std::string file_name, std::vector<
 
 TEINAPI void free_font (Font& fnt)
 {
-    for (auto cache: fnt.cache) free_texture(cache.second);
+    for (auto cache: fnt.cache) FreeTexture(cache.second);
 
     FT_Done_Face(fnt.face);
 

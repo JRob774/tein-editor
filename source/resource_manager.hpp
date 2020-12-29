@@ -89,7 +89,7 @@ static Texture_Atlas resource_small;
 TEINAPI bool init_resource_manager ();
 TEINAPI void get_resource_location ();
 
-TEINAPI bool            load_texture_resource (std::string file_name, Texture& tex, Texture_Wrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
+TEINAPI bool            load_texture_resource (std::string file_name, Texture& tex, TextureWrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
 TEINAPI bool            load_atlas_resource   (std::string file_name, Texture_Atlas& atlas);
 TEINAPI bool            load_font_resource    (std::string file_name, Font& fnt, std::vector<int> pt = { DEFAULT_FONT_GLYPH_POINT_SIZE }, float csz = DEFAULT_FONT_GLYPH_CACHE_SIZE);
 TEINAPI Shader          load_shader_resource  (std::string file_name);

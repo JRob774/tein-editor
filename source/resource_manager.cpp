@@ -77,11 +77,11 @@ TEINAPI void get_resource_location ()
 // We attempt to load resources from file first, but if they don't exist
 // then we fall-back to loading them from the editor's GPAK file instead.
 
-TEINAPI bool load_texture_resource (std::string file_name, Texture& tex, Texture_Wrap wrap)
+TEINAPI bool load_texture_resource (std::string file_name, Texture& tex, TextureWrap wrap)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return load_texture_from_file(tex, abs_file_name, wrap);
-    else return load_texture_from_data(tex, gpak_resource_lookup[file_name], wrap);
+    if (DoesFileExist(abs_file_name)) return LoadTextureFromFile(tex, abs_file_name, wrap);
+    else return LoadTextureFromData(tex, gpak_resource_lookup[file_name], wrap);
 }
 
 TEINAPI bool load_atlas_resource (std::string file_name, Texture_Atlas& atlas)
@@ -197,10 +197,10 @@ TEINAPI void free_editor_resources ()
     free_font         (resource_font_regular_libmono);
     free_font         (resource_font_regular_sans);
     free_font         (resource_font_regular_dyslexic);
-    free_texture      (resource_icons);
-    free_texture      (resource_checker_14);
-    free_texture      (resource_checker_16);
-    free_texture      (resource_checker_20);
+    FreeTexture       (resource_icons);
+    FreeTexture       (resource_checker_14);
+    FreeTexture       (resource_checker_16);
+    FreeTexture       (resource_checker_20);
     free_texture_atlas(resource_large);
     free_texture_atlas(resource_small);
 }

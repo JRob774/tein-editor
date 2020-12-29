@@ -1,60 +1,49 @@
-/*******************************************************************************
- * Load/create image data from file/memory into 2D OpenGL textures.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool load_texture_from_data (Texture& tex, const std::vector<U8>& file_data, Texture_Wrap wrap)
+TEINAPI bool LoadTextureFromData (Texture& tex, const std::vector<U8>& fileData, TextureWrap wrap)
 {
-    const stbi_uc* buffer = &file_data[0];
-    int size = static_cast<int>(file_data.size());
+    const stbi_uc* buffer = &fileData[0];
+    int size = static_cast<int>(fileData.size());
 
-    int w, h, bpp;
-    U8* raw_data = stbi_load_from_memory(buffer, size, &w, &h, &bpp, 0);
-    if (!raw_data)
+    int w,h,bpp;
+    U8* rawData = stbi_load_from_memory(buffer, size, &w,&h,&bpp,0);
+    if (!rawData)
     {
         LogError(ERR_MIN, "Failed to load texture from data!");
         return false;
     }
-    Defer { stbi_image_free(raw_data); };
+    Defer { stbi_image_free(rawData); };
 
-    return create_texture(tex, w, h, bpp, raw_data, wrap);
+    return CreateTexture(tex, w,h,bpp, rawData, wrap);
 }
 
-TEINAPI bool load_texture_from_file (Texture& tex, std::string file_name, Texture_Wrap wrap)
+TEINAPI bool LoadTextureFromFile (Texture& tex, std::string fileName, TextureWrap wrap)
 {
     // Build an absolute path to the file based on the executable location.
-    file_name = MakePathAbsolute(file_name);
+    fileName = MakePathAbsolute(fileName);
 
-    int w, h, bpp;
-    U8* raw_data = stbi_load(file_name.c_str(), &w, &h, &bpp, 0);
-    if (!raw_data)
+    int w,h,bpp;
+    U8* rawData = stbi_load(fileName.c_str(), &w,&h,&bpp,0);
+    if (!rawData)
     {
-        LogError(ERR_MIN, "Failed to load texture '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to load texture '%s'!", fileName.c_str());
         return false;
     }
-    Defer { stbi_image_free(raw_data); };
+    Defer { stbi_image_free(rawData); };
 
-    return create_texture(tex, w, h, bpp, raw_data, wrap);
+    return CreateTexture(tex, w,h,bpp, rawData, wrap);
 }
 
-TEINAPI void free_texture (Texture& tex)
+TEINAPI void FreeTexture (Texture& tex)
 {
     glDeleteTextures(1, &tex.handle);
 }
 
-TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Texture_Wrap wrap)
+TEINAPI bool CreateTexture (Texture& tex, int w, int h, int bpp, void* data, TextureWrap wrap)
 {
     // Bytes-per-pixel needs to be one of these otherwise we can't use.
     assert(bpp == 1 || bpp == 2 || bpp == 3 || bpp == 4);
 
-    int max_texture_size = static_cast<int>(GetMaxTextureSize());
-    if (w > max_texture_size || h > max_texture_size)
+    int maxTextureSize = static_cast<int>(GetMaxTextureSize());
+    if (w > maxTextureSize || h > maxTextureSize)
     {
         LogError(ERR_MIN, "Texture size %dx%d too large for GPU!", w,h);
         return false;
@@ -71,11 +60,11 @@ TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Te
     GLenum format;
     switch (bpp)
     {
-    default:
-    case(1): format = GL_RED;  break;
-    case(2): format = GL_RG;   break;
-    case(3): format = GL_RGB;  break;
-    case(4): format = GL_RGBA; break;
+        default:
+        case(1): format = GL_RED;  break;
+        case(2): format = GL_RG;   break;
+        case(3): format = GL_RGB;  break;
+        case(4): format = GL_RGBA; break;
     }
 
     glActiveTexture(GL_TEXTURE0);
@@ -101,42 +90,15 @@ TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Te
     GLint   border          = 0; // Docs say must be zero!
     GLenum  type            = GL_UNSIGNED_BYTE;
 
-    glTexImage2D(GL_TEXTURE_2D, level_of_detail, internal_format,
-      texture_width, texture_height, border, format, type, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w,h, 0, format, GL_UNSIGNED_BYTE, data);
     #if defined(RENDERER_USE_MIPMAPS)
     glGenerateMipmap(GL_TEXTURE_2D);
     #endif // RENDERER_USE_MIPMAPS
 
-    tex.w = static_cast<float>(w), tex.h = static_cast<float>(h);
-    tex.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    tex.w = static_cast<float>(w);
+    tex.h = static_cast<float>(h);
+
+    tex.color = Vec4(1,1,1,1);
 
     return true;
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/
