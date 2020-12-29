@@ -1,60 +1,50 @@
-/*******************************************************************************
- * Facilities for loading and creating OpenGL vert/frag shader programs.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI GLuint internal__compile_shader (const GLchar* source, GLenum type)
+namespace Internal
 {
-    GLuint shader = glCreateShader(type);
-    glShaderSource(shader, 1, &source, NULL);
-    glCompileShader(shader);
-
-    GLint info_log_length;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_log_length);
-    char* info_log = Malloc(char, info_log_length);
-    if (info_log)
+    TEINAPI GLuint CompileShader (const GLchar* source, GLenum type)
     {
-        Defer { Free(info_log); };
+        GLuint shader = glCreateShader(type);
+        glShaderSource(shader, 1, &source, NULL);
+        glCompileShader(shader);
 
-        GLint compile_success;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &compile_success);
-        if (!compile_success)
+        GLint infoLogLength;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+        char* infoLog = Malloc(char, infoLogLength);
+        if (infoLog)
         {
-            glGetShaderInfoLog(shader, info_log_length, NULL, info_log);
-            LogError(ERR_MIN, "Failed to compile shader:\n%s", info_log);
-        }
-    }
+            Defer { Free(infoLog); };
 
-    return shader;
+            GLint compileSuccess;
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &compileSuccess);
+            if (!compileSuccess)
+            {
+                glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog);
+                LogError(ERR_MIN, "Failed to compile shader:\n%s", infoLog);
+            }
+        }
+
+        return shader;
+    }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Shader load_shader_from_source (std::string source)
+TEINAPI Shader LoadShaderFromSource (std::string source)
 {
-    std::string vert_src(source);
-    std::string frag_src(source);
+    std::string vertSrc(source);
+    std::string fragSrc(source);
 
-    StringReplace(vert_src, " vert()", " main()");
-    StringReplace(frag_src, " frag()", " main()");
+    StringReplace(vertSrc, " vert()", " main()");
+    StringReplace(fragSrc, " frag()", " main()");
 
-    StringReplace(vert_src, "COMPILING_VERTEX_PROGRAM",   "1");
-    StringReplace(vert_src, "COMPILING_FRAGMENT_PROGRAM", "0");
+    StringReplace(vertSrc, "COMPILING_VERTEX_PROGRAM",   "1");
+    StringReplace(vertSrc, "COMPILING_FRAGMENT_PROGRAM", "0");
 
-    StringReplace(frag_src, "COMPILING_VERTEX_PROGRAM",   "0");
-    StringReplace(frag_src, "COMPILING_FRAGMENT_PROGRAM", "1");
+    StringReplace(fragSrc, "COMPILING_VERTEX_PROGRAM",   "0");
+    StringReplace(fragSrc, "COMPILING_FRAGMENT_PROGRAM", "1");
 
-    const GLchar* vsrc = static_cast<const GLchar*>(vert_src.c_str());
-    const GLchar* fsrc = static_cast<const GLchar*>(frag_src.c_str());
+    const GLchar* vSrc = static_cast<const GLchar*>(vertSrc.c_str());
+    const GLchar* fSrc = static_cast<const GLchar*>(fragSrc.c_str());
 
-    GLuint vert = internal__compile_shader(vsrc, GL_VERTEX_SHADER);
-    GLuint frag = internal__compile_shader(fsrc, GL_FRAGMENT_SHADER);
+    GLuint vert = Internal::CompileShader(vSrc, GL_VERTEX_SHADER);
+    GLuint frag = Internal::CompileShader(fSrc, GL_FRAGMENT_SHADER);
 
     Defer { glDeleteShader(vert); glDeleteShader(frag); };
 
@@ -70,19 +60,19 @@ TEINAPI Shader load_shader_from_source (std::string source)
 
     glLinkProgram(program);
 
-    GLint info_log_length;
-    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_log_length);
-    char* info_log = Malloc(char, info_log_length);
-    if (info_log)
+    GLint infoLogLength;
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+    char* infoLog = Malloc(char, infoLogLength);
+    if (infoLog)
     {
-        Defer { Free(info_log); };
+        Defer { Free(infoLog); };
 
-        GLint link_success;
-        glGetProgramiv(program, GL_LINK_STATUS, &link_success);
-        if (!link_success)
+        GLint linkSuccess;
+        glGetProgramiv(program, GL_LINK_STATUS, &linkSuccess);
+        if (!linkSuccess)
         {
-            glGetProgramInfoLog(program, info_log_length, NULL, info_log);
-            LogError(ERR_MIN, "Failed to link shader:\n%s", info_log);
+            glGetProgramInfoLog(program, infoLogLength, NULL, infoLog);
+            LogError(ERR_MIN, "Failed to link shader:\n%s", infoLog);
 
             glDeleteProgram(program);
             program = NULL;
@@ -92,61 +82,33 @@ TEINAPI Shader load_shader_from_source (std::string source)
     return program;
 }
 
-TEINAPI Shader load_shader_from_file (std::string file_name)
+TEINAPI Shader LoadShaderFromData (const std::vector<U8>& fileData)
+{
+    std::string source(fileData.begin(), fileData.end());
+    return LoadShaderFromSource(source);
+}
+
+TEINAPI Shader LoadShaderFromFile (std::string fileName)
 {
     // Build an absolute path to the file based on the executable location.
-    file_name = MakePathAbsolute(file_name);
+    fileName = MakePathAbsolute(fileName);
 
-    std::string source = ReadEntireFile(file_name);
+    std::string source = ReadEntireFile(fileName);
     if (source.empty())
     {
-        LogError(ERR_MIN, "Failed to load shader '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to load shader '%s'!", fileName.c_str());
         return NULL;
     }
 
-    Shader shader = load_shader_from_source(source);
+    Shader shader = LoadShaderFromSource(source);
     if (!shader)
     {
-        LogError(ERR_MIN, "Failed to build shader '%s'!", file_name.c_str());
+        LogError(ERR_MIN, "Failed to build shader '%s'!", fileName.c_str());
     }
     return shader;
 }
 
-TEINAPI Shader load_shader_from_data (const std::vector<U8>& file_data)
-{
-    std::string source(file_data.begin(), file_data.end());
-    return load_shader_from_source(source);
-}
-
-TEINAPI void free_shader (Shader program)
+TEINAPI void FreeShader (Shader program)
 {
     glDeleteProgram(program);
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

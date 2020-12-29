@@ -101,8 +101,8 @@ TEINAPI bool load_font_resource (std::string file_name, Font& fnt, std::vector<i
 TEINAPI Shader load_shader_resource (std::string file_name)
 {
     std::string abs_file_name(build_resource_string(file_name));
-    if (DoesFileExist(abs_file_name)) return load_shader_from_file(abs_file_name);
-    else return load_shader_from_data(gpak_resource_lookup[file_name]);
+    if (DoesFileExist(abs_file_name)) return LoadShaderFromFile(abs_file_name);
+    else return LoadShaderFromData(gpak_resource_lookup[file_name]);
 }
 
 TEINAPI std::vector<U8> load_binary_resource (std::string file_name)

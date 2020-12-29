@@ -141,9 +141,9 @@ TEINAPI void QuitRenderer ()
     FreeVertexBuffer(gTileBuffer);
     FreeVertexBuffer(gTextBuffer);
 
-    free_shader(gUntexturedShader);
-    free_shader(gTexturedShader);
-    free_shader(gTextShader);
+    FreeShader(gUntexturedShader);
+    FreeShader(gTexturedShader);
+    FreeShader(gTextShader);
 
     SDL_GL_DeleteContext(gGLContext);
     gGLContext = NULL;
