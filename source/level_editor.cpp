@@ -586,22 +586,22 @@ TEINAPI void internal__draw_cursor (int x, int y, Tile_ID id)
         float gx = level_editor.bounds.x + (x * DEFAULT_TILE_SIZE);
         float gy = level_editor.bounds.y + (y * DEFAULT_TILE_SIZE);
 
-        stencil_mode_draw();
-        set_draw_color(gEditorSettings.cursorColor);
-        fill_quad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
+        StencilModeDraw();
+        SetDrawColor(gEditorSettings.cursorColor);
+        FillQuad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
 
         Texture_Atlas& atlas = get_editor_atlas_large();
 
         atlas.texture.color.a = GHOSTED_CURSOR_ALPHA;
-        draw_texture(atlas.texture, gx+DEFAULT_TILE_SIZE_HALF, gy+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
+        DrawTexture(atlas.texture, gx+DEFAULT_TILE_SIZE_HALF, gy+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
         atlas.texture.color.a = 1; // Important!
 
-        stencil_mode_erase();
-        set_draw_color(1,1,1,1);
-        fill_quad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
+        StencilModeErase();
+        SetDrawColor(1,1,1,1);
+        FillQuad(gx, gy, gx+DEFAULT_TILE_SIZE, gy+DEFAULT_TILE_SIZE);
 
         atlas.texture.color = Vec4(1,1,1,1);
-        draw_texture(atlas.texture, gx+DEFAULT_TILE_SIZE_HALF, gy+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
+        DrawTexture(atlas.texture, gx+DEFAULT_TILE_SIZE_HALF, gy+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
     }
 }
 
@@ -624,19 +624,19 @@ TEINAPI void internal__draw_mirrored_cursor ()
 
     Tile_ID id = get_selected_tile();
 
-    begin_stencil();
+    BeginStencil();
 
                                internal__draw_cursor(   tx,    ty,                                                 id  );
     if (level_editor.mirror_h) internal__draw_cursor(lw-tx,    ty, get_tile_horizontal_flip                       (id) );
     if (level_editor.mirror_v) internal__draw_cursor(   tx, lh-ty,                          get_tile_vertical_flip(id) );
     if (both)                  internal__draw_cursor(lw-tx, lh-ty, get_tile_horizontal_flip(get_tile_vertical_flip(id)));
 
-    end_stencil();
+    EndStencil();
 }
 
 TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
 {
-    begin_stencil();
+    BeginStencil();
     for (auto& clipboard: level_editor.clipboard)
     {
         const Tab& tab = get_current_tab();
@@ -660,23 +660,23 @@ TEINAPI void internal__draw_clipboard_highlight (UI_Dir xdir, UI_Dir ydir)
         float gw = clipboard.w * DEFAULT_TILE_SIZE;
         float gh = clipboard.h * DEFAULT_TILE_SIZE;
 
-        stencil_mode_draw();
-        set_draw_color(gEditorSettings.cursorColor);
-        fill_quad(gx, gy, gx+gw, gy+gh);
+        StencilModeDraw();
+        SetDrawColor(gEditorSettings.cursorColor);
+        FillQuad(gx, gy, gx+gw, gy+gh);
 
-        stencil_mode_erase();
-        set_draw_color(1,1,1,1);
-        fill_quad(gx, gy, gx+gw, gy+gh);
+        StencilModeErase();
+        SetDrawColor(1,1,1,1);
+        FillQuad(gx, gy, gx+gw, gy+gh);
     }
-    end_stencil();
+    EndStencil();
 }
 
 TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
 {
     Texture_Atlas& atlas = get_editor_atlas_large();
 
-    set_tile_batch_texture(atlas.texture);
-    set_tile_batch_color(Vec4(1,1,1,GHOSTED_CURSOR_ALPHA));
+    SetTileBatchTexture(atlas.texture);
+    SetTileBatchColor(Vec4(1,1,1,GHOSTED_CURSOR_ALPHA));
 
     // Stops us from drawing multiple copies of a tile where clipboards overlap.
     std::array<std::map<size_t, bool>, LEVEL_LAYER_TOTAL> tile_space_occupied;
@@ -732,7 +732,7 @@ TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
                         if (xdir == UI_DIR_LEFT) id = get_tile_horizontal_flip(id);
                         if (ydir == UI_DIR_DOWN) id = get_tile_vertical_flip(id);
 
-                        draw_batched_tile(tx+DEFAULT_TILE_SIZE_HALF, ty+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
+                        DrawBatchedTile(tx+DEFAULT_TILE_SIZE_HALF, ty+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
                         layer_space_occupied.insert(std::pair<size_t, bool>(j, true));
                     }
                 }
@@ -778,7 +778,7 @@ TEINAPI void internal__draw_clipboard (UI_Dir xdir, UI_Dir ydir)
         }
     }
 
-    flush_batched_tile();
+    FlushBatchedTiles();
 }
 
 TEINAPI void internal__draw_mirrored_clipboard ()
@@ -943,8 +943,8 @@ TEINAPI void do_level_editor ()
 
     p1.x = get_toolbar_w() + 1;
     p1.y = TAB_BAR_HEIGHT  + 1;
-    p1.w = get_viewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
-    p1.h = get_viewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
+    p1.w = GetViewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
+    p1.h = GetViewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
 
     begin_panel(p1.x, p1.y, p1.w, p1.h, UI_NONE);
 
@@ -954,13 +954,13 @@ TEINAPI void do_level_editor ()
     // prior to doing this there were bugs with the cursor's position being
     // slightly off during those operations + it's probably a bit faster.
     push_editor_camera_transform();
-    level_editor.mouse_world = screen_to_world(GetMousePos());
+    level_editor.mouse_world = ScreenToWorld(GetMousePos());
     level_editor.mouse = GetMousePos();
     level_editor.mouse_tile = internal__mouse_to_tile_position();
     pop_editor_camera_transform();
 
     // We cache this just in case anyone else wants to use it (status bar).
-    level_editor.viewport = get_viewport();
+    level_editor.viewport = GetViewport();
 
     const Tab& tab = get_current_tab();
 
@@ -989,8 +989,8 @@ TEINAPI void do_level_editor ()
     // The boundaries of the actual level content (tiles/spawns).
     level_editor.bounds.w = tab.level.header.width  * DEFAULT_TILE_SIZE;
     level_editor.bounds.h = tab.level.header.height * DEFAULT_TILE_SIZE;
-    level_editor.bounds.x = (get_viewport().w - level_editor.bounds.w) / 2;
-    level_editor.bounds.y = (get_viewport().h - level_editor.bounds.h) / 2;
+    level_editor.bounds.x = (GetViewport().w - level_editor.bounds.w) / 2;
+    level_editor.bounds.y = (GetViewport().h - level_editor.bounds.h) / 2;
 
     float x = level_editor.bounds.x;
     float y = level_editor.bounds.y;
@@ -998,12 +998,12 @@ TEINAPI void do_level_editor ()
     float h = level_editor.bounds.h;
 
     float tile_scale = DEFAULT_TILE_SIZE / TILE_IMAGE_SIZE;
-    set_texture_draw_scale(tile_scale, tile_scale);
+    SetTextureDrawScale(tile_scale, tile_scale);
 
     // We cache the transformed level editor bounds in screen coordinates so
     // that we can later scissor the area to avoid any tile/spawn overspill.
-    Vec2 le_bounds_a = world_to_screen(Vec2(x  , y  ));
-    Vec2 le_bounds_b = world_to_screen(Vec2(x+w, y+h));
+    Vec2 le_bounds_a = WorldToScreen(Vec2(x  , y  ));
+    Vec2 le_bounds_b = WorldToScreen(Vec2(x+w, y+h));
 
     // Because we mess with the orthographic projection matrix a pixel is no
     // longer 1.0f so we need to adjust by the current zoom to get a pixel.
@@ -1012,10 +1012,10 @@ TEINAPI void do_level_editor ()
     // and looks quite ugly. This method ensures it always remains 1px thick.
     float px = (1 / tab.camera.zoom);
 
-    set_draw_color(ui_color_black);
-    fill_quad(x-px, y-px, x+w+px, y+h+px);
-    set_draw_color(gEditorSettings.backgroundColor);
-    fill_quad(x, y, x+w, y+h);
+    SetDrawColor(ui_color_black);
+    FillQuad(x-px, y-px, x+w+px, y+h+px);
+    SetDrawColor(gEditorSettings.backgroundColor);
+    FillQuad(x, y, x+w, y+h);
 
     // Determine the currently selected layer so that we can make all of the
     // layers above semi-transparent. If we're the spawn layer (top) then it
@@ -1030,10 +1030,10 @@ TEINAPI void do_level_editor ()
     float scw = ceilf (le_bounds_b.x - scx);
     float sch = ceilf (le_bounds_b.y - scy);
 
-    begin_scissor(scx, scy, scw, sch);
+    BeginScissor(scx, scy, scw, sch);
 
     Texture_Atlas& atlas = get_editor_atlas_large();
-    set_tile_batch_texture(atlas.texture);
+    SetTileBatchTexture(atlas.texture);
 
     // Draw all of the tiles for the level, layer-by-layer.
     for (Level_Layer i=LEVEL_LAYER_BACK2; (i<=LEVEL_LAYER_BACK2)&&(i>=LEVEL_LAYER_TAG); --i)
@@ -1043,11 +1043,11 @@ TEINAPI void do_level_editor ()
 
         if (level_editor.layer_transparency && (selected_layer != LEVEL_LAYER_TAG && selected_layer > i))
         {
-            set_tile_batch_color(Vec4(1,1,1,SEMI_TRANS));
+            SetTileBatchColor(Vec4(1,1,1,SEMI_TRANS));
         }
         else
         {
-            set_tile_batch_color(Vec4(1,1,1,1));
+            SetTileBatchColor(Vec4(1,1,1,1));
         }
 
         // We draw from the top-to-bottom, left-to-right, so that elements
@@ -1060,7 +1060,7 @@ TEINAPI void do_level_editor ()
         {
             if (layer[j] != 0) // No point drawing empty tiles...
             {
-                draw_batched_tile(tx, ty, &internal__get_tile_graphic_clip(atlas, layer[j]));
+                DrawBatchedTile(tx, ty, &internal__get_tile_graphic_clip(atlas, layer[j]));
             }
 
             // Move to the next tile in the row, move down if needed.
@@ -1073,7 +1073,7 @@ TEINAPI void do_level_editor ()
         }
     }
 
-    flush_batched_tile();
+    FlushBatchedTiles();
 
     // Draw either a ghosted version of the currently selected tile or what is
     // currently in the clipboard. What we draw depends on if the key modifier
@@ -1093,7 +1093,7 @@ TEINAPI void do_level_editor ()
         }
     }
 
-    end_scissor();
+    EndScissor();
 
     // Draw the greyed out area outside of the level's camera bounds.
     if (level_editor.bounds_visible)
@@ -1166,21 +1166,21 @@ TEINAPI void do_level_editor ()
         float cx2 = x + (static_cast<float>(std::max(cl, cr) + 1) * DEFAULT_TILE_SIZE);
         float cy2 = y + (static_cast<float>(std::max(ct, cb) + 1) * DEFAULT_TILE_SIZE);
 
-        begin_stencil();
+        BeginStencil();
 
-        stencil_mode_erase();
-        set_draw_color(Vec4(1,1,1,1));
-        fill_quad(cx1, cy1, cx2, cy2);
+        StencilModeErase();
+        SetDrawColor(Vec4(1,1,1,1));
+        FillQuad(cx1, cy1, cx2, cy2);
 
-        stencil_mode_draw();
-        set_draw_color(gEditorSettings.outOfBoundsColor);
-        fill_quad(x, y, x+w, y+h);
+        StencilModeDraw();
+        SetDrawColor(gEditorSettings.outOfBoundsColor);
+        FillQuad(x, y, x+w, y+h);
 
-        end_stencil();
+        EndStencil();
     }
 
     // Draw the selection box(es) if visible.
-    begin_stencil();
+    BeginStencil();
     for (auto& bounds: tab.tool_info.select.bounds)
     {
         if (bounds.visible)
@@ -1198,32 +1198,32 @@ TEINAPI void do_level_editor ()
             float sx2 = sx1 + ((r-l) * DEFAULT_TILE_SIZE);
             float sy2 = sy1 + ((t-b) * DEFAULT_TILE_SIZE);
 
-            stencil_mode_draw();
-            set_draw_color(gEditorSettings.selectColor);
-            fill_quad(sx1, sy1, sx2, sy2);
+            StencilModeDraw();
+            SetDrawColor(gEditorSettings.selectColor);
+            FillQuad(sx1, sy1, sx2, sy2);
 
-            stencil_mode_erase();
-            set_draw_color(1,1,1,1);
-            fill_quad(sx1, sy1, sx2, sy2);
+            StencilModeErase();
+            SetDrawColor(1,1,1,1);
+            FillQuad(sx1, sy1, sx2, sy2);
         }
     }
-    end_stencil();
+    EndStencil();
 
     // Draw the tile/spawn grid for the level editor.
     if (editor.grid_visible)
     {
-        begin_draw(BufferMode::LINES);
+        BeginDraw(BufferMode::LINES);
         for (float ix=x+DEFAULT_TILE_SIZE; ix<(x+w); ix+=DEFAULT_TILE_SIZE)
         {
-            put_vertex(ix, y,   Vec4(gEditorSettings.tileGridColor));
-            put_vertex(ix, y+h, Vec4(gEditorSettings.tileGridColor));
+            PutVertex(ix, y,   Vec4(gEditorSettings.tileGridColor));
+            PutVertex(ix, y+h, Vec4(gEditorSettings.tileGridColor));
         }
         for (float iy=y+DEFAULT_TILE_SIZE; iy<(y+h); iy+=DEFAULT_TILE_SIZE)
         {
-            put_vertex(x,   iy, Vec4(gEditorSettings.tileGridColor));
-            put_vertex(x+w, iy, Vec4(gEditorSettings.tileGridColor));
+            PutVertex(x,   iy, Vec4(gEditorSettings.tileGridColor));
+            PutVertex(x+w, iy, Vec4(gEditorSettings.tileGridColor));
         }
-        end_draw();
+        EndDraw();
     }
 
     // Draw the large entity guides if they are enabled.
@@ -1231,10 +1231,10 @@ TEINAPI void do_level_editor ()
     {
         if (tab.tile_layer_active[LEVEL_LAYER_ACTIVE])
         {
-            begin_scissor(scx, scy, scw, sch);
+            BeginScissor(scx, scy, scw, sch);
 
             Vec4 color = gEditorSettings.cursorColor;
-            set_line_width(2);
+            SetLineWidth(2);
 
             const float LINE_WIDTH = (DEFAULT_TILE_SIZE / 3) * 2; // 2/3
             const float OFFSET = roundf(LINE_WIDTH / 2);
@@ -1255,17 +1255,17 @@ TEINAPI void do_level_editor ()
                     float hh = (b.h * tile_scale) / 2;
 
                     color.a = .20f;
-                    set_draw_color(color);
+                    SetDrawColor(color);
 
-                    fill_quad(tx-hw, ty-hh, tx+hw, ty+hh);
+                    FillQuad(tx-hw, ty-hh, tx+hw, ty+hh);
 
                     color.a = .85f;
-                    set_draw_color(color);
+                    SetDrawColor(color);
 
-                    draw_line(tx-OFFSET, ty, tx+OFFSET, ty);
-                    draw_line(tx, ty-OFFSET, tx, ty+OFFSET);
+                    DrawLine(tx-OFFSET, ty, tx+OFFSET, ty);
+                    DrawLine(tx, ty-OFFSET, tx, ty+OFFSET);
 
-                    draw_quad(tx-hw, ty-hh, tx+hw, ty+hh);
+                    DrawQuad(tx-hw, ty-hh, tx+hw, ty+hh);
                 }
 
                 // Move to the next tile in the row, move down if needed.
@@ -1277,24 +1277,24 @@ TEINAPI void do_level_editor ()
                 }
             }
 
-            end_scissor();
+            EndScissor();
         }
     }
 
     // Draw the mirroring lines for the level editor.
-    set_draw_color(gEditorSettings.mirrorLineColor);
-    set_line_width(std::max(1.0f, 3.0f/px));
+    SetDrawColor(gEditorSettings.mirrorLineColor);
+    SetLineWidth(std::max(1.0f, 3.0f/px));
     if (level_editor.mirror_h)
     {
         float hw = w/2;
-        draw_line(x+hw, y, x+hw, y+h);
+        DrawLine(x+hw, y, x+hw, y+h);
     }
     if (level_editor.mirror_v)
     {
         float hh = h/2;
-        draw_line(x, y+hh, x+w, y+hh);
+        DrawLine(x, y+hh, x+w, y+hh);
     }
-    set_line_width(1);
+    SetLineWidth(1);
 
     // Draw the black outline surrounding the level editor content.
     //
@@ -1303,23 +1303,23 @@ TEINAPI void do_level_editor ()
     // area by a single pixel and would overlap the black border. By using
     // this stencil method and drawing the black border at the end we stop
     // that issue from occurring -- creating a nicer looking editor border.
-    begin_stencil();
+    BeginStencil();
 
-    stencil_mode_erase();
-    set_draw_color(Vec4(1,1,1,1));
-    fill_quad(x, y, x+w, y+h);
+    StencilModeErase();
+    SetDrawColor(Vec4(1,1,1,1));
+    FillQuad(x, y, x+w, y+h);
 
-    stencil_mode_draw();
-    set_draw_color(ui_color_black);
-    fill_quad(x-px, y-px, x+w+px, y+h+px);
+    StencilModeDraw();
+    SetDrawColor(ui_color_black);
+    FillQuad(x-px, y-px, x+w+px, y+h+px);
 
-    end_stencil();
+    EndStencil();
 
     pop_editor_camera_transform();
 
     end_panel();
 
-    set_texture_draw_scale(1,1);
+    SetTextureDrawScale(1,1);
 }
 
 /* -------------------------------------------------------------------------- */

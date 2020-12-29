@@ -156,7 +156,7 @@ TEINAPI void internal__calculate_dir_clips ()
 TEINAPI void internal__do_resize_alignment (Vec2& cursor)
 {
     // Do the long horizontal separator first.
-    float w = get_viewport().w - (RESIZE_XPAD*2);
+    float w = GetViewport().w - (RESIZE_XPAD*2);
 
     advance_panel_cursor(RESIZE_YPAD*1.5f);
     do_separator(w);
@@ -167,7 +167,7 @@ TEINAPI void internal__do_resize_alignment (Vec2& cursor)
     float bw = 25;
     float bh = 25;
 
-    float x = (get_viewport().w/2) - ((bw*3)/2);
+    float x = (GetViewport().w/2) - ((bw*3)/2);
 
     cursor.x  = x;
     cursor.y -= 2; // Just to get the spacing above and below even.
@@ -177,8 +177,8 @@ TEINAPI void internal__do_resize_alignment (Vec2& cursor)
     float qx2 = cursor.x + (bw * 3) + 1;
     float qy2 = cursor.y + (bh * 3) + 1;
 
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(qx1, qy1, qx2, qy2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(qx1, qy1, qx2, qy2);
 
     Resize_Dir old_dir = resize_dialog_dir;
 
@@ -239,8 +239,8 @@ TEINAPI void do_resize ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -248,8 +248,8 @@ TEINAPI void do_resize ()
 
     float bb = RESIZE_BOTTOM_BORDER;
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     float bw = roundf(vw / 2);
     float bh = bb - gWindowBorder;

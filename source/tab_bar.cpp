@@ -108,7 +108,7 @@ TEINAPI void do_tab_bar ()
     set_ui_texture(&resource_icons);
     set_ui_font(&get_editor_regular_font());
 
-    float whole_tab_bar_w = get_viewport().w - get_toolbar_w() - get_control_panel_w();
+    float whole_tab_bar_w = GetViewport().w - get_toolbar_w() - get_control_panel_w();
 
     float pw = whole_tab_bar_w - (bw*2) - 4;
     float ph = TAB_BAR_HEIGHT;

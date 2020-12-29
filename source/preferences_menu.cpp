@@ -169,7 +169,7 @@ TEINAPI void internal__do_hotkeys_label (float w, const char* key)
 
 TEINAPI void internal__begin_settings_area (const char* title, Vec2& cursor)
 {
-    float w = get_viewport().w;
+    float w = GetViewport().w;
     float h = PREFERENCES_SECTION_H;
 
     do_label(UI_ALIGN_CENTER,UI_ALIGN_CENTER, w,h, title);
@@ -203,10 +203,10 @@ TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float s
     }
 
     cursor.y += 3;
-    set_draw_color(ui_color_light);
-    fill_quad(cursor.x+0, cursor.y+0, cursor.x+sw-0, cursor.y+sh-0);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(cursor.x+1, cursor.y+1, cursor.x+sw-1, cursor.y+sh-1);
+    SetDrawColor(ui_color_light);
+    FillQuad(cursor.x+0, cursor.y+0, cursor.x+sw-0, cursor.y+sh-0);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(cursor.x+1, cursor.y+1, cursor.x+sw-1, cursor.y+sh-1);
 
     float x1 = cursor.x   +2;
     float y1 = cursor.y   +2;
@@ -221,17 +221,17 @@ TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float s
     const Texture& tex = (static_cast<int>(th) % 14 == 0) ? resource_checker_14 : resource_checker_16;
 
     Quad clip = { 0, 0, tw, th };
-    draw_texture(tex, tx, ty, &clip);
+    DrawTexture(tex, tx, ty, &clip);
 
     Vec4 max(color.r, color.g, color.b,       1);
     Vec4 min(color.r, color.g, color.b, color.a);
 
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(x1, y2, min); // BL
-    put_vertex(x1, y1, min); // TL
-    put_vertex(x2, y2, max); // BR
-    put_vertex(x2, y1, max); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(x1, y2, min); // BL
+    PutVertex(x1, y1, min); // TL
+    PutVertex(x2, y2, max); // BR
+    PutVertex(x2, y1, max); // TR
+    EndDraw();
 
     cursor.y -= 3;
     advance_panel_cursor(sw);
@@ -255,11 +255,11 @@ TEINAPI void internal__do_color_setting_row (Vec2& cursor, float w, const char* 
 
 TEINAPI void internal__do_hotkey_label_titles (Vec2& cursor)
 {
-    float vw = get_viewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
+    float vw = GetViewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
     float sh = PREFERENCES_SECTION_H+(PREFERENCES_INNER_YPAD*2);
 
-    // We use get_viewport().w so the labels are slightly larger and align.
-    float lw1 = (roundf((get_viewport().w-(PREFERENCES_INNER_XPAD*2)) / 3) - (PREFERENCES_INNER_XPAD/2));
+    // We use GetViewport().w so the labels are slightly larger and align.
+    float lw1 = (roundf((GetViewport().w-(PREFERENCES_INNER_XPAD*2)) / 3) - (PREFERENCES_INNER_XPAD/2));
     float lw2 = roundf((vw-(lw1*2))-roundf((PREFERENCES_INNER_XPAD*2.5f)+2));
 
     do_quad(vw, sh, ui_color_medium);
@@ -288,11 +288,11 @@ TEINAPI void internal__do_hotkey_label_titles (Vec2& cursor)
 
 TEINAPI void internal__do_hotkey_rebind (Vec2& cursor, const char* key)
 {
-    float vw = get_viewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
+    float vw = GetViewport().w-(PREFERENCES_SCROLLBAR_WIDTH-1);
     float sh = PREFERENCES_SECTION_H;
 
-    // We use get_viewport().w so the labels are slightly larger and align.
-    float lw = (roundf((get_viewport().w-(PREFERENCES_INNER_XPAD*2)) / 3) - (PREFERENCES_INNER_XPAD/2));
+    // We use GetViewport().w so the labels are slightly larger and align.
+    float lw = (roundf((GetViewport().w-(PREFERENCES_INNER_XPAD*2)) / 3) - (PREFERENCES_INNER_XPAD/2));
     float tw = roundf((vw-(lw*2))-roundf((PREFERENCES_INNER_XPAD*2.5f)+2));
 
     do_quad(vw, sh, ui_color_medium);
@@ -414,8 +414,8 @@ TEINAPI void internal__save_settings ()
 
 TEINAPI void internal__do_preferences_settings ()
 {
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     float xpad = PREFERENCES_INNER_XPAD;
     float ypad = PREFERENCES_INNER_YPAD;
@@ -424,8 +424,8 @@ TEINAPI void internal__do_preferences_settings ()
     begin_panel(xpad, ypad, vw-(xpad*2), vh-(ypad*2), UI_NONE);
 
     // We redefine as these will now be different.
-    vw = get_viewport().w;
-    vh = get_viewport().h;
+    vw = GetViewport().w;
+    vh = GetViewport().h;
 
     float sw = roundf(vw / 2) - (xpad/2);
     float sh = PREFERENCES_SECTION_H;
@@ -613,8 +613,8 @@ TEINAPI void internal__do_preferences_settings ()
 
 TEINAPI void internal__do_preferences_hotkeys ()
 {
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     begin_panel(0, 0, vw, vh, UI_NONE);
 
@@ -711,8 +711,8 @@ TEINAPI void do_preferences_menu ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -722,8 +722,8 @@ TEINAPI void do_preferences_menu ()
 
     float pvfh = PREFERENCES_V_FRAME_H;
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     float tw = roundf(vw / 2);
     float th = pvfh - gWindowBorder;
@@ -783,8 +783,8 @@ TEINAPI void do_preferences_menu ()
 
     p2.x =                                  1;
     p2.y = pvfh                           + 1;
-    p2.w = get_viewport().w               - 2;
-    p2.h = get_viewport().h - p2.y - pvfh - 1;
+    p2.w = GetViewport().w               - 2;
+    p2.h = GetViewport().h - p2.y - pvfh - 1;
 
     begin_panel(p2, UI_NONE);
     switch (preferences_tab)

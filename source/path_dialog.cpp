@@ -26,8 +26,8 @@ TEINAPI void do_path ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -35,8 +35,8 @@ TEINAPI void do_path ()
 
     float bb = PATH_DIALOG_BOTTOM_BORDER;
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     float bw = roundf(vw / 2);
     float bh = bb - gWindowBorder;
@@ -84,7 +84,7 @@ TEINAPI void do_path ()
 
     set_panel_cursor_dir(UI_DIR_RIGHT);
 
-    float tw = get_viewport().w - BUTTON_W - (XPAD*2);
+    float tw = GetViewport().w - BUTTON_W - (XPAD*2);
     float th = 24;
 
     cursor.y += 2;
@@ -99,8 +99,8 @@ TEINAPI void do_path ()
     float y2 = cursor.y + btnh     + 1;
 
     // Create a nice border so the button's bounds are actually visible!
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(x1, y1, x2, y2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(x1, y1, x2, y2);
 
     if (do_button_txt(NULL, BUTTON_W,btnh, UI_SINGLE, "Search"))
     {

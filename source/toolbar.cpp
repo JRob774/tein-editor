@@ -87,14 +87,14 @@ TEINAPI void internal__do_level_toolbar ()
     // toolbar and then place the buttons side-to-side instead of straight down.
     float content_height = (bh*TOTAL_TOOLBAR_LVL_BUTTONS)+(TOOLBAR_INNER_PAD*2);
     toolbar_width = TOOLBAR_WIDTH;
-    if (get_viewport().h < content_height)
+    if (GetViewport().h < content_height)
     {
         toolbar_width *= 2;
         toolbar_width -= 1;
     }
 
     // The toolbar is a vertical list of available tools.
-    begin_panel(0, 0, toolbar_width, get_viewport().h, UI_NONE, ui_color_medium);
+    begin_panel(0, 0, toolbar_width, GetViewport().h, UI_NONE, ui_color_medium);
 
     set_panel_cursor(&cursor);
     set_panel_cursor_dir(UI_DIR_DOWN);
@@ -111,7 +111,7 @@ TEINAPI void internal__do_level_toolbar ()
 
     // If not all buttons will fit on the screen we will double the width of the
     // toolbar and then place the buttons side-to-side instead of straight down.
-    if (get_viewport().h < content_height)
+    if (GetViewport().h < content_height)
     {
         cursor.x += bw + 1;
         cursor.y = TOOLBAR_INNER_PAD;
@@ -165,7 +165,7 @@ TEINAPI void internal__do_map_toolbar ()
     UI_Flag clear_flags    = (map_select_box_present()) ? UI_NONE : UI_LOCKED;
 
     toolbar_width = TOOLBAR_WIDTH;
-    begin_panel(0, 0, toolbar_width, get_viewport().h, UI_NONE, ui_color_medium);
+    begin_panel(0, 0, toolbar_width, GetViewport().h, UI_NONE, ui_color_medium);
 
     set_panel_cursor(&cursor);
     set_panel_cursor_dir(UI_DIR_DOWN);

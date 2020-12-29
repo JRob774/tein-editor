@@ -118,8 +118,8 @@ TEINAPI void do_tooltip ()
         float th = (nh+dh)                + (ypad*2);
 
         // Make sure that the tooltip is always on-screen and not out-of-bounds.
-        if (tx+tw >= get_render_target_w()) tx = mouse.x - tw;
-        if (ty+th >= get_render_target_h()) ty = mouse.y - th;
+        if (tx+tw >= GetRenderTargetWidth()) tx = mouse.x - tw;
+        if (ty+th >= GetRenderTargetHeight()) ty = mouse.y - th;
 
         begin_panel(tx, ty, tw, th, UI_NONE, Vec4(0,0,0,.8f));
 

@@ -13,8 +13,8 @@ TEINAPI void do_about ()
 {
     set_ui_font(&get_editor_regular_font());
 
-    begin_panel(gWindowBorder,gWindowBorder,get_viewport().w-(gWindowBorder*2),get_viewport().h-(gWindowBorder*2), UI_NONE, ui_color_ex_dark);
-    begin_panel(1,1,get_viewport().w-2,get_viewport().h-2, UI_NONE, ui_color_medium);
+    begin_panel(gWindowBorder,gWindowBorder,GetViewport().w-(gWindowBorder*2),GetViewport().h-(gWindowBorder*2), UI_NONE, ui_color_ex_dark);
+    begin_panel(1,1,GetViewport().w-2,GetViewport().h-2, UI_NONE, ui_color_medium);
 
     constexpr float XPAD = 4;
     constexpr float YPAD = 4;
@@ -30,7 +30,7 @@ TEINAPI void do_about ()
     const char* build = "Release";
     #endif
 
-    float lw = get_viewport().w - (XPAD*2);
+    float lw = GetViewport().w - (XPAD*2);
     float lh = 18;
 
     constexpr const char* CHANGELOG = "https://github.com/thatb0y/tein-editor/blob/master/CHANGES.md";

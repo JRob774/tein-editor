@@ -42,7 +42,7 @@ TEINAPI bool internal__create_font (Font& fnt, int pt, float csz)
 {
     // Make sure the glyph cache size is within the GL texture bounds.
     // If not we set it to that size and log a low-priority error.
-    GLfloat cache_size = std::min(get_max_texture_size(), csz);
+    GLfloat cache_size = std::min(GetMaxTextureSize(), csz);
     if (cache_size < csz)
     {
         LogError(ERR_MIN, "Font cache size shrunk to %f!", cache_size);
@@ -281,12 +281,12 @@ TEINAPI float get_text_height (const Font& fnt, std::string text)
 
 TEINAPI float get_text_width_scaled (const Font& fnt, std::string text)
 {
-    return (get_text_width(fnt, text) * get_font_draw_scale());
+    return (get_text_width(fnt, text) * GetFontDrawScale());
 }
 
 TEINAPI float get_text_height_scaled (const Font& fnt, std::string text)
 {
-    return (get_text_height(fnt, text) * get_font_draw_scale());
+    return (get_text_height(fnt, text) * GetFontDrawScale());
 }
 
 /* -------------------------------------------------------------------------- */

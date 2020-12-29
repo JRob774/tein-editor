@@ -38,8 +38,8 @@ TEINAPI void do_status_bar ()
     Vec2 cursor(STATUS_BAR_INNER_PAD, 0);
 
     float x = get_toolbar_w() + 1;
-    float y = get_viewport().h - STATUS_BAR_HEIGHT;
-    float w = get_viewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
+    float y = GetViewport().h - STATUS_BAR_HEIGHT;
+    float w = GetViewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
     float h = STATUS_BAR_HEIGHT;
 
     // To account for the control panel and toolbar disappearing.

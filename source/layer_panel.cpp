@@ -153,10 +153,10 @@ TEINAPI void do_layer_panel (bool scrollbar)
 
     if (scrollbar)
     {
-        float sx =  1 + get_viewport().w + CONTROL_PANEL_INNER_PAD;
+        float sx =  1 + GetViewport().w + CONTROL_PANEL_INNER_PAD;
         float sy = -1;
         float sw =  CONTROL_PANEL_SCROLLBAR_WIDTH - CONTROL_PANEL_INNER_PAD;
-        float sh =  2 + get_viewport().h;
+        float sh =  2 + GetViewport().h;
 
         do_scrollbar(sx,sy,sw,sh, layer_panel_content_height, layer_panel_scroll_offset);
     }

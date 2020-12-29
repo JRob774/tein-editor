@@ -83,8 +83,8 @@
 #include "cursor.hpp"
 #include "key_bindings.hpp"
 #include "settings.hpp"
-
 #include "vertex_buffer.hpp"
+
 #include "renderer.hpp"
 #include "texture.hpp"
 #include "texture_atlas.hpp"

@@ -676,29 +676,29 @@ TEINAPI void push_editor_camera_transform ()
 {
     const Tab& tab = get_current_tab();
 
-    push_matrix(Matrix_Mode::PROJECTION);
-    push_matrix(Matrix_Mode::MODELVIEW);
+    PushMatrix(MatrixMode::PROJECTION);
+    PushMatrix(MatrixMode::MODELVIEW);
 
-    float hw = get_viewport().w / 2;
-    float hh = get_viewport().h / 2;
+    float hw = GetViewport().w / 2;
+    float hh = GetViewport().h / 2;
 
-    float hsw = (get_viewport().w / tab.camera.zoom) / 2;
-    float hsh = (get_viewport().h / tab.camera.zoom) / 2;
+    float hsw = (GetViewport().w / tab.camera.zoom) / 2;
+    float hsh = (GetViewport().h / tab.camera.zoom) / 2;
 
     float l = hw - hsw;
     float r = hw + hsw;
     float b = hh + hsh;
     float t = hh - hsh;
 
-    set_orthographic(l, r, b, t);
+    SetOrthographic(l,r,b,t);
 
-    translate(tab.camera.x, tab.camera.y);
+    Translate(tab.camera.x, tab.camera.y);
 }
 
 TEINAPI void pop_editor_camera_transform ()
 {
-    pop_matrix(Matrix_Mode::PROJECTION);
-    pop_matrix(Matrix_Mode::MODELVIEW);
+    PopMatrix(MatrixMode::PROJECTION);
+    PopMatrix(MatrixMode::MODELVIEW);
 }
 
 /* -------------------------------------------------------------------------- */

@@ -106,13 +106,13 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
     Vec2 cur(TILE_PANEL_INNER_PAD, TILE_PANEL_INNER_PAD);
     begin_panel(x, y, w, h, UI_NONE, ui_color_med_dark);
 
-    set_draw_color(ui_color_ex_dark); // The outline/border for the category.
-    draw_quad(0, get_panel_offset().y, w, get_panel_offset().y+h);
+    SetDrawColor(ui_color_ex_dark); // The outline/border for the category.
+    DrawQuad(0, get_panel_offset().y, w, get_panel_offset().y+h);
 
     Texture_Atlas& atlas = get_editor_atlas_small();
 
-    set_tile_batch_texture(atlas.texture);
-    set_tile_batch_color((is_active) ? Vec4(1,1,1,1) : Vec4(1,1,1,TILE_PANEL_INACTIVE_A));
+    SetTileBatchTexture(atlas.texture);
+    SetTileBatchColor((is_active) ? Vec4(1,1,1,1) : Vec4(1,1,1,TILE_PANEL_INACTIVE_A));
 
     for (size_t i=0; i<category.size(); ++i)
     {
@@ -150,21 +150,21 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
             // If we are the currently selected group then we draw the highlight.
             if ((category_index == tile_panel.selected_category) && (i == tile_panel.selected_group))
             {
-                set_draw_color(ui_color_light);
-                fill_quad(qx, qy, qx+qw, qy+qh);
+                SetDrawColor(ui_color_light);
+                FillQuad(qx, qy, qx+qw, qy+qh);
             }
         }
 
         // We scissor the contents to avoid overspill.
-        begin_scissor(tile_cursor.x, tile_cursor.y, TILE_PANEL_ITEM_SIZE, TILE_PANEL_ITEM_SIZE);
+        BeginScissor(tile_cursor.x, tile_cursor.y, TILE_PANEL_ITEM_SIZE, TILE_PANEL_ITEM_SIZE);
 
         float ex = tile_cursor.x + (TILE_PANEL_ITEM_SIZE/2);
         float ey = tile_cursor.y + (TILE_PANEL_ITEM_SIZE/2);
 
         Tile_ID selected_id = tile_group.tile[tile_group.selected_index];
-        draw_batched_tile(ex, ey, &get_atlas_clip(atlas, selected_id));
+        DrawBatchedTile(ex, ey, &get_atlas_clip(atlas, selected_id));
 
-        end_scissor();
+        EndScissor();
 
         // Advance the cursor for the next entity's placement.
         float advance = TILE_PANEL_ITEM_SIZE + TILE_PANEL_ITEM_PAD;
@@ -176,7 +176,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
         }
     }
 
-    flush_batched_tile();
+    FlushBatchedTiles();
 
     end_panel();
 
@@ -336,7 +336,7 @@ TEINAPI void do_tile_panel (bool scrollbar)
         float x = CONTROL_PANEL_WIDTH;
         float y = CONTROL_PANEL_INNER_PAD;
         float w = CONTROL_PANEL_SCROLLBAR_WIDTH - CONTROL_PANEL_INNER_PAD;
-        float h = get_viewport().h - (CONTROL_PANEL_INNER_PAD * 2);
+        float h = GetViewport().h - (CONTROL_PANEL_INNER_PAD * 2);
 
         Quad sb = { x,y,w,h };
 

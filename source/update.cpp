@@ -143,15 +143,15 @@ TEINAPI void do_update ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
     float bb = PATH_DIALOG_BOTTOM_BORDER;
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     float bw = roundf(vw / 2);
     float bh = bb - gWindowBorder;
@@ -220,8 +220,8 @@ TEINAPI void do_update ()
 
     float px = XPAD2;
     float py = YPAD1 + HEADER_SECTION + roundf(YPAD1*.66f);
-    float pw = get_viewport().w - (XPAD2*2) - 1 - SCROLLBAR_WIDTH;
-    float ph = get_viewport().h - py - YPAD2;
+    float pw = GetViewport().w - (XPAD2*2) - 1 - SCROLLBAR_WIDTH;
+    float ph = GetViewport().h - py - YPAD2;
 
     begin_panel(px,py,pw,ph, UI_NONE, ui_color_ex_dark);
 
@@ -236,12 +236,12 @@ TEINAPI void do_update ()
     set_font_point_size(get_editor_regular_font(), SMALL_FONT_POINT_SIZE);
     set_font_point_size(get_editor_bold_font(), SMALL_FONT_POINT_SIZE);
 
-    float label_w = get_viewport().w;
+    float label_w = GetViewport().w;
     update_dialog_content_height = get_markdown_h(label_w, update_body) + YPAD3;
-    float sx = get_viewport().w + XPAD3 + 1;
+    float sx = GetViewport().w + XPAD3 + 1;
     float sy = 0 - YPAD3;
     float sw = SCROLLBAR_WIDTH;
-    float sh = get_viewport().h + (YPAD3*2);
+    float sh = GetViewport().h + (YPAD3*2);
     do_scrollbar(sx, sy, sw, sh, update_dialog_content_height, update_dialog_scroll_offset);
 
     do_markdown(label_w, update_dialog_content_height, update_body);

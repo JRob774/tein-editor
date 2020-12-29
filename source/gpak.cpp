@@ -325,15 +325,15 @@ TEINAPI void do_unpack ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     p2.x =             1;
     p2.y =             1;
@@ -357,7 +357,7 @@ TEINAPI void do_unpack ()
 
     cursor.y += (YPAD*2);
 
-    float total_width = get_viewport().w - (XPAD*2);
+    float total_width = GetViewport().w - (XPAD*2);
     float current_width = total_width * gpak_unpack_progress();
 
     float x1 = cursor.x;
@@ -365,17 +365,17 @@ TEINAPI void do_unpack ()
     float x2 = cursor.x + current_width;
     float y2 = cursor.y + BAR_H;
 
-    set_draw_color(ui_color_light);
-    fill_quad(x1-2, y1-2, cursor.x+total_width+2, y2+2);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(x1-1, y1-1, cursor.x+total_width+1, y2+1);
+    SetDrawColor(ui_color_light);
+    FillQuad(x1-2, y1-2, cursor.x+total_width+2, y2+2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(x1-1, y1-1, cursor.x+total_width+1, y2+1);
 
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(x1, y2, GPAK_PROGRESS_BAR_MIN_COLOR); // BL
-    put_vertex(x1, y1, GPAK_PROGRESS_BAR_MIN_COLOR); // TL
-    put_vertex(x2, y2, GPAK_PROGRESS_BAR_MAX_COLOR); // BR
-    put_vertex(x2, y1, GPAK_PROGRESS_BAR_MAX_COLOR); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(x1, y2, GPAK_PROGRESS_BAR_MIN_COLOR); // BL
+    PutVertex(x1, y1, GPAK_PROGRESS_BAR_MIN_COLOR); // TL
+    PutVertex(x2, y2, GPAK_PROGRESS_BAR_MAX_COLOR); // BR
+    PutVertex(x2, y1, GPAK_PROGRESS_BAR_MAX_COLOR); // TR
+    EndDraw();
 
     end_panel();
     end_panel();
@@ -395,15 +395,15 @@ TEINAPI void do_pack ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     p2.x =             1;
     p2.y =             1;
@@ -427,7 +427,7 @@ TEINAPI void do_pack ()
 
     cursor.y += (YPAD*2);
 
-    float total_width = get_viewport().w - (XPAD*2);
+    float total_width = GetViewport().w - (XPAD*2);
     float current_width = total_width * gpak_pack_progress();
 
     float x1 = cursor.x;
@@ -435,17 +435,17 @@ TEINAPI void do_pack ()
     float x2 = cursor.x + current_width;
     float y2 = cursor.y + BAR_H;
 
-    set_draw_color(ui_color_light);
-    fill_quad(x1-2, y1-2, cursor.x+total_width+2, y2+2);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(x1-1, y1-1, cursor.x+total_width+1, y2+1);
+    SetDrawColor(ui_color_light);
+    FillQuad(x1-2, y1-2, cursor.x+total_width+2, y2+2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(x1-1, y1-1, cursor.x+total_width+1, y2+1);
 
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(x1, y2, GPAK_PROGRESS_BAR_MIN_COLOR); // BL
-    put_vertex(x1, y1, GPAK_PROGRESS_BAR_MIN_COLOR); // TL
-    put_vertex(x2, y2, GPAK_PROGRESS_BAR_MAX_COLOR); // BR
-    put_vertex(x2, y1, GPAK_PROGRESS_BAR_MAX_COLOR); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(x1, y2, GPAK_PROGRESS_BAR_MIN_COLOR); // BL
+    PutVertex(x1, y1, GPAK_PROGRESS_BAR_MIN_COLOR); // TL
+    PutVertex(x2, y2, GPAK_PROGRESS_BAR_MAX_COLOR); // BR
+    PutVertex(x2, y1, GPAK_PROGRESS_BAR_MAX_COLOR); // TR
+    EndDraw();
 
     end_panel();
     end_panel();

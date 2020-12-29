@@ -53,7 +53,7 @@ TEINAPI bool create_texture (Texture& tex, int w, int h, int bpp, void* data, Te
     // Bytes-per-pixel needs to be one of these otherwise we can't use.
     assert(bpp == 1 || bpp == 2 || bpp == 3 || bpp == 4);
 
-    int max_texture_size = static_cast<int>(get_max_texture_size());
+    int max_texture_size = static_cast<int>(GetMaxTextureSize());
     if (w > max_texture_size || h > max_texture_size)
     {
         LogError(ERR_MIN, "Texture size %dx%d too large for GPU!", w,h);

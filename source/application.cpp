@@ -131,7 +131,7 @@ TEINAPI void init_application (int argc, char** argv)
     SetWindowChild("WINPATH");
     SetWindowChild("WINUPDATE");
 
-    if (!init_renderer        ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
+    if (!InitRenderer         ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
     if (!LoadEditorSettings   ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
     if (!LoadEditorKeyBindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
     if (!load_editor_resources()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
@@ -177,7 +177,7 @@ TEINAPI void quit_application ()
     FreeEditorCursors();
     free_editor_resources();
 
-    quit_renderer();
+    QuitRenderer();
     QuitWindow();
 
     QuitDebugSystem();
@@ -194,17 +194,17 @@ TEINAPI void do_application ()
     ClearDebugTimerResult();
     Defer { DumpDebugTimerResult(); };
 
-    set_render_target(&GetWindowFromName("WINMAIN"));
-    set_viewport(0, 0, get_render_target_w(), get_render_target_h());
+    SetRenderTarget(&GetWindowFromName("WINMAIN"));
+    SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
 
-    render_clear(ui_color_medium);
+    RenderClear(ui_color_medium);
 
     Quad p1, p2;
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     begin_panel(p1, UI_NONE, ui_color_ex_dark);
 
@@ -212,8 +212,8 @@ TEINAPI void do_application ()
 
     p2.x =                           1;
     p2.y = HOTBAR_HEIGHT           + 1;
-    p2.w = get_viewport().w        - 2;
-    p2.h = get_viewport().h - p2.y - 1;
+    p2.w = GetViewport().w        - 2;
+    p2.h = GetViewport().h - p2.y - 1;
 
     begin_panel(p2, UI_NONE);
 
@@ -228,87 +228,87 @@ TEINAPI void do_application ()
 
     do_tooltip();
 
-    render_present();
+    RenderPresent();
 
     if (!IsWindowHidden("WINPREFERENCES"))
     {
-        set_render_target(&GetWindowFromName("WINPREFERENCES"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINPREFERENCES"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_preferences_menu();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINCOLOR"))
     {
-        set_render_target(&GetWindowFromName("WINCOLOR"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINCOLOR"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_color_picker();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINABOUT"))
     {
-        set_render_target(&GetWindowFromName("WINABOUT"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINABOUT"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_about();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINNEW"))
     {
-        set_render_target(&GetWindowFromName("WINNEW"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINNEW"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_new();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINRESIZE"))
     {
-        set_render_target(&GetWindowFromName("WINRESIZE"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINRESIZE"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_resize();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINUNPACK"))
     {
-        set_render_target(&GetWindowFromName("WINUNPACK"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINUNPACK"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_unpack();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINPACK"))
     {
-        set_render_target(&GetWindowFromName("WINPACK"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINPACK"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_pack();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINPATH"))
     {
-        set_render_target(&GetWindowFromName("WINPATH"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINPATH"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_path();
-        render_present();
+        RenderPresent();
     }
 
     if (!IsWindowHidden("WINUPDATE"))
     {
-        set_render_target(&GetWindowFromName("WINUPDATE"));
-        set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-        render_clear(ui_color_medium);
+        SetRenderTarget(&GetWindowFromName("WINUPDATE"));
+        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+        RenderClear(ui_color_medium);
         do_update();
-        render_present();
+        RenderPresent();
     }
 
     // IMPORTANT: Otherwise the UI will not redraw very well!

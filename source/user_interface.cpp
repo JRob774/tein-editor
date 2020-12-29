@@ -129,7 +129,7 @@ TEINAPI Quad internal__get_clipped_bounds (float x, float y, float w, float h)
     //
     // We also make the bounds relative to the window, so that they can
     // properly be compared with the mouse cursor without any issues.
-    const Quad& v = get_viewport();
+    const Quad& v = GetViewport();
     Quad clipped_bounds;
 
     clipped_bounds.x1 = std::max(x,        0.0f) + v.x;
@@ -147,7 +147,7 @@ TEINAPI Quad internal__get_clipped_bounds (Quad& p)
     //
     // We also make the bounds relative to the window, so that they can
     // properly be compared with the mouse cursor without any issues.
-    const Quad& v = get_viewport();
+    const Quad& v = GetViewport();
     Quad clipped_bounds;
 
     clipped_bounds.x1 = std::max(p.x,          0.0f) + v.x;
@@ -165,7 +165,7 @@ TEINAPI bool internal__handle_widget (float x, float y, float w, float h, bool l
     // Don't bother handling widgets during resize to avoid ugly redraw stuff.
     if (!IsAWindowResizing())
     {
-        if (get_render_target()->focus && get_render_target()->mouse)
+        if (GetRenderTarget()->focus && GetRenderTarget()->mouse)
         {
             Quad clipped_bounds = internal__get_clipped_bounds(x, y, w, h);
             Vec2 mouse = GetMousePos();
@@ -250,8 +250,8 @@ TEINAPI void internal__draw_separator (Vec2 cursor, UI_Dir dir, float w, float h
     case (UI_DIR_LEFT ): { x1+=1; x2+= 1;    y1+=1; y2+=(h-1); } break;
     }
 
-    set_draw_color(color);
-    draw_line(x1, y1, x2, y2);
+    SetDrawColor(color);
+    DrawLine(x1, y1, x2, y2);
 }
 
 TEINAPI void internal__advance_ui_cursor_start (Panel& panel, float w, float h)
@@ -299,12 +299,12 @@ TEINAPI void internal__align_text (UI_Align horz, UI_Align vert, float& x, float
 
 TEINAPI bool internal__is_ui_mouse_down ()
 {
-    return (get_render_target()->focus) ? ui_mouse_down : false;
+    return (GetRenderTarget()->focus) ? ui_mouse_down : false;
 }
 
 TEINAPI bool internal__is_ui_mouse_r_down ()
 {
-    return (get_render_target()->focus) ? ui_mouse_r_down : false;
+    return (GetRenderTarget()->focus) ? ui_mouse_r_down : false;
 }
 
 TEINAPI std::string internal__do_markdown_formatting (std::vector<std::string>& lines, float w)
@@ -702,11 +702,11 @@ TEINAPI void begin_panel (float x, float y, float w, float h, UI_Flag flags, Vec
     panel.cursor_dir = UI_DIR_RIGHT;
     panel.cursor_advance_enabled = true;
 
-    set_viewport(panel.viewport);
+    SetViewport(panel.viewport);
     ui_panels.push(panel);
 
-    set_draw_color(c);
-    fill_quad(0, 0, panel.viewport.w, panel.viewport.h);
+    SetDrawColor(c);
+    FillQuad(0, 0, panel.viewport.w, panel.viewport.h);
 }
 
 TEINAPI void begin_panel (Quad bounds, UI_Flag flags, Vec4 c)
@@ -743,8 +743,8 @@ TEINAPI bool begin_click_panel (UI_Action action, float w, float h, UI_Flag flag
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        set_draw_color(color);
-        fill_quad(0, 0, get_viewport().w, get_viewport().h);
+        SetDrawColor(color);
+        FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
 
     Vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
@@ -772,8 +772,8 @@ TEINAPI void end_panel ()
 
     // We either go back to a previous nested panel or this is the last panel
     // and we go back to placing things relative to the entire program window.
-    if (ui_panels.size() > 0) set_viewport(ui_panels.top().viewport);
-    else set_viewport(0, 0, get_render_target_w(), get_render_target_h());
+    if (ui_panels.size() > 0) SetViewport(ui_panels.top().viewport);
+    else SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
 }
 
 /* -------------------------------------------------------------------------- */
@@ -874,8 +874,8 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
     Vec2     cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid image overspill.
-    begin_scissor(cur.x, cur.y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(cur.x, cur.y, w, h);
+    Defer { EndScissor(); };
 
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
@@ -894,15 +894,15 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
         front.a = .5f;
     }
 
-    set_draw_color(back); // Draw the button's background quad.
-    fill_quad(cur.x, cur.y, cur.x + w, cur.y + h);
+    SetDrawColor(back); // Draw the button's background quad.
+    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
 
     if (highlight && !internal__is_hit())
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        set_draw_color(color);
-        fill_quad(0, 0, get_viewport().w, get_viewport().h);
+        SetDrawColor(color);
+        FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
 
     // The ((w)-1) and ((h)-1) are used to ensure the separator does
@@ -920,9 +920,9 @@ TEINAPI bool do_button_img (UI_Action action, float w, float h, UI_Flag flags, c
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
     tex.color = shadow;
-    draw_texture(tex, x, y-offset, clip);
+    DrawTexture(tex, x, y-offset, clip);
     tex.color = front;
-    draw_texture(tex, x, y, clip);
+    DrawTexture(tex, x, y, clip);
 
     internal__draw_separator(internal__get_relative_cursor(ui_panels.top()), ui_panels.top().cursor_dir, w, h, ui_color_med_dark);
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
@@ -971,8 +971,8 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
     Vec2  cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
-    begin_scissor(cur.x, cur.y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(cur.x, cur.y, w, h);
+    Defer { EndScissor(); };
 
     // Locked buttons cannot be interacted with.
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
@@ -992,19 +992,19 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
         front.a = .5f;
     }
 
-    set_draw_color(back); // Draw the button's background quad.
-    fill_quad(cur.x, cur.y, cur.x + w, cur.y + h);
+    SetDrawColor(back); // Draw the button's background quad.
+    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
 
     if (highlight && !internal__is_hit())
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        set_draw_color(color);
-        fill_quad(0, 0, get_viewport().w, get_viewport().h);
+        SetDrawColor(color);
+        FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
 
     float w2 = get_text_width_scaled(fnt, text);
-    float h2 = fnt.line_gap.at(fnt.current_pt_size) * get_font_draw_scale();
+    float h2 = fnt.line_gap.at(fnt.current_pt_size) * GetFontDrawScale();
     // Center the text within the button.
     float x = roundf(cur.x + ((w - w2) / 2));
     float y = roundf(cur.y + ((h / 2) + (h2 / 4)));
@@ -1012,9 +1012,9 @@ TEINAPI bool do_button_txt (UI_Action action, float w, float h, UI_Flag flags, s
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
     fnt.color = shadow;
-    draw_text(fnt, x, y-offset, text);
+    DrawText(fnt, x, y-offset, text);
     fnt.color = front;
-    draw_text(fnt, x, y, text);
+    DrawText(fnt, x, y, text);
 
     if (!single)
     {
@@ -1079,11 +1079,11 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
     Vec2  cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
-    begin_scissor(cur.x, cur.y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(cur.x, cur.y, w, h);
+    Defer { EndScissor(); };
 
-    set_draw_color(bg); // Draw the label's background.
-    fill_quad(cur.x, cur.y, cur.x + w, cur.y + h);
+    SetDrawColor(bg); // Draw the label's background.
+    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
 
     float tw = get_text_width_scaled (fnt, text);
     float th = get_text_height_scaled(fnt, text);
@@ -1141,9 +1141,9 @@ TEINAPI void do_label (UI_Align horz, UI_Align vert, float w, float h, std::stri
     }
 
     fnt.color = shadow;
-    draw_text(fnt, x, y-offset, clipped_text);
+    DrawText(fnt, x, y-offset, clipped_text);
     fnt.color = front;
-    draw_text(fnt, x, y, clipped_text);
+    DrawText(fnt, x, y, clipped_text);
 
     Quad clipped_bounds = internal__get_clipped_bounds(cur.x, cur.y, w, h);
     Vec2 mouse = GetMousePos();
@@ -1175,11 +1175,11 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
     Vec2  cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
-    begin_scissor(cur.x, cur.y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(cur.x, cur.y, w, h);
+    Defer { EndScissor(); };
 
-    set_draw_color(bg); // Draw the label's background.
-    fill_quad(cur.x, cur.y, cur.x + w, cur.y + h);
+    SetDrawColor(bg); // Draw the label's background.
+    FillQuad(cur.x, cur.y, cur.x + w, cur.y + h);
 
     float tw = get_text_width_scaled (fnt, text);
     float th = get_text_height_scaled(fnt, text);
@@ -1264,21 +1264,21 @@ TEINAPI void do_label_hyperlink (UI_Align horz, UI_Align vert, float w, float h,
     else if (internal__is_hot()) link_color = (ui_is_light) ? ui_color_ex_dark : ui_color_white;
 
     fnt.color = shadow;
-    draw_text(fnt, x, y-offset, clipped_text);
+    DrawText(fnt, x, y-offset, clipped_text);
     fnt.color = front;
-    draw_text(fnt, x, y, clipped_text);
+    DrawText(fnt, x, y, clipped_text);
 
     x += get_text_width_scaled(fnt, clipped_text);
 
-    set_draw_color(shadow);
-    draw_line(x, (y+2)-offset, x+ww, (y+2)-offset);
-    set_draw_color(link_color);
-    draw_line(x, y+2, x+ww, y+2);
+    SetDrawColor(shadow);
+    DrawLine(x, (y+2)-offset, x+ww, (y+2)-offset);
+    SetDrawColor(link_color);
+    DrawLine(x, y+2, x+ww, y+2);
 
     fnt.color = shadow;
-    draw_text(fnt, x, y-offset, link);
+    DrawText(fnt, x, y-offset, link);
     fnt.color = link_color;
-    draw_text(fnt, x, y, link);
+    DrawText(fnt, x, y, link);
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 
@@ -1301,8 +1301,8 @@ TEINAPI void do_markdown (float w, float h, std::string text)
     Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid text overspill.
-    begin_scissor(cur.x, cur.y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(cur.x, cur.y, w, h);
+    Defer { EndScissor(); };
 
     std::vector<std::string> lines;
     TokenizeString(text, "\r\n", lines);
@@ -1333,9 +1333,9 @@ TEINAPI void do_markdown (float w, float h, std::string text)
             x = cur.x;
             if (i != 0) x += get_text_width_scaled(fnt, ">");
             fnt.color = shadow;
-            draw_text(fnt, x, y-offset, sub_lines.at(i));
+            DrawText(fnt, x, y-offset, sub_lines.at(i));
             fnt.color = front;
-            draw_text(fnt, x, y, sub_lines.at(i));
+            DrawText(fnt, x, y, sub_lines.at(i));
             y += fnt.line_gap[fnt.current_pt_size];
         }
     }
@@ -1447,7 +1447,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         }
     }
 
-    if (!locked && ui_make_next_text_box_active && get_render_target()->id == ui_text_box_tab_window_id)
+    if (!locked && ui_make_next_text_box_active && GetRenderTarget()->id == ui_text_box_tab_window_id)
     {
         ui_text_box_cursor = std::string::npos;
         ui_active_text_box = ui_current_id;
@@ -1470,10 +1470,10 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         front.a = .5f;
     }
 
-    set_draw_color(outline); // Draw the text box's outline quad.
-    fill_quad(cur.x, cur.y, cur.x+w, cur.y+h);
-    set_draw_color(back); // Draw the text box's background quad.
-    fill_quad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
+    SetDrawColor(outline); // Draw the text box's outline quad.
+    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
+    SetDrawColor(back); // Draw the text box's background quad.
+    FillQuad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
 
     constexpr float X_PAD = 5;
     constexpr float Y_PAD = 2;
@@ -1492,7 +1492,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
             ui_text_box_cursor = text.length();
         }
 
-        if (get_render_target()->focus)
+        if (GetRenderTarget()->focus)
         {
             std::string old_text = text;
             size_t old_cursor = ui_text_box_cursor;
@@ -1536,7 +1536,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
                                 if (!ui_tab_handled)
                                 {
                                     ui_make_next_text_box_active = true;
-                                    ui_text_box_tab_window_id = get_render_target()->id;
+                                    ui_text_box_tab_window_id = GetRenderTarget()->id;
                                     ui_tab_handled = true;
                                 }
                             } break;
@@ -1673,7 +1673,7 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
     }
 
     // We scissor the contents to avoid text overspill.
-    begin_scissor(bx, by, bw, bh);
+    BeginScissor(bx, by, bw, bh);
 
     float tx = bx;
     float ty = by;
@@ -1712,16 +1712,16 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
     }
 
     fnt.color = shadow;
-    draw_text(fnt, tx+x_off, ty-y_off, text);
+    DrawText(fnt, tx+x_off, ty-y_off, text);
     fnt.color = front;
-    draw_text(fnt, tx+x_off, ty, text);
+    DrawText(fnt, tx+x_off, ty, text);
 
-    end_scissor();
+    EndScissor();
 
     // If we're active then draw the text box cursor as well.
     if (ui_active_text_box == ui_current_id && ui_cursor_visible)
     {
-        begin_scissor(bx-1, by-1, bw+2, bh+2);
+        BeginScissor(bx-1, by-1, bw+2, bh+2);
 
         std::string sub(text.substr(0, ui_text_box_cursor));
         float xo = get_text_width_scaled(fnt, sub);
@@ -1731,10 +1731,10 @@ TEINAPI void do_text_box (float w, float h, UI_Flag flags, std::string& text, st
         {
             xo += 1;
         }
-        set_draw_color((ui_is_light) ? ui_color_black : ui_color_ex_light);
-        draw_line(tx+xo+x_off, by+yo, tx+xo+x_off, by+yo+th);
+        SetDrawColor((ui_is_light) ? ui_color_black : ui_color_ex_light);
+        DrawLine(tx+xo+x_off, by+yo, tx+xo+x_off, by+yo+th);
 
-        end_scissor();
+        EndScissor();
     }
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
@@ -1823,10 +1823,10 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding&
         front.a = .5f;
     }
 
-    set_draw_color(outline); // Draw the rebind's outline quad.
-    fill_quad(cur.x, cur.y, cur.x+w, cur.y+h);
-    set_draw_color(back); // Draw the rebind's background quad.
-    fill_quad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
+    SetDrawColor(outline); // Draw the rebind's outline quad.
+    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
+    SetDrawColor(back); // Draw the rebind's background quad.
+    FillQuad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
 
     constexpr float X_PAD = 5;
     constexpr float Y_PAD = 2;
@@ -1866,7 +1866,7 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding&
     }
 
     // We scissor the contents to avoid text overspill.
-    begin_scissor(bx, by, bw, bh);
+    BeginScissor(bx, by, bw, bh);
 
     // The text to display depends on if we're active or not.
     std::string text;
@@ -1890,11 +1890,11 @@ TEINAPI void do_hotkey_rebind_main (float w, float h, UI_Flag flags, KeyBinding&
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
     fnt.color = shadow;
-    draw_text(fnt, tx, ty-offset, text);
+    DrawText(fnt, tx, ty-offset, text);
     fnt.color = front;
-    draw_text(fnt, tx, ty, text);
+    DrawText(fnt, tx, ty, text);
 
-    end_scissor();
+    EndScissor();
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 
@@ -1954,10 +1954,10 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& 
         front.a = .5f;
     }
 
-    set_draw_color(outline); // Draw the rebind's outline quad.
-    fill_quad(cur.x, cur.y, cur.x+w, cur.y+h);
-    set_draw_color(back); // Draw the rebind's background quad.
-    fill_quad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
+    SetDrawColor(outline); // Draw the rebind's outline quad.
+    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
+    SetDrawColor(back); // Draw the rebind's background quad.
+    FillQuad(cur.x+1, cur.y+1, cur.x+w-1, cur.y+h-1);
 
     constexpr float X_PAD = 5;
     constexpr float Y_PAD = 2;
@@ -1999,7 +1999,7 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& 
     }
 
     // We scissor the contents to avoid text overspill.
-    begin_scissor(bx, by, bw, bh);
+    BeginScissor(bx, by, bw, bh);
 
     // The text to display depends on if we're active or not.
     std::string text;
@@ -2023,11 +2023,11 @@ TEINAPI void do_hotkey_rebind_alt (float w, float h, UI_Flag flags, KeyBinding& 
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
     fnt.color = shadow;
-    draw_text(fnt, tx, ty-offset, text);
+    DrawText(fnt, tx, ty-offset, text);
     fnt.color = front;
-    draw_text(fnt, tx, ty, text);
+    DrawText(fnt, tx, ty, text);
 
-    end_scissor();
+    EndScissor();
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 
@@ -2048,8 +2048,8 @@ TEINAPI void do_icon (float w, float h, Texture& tex, const Quad* clip)
     Vec2 cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid image overspill.
-    begin_scissor(cur.x, cur.y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(cur.x, cur.y, w, h);
+    Defer { EndScissor(); };
 
     Vec4 front  = (ui_is_light) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
     Vec4 shadow = (ui_is_light) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
@@ -2069,9 +2069,9 @@ TEINAPI void do_icon (float w, float h, Texture& tex, const Quad* clip)
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
     tex.color = shadow;
-    draw_texture(tex, x, y-offset, clip);
+    DrawTexture(tex, x, y-offset, clip);
     tex.color = front;
-    draw_texture(tex, x, y, clip);
+    DrawTexture(tex, x, y, clip);
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 }
@@ -2089,8 +2089,8 @@ TEINAPI void do_quad (float w, float h, Vec4 color)
 
     if (locked || inactive) color.a = .5f;
 
-    set_draw_color(color);
-    fill_quad(cur.x, cur.y, cur.x+w, cur.y+h);
+    SetDrawColor(color);
+    FillQuad(cur.x, cur.y, cur.x+w, cur.y+h);
 
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);
 }
@@ -2117,15 +2117,15 @@ TEINAPI void do_scrollbar (Quad bounds, float content_height, float& scroll_offs
 TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_height, float& scroll_offset)
 {
     // Allows scrollbars to be outside the panel they are scrolling.
-    set_viewport(0, 0, get_render_target_w(), get_render_target_h());
-    Defer { set_viewport(ui_panels.top().viewport); };
+    SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
+    Defer { SetViewport(ui_panels.top().viewport); };
 
     x += ui_panels.top().viewport.x;
     y += ui_panels.top().viewport.y;
 
     // We scissor the contents to avoid any overspill.
-    begin_scissor(x, y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(x, y, w, h);
+    Defer { EndScissor(); };
 
     constexpr float PAD = 1;
 
@@ -2157,16 +2157,16 @@ TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_hei
         scroll_offset = std::clamp(scroll_offset, 0.0f, ndc_h);
     }
 
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(x, y, x+w, y+h);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(x, y, x+w, y+h);
 
     Vec4 color = ui_color_med_dark;
 
     if      (internal__is_hit()) color = ui_color_med_light;
     else if (internal__is_hot()) color = ui_color_medium;
 
-    set_draw_color(color);
-    fill_quad(bx, by, bx+bw, by+bh);
+    SetDrawColor(color);
+    FillQuad(bx, by, bx+bw, by+bh);
 
     // Draw the three lines on the scrollbar (avoid overspill).
     //
@@ -2176,18 +2176,18 @@ TEINAPI void do_scrollbar (float x, float y, float w, float h, float content_hei
     {
         constexpr float LINE_GAP = 2;
 
-        begin_scissor(bx, by, bw, bh);
-        set_draw_color(ui_color_ex_dark);
+        BeginScissor(bx, by, bw, bh);
+        SetDrawColor(ui_color_ex_dark);
 
         float y1 = by+(bh/2) - LINE_GAP;
         float y2 = by+(bh/2);
         float y3 = by+(bh/2) + LINE_GAP;
 
-        draw_line(bx+1, y1, bx+bw-1, y1);
-        draw_line(bx+1, y2, bx+bw-1, y2);
-        draw_line(bx+1, y3, bx+bw-1, y3);
+        DrawLine(bx+1, y1, bx+bw-1, y1);
+        DrawLine(bx+1, y2, bx+bw-1, y2);
+        DrawLine(bx+1, y3, bx+bw-1, y3);
 
-        end_scissor();
+        EndScissor();
     }
 
     // Set the panels relative offset to apply the actual scroll.
@@ -2267,15 +2267,15 @@ TEINAPI void begin_panel_gradient (float x, float y, float w, float h, UI_Flag f
     panel.cursor_dir = UI_DIR_RIGHT;
     panel.cursor_advance_enabled = true;
 
-    set_viewport(panel.viewport);
+    SetViewport(panel.viewport);
     ui_panels.push(panel);
 
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(0,                panel.viewport.h, cl); // BL
-    put_vertex(0,                0,                cl); // TL
-    put_vertex(panel.viewport.w, panel.viewport.h, cr); // BR
-    put_vertex(panel.viewport.w, 0,                cr); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(0,                panel.viewport.h, cl); // BL
+    PutVertex(0,                0,                cl); // TL
+    PutVertex(panel.viewport.w, panel.viewport.h, cr); // BR
+    PutVertex(panel.viewport.w, 0,                cr); // TR
+    EndDraw();
 }
 
 TEINAPI void begin_panel_gradient (Quad bounds, UI_Flag flags, Vec4 cl, Vec4 cr)
@@ -2312,19 +2312,19 @@ TEINAPI bool begin_click_panel_gradient (UI_Action action, float w, float h, UI_
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        set_draw_color(color);
-        fill_quad(0, 0, get_viewport().w, get_viewport().h);
+        SetDrawColor(color);
+        FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
     if (highlight && internal__is_hit())
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        begin_draw(BufferMode::TRIANGLE_STRIP);
-        put_vertex(0,                get_viewport().h, Vec4(0,0,0,0)); // BL
-        put_vertex(0,                0   ,             Vec4(0,0,0,0)); // TL
-        put_vertex(get_viewport().w, get_viewport().h,         color); // BR
-        put_vertex(get_viewport().w, 0,                        color); // TR
-        end_draw();
+        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        PutVertex(0,                GetViewport().h, Vec4(0,0,0,0)); // BL
+        PutVertex(0,                0   ,             Vec4(0,0,0,0)); // TL
+        PutVertex(GetViewport().w, GetViewport().h,         color); // BR
+        PutVertex(GetViewport().w, 0,                        color); // TR
+        EndDraw();
     }
 
     Vec4 separator_color = (locked) ? ui_color_dark : ui_color_med_dark;
@@ -2363,8 +2363,8 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
     Vec2     cur = internal__get_relative_cursor(ui_panels.top());
 
     // We scissor the contents to avoid image overspill.
-    begin_scissor(cur.x, cur.y, w, h);
-    Defer { end_scissor(); };
+    BeginScissor(cur.x, cur.y, w, h);
+    Defer { EndScissor(); };
 
     // Locked buttons cannot be interacted with.
     bool result = internal__handle_widget(cur.x, cur.y, w, h, locked);
@@ -2386,30 +2386,30 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
     }
 
     // Draw the button's background quad.
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(cur.x,   cur.y+h, bl); // BL
-    put_vertex(cur.x,   cur.y,   bl); // TL
-    put_vertex(cur.x+w, cur.y+h, br); // BR
-    put_vertex(cur.x+w, cur.y,   br); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(cur.x,   cur.y+h, bl); // BL
+    PutVertex(cur.x,   cur.y,   bl); // TL
+    PutVertex(cur.x+w, cur.y+h, br); // BR
+    PutVertex(cur.x+w, cur.y,   br); // TR
+    EndDraw();
 
     if (highlight && !internal__is_hit())
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        set_draw_color(color);
-        fill_quad(0, 0, get_viewport().w, get_viewport().h);
+        SetDrawColor(color);
+        FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
     if (highlight && internal__is_hit())
     {
         Vec4 color = ui_color_med_light;
         color.a = .66f;
-        begin_draw(BufferMode::TRIANGLE_STRIP);
-        put_vertex(cur.x,   cur.y+h,         color); // BL
-        put_vertex(cur.x,   cur.y,           color); // TL
-        put_vertex(cur.x+w, cur.y+h, Vec4(0,0,0,0)); // BR
-        put_vertex(cur.x+w, cur.y,   Vec4(0,0,0,0)); // TR
-        end_draw();
+        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        PutVertex(cur.x,   cur.y+h,         color); // BL
+        PutVertex(cur.x,   cur.y,           color); // TL
+        PutVertex(cur.x+w, cur.y+h, Vec4(0,0,0,0)); // BR
+        PutVertex(cur.x+w, cur.y,   Vec4(0,0,0,0)); // TR
+        EndDraw();
     }
 
     // The ((w)-1) and ((h)-1) are used to ensure the separator does
@@ -2427,9 +2427,9 @@ TEINAPI bool do_button_img_gradient (UI_Action action, float w, float h, UI_Flag
     float offset = (ui_is_light) ? -1.0f : 1.0f;
 
     tex.color = shadow;
-    draw_texture(tex, x, y-offset, clip);
+    DrawTexture(tex, x, y-offset, clip);
     tex.color = front;
-    draw_texture(tex, x, y, clip);
+    DrawTexture(tex, x, y, clip);
 
     internal__draw_separator(internal__get_relative_cursor(ui_panels.top()), ui_panels.top().cursor_dir, w, h, ui_color_med_dark);
     internal__advance_ui_cursor_end(ui_panels.top(), w, h);

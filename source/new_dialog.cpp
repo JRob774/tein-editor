@@ -62,8 +62,8 @@ TEINAPI void do_new ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -73,8 +73,8 @@ TEINAPI void do_new ()
 
     float nvfh = NEW_V_FRAME_H;
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     float bw = roundf(vw / 2);
     float bh = nvfh - gWindowBorder;

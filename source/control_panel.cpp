@@ -16,8 +16,8 @@ static Quad control_panel_bounds;
 TEINAPI void do_control_panel ()
 {
     control_panel_bounds.w = CONTROL_PANEL_WIDTH + CONTROL_PANEL_SCROLLBAR_WIDTH;
-    control_panel_bounds.h = get_viewport().h;
-    control_panel_bounds.x = get_viewport().w - control_panel_bounds.w;
+    control_panel_bounds.h = GetViewport().h;
+    control_panel_bounds.x = GetViewport().w - control_panel_bounds.w;
     control_panel_bounds.y = 0;
 
     // Determine if we need scrollbars for either sub-panels.
@@ -25,7 +25,7 @@ TEINAPI void do_control_panel ()
     if (!scrollbar)
     {
         control_panel_bounds.w = CONTROL_PANEL_WIDTH;
-        control_panel_bounds.x = get_viewport().w - control_panel_bounds.w;
+        control_panel_bounds.x = GetViewport().w - control_panel_bounds.w;
     }
 
     if (current_tab_is_level())

@@ -228,7 +228,7 @@ TEINAPI void internal__draw_map_clipboard ()
     IVec2 m = internal__mouse_to_node_position_int();
 
     Font& fnt = (is_editor_font_opensans()) ? resource_font_regular_libmono : resource_font_mono_dyslexic;
-    set_text_batch_font(fnt);
+    SetTextBatchFont(fnt);
 
     for (auto node: map_editor.clipboard)
     {
@@ -241,14 +241,14 @@ TEINAPI void internal__draw_map_clipboard ()
         float y2 = ny+MAP_NODE_H;
 
         std::string tileset(internal__get_tileset(node.lvl));
-        set_draw_color(0,0,0,1);
-        fill_quad(x1,y1,x2,y2);
+        SetDrawColor(0,0,0,1);
+        FillQuad(x1,y1,x2,y2);
         x2 -= px;
         y2 -= px;
 
         Vec4 bg = get_tileset_main_color(tileset);
-        set_draw_color(bg);
-        fill_quad(x1,y1,x2,y2);
+        SetDrawColor(bg);
+        FillQuad(x1,y1,x2,y2);
 
         // Don't bother drawing text when it's this zoomed out (can't even see it).
         if (tab.camera.zoom >= MAP_EDITOR_TEXT_CUT_OFF)
@@ -260,38 +260,38 @@ TEINAPI void internal__draw_map_clipboard ()
 
             if (tw > (MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)))
             {
-                Vec2 sa(world_to_screen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
-                Vec2 sb(world_to_screen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
+                Vec2 sa(WorldToScreen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
+                Vec2 sb(WorldToScreen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
 
                 float scx = floorf(sa.x);
                 float scy = floorf(sa.y);
                 float scw = ceilf (sb.x - scx);
                 float sch = ceilf (sb.y - scy);
 
-                flush_batched_text();
-                begin_scissor(scx,scy,scw,sch);
+                FlushBatchedText();
+                BeginScissor(scx,scy,scw,sch);
             }
 
-            set_text_batch_color(internal__get_node_shadow_color(bg));
-            draw_batched_text(tx+1, ty+1, node.lvl);
-            set_text_batch_color(internal__get_node_text_color(bg));
-            draw_batched_text(tx, ty, node.lvl);
+            SetTextBatchColor(internal__get_node_shadow_color(bg));
+            DrawBatchedText(tx+1, ty+1, node.lvl);
+            SetTextBatchColor(internal__get_node_text_color(bg));
+            DrawBatchedText(tx, ty, node.lvl);
 
             if (tw > (MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2)))
             {
-                flush_batched_text();
-                end_scissor();
+                FlushBatchedText();
+                EndScissor();
             }
         }
 
         x2 += px;
         y2 += px;
 
-        set_draw_color(gEditorSettings.cursorColor);
-        fill_quad(x1,y1,x2,y2);
+        SetDrawColor(gEditorSettings.cursorColor);
+        FillQuad(x1,y1,x2,y2);
     }
 
-    flush_batched_text();
+    FlushBatchedText();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -317,8 +317,8 @@ TEINAPI void do_map_editor ()
 
     p1.x = get_toolbar_w() + 1;
     p1.y = TAB_BAR_HEIGHT  + 1;
-    p1.w = get_viewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
-    p1.h = get_viewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
+    p1.w = GetViewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
+    p1.h = GetViewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
 
     // To account for the control panel disappearing.
     p1.w += 1;
@@ -331,13 +331,13 @@ TEINAPI void do_map_editor ()
     // prior to doing this there were bugs with the cursor's position being
     // slightly off during those operations + it's probably a bit faster.
     push_editor_camera_transform();
-    map_editor.mouse_world = screen_to_world(GetMousePos());
+    map_editor.mouse_world = ScreenToWorld(GetMousePos());
     map_editor.mouse = GetMousePos();
     map_editor.mouse_tile = internal__mouse_to_node_position();
     pop_editor_camera_transform();
 
     // We cache this just in case anyone else wants to use it (status bar).
-    map_editor.viewport = get_viewport();
+    map_editor.viewport = GetViewport();
 
     const Tab& tab = get_current_tab();
 
@@ -378,7 +378,7 @@ TEINAPI void do_map_editor ()
 
     // DRAW NODES
     Font& fnt = (is_editor_font_opensans()) ? resource_font_regular_libmono : resource_font_mono_dyslexic;
-    set_text_batch_font(fnt);
+    SetTextBatchFont(fnt);
     for (auto node: tab.map)
     {
         float nx = static_cast<float>(node.x) * MAP_NODE_W;
@@ -390,8 +390,8 @@ TEINAPI void do_map_editor ()
         float y2 = ny+MAP_NODE_H;
 
         std::string tileset(internal__get_tileset(node.lvl));
-        set_draw_color(0,0,0,1);
-        fill_quad(x1,y1,x2,y2);
+        SetDrawColor(0,0,0,1);
+        FillQuad(x1,y1,x2,y2);
         x2 -= px;
         y2 -= px;
 
@@ -425,8 +425,8 @@ TEINAPI void do_map_editor ()
             }
         }
 
-        set_draw_color(bg);
-        fill_quad(x1,y1,x2,y2);
+        SetDrawColor(bg);
+        FillQuad(x1,y1,x2,y2);
 
         // Don't bother drawing text when it's this zoomed out (can't even see it).
         if (tab.camera.zoom >= MAP_EDITOR_TEXT_CUT_OFF)
@@ -439,16 +439,16 @@ TEINAPI void do_map_editor ()
             if ((tw > (MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2))) || ((tab.map_node_info.active) &&
                 (tab.map_node_info.active_pos.x == node.x && tab.map_node_info.active_pos.y == node.y)))
             {
-                Vec2 sa(world_to_screen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
-                Vec2 sb(world_to_screen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
+                Vec2 sa(WorldToScreen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
+                Vec2 sb(WorldToScreen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
 
                 float scx = floorf(sa.x);
                 float scy = floorf(sa.y);
                 float scw = ceilf (sb.x - scx);
                 float sch = ceilf (sb.y - scy);
 
-                flush_batched_text();
-                begin_scissor(scx,scy,scw,sch);
+                FlushBatchedText();
+                BeginScissor(scx,scy,scw,sch);
             }
 
             float x_off = 0;
@@ -464,16 +464,16 @@ TEINAPI void do_map_editor ()
                 }
             }
 
-            set_text_batch_color(internal__get_node_shadow_color(bg));
-            draw_batched_text(tx+x_off+1, ty+1, node.lvl);
-            set_text_batch_color(internal__get_node_text_color(bg));
-            draw_batched_text(tx+x_off, ty, node.lvl);
+            SetTextBatchColor(internal__get_node_shadow_color(bg));
+            DrawBatchedText(tx+x_off+1, ty+1, node.lvl);
+            SetTextBatchColor(internal__get_node_text_color(bg));
+            DrawBatchedText(tx+x_off, ty, node.lvl);
 
             if ((tw > (MAP_NODE_W-(MAP_EDITOR_TEXT_PAD*2))) || ((tab.map_node_info.active) &&
                 (tab.map_node_info.active_pos.x == node.x && tab.map_node_info.active_pos.y == node.y)))
             {
-                flush_batched_text();
-                end_scissor();
+                FlushBatchedText();
+                EndScissor();
             }
         }
         else
@@ -484,7 +484,7 @@ TEINAPI void do_map_editor ()
             }
         }
     }
-    flush_batched_text();
+    FlushBatchedText();
 
     // DRAW HIGHLIGHT
     if (!draw_clipboard)
@@ -496,8 +496,8 @@ TEINAPI void do_map_editor ()
                 Vec2 m = internal__mouse_to_node_position();
                 m.x *= MAP_NODE_W;
                 m.y *= MAP_NODE_H;
-                set_draw_color(1,1,1,.5f);
-                fill_quad(m.x,m.y,m.x+MAP_NODE_W,m.y+MAP_NODE_H);
+                SetDrawColor(1,1,1,.5f);
+                FillQuad(m.x,m.y,m.x+MAP_NODE_W,m.y+MAP_NODE_H);
             }
         }
         if (tab.map_node_info.active && !active_node_pos_been_drawn)
@@ -505,8 +505,8 @@ TEINAPI void do_map_editor ()
             IVec2 m = internal__mouse_to_node_position_int();
             float nx = tab.map_node_info.active_pos.x * MAP_NODE_W;
             float ny = tab.map_node_info.active_pos.y * MAP_NODE_H;
-            set_draw_color(((is_ui_light()) ? Vec4(1,1,1,1) : ui_color_ex_light));
-            fill_quad(nx,ny,nx+MAP_NODE_W,ny+MAP_NODE_H);
+            SetDrawColor(((is_ui_light()) ? Vec4(1,1,1,1) : ui_color_ex_light));
+            FillQuad(nx,ny,nx+MAP_NODE_W,ny+MAP_NODE_H);
         }
     }
 
@@ -529,7 +529,7 @@ TEINAPI void do_map_editor ()
             float th = get_text_height_scaled(fnt, text);
 
             // So the cursor still draws when there is no text present.
-            if (th <= 0) th = fnt.line_gap.at(fnt.current_pt_size) * get_font_draw_scale();
+            if (th <= 0) th = fnt.line_gap.at(fnt.current_pt_size) * GetFontDrawScale();
 
             float tx = x1+MAP_EDITOR_TEXT_PAD;
             float ty = y1+roundf(((MAP_NODE_H/2)+(th/4)));
@@ -558,15 +558,15 @@ TEINAPI void do_map_editor ()
                     size_t begin = std::min(tab.map_node_info.cursor, tab.map_node_info.select);
                     size_t end   = std::max(tab.map_node_info.cursor, tab.map_node_info.select);
 
-                    Vec2 sa(world_to_screen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
-                    Vec2 sb(world_to_screen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
+                    Vec2 sa(WorldToScreen(Vec2(x+x1+MAP_EDITOR_TEXT_PAD, y+y1)));
+                    Vec2 sb(WorldToScreen(Vec2(x+x2-MAP_EDITOR_TEXT_PAD, y+y2)));
 
                     float scx = floorf(sa.x);
                     float scy = floorf(sa.y);
                     float scw = ceilf (sb.x - scx);
                     float sch = ceilf (sb.y - scy);
 
-                    begin_scissor(scx,scy,scw,sch);
+                    BeginScissor(scx,scy,scw,sch);
 
                     float x_off2 = 0;
                     std::string sub2(text.substr(0, tab.map_node_info.select));
@@ -584,20 +584,20 @@ TEINAPI void do_map_editor ()
                         xo2 += 1;
                     }
 
-                    set_draw_color(gEditorSettings.selectColor);
-                    fill_quad(tx+xo+x_off, y1+yo, tx+xo2+x_off2, y1+yo+th);
+                    SetDrawColor(gEditorSettings.selectColor);
+                    FillQuad(tx+xo+x_off, y1+yo, tx+xo2+x_off2, y1+yo+th);
 
-                    end_scissor();
+                    EndScissor();
                 }
             }
             else
             {
                 if (map_editor.cursor_visible)
                 {
-                    set_draw_color(internal__get_node_shadow_color(ui_color_ex_light));
-                    draw_line(tx+xo+x_off+1, y1+yo+1, tx+xo+x_off+1, y1+yo+th+1);
-                    set_draw_color(internal__get_node_text_color(ui_color_ex_light));
-                    draw_line(tx+xo+x_off, y1+yo, tx+xo+x_off, y1+yo+th);
+                    SetDrawColor(internal__get_node_shadow_color(ui_color_ex_light));
+                    DrawLine(tx+xo+x_off+1, y1+yo+1, tx+xo+x_off+1, y1+yo+th+1);
+                    SetDrawColor(internal__get_node_text_color(ui_color_ex_light));
+                    DrawLine(tx+xo+x_off, y1+yo, tx+xo+x_off, y1+yo+th);
                 }
             }
         }
@@ -626,8 +626,8 @@ TEINAPI void do_map_editor ()
         sx2 += MAP_NODE_W;
         sy2 += MAP_NODE_H;
 
-        set_draw_color(gEditorSettings.selectColor);
-        fill_quad(sx1,sy1,sx2,sy2);
+        SetDrawColor(gEditorSettings.selectColor);
+        FillQuad(sx1,sy1,sx2,sy2);
     }
 
     pop_editor_camera_transform();

@@ -1,96 +1,80 @@
-/*******************************************************************************
- * Simplisitic 2D renderer implemented using OpenGL 3.0 as the backend.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static SDL_GLContext gGLContext;
+static Window* gRenderTarget;
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static Quad gRendererViewport;
+static Vec4 gRendererDrawColor;
 
-/* -------------------------------------------------------------------------- */
+static std::stack<Quad> gScissorStack;
 
-static SDL_GLContext gl_context;
-static Window*    render_target;
+static Shader gUntexturedShader;
+static Shader gTexturedShader;
+static Shader gTextShader;
 
-static Quad renderer_viewport;
-static Vec4 renderer_draw_color;
+static float gTextureDrawScaleX;
+static float gTextureDrawScaleY;
 
-static std::stack<Quad> scissor_stack;
+static float gFontDrawScale;
 
-static Shader untextured_shader;
-static Shader   textured_shader;
-static Shader       text_shader;
+static GLfloat gMaxGLTextureSize;
 
-static float texture_draw_scale_x;
-static float texture_draw_scale_y;
+static BufferMode gImmediateBufferDrawMode;
 
-static float font_draw_scale;
-
-static GLfloat max_gl_texture_size;
-
-static BufferMode immediate_buffer_draw_mode;
-
-static VertexBuffer draw_buffer;
-static VertexBuffer tile_buffer;
-static VertexBuffer text_buffer;
+static VertexBuffer gDrawBuffer;
+static VertexBuffer gTileBuffer;
+static VertexBuffer gTextBuffer;
 
 // Batched tile rendering.
-static Vec4     tile_draw_color;
-static Texture* tile_texture;
+static Vec4 gTileDrawColor;
+static Texture* gTileTexture;
+
 // Batched text rendering.
-static Vec4     text_draw_color;
-static Font*    text_font;
+static Vec4 gTextDrawColor;
+static Font* gTextFont;
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Quad internal__convert_viewport (Quad viewport)
+namespace Internal
 {
-    // Converts a viewport in our top-left format to GL's bottom-left format.
-    Quad converted;
+    TEINAPI Quad ConvertViewport (Quad viewport)
+    {
+        // Converts a viewport in our top-left format to GL's bottom-left format.
+        Quad converted = viewport;
+        converted.y = (GetRenderTargetHeight() - (viewport.y + viewport.h));
+        return converted;
+    }
 
-    converted.x = viewport.x;
-    converted.y = (get_render_target_h() - (viewport.y + viewport.h));
-    converted.w = viewport.w;
-    converted.h = viewport.h;
+    TEINAPI void SetTexture0Uniform (Shader shader, GLenum unit)
+    {
+        GLint location = glGetUniformLocation(shader, "texture0");
+        glUniform1i(location, unit);
+    }
 
-    return converted;
+    TEINAPI void DumpOpenGLDebugInfo ()
+    {
+        const GLubyte* openGLVersion = glGetString(GL_VERSION);
+        const GLubyte* openGLSLVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
+        const GLubyte* openGLRenderer = glGetString(GL_RENDERER);
+        const GLubyte* openGLVendor = glGetString(GL_VENDOR);
+
+        GLint maxTextureSize;
+        GLint maxTextureUnits;
+
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+
+        BeginDebugSection("OpenGL:");
+        LogDebug("Version %s", openGLVersion);
+        LogDebug("GLSL Version %s", openGLSLVersion);
+        LogDebug("Renderer: %s", openGLRenderer);
+        LogDebug("Vendor: %s", openGLVendor);
+        LogDebug("Max Texture Size: %d", maxTextureSize);
+        LogDebug("Max Texture Units: %d", maxTextureUnits);
+        EndDebugSection();
+    }
 }
 
-TEINAPI void internal__set_texture0_uniform (Shader shader, GLenum unit)
+TEINAPI bool InitRenderer ()
 {
-    GLint location = glGetUniformLocation(shader, "texture0");
-    glUniform1i(location, unit);
-}
-
-TEINAPI void internal__dump_opengl_debug_info ()
-{
-    const GLubyte* gl_version   = glGetString(GL_VERSION                 );
-    const GLubyte* gl_slversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-    const GLubyte* gl_renderer  = glGetString(GL_RENDERER                );
-    const GLubyte* gl_vendor    = glGetString(GL_VENDOR                  );
-
-    GLint max_texture_size;
-    GLint max_texture_units;
-
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE,        &max_texture_size );
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
-
-    BeginDebugSection("OpenGL:");
-    LogDebug("Version %s"            , gl_version       );
-    LogDebug("GLSL Version %s"       , gl_slversion     );
-    LogDebug("Renderer: %s"          , gl_renderer      );
-    LogDebug("Vendor: %s"            , gl_vendor        );
-    LogDebug("Max Texture Size: %d"  , max_texture_size );
-    LogDebug("Max Texture Units: %d" , max_texture_units);
-    EndDebugSection();
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool init_renderer ()
-{
-    gl_context = SDL_GL_CreateContext(GetWindowFromName("WINMAIN").window);
-    if (!gl_context)
+    gGLContext = SDL_GL_CreateContext(GetWindowFromName("WINMAIN").window);
+    if (!gGLContext)
     {
         LogError(ERR_MIN, "Failed to create GL context! (%s)", SDL_GetError());
         return false;
@@ -103,24 +87,24 @@ TEINAPI bool init_renderer ()
     }
 
     LogDebug("Initialized OpenGL Renderer");
-    internal__dump_opengl_debug_info();
+    Internal::DumpOpenGLDebugInfo();
 
-    renderer_draw_color  = Vec4(1,1,1,1);
-    texture_draw_scale_x = 1;
-    texture_draw_scale_y = 1;
-    font_draw_scale      = 1;
+    gRendererDrawColor = Vec4(1,1,1,1);
+    gTextureDrawScaleX = 1;
+    gTextureDrawScaleY = 1;
+    gFontDrawScale = 1;
 
-    glGetFloatv(GL_MAX_TEXTURE_SIZE, &max_gl_texture_size);
+    glGetFloatv(GL_MAX_TEXTURE_SIZE, &gMaxGLTextureSize);
 
-    untextured_shader = load_shader_resource("shaders/untextured.shader");
-    if (!untextured_shader)
+    gUntexturedShader = load_shader_resource("shaders/untextured.shader");
+    if (!gUntexturedShader)
     {
         LogError(ERR_MAX, "Failed to load the untextured shader!");
         return false;
     }
 
-    textured_shader = load_shader_resource("shaders/textured.shader");
-    if (!textured_shader)
+    gTexturedShader = load_shader_resource("shaders/textured.shader");
+    if (!gTexturedShader)
     {
         LogError(ERR_MAX, "Failed to load the textured shader!");
         return false;
@@ -128,255 +112,221 @@ TEINAPI bool init_renderer ()
 
     // We carry on even on failure because text will still be drawn it
     // will just be extremely ugly... but it's not worth failing over.
-    text_shader = load_shader_resource("shaders/text.shader");
-    if (!text_shader)
+    gTextShader = load_shader_resource("shaders/text.shader");
+    if (!gTextShader)
     {
         LogError(ERR_MED, "Failed to load the text shader!");
     }
 
     // By default we render to the main window.
-    set_render_target(&GetWindowFromName("WINMAIN"));
+    SetRenderTarget(&GetWindowFromName("WINMAIN"));
 
-    set_viewport(0, 0, get_render_target_w(), get_render_target_h());
+    SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
-    CreateVertexBuffer(draw_buffer);
-    CreateVertexBuffer(tile_buffer);
-    CreateVertexBuffer(text_buffer);
+    CreateVertexBuffer(gDrawBuffer);
+    CreateVertexBuffer(gTileBuffer);
+    CreateVertexBuffer(gTextBuffer);
 
-    immediate_buffer_draw_mode = BufferMode::TRIANGLE_STRIP;
+    gImmediateBufferDrawMode = BufferMode::TRIANGLE_STRIP;
 
     return true;
 }
 
-TEINAPI void quit_renderer ()
+TEINAPI void QuitRenderer ()
 {
-    FreeVertexBuffer(draw_buffer);
-    FreeVertexBuffer(tile_buffer);
-    FreeVertexBuffer(text_buffer);
+    FreeVertexBuffer(gDrawBuffer);
+    FreeVertexBuffer(gTileBuffer);
+    FreeVertexBuffer(gTextBuffer);
 
-    free_shader(untextured_shader);
-    free_shader(  textured_shader);
-    free_shader(      text_shader);
+    free_shader(gUntexturedShader);
+    free_shader(gTexturedShader);
+    free_shader(gTextShader);
 
-    SDL_GL_DeleteContext(gl_context);
-    gl_context = NULL;
+    SDL_GL_DeleteContext(gGLContext);
+    gGLContext = NULL;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void render_clear (Vec4 clear)
+TEINAPI void RenderClear (Vec4 clear)
 {
     glClearColor(clear.r, clear.g, clear.b, clear.a);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-TEINAPI void render_present ()
+TEINAPI void RenderPresent ()
 {
-    assert(render_target);
-    if (render_target)
-    {
-        SDL_GL_SwapWindow(render_target->window);
-    }
+    assert(gRenderTarget);
+    if (gRenderTarget) SDL_GL_SwapWindow(gRenderTarget->window);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Vec2 screen_to_world (Vec2 screen)
+TEINAPI Vec2 ScreenToWorld (Vec2 screen)
 {
     // GL expects bottom-left so we have to convert our viewport first.
-    Quad v = internal__convert_viewport(renderer_viewport);
+    Quad v = Internal::ConvertViewport(gRendererViewport);
 
     // We also need to do flip the Y coordinate to use this system.
-    screen.y = get_render_target_h() - screen.y;
+    screen.y = GetRenderTargetHeight() - screen.y;
     Vec3 coord(screen.x, screen.y, 0);
 
     Mat4 projection;
-    Mat4 modelview;
+    Mat4 modelView;
 
     float matrix[16];
 
     glGetFloatv(GL_PROJECTION_MATRIX, matrix);
     projection = glm::make_mat4(matrix);
     glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
-    modelview = glm::make_mat4(matrix);
+    modelView = glm::make_mat4(matrix);
 
     Vec4 viewport(v.x, v.y, v.w, v.h);
 
-    coord = glm::unProject(coord, modelview, projection, viewport);
+    coord = glm::unProject(coord, modelView, projection, viewport);
 
     Vec2 world(coord.x, coord.y);
 
     return world;
 }
 
-TEINAPI Vec2 world_to_screen (Vec2 world)
+TEINAPI Vec2 WorldToScreen (Vec2 world)
 {
     // GL expects bottom-left so we have to convert our viewport first.
-    Quad v = internal__convert_viewport(renderer_viewport);
+    Quad v = Internal::ConvertViewport(gRendererViewport);
 
     Vec3 coord(world.x, world.y, 0);
 
     Mat4 projection;
-    Mat4 modelview;
+    Mat4 modelView;
 
     float matrix[16];
 
     glGetFloatv(GL_PROJECTION_MATRIX, matrix);
     projection = glm::make_mat4(matrix);
     glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
-    modelview = glm::make_mat4(matrix);
+    modelView = glm::make_mat4(matrix);
 
     Vec4 viewport(v.x, v.y, v.w, v.h);
 
-    coord = glm::project(coord, modelview, projection, viewport);
+    coord = glm::project(coord, modelView, projection, viewport);
 
     // We also need to do flip the Y coordinate to use this system.
     Vec2 screen(coord.x, coord.y);
 
     screen.x -= v.x;
-    screen.y  = get_render_target_h() - (screen.y + renderer_viewport.y);
+    screen.y = GetRenderTargetHeight() - (screen.y + gRendererViewport.y);
 
     return screen;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float get_max_texture_size ()
+TEINAPI float GetMaxTextureSize ()
 {
-    return max_gl_texture_size;
+    return gMaxGLTextureSize;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Window* get_render_target ()
+TEINAPI Window* GetRenderTarget ()
 {
-    return render_target;
+    return gRenderTarget;
 }
 
-TEINAPI void set_render_target (Window* window)
+TEINAPI void SetRenderTarget (Window* window)
 {
-    render_target = window;
-    assert(render_target);
+    gRenderTarget = window;
+    assert(gRenderTarget);
 
-    if (SDL_GL_MakeCurrent(render_target->window, gl_context) < 0)
+    if (SDL_GL_MakeCurrent(gRenderTarget->window, gGLContext) < 0)
     {
-        render_target = NULL;
+        gRenderTarget = NULL;
         LogError(ERR_MED, "Failed to set render target! (%s)", SDL_GetError());
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float get_render_target_w ()
+TEINAPI float GetRenderTargetWidth ()
 {
     int w = 0;
-    if (render_target) SDL_GL_GetDrawableSize(render_target->window, &w, NULL);
+    if (gRenderTarget) SDL_GL_GetDrawableSize(gRenderTarget->window, &w, NULL);
     return static_cast<float>(w);
 }
 
-TEINAPI float get_render_target_h ()
+TEINAPI float GetRenderTargetHeight ()
 {
     int h = 0;
-    if (render_target) SDL_GL_GetDrawableSize(render_target->window, NULL, &h);
+    if (gRenderTarget) SDL_GL_GetDrawableSize(gRenderTarget->window, NULL, &h);
     return static_cast<float>(h);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_orthographic (float l, float r, float b, float t)
+TEINAPI void SetOrthographic (float l, float r, float b, float t)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
-    glOrtho(l, r, b, t, 0, 1);
-
+    glOrtho(l,r,b,t, 0,1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_viewport (float x, float y, float w, float h)
+TEINAPI void SetViewport (float x, float y, float w, float h)
 {
     // GL expects bottom-left so we have to flip the Y coordinate around.
-    renderer_viewport = { x, y, w, h };
-    Quad v = internal__convert_viewport(renderer_viewport);
+    gRendererViewport = { x, y, w, h };
+    Quad v = Internal::ConvertViewport(gRendererViewport);
 
     GLint   vx = static_cast<GLint>(v.x);
     GLint   vy = static_cast<GLint>(v.y);
     GLsizei vw = static_cast<GLsizei>(v.w);
     GLsizei vh = static_cast<GLsizei>(v.h);
 
-    glViewport(vx, vy, vw, vh);
-
-    set_orthographic(0, w, h, 0);
+    glViewport(vx,vy,vw,vh);
+    SetOrthographic(0,w,h,0);
 }
-
-TEINAPI void set_viewport (Quad v)
+TEINAPI void SetViewport (Quad v)
 {
-    set_viewport(v.x, v.y, v.w, v.h);
+    SetViewport(v.x,v.y,v.w,v.h);
 }
 
-TEINAPI Quad get_viewport ()
+TEINAPI Quad GetViewport ()
 {
-    return renderer_viewport;
+    return gRendererViewport;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_draw_color (float r, float g, float b, float a)
+TEINAPI void SetDrawColor (float r, float g, float b, float a)
 {
-    renderer_draw_color = { r, g, b, a };
+    gRendererDrawColor = { r,g,b,a };
 }
-
-TEINAPI void set_draw_color (Vec4 color)
+TEINAPI void SetDrawColor (Vec4 color)
 {
-    renderer_draw_color = color;
+    gRendererDrawColor = color;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_line_width (float width)
+TEINAPI void SetLineWidth (float width)
 {
     glLineWidth(width);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_texture_draw_scale (float sx, float sy)
+TEINAPI void SetTextureDrawScale (float sx, float sy)
 {
-    texture_draw_scale_x = sx;
-    texture_draw_scale_y = sy;
+    gTextureDrawScaleX = sx;
+    gTextureDrawScaleY = sy;
 }
 
-TEINAPI float get_texture_draw_scale_x ()
+TEINAPI float GetTextureDrawScaleX ()
 {
-    return texture_draw_scale_x;
+    return gTextureDrawScaleX;
+}
+TEINAPI float GetTextureDrawScaleY ()
+{
+    return gTextureDrawScaleY;
 }
 
-TEINAPI float get_texture_draw_scale_y ()
+TEINAPI void SetFontDrawScale (float scale)
 {
-    return texture_draw_scale_y;
+    gFontDrawScale = scale;
+}
+TEINAPI float GetFontDrawScale ()
+{
+    return gFontDrawScale;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_font_draw_scale (float scale)
-{
-    font_draw_scale = scale;
-}
-
-TEINAPI float get_font_draw_scale ()
-{
-    return font_draw_scale;
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void begin_scissor (float x, float y, float w, float h)
+TEINAPI void BeginScissor (float x, float y, float w, float h)
 {
     // Our version of setting the scissor region takes the currently set
     // viewport into consideration rather than basing the region on the
@@ -385,60 +335,53 @@ TEINAPI void begin_scissor (float x, float y, float w, float h)
 
     // We push scissor regions onto a stack so we can stack scissor calls.
     // This is particularly useful for the GUI which uses many scissors.
-    if (scissor_stack.size() == 0) glEnable(GL_SCISSOR_TEST);
-    scissor_stack.push({ x, y, w, h });
+    if (gScissorStack.size() == 0) glEnable(GL_SCISSOR_TEST);
+    gScissorStack.push({ x,y,w,h });
 
     // GL expects bottom-left so we have to flip the Y coordinate around.
-    GLint   sx = static_cast<GLint>(renderer_viewport.x + x);
-    GLint   sy = static_cast<GLint>(get_render_target_h() - (renderer_viewport.y + (y + h)));
+    GLint   sx = static_cast<GLint>(gRendererViewport.x + x);
+    GLint   sy = static_cast<GLint>(GetRenderTargetHeight() - (gRendererViewport.y + (y + h)));
     GLsizei sw = static_cast<GLsizei>(w);
     GLsizei sh = static_cast<GLsizei>(h);
 
-    glScissor(sx, sy, sw, sh);
+    glScissor(sx,sy,sw,sh);
 }
-
-TEINAPI void end_scissor ()
+TEINAPI void EndScissor ()
 {
     // Pop the last scissor region off the stack.
-    Quad s = scissor_stack.top();
-    scissor_stack.pop();
+    Quad s = gScissorStack.top();
+    gScissorStack.pop();
 
     // GL expects bottom-left so we have to flip the Y coordinate around.
-    GLint   x = static_cast<GLint>(renderer_viewport.x + s.x);
-    GLint   y = static_cast<GLint>(get_render_target_h() - (renderer_viewport.y + (s.y + s.h)));
+    GLint   x = static_cast<GLint>(gRendererViewport.x + s.x);
+    GLint   y = static_cast<GLint>(GetRenderTargetHeight() - (gRendererViewport.y + (s.y + s.h)));
     GLsizei w = static_cast<GLsizei>(s.w);
     GLsizei h = static_cast<GLsizei>(s.h);
 
-    glScissor(x, y, w, h);
+    glScissor(x,y,w,h);
 
-    if (scissor_stack.size() == 0) glDisable(GL_SCISSOR_TEST);
+    if (gScissorStack.size() == 0) glDisable(GL_SCISSOR_TEST);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void begin_stencil ()
+TEINAPI void BeginStencil ()
 {
     glEnable(GL_STENCIL_TEST);
-
     glClearStencil(0);
     glClear(GL_STENCIL_BUFFER_BIT);
 }
-
-TEINAPI void end_stencil ()
+TEINAPI void EndStencil ()
 {
-    stencil_mode_draw();
+    StencilModeDraw();
     glDisable(GL_STENCIL_TEST);
 }
-
-TEINAPI void stencil_mode_erase ()
+TEINAPI void StencilModeErase ()
 {
     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
     glDepthMask(GL_FALSE);
     glStencilFunc(GL_ALWAYS, 1, ~0u);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 }
-
-TEINAPI void stencil_mode_draw ()
+TEINAPI void StencilModeDraw ()
 {
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     glDepthMask(GL_TRUE);
@@ -446,22 +389,20 @@ TEINAPI void stencil_mode_draw ()
     glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void draw_line (float x1, float y1, float x2, float y2)
+TEINAPI void DrawLine (float x1, float y1, float x2, float y2)
 {
-    glUseProgram(untextured_shader);
+    glUseProgram(gUntexturedShader);
 
-    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
-    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x1,y1), Vec2(0,0), gRendererDrawColor });
+    PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(0,0), gRendererDrawColor });
 
-    DrawVertexBuffer(draw_buffer, BufferMode::LINES);
-    ClearVertexBuffer(draw_buffer);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::LINES);
+    ClearVertexBuffer(gDrawBuffer);
 }
 
-TEINAPI void draw_quad (float x1, float y1, float x2, float y2)
+TEINAPI void DrawQuad (float x1, float y1, float x2, float y2)
 {
-    glUseProgram(untextured_shader);
+    glUseProgram(gUntexturedShader);
 
     // We want to use .5f otherwise the lines don't draw where we want them.
     x1 += .5f;
@@ -469,42 +410,40 @@ TEINAPI void draw_quad (float x1, float y1, float x2, float y2)
     x2 -= .5f;
     y2 -= .5f;
 
-    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
-    PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
-    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
-    PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x1,y1), Vec2(0,0), gRendererDrawColor });
+    PutBufferVertex(gDrawBuffer, { Vec2(x2,y1), Vec2(0,0), gRendererDrawColor });
+    PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(0,0), gRendererDrawColor });
+    PutBufferVertex(gDrawBuffer, { Vec2(x1,y2), Vec2(0,0), gRendererDrawColor });
 
-    DrawVertexBuffer(draw_buffer, BufferMode::LINE_LOOP);
-    ClearVertexBuffer(draw_buffer);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::LINE_LOOP);
+    ClearVertexBuffer(gDrawBuffer);
 }
 
-TEINAPI void fill_quad (float x1, float y1, float x2, float y2)
+TEINAPI void FillQuad (float x1, float y1, float x2, float y2)
 {
-    glUseProgram(untextured_shader);
+    glUseProgram(gUntexturedShader);
 
-    PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(0,0), renderer_draw_color });
-    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(0,0), renderer_draw_color });
-    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(0,0), renderer_draw_color });
-    PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(0,0), renderer_draw_color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x1,y2), Vec2(0,0), gRendererDrawColor });
+    PutBufferVertex(gDrawBuffer, { Vec2(x1,y1), Vec2(0,0), gRendererDrawColor });
+    PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(0,0), gRendererDrawColor });
+    PutBufferVertex(gDrawBuffer, { Vec2(x2,y1), Vec2(0,0), gRendererDrawColor });
 
-    DrawVertexBuffer(draw_buffer, BufferMode::TRIANGLE_STRIP);
-    ClearVertexBuffer(draw_buffer);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::TRIANGLE_STRIP);
+    ClearVertexBuffer(gDrawBuffer);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* clip)
+TEINAPI void DrawTexture (const Texture& tex, float x, float y, const Quad* clip)
 {
     glBindTexture(GL_TEXTURE_2D, tex.handle);
     glEnable(GL_TEXTURE_2D);
 
     Defer { glDisable(GL_TEXTURE_2D); };
 
-    glUseProgram(textured_shader);
-    internal__set_texture0_uniform(textured_shader, GL_TEXTURE0);
+    glUseProgram(gTexturedShader);
+    Internal::SetTexture0Uniform(gTexturedShader, GL_TEXTURE0);
 
-    float cx1, cy1, cx2, cy2;
-    float w, h;
+    float cx1,cy1,cx2,cy2;
+    float w,h;
 
     if (clip)
     {
@@ -513,8 +452,8 @@ TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* cli
         cx2 = cx1 + (clip->w / tex.w);
         cy2 = cy1 + (clip->h / tex.h);
 
-        w = clip->w * texture_draw_scale_x;
-        h = clip->h * texture_draw_scale_y;
+        w = clip->w * gTextureDrawScaleX;
+        h = clip->h * gTextureDrawScaleY;
     }
     else
     {
@@ -523,8 +462,8 @@ TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* cli
         cx2 = 1;
         cy2 = 1;
 
-        w = tex.w * texture_draw_scale_x;
-        h = tex.h * texture_draw_scale_y;
+        w = tex.w * gTextureDrawScaleX;
+        h = tex.h * gTextureDrawScaleY;
     }
 
     float x1 = x  - (w / 2); // Center anchor.
@@ -532,34 +471,34 @@ TEINAPI void draw_texture (const Texture& tex, float x, float y, const Quad* cli
     float x2 = x1 + w;
     float y2 = y1 + h;
 
-    PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tex.color });
-    PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tex.color });
-    PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tex.color });
-    PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tex.color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x1,y2), Vec2(cx1,cy2), tex.color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x1,y1), Vec2(cx1,cy1), tex.color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), tex.color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x2,y1), Vec2(cx2,cy1), tex.color });
 
-    DrawVertexBuffer(draw_buffer, BufferMode::TRIANGLE_STRIP);
-    ClearVertexBuffer(draw_buffer);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::TRIANGLE_STRIP);
+    ClearVertexBuffer(gDrawBuffer);
 }
 
-TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
+TEINAPI void DrawText (const Font& fnt, float x, float y, std::string text)
 {
     glBindTexture(GL_TEXTURE_2D, fnt.cache.at(fnt.current_pt_size).handle);
     glEnable(GL_TEXTURE_2D);
 
     Defer { glDisable(GL_TEXTURE_2D); };
 
-    glUseProgram(text_shader);
-    internal__set_texture0_uniform(text_shader, GL_TEXTURE0);
+    glUseProgram(gTextShader);
+    Internal::SetTexture0Uniform(gTextShader, GL_TEXTURE0);
 
     std::vector<Vertex> verts;
 
-    int index      = 0;
-    int prev_index = 0;
+    int index = 0;
+    int prevIndex = 0;
 
     float cx = x;
     float cy = y;
 
-    float scale = font_draw_scale;
+    float scale = gFontDrawScale;
 
     const Texture& cache = fnt.cache.at(fnt.current_pt_size);
     auto& glyphs = fnt.glyphs.at(fnt.current_pt_size);
@@ -568,7 +507,7 @@ TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
     {
         if (*c < 0 || *c >= TOTAL_GLYPH_COUNT) continue;
 
-        cx += (get_font_kerning(fnt, *c, index, prev_index) * scale);
+        cx += (get_font_kerning(fnt, *c, index, prevIndex) * scale);
 
         switch (*c)
         {
@@ -581,8 +520,8 @@ TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
                 const Font_Glyph& glyph = glyphs.at(*c);
                 const Quad& clip = glyph.bounds;
 
-                float bearing_x = glyph.bearing.x * scale;
-                float bearing_y = glyph.bearing.y * scale;
+                float bearingX = glyph.bearing.x * scale;
+                float bearingY = glyph.bearing.y * scale;
 
                 float advance = glyph.advance * scale;
 
@@ -594,155 +533,136 @@ TEINAPI void draw_text (const Font& fnt, float x, float y, std::string text)
                 float w = clip.w * scale;
                 float h = clip.h * scale;
 
-                float x1 = roundf(cx + bearing_x);
-                float y1 = roundf(cy - bearing_y);
+                float x1 = roundf(cx + bearingX);
+                float y1 = roundf(cy - bearingY);
                 float x2 = roundf(x1 + w);
                 float y2 = roundf(y1 + h);
 
-                PutBufferVertex(draw_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), fnt.color }); // V0
-                PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
-                PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
-                PutBufferVertex(draw_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
-                PutBufferVertex(draw_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
-                PutBufferVertex(draw_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), fnt.color }); // V3
+                PutBufferVertex(gDrawBuffer, { Vec2(x1,y2), Vec2(cx1,cy2), fnt.color }); // V0
+                PutBufferVertex(gDrawBuffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
+                PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
+                PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), fnt.color }); // V2
+                PutBufferVertex(gDrawBuffer, { Vec2(x1,y1), Vec2(cx1,cy1), fnt.color }); // V1
+                PutBufferVertex(gDrawBuffer, { Vec2(x2,y1), Vec2(cx2,cy1), fnt.color }); // V3
 
                 cx += advance;
             } break;
         }
     }
 
-    DrawVertexBuffer(draw_buffer, BufferMode::TRIANGLES);
-    ClearVertexBuffer(draw_buffer);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::TRIANGLES);
+    ClearVertexBuffer(gDrawBuffer);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void begin_draw (BufferMode mode)
+TEINAPI void BeginDraw (BufferMode mode)
 {
-    immediate_buffer_draw_mode = mode;
+    gImmediateBufferDrawMode = mode;
 }
-
-TEINAPI void end_draw ()
+TEINAPI void EndDraw ()
 {
-    glUseProgram(untextured_shader);
-
-    DrawVertexBuffer(draw_buffer, immediate_buffer_draw_mode);
-    ClearVertexBuffer(draw_buffer);
+    glUseProgram(gUntexturedShader);
+    DrawVertexBuffer(gDrawBuffer, gImmediateBufferDrawMode);
+    ClearVertexBuffer(gDrawBuffer);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void put_vertex (float x, float y, Vec4 color)
+TEINAPI void PutVertex (float x, float y, Vec4 color)
 {
-    PutBufferVertex(draw_buffer, { Vec2(x,y), Vec2(0,0), color });
+    PutBufferVertex(gDrawBuffer, { Vec2(x,y), Vec2(0,0), color });
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void push_matrix (Matrix_Mode mode)
+TEINAPI void PushMatrix (MatrixMode mode)
 {
     glMatrixMode(static_cast<GLenum>(mode));
     glPushMatrix();
     glLoadIdentity();
 }
-
-TEINAPI void pop_matrix (Matrix_Mode mode)
+TEINAPI void PopMatrix (MatrixMode mode)
 {
     glMatrixMode(static_cast<GLenum>(mode));
     glPopMatrix();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void translate (float x, float y)
+TEINAPI void Translate (float x, float y)
 {
     glTranslatef(x, y, 0);
 }
-
-TEINAPI void rotate (float x, float y, float angle)
+TEINAPI void Rotate (float x, float y, float angle)
 {
     glRotatef(angle, x, y, 0);
 }
-
-TEINAPI void scale (float x, float y)
+TEINAPI void Scale (float x, float y)
 {
     glScalef(x, y, 1);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void set_tile_batch_texture (Texture& tex)
+TEINAPI void SetTileBatchTexture (Texture& tex)
 {
-    tile_texture = &tex;
+    gTileTexture = &tex;
+}
+TEINAPI void SetTextBatchFont (Font& fnt)
+{
+    gTextFont = &fnt;
+}
+TEINAPI void SetTileBatchColor (Vec4 color)
+{
+    gTileDrawColor = color;
 }
 
-TEINAPI void set_text_batch_font (Font& fnt)
+TEINAPI void SetTextBatchColor (Vec4 color)
 {
-    text_font = &fnt;
+    gTextDrawColor = color;
 }
 
-TEINAPI void set_tile_batch_color (Vec4 color)
+TEINAPI void DrawBatchedTile (float x, float y, const Quad* clip)
 {
-    tile_draw_color = color;
-}
+    assert(gTileTexture);
 
-TEINAPI void set_text_batch_color (Vec4 color)
-{
-    text_draw_color = color;
-}
+    float cx1 =       (clip->x / gTileTexture->w);
+    float cy1 =       (clip->y / gTileTexture->h);
+    float cx2 = cx1 + (clip->w / gTileTexture->w);
+    float cy2 = cy1 + (clip->h / gTileTexture->h);
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void draw_batched_tile (float x, float y, const Quad* clip)
-{
-    assert(tile_texture);
-
-    float cx1 =       (clip->x / tile_texture->w);
-    float cy1 =       (clip->y / tile_texture->h);
-    float cx2 = cx1 + (clip->w / tile_texture->w);
-    float cy2 = cy1 + (clip->h / tile_texture->h);
-
-    float w = clip->w * texture_draw_scale_x;
-    float h = clip->h * texture_draw_scale_y;
+    float w = clip->w * gTextureDrawScaleX;
+    float h = clip->h * gTextureDrawScaleY;
 
     float x1 = x  - (w / 2); // Center anchor.
     float y1 = y  - (h / 2); // Center anchor.
     float x2 = x1 + w;
     float y2 = y1 + h;
 
-    PutBufferVertex(tile_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), tile_draw_color }); // V0
-    PutBufferVertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
-    PutBufferVertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
-    PutBufferVertex(tile_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), tile_draw_color }); // V2
-    PutBufferVertex(tile_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), tile_draw_color }); // V1
-    PutBufferVertex(tile_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), tile_draw_color }); // V3
+    PutBufferVertex(gTileBuffer, { Vec2(x1,y2), Vec2(cx1,cy2), gTileDrawColor }); // V0
+    PutBufferVertex(gTileBuffer, { Vec2(x1,y1), Vec2(cx1,cy1), gTileDrawColor }); // V1
+    PutBufferVertex(gTileBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), gTileDrawColor }); // V2
+    PutBufferVertex(gTileBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), gTileDrawColor }); // V2
+    PutBufferVertex(gTileBuffer, { Vec2(x1,y1), Vec2(cx1,cy1), gTileDrawColor }); // V1
+    PutBufferVertex(gTileBuffer, { Vec2(x2,y1), Vec2(cx2,cy1), gTileDrawColor }); // V3
 }
 
-TEINAPI void draw_batched_text (float x, float y, std::string text)
+TEINAPI void DrawBatchedText (float x, float y, std::string text)
 {
-    int index      = 0;
-    int prev_index = 0;
+    int index = 0;
+    int prevIndex = 0;
 
     float cx = x;
     float cy = y;
 
-    const Font& fnt = *text_font;
-    float scale = font_draw_scale;
+    const Font& fnt = *gTextFont;
+    float scale = gFontDrawScale;
 
-    const auto& cache    = fnt.cache   .at(fnt.current_pt_size);
-    const auto& glyphs   = fnt.glyphs  .at(fnt.current_pt_size);
-    const auto& line_gap = fnt.line_gap.at(fnt.current_pt_size);
+    const auto& cache = fnt.cache.at(fnt.current_pt_size);
+    const auto& glyphs = fnt.glyphs.at(fnt.current_pt_size);
+    const auto& lineGap = fnt.line_gap.at(fnt.current_pt_size);
 
     for (const char* c=text.c_str(); *c; ++c)
     {
         if (*c < 0 || *c >= TOTAL_GLYPH_COUNT) continue;
 
-        cx += (get_font_kerning(fnt, *c, index, prev_index) * scale);
+        cx += (get_font_kerning(fnt, *c, index, prevIndex) * scale);
 
         switch (*c)
         {
             case ('\r'): cx = x;                                  break;
-            case ('\n'): cx = x, cy += (line_gap * scale);        break;
+            case ('\n'): cx = x, cy += (lineGap * scale);         break;
             case ('\t'): cx += (get_font_tab_width(fnt) * scale); break;
 
             default:
@@ -750,8 +670,8 @@ TEINAPI void draw_batched_text (float x, float y, std::string text)
                 const Font_Glyph& glyph = glyphs.at(*c);
                 const Quad& clip = glyph.bounds;
 
-                float bearing_x = glyph.bearing.x * scale;
-                float bearing_y = glyph.bearing.y * scale;
+                float bearingX = glyph.bearing.x * scale;
+                float bearingY = glyph.bearing.y * scale;
 
                 float advance = glyph.advance * scale;
 
@@ -763,17 +683,17 @@ TEINAPI void draw_batched_text (float x, float y, std::string text)
                 float w = clip.w * scale;
                 float h = clip.h * scale;
 
-                float x1 = roundf(cx + bearing_x);
-                float y1 = roundf(cy - bearing_y);
+                float x1 = roundf(cx + bearingX);
+                float y1 = roundf(cy - bearingY);
                 float x2 = roundf(x1 + w);
                 float y2 = roundf(y1 + h);
 
-                PutBufferVertex(text_buffer, { Vec2(x1,y2), Vec2(cx1,cy2), text_draw_color }); // V0
-                PutBufferVertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
-                PutBufferVertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
-                PutBufferVertex(text_buffer, { Vec2(x2,y2), Vec2(cx2,cy2), text_draw_color }); // V2
-                PutBufferVertex(text_buffer, { Vec2(x1,y1), Vec2(cx1,cy1), text_draw_color }); // V1
-                PutBufferVertex(text_buffer, { Vec2(x2,y1), Vec2(cx2,cy1), text_draw_color }); // V3
+                PutBufferVertex(gTextBuffer, { Vec2(x1,y2), Vec2(cx1,cy2), gTextDrawColor }); // V0
+                PutBufferVertex(gTextBuffer, { Vec2(x1,y1), Vec2(cx1,cy1), gTextDrawColor }); // V1
+                PutBufferVertex(gTextBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), gTextDrawColor }); // V2
+                PutBufferVertex(gTextBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), gTextDrawColor }); // V2
+                PutBufferVertex(gTextBuffer, { Vec2(x1,y1), Vec2(cx1,cy1), gTextDrawColor }); // V1
+                PutBufferVertex(gTextBuffer, { Vec2(x2,y1), Vec2(cx2,cy1), gTextDrawColor }); // V3
 
                 cx += advance;
             } break;
@@ -781,58 +701,22 @@ TEINAPI void draw_batched_text (float x, float y, std::string text)
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void flush_batched_tile ()
+TEINAPI void FlushBatchedTiles ()
 {
-    glBindTexture(GL_TEXTURE_2D, tile_texture->handle);
+    glBindTexture(GL_TEXTURE_2D, gTileTexture->handle);
     glEnable(GL_TEXTURE_2D);
-
-    glUseProgram(textured_shader);
-
-    DrawVertexBuffer(tile_buffer, BufferMode::TRIANGLES);
-    ClearVertexBuffer(tile_buffer);
-
+    glUseProgram(gTexturedShader);
+    DrawVertexBuffer(gTileBuffer, BufferMode::TRIANGLES);
+    ClearVertexBuffer(gTileBuffer);
     glDisable(GL_TEXTURE_2D);
 }
 
-TEINAPI void flush_batched_text ()
+TEINAPI void FlushBatchedText ()
 {
-    glBindTexture(GL_TEXTURE_2D, text_font->cache.at(text_font->current_pt_size).handle);
+    glBindTexture(GL_TEXTURE_2D, gTextFont->cache.at(gTextFont->current_pt_size).handle);
     glEnable(GL_TEXTURE_2D);
-
-    glUseProgram(text_shader);
-
-    DrawVertexBuffer(text_buffer, BufferMode::TRIANGLES);
-    ClearVertexBuffer(text_buffer);
-
+    glUseProgram(gTextShader);
+    DrawVertexBuffer(gTextBuffer, BufferMode::TRIANGLES);
+    ClearVertexBuffer(gTextBuffer);
     glDisable(GL_TEXTURE_2D);
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

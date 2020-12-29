@@ -58,17 +58,17 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
     float y2 = cursor.y + ch;
 
     // The dark and light border surrounding the channel quad.
-    set_draw_color(ui_color_light);
-    fill_quad(x1-2, y1-2, x2+2, y2+2);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(x1-1, y1-1, x2+1, y2+1);
+    SetDrawColor(ui_color_light);
+    FillQuad(x1-2, y1-2, x2+2, y2+2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(x1-1, y1-1, x2+1, y2+1);
 
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(cursor.x   , cursor.y+ch, min); // BL
-    put_vertex(cursor.x   , cursor.y   , max); // TL
-    put_vertex(cursor.x+cw, cursor.y+ch, min); // BR
-    put_vertex(cursor.x+cw, cursor.y   , max); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(cursor.x   , cursor.y+ch, min); // BL
+    PutVertex(cursor.x   , cursor.y   , max); // TL
+    PutVertex(cursor.x+cw, cursor.y+ch, min); // BR
+    PutVertex(cursor.x+cw, cursor.y   , max); // TR
+    EndDraw();
 
     float percent = std::clamp(roundf(channel*100), 0.0f, 100.0f);
     std::string channel_str(std::to_string(static_cast<int>(percent)));
@@ -97,12 +97,12 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
         case (Channel_Type::B): cur.b = channel; break;
     }
 
-    set_draw_color(ui_color_light);
-    fill_quad(ix1-2, iy1-2, ix2+2, iy2+2);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(ix1-1, iy1-1, ix2+1, iy2+1);
-    set_draw_color(cur);
-    fill_quad(ix1-0, iy1-0, ix2+0, iy2+0);
+    SetDrawColor(ui_color_light);
+    FillQuad(ix1-2, iy1-2, ix2+2, iy2+2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(ix1-1, iy1-1, ix2+1, iy2+1);
+    SetDrawColor(cur);
+    FillQuad(ix1-0, iy1-0, ix2+0, iy2+0);
 
     // Handle the indicator both being selected, deselected, and moved.
     if (color_picker_mouse_pressed)
@@ -115,7 +115,7 @@ TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float
         {
             color_picker_active_channel = type;
             // Determine where the click was and jump to that position.
-            float my = ch - (GetMousePos().y - get_viewport().y - cursor.y);
+            float my = ch - (GetMousePos().y - GetViewport().y - cursor.y);
             channel = my / ch;
         }
     }
@@ -137,26 +137,26 @@ TEINAPI void internal__do_color_preview (Vec2& cursor, Vec4 c, float size)
     float y = cursor.y;
 
     // The dark and light border surrounding the color.
-    set_draw_color(ui_color_light);
-    fill_quad(x-2, y-2, x+size+2, y+size+2);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(x-1, y-1, x+size+1, y+size+1);
+    SetDrawColor(ui_color_light);
+    FillQuad(x-2, y-2, x+size+2, y+size+2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(x-1, y-1, x+size+1, y+size+1);
 
     float tx = x + (size / 2);
     float ty = y + (size / 2);
 
     Quad clip = { 0, 0, size, size };
-    draw_texture(tex, tx, ty, &clip);
+    DrawTexture(tex, tx, ty, &clip);
 
     Vec4 max(c.r, c.g, c.b,   1);
     Vec4 min(c.r, c.g, c.b, c.a);
 
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(x     , y+size, min); // BL
-    put_vertex(x     , y     , max); // TL
-    put_vertex(x+size, y+size, min); // BR
-    put_vertex(x+size, y     , max); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(x     , y+size, min); // BL
+    PutVertex(x     , y     , max); // TL
+    PutVertex(x+size, y+size, min); // BR
+    PutVertex(x+size, y     , max); // TR
+    EndDraw();
 }
 
 TEINAPI void internal__do_swatch_panel (Vec2& cursor)
@@ -165,8 +165,8 @@ TEINAPI void internal__do_swatch_panel (Vec2& cursor)
 
     cursor.y += COLOR_PICKER_SWATCH_LG + COLOR_PICKER_YPAD;
 
-    set_draw_color(ui_color_med_dark);
-    draw_quad(cursor.x, cursor.y, cursor.x+COLOR_PICKER_SWATCH_LG, get_panel_h()-COLOR_PICKER_YPAD);
+    SetDrawColor(ui_color_med_dark);
+    DrawQuad(cursor.x, cursor.y, cursor.x+COLOR_PICKER_SWATCH_LG, get_panel_h()-COLOR_PICKER_YPAD);
 
     float x = cursor.x                                  +1;
     float y = cursor.y                                  +1;
@@ -226,10 +226,10 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float x2 = cursor.x + ((cw*2)+(xpad*5));
     float y2 = cursor.y + COLOR_PICKER_ALPHA_H;
 
-    set_draw_color(ui_color_light);
-    fill_quad(x1-2, y1-2, x2+2, y2+2);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(x1-1, y1-1, x2+1, y2+1);
+    SetDrawColor(ui_color_light);
+    FillQuad(x1-2, y1-2, x2+2, y2+2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(x1-1, y1-1, x2+1, y2+1);
 
     float tw = x2-x1;
     float th = COLOR_PICKER_ALPHA_H;
@@ -237,17 +237,17 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float ty = cursor.y + (th / 2);
 
     Quad clip1 = { 0, 0, tw, th };
-    draw_texture(resource_checker_20, tx, ty, &clip1);
+    DrawTexture(resource_checker_20, tx, ty, &clip1);
 
     Vec4 min(c.r, c.g, c.b, 0);
     Vec4 max(c.r, c.g, c.b, 1);
 
-    begin_draw(BufferMode::TRIANGLE_STRIP);
-    put_vertex(x1, y2, min); // BL
-    put_vertex(x1, y1, min); // TL
-    put_vertex(x2, y2, max); // BR
-    put_vertex(x2, y1, max); // TR
-    end_draw();
+    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    PutVertex(x1, y2, min); // BL
+    PutVertex(x1, y1, min); // TL
+    PutVertex(x2, y2, max); // BR
+    PutVertex(x2, y1, max); // TR
+    EndDraw();
 
     // Draw the indicator for what value is currently selected.
     float pos = (cursor.x + tw) - roundf(tw * (1-c.a));
@@ -257,10 +257,10 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float ix2 = pos        +2;
     float iy2 = cursor.y+th+2;
 
-    set_draw_color(ui_color_light);
-    fill_quad(ix1-2, iy1-2, ix2+2, iy2+2);
-    set_draw_color(ui_color_ex_dark);
-    fill_quad(ix1-1, iy1-1, ix2+1, iy2+1);
+    SetDrawColor(ui_color_light);
+    FillQuad(ix1-2, iy1-2, ix2+2, iy2+2);
+    SetDrawColor(ui_color_ex_dark);
+    FillQuad(ix1-1, iy1-1, ix2+1, iy2+1);
 
     float itw = ix2-ix1;
     float ith = iy2-iy1;
@@ -268,10 +268,10 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
     float ity = iy1 + (ith / 2);
 
     Quad clip2 = { ix1-cursor.x, -2, itw, ith };
-    draw_texture(resource_checker_20, itx, ity, &clip2);
+    DrawTexture(resource_checker_20, itx, ity, &clip2);
 
-    set_draw_color(c);
-    fill_quad(ix1, iy1, ix2, iy2);
+    SetDrawColor(c);
+    FillQuad(ix1, iy1, ix2, iy2);
 
     // Handle the indicator both being selected, deselected, and moved.
     if (color_picker_mouse_pressed)
@@ -284,7 +284,7 @@ TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
         {
             color_picker_active_channel = Channel_Type::A;
             // Determine where the click was and jump to that position.
-            float mx = tw - (GetMousePos().x - get_viewport().x - cursor.x);
+            float mx = tw - (GetMousePos().x - GetViewport().x - cursor.x);
             c.a = 1 - (mx / tw);
         }
     }
@@ -366,8 +366,8 @@ TEINAPI void do_color_picker ()
 
     p1.x = gWindowBorder;
     p1.y = gWindowBorder;
-    p1.w = get_viewport().w - (gWindowBorder * 2);
-    p1.h = get_viewport().h - (gWindowBorder * 2);
+    p1.w = GetViewport().w - (gWindowBorder * 2);
+    p1.h = GetViewport().h - (gWindowBorder * 2);
 
     set_ui_font(&get_editor_regular_font());
 
@@ -375,8 +375,8 @@ TEINAPI void do_color_picker ()
 
     float bb = COLOR_PICKER_BOTTOM_BORDER;
 
-    float vw = get_viewport().w;
-    float vh = get_viewport().h;
+    float vw = GetViewport().w;
+    float vh = GetViewport().h;
 
     float bw = roundf(vw / 3);
     float bh = bb - gWindowBorder;

@@ -128,7 +128,7 @@ TEINAPI void do_hotbar ()
     }
 
     // The hotbar is a horizontal list of available actions.
-    begin_panel(0, 0, get_viewport().w, HOTBAR_HEIGHT, UI_NONE, ui_color_medium);
+    begin_panel(0, 0, GetViewport().w, HOTBAR_HEIGHT, UI_NONE, ui_color_medium);
 
     set_panel_cursor(&cursor);
     set_panel_cursor_dir(UI_DIR_RIGHT);
@@ -156,7 +156,7 @@ TEINAPI void do_hotbar ()
     width += (are_there_updates()) ? bw : 0;
 
     // Display text or icons depending on what we have room for.
-    if (width < get_viewport().w)
+    if (width < GetViewport().w)
     {
     do_button_txt(hb_new,             bh,  UI_NONE,         HB_NAME_NEW,          HB_INFO_NEW,          gKbLevelNew                          );
     do_button_txt(hb_load,            bh,  UI_NONE,         HB_NAME_LOAD,         HB_INFO_LOAD,         gKbLevelOpen                         );
@@ -196,7 +196,7 @@ TEINAPI void do_hotbar ()
     // Right-aligned update button.
     if (are_there_updates())
     {
-        cursor.x = get_viewport().w - (bw-1);
+        cursor.x = GetViewport().w - (bw-1);
         do_button_img(hb_update, bw,bh, UI_NONE, &CLIP_UPDATE, HB_INFO_UPDATE, "", HB_NAME_UPDATE);
     }
 
