@@ -1,4 +1,4 @@
-/*******************************************************************************
+    /*******************************************************************************
  * Editor GUI widget containing a palette of all the game's tiles.
  * Authored by Joshua Robertson
  * Available Under MIT License (See EOF)
@@ -19,14 +19,14 @@ static constexpr float TILE_PANEL_INNER_PAD  =    3;
 static constexpr float TILE_PANEL_LABEL_H    =   20;
 static constexpr float TILE_PANEL_INACTIVE_A = .33f;
 
-typedef std::pair<Tile_ID, Tile_ID> Tile_Flip_Map;
+typedef std::pair<TileID, TileID> Tile_Flip_Map;
 
 struct Tile_Group
 {
-    std::string              name;
-    std::string              desc;
-    std::vector<Tile_ID>     tile;
-    int            selected_index;
+    std::string         name;
+    std::string         desc;
+    std::vector<TileID> tile;
+    int       selected_index;
 };
 
 struct Tile_Panel
@@ -161,7 +161,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
         float ex = tile_cursor.x + (TILE_PANEL_ITEM_SIZE/2);
         float ey = tile_cursor.y + (TILE_PANEL_ITEM_SIZE/2);
 
-        Tile_ID selected_id = tile_group.tile[tile_group.selected_index];
+        TileID selected_id = tile_group.tile[tile_group.selected_index];
         DrawBatchedTile(ex, ey, &GetAtlasClip(atlas, selected_id));
 
         EndScissor();
@@ -192,8 +192,8 @@ TEINAPI void internal__load_flip_data (const GonObject& data, std::vector<Tile_F
 {
     for (int i=0; i<static_cast<int>(data.children_array.size()); ++i)
     {
-        Tile_ID a = data[i][0].Int();
-        Tile_ID b = data[i][1].Int();
+        TileID a = data[i][0].Int();
+        TileID b = data[i][1].Int();
 
         flip.push_back(Tile_Flip_Map(a, b));
     }
@@ -286,7 +286,7 @@ TEINAPI bool init_tile_panel ()
                     group.desc = tile_group_gon_data["tooltip"].String();
                     for (int i=0; i<tile_group_gon_data["id"].size(); ++i)
                     {
-                        Tile_ID tile_id = tile_group_gon_data["id"][i].Int();
+                        TileID tile_id = tile_group_gon_data["id"][i].Int();
                         group.tile.push_back(tile_id);
                     }
                     tile_panel.category[category_id].push_back(group);
@@ -438,21 +438,21 @@ TEINAPI Tile_Category get_selected_category ()
     return tile_panel.selected_category;
 }
 
-TEINAPI Tile_ID get_selected_tile ()
+TEINAPI TileID get_selected_tile ()
 {
     const auto& category = tile_panel.category[tile_panel.selected_category];
     const auto& group = category[tile_panel.selected_group];
     return group.tile[group.selected_index];
 }
 
-TEINAPI Level_Layer get_selected_layer ()
+TEINAPI LevelLayer get_selected_layer ()
 {
     return category_to_layer(tile_panel.selected_category);
 }
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI Level_Layer category_to_layer (Tile_Category category)
+TEINAPI LevelLayer category_to_layer (Tile_Category category)
 {
     switch (category)
     {
@@ -678,7 +678,7 @@ TEINAPI void decrement_selected_category ()
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI Tile_ID get_tile_horizontal_flip (Tile_ID id)
+TEINAPI TileID get_tile_horizontal_flip (TileID id)
 {
     if (id)
     {
@@ -690,7 +690,7 @@ TEINAPI Tile_ID get_tile_horizontal_flip (Tile_ID id)
     }
     return id;
 }
-TEINAPI Tile_ID get_tile_vertical_flip (Tile_ID id)
+TEINAPI TileID get_tile_vertical_flip (TileID id)
 {
     if (id)
     {

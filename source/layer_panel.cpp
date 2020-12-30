@@ -55,7 +55,7 @@ TEINAPI bool internal__do_layer_button (UiFlag flags, int layer, const char* nam
         else
         {
             Tile_Category category = get_selected_category();
-            if (category_to_layer(category) == static_cast<Level_Layer>(layer))
+            if (category_to_layer(category) == static_cast<LevelLayer>(layer))
             {
                 flags |= UI_HIGHLIGHT;
             }
@@ -82,7 +82,7 @@ TEINAPI bool internal__do_layer_button (UiFlag flags, int layer, const char* nam
     return result;
 }
 
-TEINAPI void internal__toggle_layer (Level_Layer layer)
+TEINAPI void internal__toggle_layer (LevelLayer layer)
 {
     if (current_tab_is_level())
     {
@@ -92,7 +92,7 @@ TEINAPI void internal__toggle_layer (Level_Layer layer)
     }
 }
 
-TEINAPI void internal__toggle_layer_action (Level_Layer layer)
+TEINAPI void internal__toggle_layer_action (LevelLayer layer)
 {
     if (current_tab_is_level())
     {
@@ -164,7 +164,7 @@ TEINAPI void do_layer_panel (bool scrollbar)
     bool all_layers_were_inactive = are_all_layers_inactive();
     Tab& tab = get_current_tab();
 
-    for (Level_Layer i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
+    for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
     {
         const char* layer_name = NULL;
         switch (i)
@@ -177,9 +177,9 @@ TEINAPI void do_layer_panel (bool scrollbar)
         }
 
         UiFlag tile_flag = (tab.tile_layer_active[i]) ? UI_NONE : UI_INACTIVE;
-        if (internal__do_layer_button(tile_flag, i, layer_name, TILE_LAYER_INFO))
+        if (internal__do_layer_button(tile_flag, static_cast<LevelLayer>(i), layer_name, TILE_LAYER_INFO))
         {
-            internal__toggle_layer(i);
+            internal__toggle_layer(static_cast<LevelLayer>(i));
         }
     }
 

@@ -19,8 +19,8 @@ static constexpr float NEW_TEXT_BOX_H = 20;
 static constexpr const char* NEW_WIDTH_LABEL = "Level Width:  ";
 static constexpr const char* NEW_HEIGHT_LABEL = "Level Height:  ";
 
-static int current_new_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
-static int current_new_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
+static int current_new_width = static_cast<int>(gDefaultLevelWidth);
+static int current_new_height = static_cast<int>(gDefaultLevelHeight);
 
 static Tab_Type current_tab_type = Tab_Type::LEVEL;
 
@@ -28,9 +28,9 @@ static Tab_Type current_tab_type = Tab_Type::LEVEL;
 
 TEINAPI void internal__okay_new ()
 {
-    if (current_new_width < MINIMUM_LEVEL_WIDTH || current_new_height < MINIMUM_LEVEL_HEIGHT)
+    if (current_new_width < gMinimumLevelWidth || current_new_height < gMinimumLevelHeight)
     {
-        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", MINIMUM_LEVEL_WIDTH, MINIMUM_LEVEL_HEIGHT), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINNEW");
+        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINNEW");
         return;
     }
 
@@ -47,8 +47,8 @@ TEINAPI void internal__okay_new ()
 
 TEINAPI void open_new ()
 {
-    current_new_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
-    current_new_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
+    current_new_width = static_cast<int>(gDefaultLevelWidth);
+    current_new_height = static_cast<int>(gDefaultLevelHeight);
 
     // Default to level because people make more levels than they do maps.
     current_tab_type = Tab_Type::LEVEL;
@@ -147,13 +147,13 @@ TEINAPI void do_new ()
     AdvancePanelCursor(NEW_YPAD);
     DoTextBoxLabeled(text_box_w, NEW_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, NEW_HEIGHT_LABEL, "0");
 
-    if (atoi(w_str.c_str()) > MAXIMUM_LEVEL_WIDTH)
+    if (atoi(w_str.c_str()) > gMaximumLevelWidth)
     {
-        w_str = std::to_string(MAXIMUM_LEVEL_WIDTH);
+        w_str = std::to_string(gMaximumLevelWidth);
     }
-    if (atoi(h_str.c_str()) > MAXIMUM_LEVEL_HEIGHT)
+    if (atoi(h_str.c_str()) > gMaximumLevelHeight)
     {
-        h_str = std::to_string(MAXIMUM_LEVEL_HEIGHT);
+        h_str = std::to_string(gMaximumLevelHeight);
     }
 
     int old_new_width = current_new_width;

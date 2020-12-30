@@ -77,13 +77,13 @@ TEINAPI bool internal__restore_tab (std::string file_name)
     {
         create_new_level_tab_and_focus();
         Tab& tab = get_current_tab();
-        return load_restore_level(tab, file_name);
+        return LoadRestoreLevel(tab, file_name);
     }
     if (type == ".csv")
     {
         create_new_map_tab_and_focus();
         Tab& tab = get_current_tab();
-        return load_restore_map(tab, file_name);
+        return LoadRestoreMap(tab, file_name);
     }
     return false;
 }
@@ -572,7 +572,7 @@ TEINAPI void create_new_level_tab_and_focus (int w, int h)
     for (auto& active: tab.tile_layer_active) active = true;
     tab.level_history.current_position = -1;
     tab.tool_info.select.cached_size   =  0;
-    create_blank_level(tab.level, w, h);
+    CreateBlankLevel(tab.level, w, h);
 }
 
 TEINAPI void create_new_map_tab_and_focus ()
@@ -815,11 +815,11 @@ TEINAPI void save_restore_files ()
     for (size_t i=0; i<editor.tabs.size(); ++i)
     {
         std::string file_name;
-        if      (editor.tabs.at(i).type == Tab_Type::LEVEL) file_name = ".lvl.restore" + std::to_string(i);
-        else if (editor.tabs.at(i).type == Tab_Type::MAP  ) file_name = ".csv.restore" + std::to_string(i);
+        if (editor.tabs.at(i).type == Tab_Type::LEVEL) file_name = ".lvl.restore" + std::to_string(i);
+        else if (editor.tabs.at(i).type == Tab_Type::MAP) file_name = ".csv.restore" + std::to_string(i);
         file_name = MakePathAbsolute(file_name);
-        if      (editor.tabs.at(i).type == Tab_Type::LEVEL) save_restore_level(editor.tabs.at(i), file_name);
-        else if (editor.tabs.at(i).type == Tab_Type::MAP  ) save_restore_map  (editor.tabs.at(i), file_name);
+        if (editor.tabs.at(i).type == Tab_Type::LEVEL) SaveRestoreLevel(editor.tabs.at(i), file_name);
+        else if (editor.tabs.at(i).type == Tab_Type::MAP) SaveRestoreMap(editor.tabs.at(i), file_name);
     }
 }
 

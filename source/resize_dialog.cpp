@@ -19,8 +19,8 @@ static constexpr float RESIZE_TEXT_BOX_H = 20;
 static constexpr const char* RESIZE_WIDTH_LABEL = "Level Width:  ";
 static constexpr const char* RESIZE_HEIGHT_LABEL = "Level Height:  ";
 
-static int current_resize_width = static_cast<int>(DEFAULT_LEVEL_WIDTH);
-static int current_resize_height = static_cast<int>(DEFAULT_LEVEL_HEIGHT);
+static int current_resize_width = static_cast<int>(gDefaultLevelWidth);
+static int current_resize_height = static_cast<int>(gDefaultLevelHeight);
 
 static Resize_Dir resize_dialog_dir = Resize_Dir::CENTER;
 
@@ -208,9 +208,9 @@ TEINAPI void internal__do_resize_alignment (Vec2& cursor)
 
 TEINAPI void internal__okay_resize ()
 {
-    if (current_resize_width < MINIMUM_LEVEL_WIDTH || current_resize_height < MINIMUM_LEVEL_HEIGHT)
+    if (current_resize_width < gMinimumLevelWidth || current_resize_height < gMinimumLevelHeight)
     {
-        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", MINIMUM_LEVEL_WIDTH, MINIMUM_LEVEL_HEIGHT), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINRESIZE");
+        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINRESIZE");
         return;
     }
 
@@ -298,13 +298,13 @@ TEINAPI void do_resize ()
     AdvancePanelCursor(RESIZE_YPAD);
     DoTextBoxLabeled(text_box_w, RESIZE_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, RESIZE_HEIGHT_LABEL, "0");
 
-    if (atoi(w_str.c_str()) > MAXIMUM_LEVEL_WIDTH)
+    if (atoi(w_str.c_str()) > gMaximumLevelWidth)
     {
-        w_str = std::to_string(MAXIMUM_LEVEL_WIDTH);
+        w_str = std::to_string(gMaximumLevelWidth);
     }
-    if (atoi(h_str.c_str()) > MAXIMUM_LEVEL_HEIGHT)
+    if (atoi(h_str.c_str()) > gMaximumLevelHeight)
     {
-        h_str = std::to_string(MAXIMUM_LEVEL_HEIGHT);
+        h_str = std::to_string(gMaximumLevelHeight);
     }
 
     int old_resize_width = current_resize_width;

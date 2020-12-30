@@ -93,7 +93,7 @@ TEINAPI void set_main_window_subtitle_for_tab (const std::string& subtitle);
 TEINAPI bool are_there_any_level_tabs ();
 TEINAPI bool are_there_any_map_tabs   ();
 
-TEINAPI void create_new_level_tab_and_focus (int w = DEFAULT_LEVEL_WIDTH, int h = DEFAULT_LEVEL_HEIGHT);
+TEINAPI void create_new_level_tab_and_focus (int w = gDefaultLevelWidth, int h = gDefaultLevelHeight);
 TEINAPI void create_new_map_tab_and_focus   ();
 
 TEINAPI bool current_tab_is_level ();

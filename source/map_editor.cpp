@@ -106,7 +106,7 @@ TEINAPI void internal__create_new_active_node ()
     if (!current_tab_is_map()) return;
 
     Tab& tab = get_current_tab();
-    tab.map.push_back(Map_Node { tab.map_node_info.active_pos.x, tab.map_node_info.active_pos.y, "" });
+    tab.map.push_back(MapNode { tab.map_node_info.active_pos.x, tab.map_node_info.active_pos.y, "" });
     tab.map_node_info.active = &tab.map.back();
     tab.map_node_info.select = 0;
     tab.map_node_info.cursor = 0;
@@ -345,8 +345,8 @@ TEINAPI void do_map_editor ()
 
     map_editor.bounds.x = 0;
     map_editor.bounds.y = 0;
-    map_editor.bounds.w = get_map_width (tab.map) * MAP_NODE_W;
-    map_editor.bounds.h = get_map_height(tab.map) * MAP_NODE_H;
+    map_editor.bounds.w = GetMapWidth(tab.map) * MAP_NODE_W;
+    map_editor.bounds.h = GetMapHeight(tab.map) * MAP_NODE_H;
 
     float x = map_editor.bounds.x;
     float y = map_editor.bounds.y;
@@ -1015,7 +1015,7 @@ TEINAPI void load_map_tab (std::string file_name)
         tab.name = file_name;
         set_main_window_subtitle_for_tab(tab.name);
 
-        if (!load_map(tab, tab.name))
+        if (!LoadMap(tab, tab.name))
         {
             close_current_tab();
         }
@@ -1037,7 +1037,7 @@ TEINAPI bool save_map_tab (Tab& tab)
         tab.name = file_name;
     }
 
-    save_map(tab, tab.name);
+    SaveMap(tab, tab.name);
     backup_map_tab(tab, tab.name);
 
     tab.unsaved_changes = false;
@@ -1054,7 +1054,7 @@ TEINAPI void save_map_tab_as ()
     Tab& tab = get_current_tab();
 
     tab.name = file_name;
-    save_map(tab, tab.name);
+    SaveMap(tab, tab.name);
     backup_map_tab(tab, tab.name);
 
     tab.unsaved_changes = false;
@@ -1089,7 +1089,7 @@ TEINAPI void map_drop_file (Tab* tab, std::string file_name)
         tab->name = file_name;
         set_main_window_subtitle_for_tab(tab->name);
 
-        if (!load_map(*tab, tab->name))
+        if (!LoadMap(*tab, tab->name))
         {
             close_current_tab();
         }
@@ -1146,7 +1146,7 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
     if (gEditorSettings.unlimitedBackups || (map_count < backup_count))
     {
         backup_name += std::to_string(map_count) + ".csv";
-        save_map(tab, backup_name);
+        SaveMap(tab, backup_name);
     }
     else
     {
@@ -1165,7 +1165,7 @@ TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name)
         }
 
         backup_name += std::to_string(oldest_index) + ".csv";
-        save_map(tab, backup_name);
+        SaveMap(tab, backup_name);
     }
 }
 
@@ -1329,7 +1329,7 @@ TEINAPI void me_paste ()
         for (auto& new_node: map_editor.clipboard)
         {
             tab.map.erase(std::remove_if(tab.map.begin(), tab.map.end(),
-            [=](const Map_Node& old_node)
+            [=](const MapNode& old_node)
             {
                 return (old_node.x == new_node.x+x1 && old_node.y == new_node.y+y1);
             }),
@@ -1372,7 +1372,7 @@ TEINAPI void me_clear_select ()
     size_t old_size = tab.map.size();
 
     tab.map.erase(std::remove_if(tab.map.begin(), tab.map.end(),
-    [=](const Map_Node& node)
+    [=](const MapNode& node)
     {
         return (node.x >= sx1 && node.x <= sx2 && node.y >= sy1 && node.y <= sy2);
     }),

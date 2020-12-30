@@ -21,10 +21,10 @@ struct Tool_Fill
     std::vector<Vec2> frontier;
     std::vector<bool> searched;
 
-    Level_Layer layer;
+    LevelLayer layer;
 
-    Tile_ID find_id;
-    Tile_ID replace_id;
+    TileID find_id;
+    TileID replace_id;
 
     Vec2 start;
 
@@ -74,10 +74,10 @@ struct Level_History_Info
     int x;
     int y;
 
-    Tile_ID old_id;
-    Tile_ID new_id;
+    TileID old_id;
+    TileID new_id;
 
-    Level_Layer tile_layer;
+    LevelLayer tile_layer;
 };
 
 struct Level_History_State
@@ -104,8 +104,8 @@ struct Level_History_State
     int new_height;
 
     // The data of the level before and after a resize.
-    Level_Data old_data;
-    Level_Data new_data;
+    LevelData old_data;
+    LevelData new_data;
 };
 
 struct Level_History
@@ -121,7 +121,7 @@ static constexpr float DEFAULT_TILE_SIZE_HALF = DEFAULT_TILE_SIZE / 2;
 
 struct Level_Clipboard
 {
-    Level_Data data;
+    LevelData data;
 
     int x;
     int y;

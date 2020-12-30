@@ -90,9 +90,9 @@
 #include "font.hpp"
 #include "shader.hpp"
 #include "resource_manager.hpp"
-
 #include "user_interface.hpp"
 #include "level.hpp"
+
 #include "map.hpp"
 #include "gpak.hpp"
 #include "hotbar.hpp"

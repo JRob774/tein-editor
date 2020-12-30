@@ -29,15 +29,15 @@ struct Map_Select
     IVec2 b; // End
 };
 
-typedef std::vector<Map_Node> Map_Clipboard;
+typedef std::vector<MapNode> Map_Clipboard;
 
 struct Map_Node_Info
 {
     std::string cached_lvl_text;
 
-    IVec2     pressed_node_pos;
-    IVec2     active_pos;
-    Map_Node* active;
+    IVec2    pressed_node_pos;
+    IVec2    active_pos;
+    MapNode* active;
 
     size_t cursor;
     size_t select; // Start point of text selection.

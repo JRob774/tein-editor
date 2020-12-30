@@ -1,35 +1,25 @@
-/*******************************************************************************
- * Loads and saves raw level data to and from the TEIN level file format.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gDefaultLevelWidth  = 54;
+static constexpr float gDefaultLevelHeight = 32;
+static constexpr int   gMinimumLevelWidth  = 54;
+static constexpr int   gMinimumLevelHeight = 32;
+static constexpr int   gMaximumLevelWidth  = 2840;
+static constexpr int   gMaximumLevelHeight = 2840;
 
-/* -------------------------------------------------------------------------- */
+enum LevelLayer: U32
+{
+    LEVEL_LAYER_TAG,
+    LEVEL_LAYER_OVERLAY,
+    LEVEL_LAYER_ACTIVE, // Combo of Basic and Entity.
+    LEVEL_LAYER_BACK1,
+    LEVEL_LAYER_BACK2,
+    LEVEL_LAYER_TOTAL
+};
 
-static constexpr float DEFAULT_LEVEL_WIDTH  = 54;
-static constexpr float DEFAULT_LEVEL_HEIGHT = 32;
-static constexpr int   MINIMUM_LEVEL_WIDTH  = 54;
-static constexpr int   MINIMUM_LEVEL_HEIGHT = 32;
-static constexpr int   MAXIMUM_LEVEL_WIDTH  = 2840;
-static constexpr int   MAXIMUM_LEVEL_HEIGHT = 2840;
+typedef S32 TileID;
 
-typedef U32 Level_Layer;
-
-static constexpr Level_Layer LEVEL_LAYER_TAG     = 0;
-static constexpr Level_Layer LEVEL_LAYER_OVERLAY = 1;
-static constexpr Level_Layer LEVEL_LAYER_ACTIVE  = 2; // Combo of Basic and Entity.
-static constexpr Level_Layer LEVEL_LAYER_BACK1   = 3;
-static constexpr Level_Layer LEVEL_LAYER_BACK2   = 4;
-static constexpr Level_Layer LEVEL_LAYER_TOTAL   = 5;
-
-typedef S32 Tile_ID;
-
-struct Level_Header
+struct LevelHeader
 {
     S32 version;
     S32 width;
@@ -37,31 +27,24 @@ struct Level_Header
     S32 layers;
 };
 
-typedef std::array<std::vector<Tile_ID>, LEVEL_LAYER_TOTAL> Level_Data;
+typedef std::array<std::vector<TileID>, LEVEL_LAYER_TOTAL> LevelData;
 
 struct Level
 {
-    Level_Header header;
-    Level_Data data;
+    LevelHeader header;
+    LevelData data;
 };
 
-/* -------------------------------------------------------------------------- */
+TEINAPI bool CreateBlankLevel (Level& level, int w = gDefaultLevelWidth, int h = gDefaultLevelHeight);
 
-TEINAPI bool load_level         (      Level& level, std::string file_name);
-TEINAPI bool save_level         (const Level& level, std::string file_name);
+TEINAPI bool LoadLevel (Level& level, std::string fileName);
+TEINAPI bool SaveLevel (const Level& level, std::string fileName);
+
+struct Tab;
 
 // A custom file format. Exactly the same as the default level format except
 // the first part of the file until zero is the name of the level. This is
 // done so that the name of the file can also be restored when the editor
 // is loaded again after a fatal failure occurs and restore files are saved.
-
-struct Tab; // Defined in <editor.hpp>
-
-TEINAPI bool load_restore_level (      Tab&   tab,   std::string file_name);
-TEINAPI bool save_restore_level (const Tab&   tab,   std::string file_name);
-
-TEINAPI bool create_blank_level (Level& level, int w = DEFAULT_LEVEL_WIDTH, int h = DEFAULT_LEVEL_HEIGHT);
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI bool LoadRestoreLevel (Tab& tab, std::string fileName);
+TEINAPI bool SaveRestoreLevel (const Tab& tab, std::string fileName);

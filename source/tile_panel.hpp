@@ -37,10 +37,10 @@ TEINAPI float get_tile_panel_height ();
 TEINAPI void reload_tile_graphics ();
 
 TEINAPI Tile_Category get_selected_category ();
-TEINAPI Tile_ID       get_selected_tile     ();
-TEINAPI Level_Layer   get_selected_layer    ();
+TEINAPI TileID        get_selected_tile     ();
+TEINAPI LevelLayer    get_selected_layer    ();
 
-TEINAPI Level_Layer category_to_layer (Tile_Category category);
+TEINAPI LevelLayer category_to_layer (Tile_Category category);
 
 TEINAPI void select_next_active_group ();
 TEINAPI void select_prev_active_group ();
@@ -54,8 +54,8 @@ TEINAPI void decrement_selected_group    ();
 TEINAPI void increment_selected_category ();
 TEINAPI void decrement_selected_category ();
 
-TEINAPI Tile_ID get_tile_horizontal_flip (Tile_ID id);
-TEINAPI Tile_ID get_tile_vertical_flip   (Tile_ID id);
+TEINAPI TileID get_tile_horizontal_flip (TileID id);
+TEINAPI TileID get_tile_vertical_flip   (TileID id);
 
 TEINAPI void jump_to_category_basic   ();
 TEINAPI void jump_to_category_tag     ();

@@ -9,12 +9,12 @@
 
 /* -------------------------------------------------------------------------- */
 
-static constexpr float   GHOSTED_CURSOR_ALPHA =   .5f;
-static constexpr Tile_ID CAMERA_ID            = 20000;
+static constexpr float GHOSTED_CURSOR_ALPHA = .5f;
+static constexpr TileID CAMERA_ID = 20000;
 
 /* -------------------------------------------------------------------------- */
 
-TEINAPI Quad& internal__get_tile_graphic_clip (TextureAtlas& atlas, Tile_ID id)
+TEINAPI Quad& internal__get_tile_graphic_clip (TextureAtlas& atlas, TileID id)
 {
     if (level_editor.large_tiles && atlas.clips.count(id + gAltOffset))
     {
@@ -35,7 +35,7 @@ TEINAPI bool internal__are_active_layers_in_bounds_empty (int x, int y, int w, i
             {
                 for (int ix=x; ix<(x+w); ++ix)
                 {
-                    Tile_ID id = tile_layer.at(iy*tab.level.header.width+ix);
+                    TileID id = tile_layer.at(iy*tab.level.header.width+ix);
                     if (id != 0) return false;
                 }
             }
@@ -60,7 +60,7 @@ TEINAPI bool internal__tile_in_bounds (int x, int y)
     return (x >= 0 && x < w && y >= 0 && y < h);
 }
 
-TEINAPI void internal__place_tile_clear (int x, int y, Tile_ID id, Level_Layer tile_layer)
+TEINAPI void internal__place_tile_clear (int x, int y, TileID id, LevelLayer tile_layer)
 {
     Tab& tab = get_current_tab();
 
@@ -82,7 +82,7 @@ TEINAPI void internal__place_tile_clear (int x, int y, Tile_ID id, Level_Layer t
     get_current_tab().unsaved_changes = true;
 }
 
-TEINAPI void internal__place_tile (int x, int y, Tile_ID id, Level_Layer tile_layer)
+TEINAPI void internal__place_tile (int x, int y, TileID id, LevelLayer tile_layer)
 {
     Tab& tab = get_current_tab();
 
@@ -104,7 +104,7 @@ TEINAPI void internal__place_tile (int x, int y, Tile_ID id, Level_Layer tile_la
     get_current_tab().unsaved_changes = true;
 }
 
-TEINAPI void internal__place_mirrored_tile_clear (int x, int y, Tile_ID id, Level_Layer tile_layer)
+TEINAPI void internal__place_mirrored_tile_clear (int x, int y, TileID id, LevelLayer tile_layer)
 {
     bool both = (level_editor.mirror_h && level_editor.mirror_v);
 
@@ -119,7 +119,7 @@ TEINAPI void internal__place_mirrored_tile_clear (int x, int y, Tile_ID id, Leve
     if (both)                  internal__place_tile_clear(lw-x, lh-y, get_tile_horizontal_flip(get_tile_vertical_flip(id)), tile_layer);
 }
 
-TEINAPI void internal__place_mirrored_tile (int x, int y, Tile_ID id, Level_Layer tile_layer)
+TEINAPI void internal__place_mirrored_tile (int x, int y, TileID id, LevelLayer tile_layer)
 {
     bool both = (level_editor.mirror_h && level_editor.mirror_v);
 
@@ -225,11 +225,11 @@ TEINAPI void internal__handle_brush ()
     int y = static_cast<int>(tile_pos.y);
 
     bool place = (level_editor.tool_state == Tool_State::PLACE);
-    Tile_ID id = (place) ? get_selected_tile() : 0;
+    TileID id = (place) ? get_selected_tile() : 0;
     internal__place_mirrored_tile(x, y, id, get_selected_layer());
 }
 
-TEINAPI Tile_ID internal__get_fill_find_id (int x, int y, Level_Layer layer)
+TEINAPI TileID internal__get_fill_find_id (int x, int y, LevelLayer layer)
 {
     if (!internal__tile_in_bounds(x, y)) return 0;
     const auto& tab = get_current_tab();
@@ -370,7 +370,7 @@ TEINAPI void internal__handle_fill ()
     Tab& tab = get_current_tab();
 
     bool place = (level_editor.tool_state == Tool_State::PLACE);
-    Tile_ID id = (place) ? get_selected_tile() : 0;
+    TileID id = (place) ? get_selected_tile() : 0;
 
     tab.tool_info.fill.start      = { tile_pos.x, tile_pos.y };
     tab.tool_info.fill.layer      = get_selected_layer();
@@ -502,7 +502,7 @@ TEINAPI void internal__flip_level_h (const bool tile_layer_active[LEVEL_LAYER_TO
     int h = lh;
 
     // Flip all of the level's tiles.
-    for (Level_Layer i=0; i<LEVEL_LAYER_TOTAL; ++i)
+    for (int i=0; i<LEVEL_LAYER_TOTAL; ++i)
     {
         if (!tile_layer_active[i]) continue;
 
@@ -516,8 +516,8 @@ TEINAPI void internal__flip_level_h (const bool tile_layer_active[LEVEL_LAYER_TO
             // Stop after we hit the middle point (no need to flip).
             while (l < r)
             {
-                Tile_ID rt = layer[r];
-                Tile_ID lt = layer[l];
+                TileID rt = layer[r];
+                TileID lt = layer[l];
 
                 layer[r--] = get_tile_horizontal_flip(lt);
                 layer[l++] = get_tile_horizontal_flip(rt);
@@ -541,15 +541,15 @@ TEINAPI void internal__flip_level_v (const bool tile_layer_active[LEVEL_LAYER_TO
     int h = lh;
 
     // Flip all of the level's tiles.
-    std::vector<Tile_ID> temp_row;
+    std::vector<TileID> temp_row;
     temp_row.resize(w);
 
-    for (Level_Layer i=0; i<LEVEL_LAYER_TOTAL; ++i)
+    for (int i=0; i<LEVEL_LAYER_TOTAL; ++i)
     {
         if (!tile_layer_active[i]) continue;
 
         auto& layer = tab.level.data[i];
-        size_t pitch = w * sizeof(Tile_ID);
+        size_t pitch = w * sizeof(TileID);
 
         int b = (y * lw) + x;
         int t = ((y+h-1) * lw) + x;
@@ -575,7 +575,7 @@ TEINAPI void internal__flip_level_v (const bool tile_layer_active[LEVEL_LAYER_TO
     get_current_tab().unsaved_changes = true;
 }
 
-TEINAPI void internal__draw_cursor (int x, int y, Tile_ID id)
+TEINAPI void internal__draw_cursor (int x, int y, TileID id)
 {
     // Do not try to draw the cursor if it is out of bounds!
     if (!internal__tile_in_bounds(x, y)) return;
@@ -622,7 +622,7 @@ TEINAPI void internal__draw_mirrored_cursor ()
     int tx = static_cast<int>(t.x);
     int ty = static_cast<int>(t.y);
 
-    Tile_ID id = get_selected_tile();
+    TileID id = get_selected_tile();
 
     BeginStencil();
 
@@ -704,7 +704,7 @@ TEINAPI void internal__draw_clipboard (UiDir xdir, UiDir ydir)
         float gh = clipboard.h * DEFAULT_TILE_SIZE;
 
         // Draw all of the select buffer tiles.
-        for (Level_Layer i=0; i<clipboard.data.size(); ++i)
+        for (int i=0; i<clipboard.data.size(); ++i)
         {
             // If the layer is not active then we do not bother drawing its clipboard content.
             if (!tab.tile_layer_active[i]) continue;
@@ -724,7 +724,7 @@ TEINAPI void internal__draw_clipboard (UiDir xdir, UiDir ydir)
 
             for (size_t j=0; j<layer.size(); ++j)
             {
-                Tile_ID id = layer[j];
+                TileID id = layer[j];
                 if (id) // No point drawing empty tiles...
                 {
                     if (!layer_space_occupied.count(j))
@@ -853,7 +853,7 @@ TEINAPI void internal__resize (Resize_Dir dir, int nw, int nh)
 
     if (dx == 0 && dy == 0) return;
 
-    Level_Data old_data = tab.level.data;
+    LevelData old_data = tab.level.data;
     for (auto& layer: tab.level.data)
     {
         layer.clear();
@@ -1020,7 +1020,7 @@ TEINAPI void do_level_editor ()
     // Determine the currently selected layer so that we can make all of the
     // layers above semi-transparent. If we're the spawn layer (top) then it
     // we don't really have a layer so we just assign to minus one to mark.
-    Level_Layer selected_layer = get_selected_layer();
+    LevelLayer selected_layer = get_selected_layer();
 
     constexpr float SEMI_TRANS = .6f;
 
@@ -1036,12 +1036,12 @@ TEINAPI void do_level_editor ()
     SetTileBatchTexture(atlas.texture);
 
     // Draw all of the tiles for the level, layer-by-layer.
-    for (Level_Layer i=LEVEL_LAYER_BACK2; (i<=LEVEL_LAYER_BACK2)&&(i>=LEVEL_LAYER_TAG); --i)
+    for (int i=LEVEL_LAYER_BACK2; (i<=LEVEL_LAYER_BACK2)&&(i>=LEVEL_LAYER_TAG); --i)
     {
         // If the layer is not active then we do not bother drawing its content.
         if (!tab.tile_layer_active[i]) continue;
 
-        if (level_editor.layer_transparency && (selected_layer != LEVEL_LAYER_TAG && selected_layer > i))
+        if (level_editor.layer_transparency && ((selected_layer != LEVEL_LAYER_TAG) && (static_cast<int>(selected_layer) > i)))
         {
             SetTileBatchColor(Vec4(1,1,1,SEMI_TRANS));
         }
@@ -1121,7 +1121,7 @@ TEINAPI void do_level_editor ()
         {
             for (int ix=0; ix<lw; ++ix)
             {
-                Tile_ID id = tag_layer[iy * tab.level.header.width + ix];
+                TileID id = tag_layer[iy * tab.level.header.width + ix];
                 if (id == CAMERA_ID)
                 {
                     ++camera_tile_count;
@@ -1246,7 +1246,7 @@ TEINAPI void do_level_editor ()
             for (int i=0; i<static_cast<int>(layer.size()); ++i)
             {
                 // Ensures that the tile is an Entity and not a Basic.
-                Tile_ID id = layer[i];
+                TileID id = layer[i];
                 if ((id != 0) && ((id-40000) >= 0))
                 {
                     Quad& b = internal__get_tile_graphic_clip(atlas, id);
@@ -1502,7 +1502,7 @@ TEINAPI void new_level_history_state (Level_History_Action action)
     // Also deal with the layer states for flip actions.
     if (action == Level_History_Action::FLIP_LEVEL_H || action == Level_History_Action::FLIP_LEVEL_V)
     {
-        for (Level_Layer i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
+        for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
         {
             tab.level_history.state.back().tile_layer_active[i] = tab.tile_layer_active[i];
         }
@@ -1678,7 +1678,7 @@ TEINAPI void load_level_tab (std::string file_name)
         tab.name = file_name;
         set_main_window_subtitle_for_tab(tab.name);
 
-        if (!load_level(tab.level, tab.name))
+        if (!LoadLevel(tab.level, tab.name))
         {
             close_current_tab();
         }
@@ -1700,7 +1700,7 @@ TEINAPI bool le_save (Tab& tab)
         tab.name = file_name;
     }
 
-    save_level(tab.level, tab.name);
+    SaveLevel(tab.level, tab.name);
     backup_level_tab(tab.level, tab.name);
 
     tab.unsaved_changes = false;
@@ -1717,7 +1717,7 @@ TEINAPI bool le_save_as ()
     Tab& tab = get_current_tab();
 
     tab.name = file_name;
-    save_level(tab.level, tab.name);
+    SaveLevel(tab.level, tab.name);
     backup_level_tab(tab.level, tab.name);
 
     tab.unsaved_changes = false;
@@ -1741,13 +1741,13 @@ TEINAPI void le_clear_select ()
             get_ordered_select_bounds(bounds, &l, &t, &r, &b);
 
             // Clear all of the tiles within the selection.
-            for (Level_Layer i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
+            for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
             {
                 for (int y=b; y<=t; ++y)
                 {
                     for (int x=l; x<=r; ++x)
                     {
-                        internal__place_mirrored_tile_clear(x, y, 0, i);
+                        internal__place_mirrored_tile_clear(x, y, 0, static_cast<LevelLayer>(i));
                     }
                 }
             }
@@ -1833,7 +1833,7 @@ TEINAPI void le_paste ()
             {
                 for (int ix=x; ix<(x+w); ++ix)
                 {
-                    internal__place_mirrored_tile(ix, iy, src_layer[(iy-y)*w+(ix-x)], static_cast<Level_Layer>(i));
+                    internal__place_mirrored_tile(ix, iy, src_layer[(iy-y)*w+(ix-x)], static_cast<LevelLayer>(i));
                 }
             }
         }
@@ -2114,7 +2114,7 @@ TEINAPI void le_load_prev_level ()
     tab.name = prev;
     set_main_window_subtitle_for_tab(tab.name);
 
-    if (!load_level(tab.level, tab.name))
+    if (!LoadLevel(tab.level, tab.name))
     {
         close_current_tab();
     }
@@ -2169,7 +2169,7 @@ TEINAPI void le_load_next_level ()
     tab.name = next;
     set_main_window_subtitle_for_tab(tab.name);
 
-    if (!load_level(tab.level, tab.name))
+    if (!LoadLevel(tab.level, tab.name))
     {
         close_current_tab();
     }
@@ -2203,7 +2203,7 @@ TEINAPI void level_drop_file (Tab* tab, std::string file_name)
         tab->name = file_name;
         set_main_window_subtitle_for_tab(tab->name);
 
-        if (!load_level(tab->level, tab->name))
+        if (!LoadLevel(tab->level, tab->name))
         {
             close_current_tab();
         }
@@ -2258,7 +2258,7 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
     if (gEditorSettings.unlimitedBackups || (level_count < backup_count))
     {
         backup_name += std::to_string(level_count) + ".lvl";
-        save_level(level, backup_name);
+        SaveLevel(level, backup_name);
     }
     else
     {
@@ -2277,7 +2277,7 @@ TEINAPI void backup_level_tab (const Level& level, const std::string& file_name)
         }
 
         backup_name += std::to_string(oldest_index) + ".lvl";
-        save_level(level, backup_name);
+        SaveLevel(level, backup_name);
     }
 }
 

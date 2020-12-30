@@ -1,48 +1,26 @@
-/*******************************************************************************
- * Loads and saves raw world map data ot and from the CSV file format.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-struct Map_Node
+struct MapNode
 {
-    int x;
-    int y;
-
+    int x,y;
     std::string lvl;
 };
 
-typedef std::vector<Map_Node> Map;
+typedef std::vector<MapNode> Map;
 
-/* -------------------------------------------------------------------------- */
+TEINAPI bool LoadMap (Tab& tab, std::string fileName);
+TEINAPI bool SaveMap (const Tab& tab, std::string fileName);
 
-TEINAPI bool load_map         (      Tab& tab, std::string file_name);
-TEINAPI bool save_map         (const Tab& tab, std::string file_name);
+struct Tab;
 
 // A custom file format. Exactly the same as the default world format except
 // the first part of the file until zero is the name of the level. This is
 // done so that the name of the file can also be restored when the editor
 // is loaded again after a fatal failure occurs and restore files are saved.
+TEINAPI bool LoadRestoreMap (Tab& tab, std::string fileName);
+TEINAPI bool SaveRestoreMap (const Tab& tab, std::string fileName);
 
-struct Tab; // Defined in <editor.hpp>
-
-TEINAPI bool load_restore_map (      Tab& tab, std::string file_name);
-TEINAPI bool save_restore_map (const Tab& tab, std::string file_name);
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI int  get_map_x_pos    (const Map& map);
-TEINAPI int  get_map_y_pos    (const Map& map);
-TEINAPI int  get_map_width    (const Map& map);
-TEINAPI int  get_map_height   (const Map& map);
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI int GetMapXPos   (const Map& map);
+TEINAPI int GetMapYPos   (const Map& map);
+TEINAPI int GetMapWidth  (const Map& map);
+TEINAPI int GetMapHeight (const Map& map);
