@@ -114,9 +114,9 @@ TEINAPI void internal__place_mirrored_tile_clear (int x, int y, TileID id, Level
     int lh = tab.level.header.height-1;
 
                                internal__place_tile_clear(   x,    y,                                                 id  , tile_layer);
-    if (level_editor.mirror_h) internal__place_tile_clear(lw-x,    y, get_tile_horizontal_flip                       (id) , tile_layer);
-    if (level_editor.mirror_v) internal__place_tile_clear(   x, lh-y,                          get_tile_vertical_flip(id) , tile_layer);
-    if (both)                  internal__place_tile_clear(lw-x, lh-y, get_tile_horizontal_flip(get_tile_vertical_flip(id)), tile_layer);
+    if (level_editor.mirror_h) internal__place_tile_clear(lw-x,    y, GetTileHorizontalFlip                       (id) , tile_layer);
+    if (level_editor.mirror_v) internal__place_tile_clear(   x, lh-y,                          GetTileVerticalFlip(id) , tile_layer);
+    if (both)                  internal__place_tile_clear(lw-x, lh-y, GetTileHorizontalFlip(GetTileVerticalFlip(id)), tile_layer);
 }
 
 TEINAPI void internal__place_mirrored_tile (int x, int y, TileID id, LevelLayer tile_layer)
@@ -129,9 +129,9 @@ TEINAPI void internal__place_mirrored_tile (int x, int y, TileID id, LevelLayer 
     int lh = tab.level.header.height-1;
 
                                internal__place_tile(   x,    y,                                                 id  , tile_layer);
-    if (level_editor.mirror_h) internal__place_tile(lw-x,    y, get_tile_horizontal_flip                       (id) , tile_layer);
-    if (level_editor.mirror_v) internal__place_tile(   x, lh-y,                          get_tile_vertical_flip(id) , tile_layer);
-    if (both)                  internal__place_tile(lw-x, lh-y, get_tile_horizontal_flip(get_tile_vertical_flip(id)), tile_layer);
+    if (level_editor.mirror_h) internal__place_tile(lw-x,    y, GetTileHorizontalFlip                       (id) , tile_layer);
+    if (level_editor.mirror_v) internal__place_tile(   x, lh-y,                          GetTileVerticalFlip(id) , tile_layer);
+    if (both)                  internal__place_tile(lw-x, lh-y, GetTileHorizontalFlip(GetTileVerticalFlip(id)), tile_layer);
 }
 
 TEINAPI bool internal__clipboard_empty ()
@@ -225,8 +225,8 @@ TEINAPI void internal__handle_brush ()
     int y = static_cast<int>(tile_pos.y);
 
     bool place = (level_editor.tool_state == Tool_State::PLACE);
-    TileID id = (place) ? get_selected_tile() : 0;
-    internal__place_mirrored_tile(x, y, id, get_selected_layer());
+    TileID id = (place) ? GetSelectedTile() : 0;
+    internal__place_mirrored_tile(x, y, id, GetSelectedLayer());
 }
 
 TEINAPI TileID internal__get_fill_find_id (int x, int y, LevelLayer layer)
@@ -370,10 +370,10 @@ TEINAPI void internal__handle_fill ()
     Tab& tab = get_current_tab();
 
     bool place = (level_editor.tool_state == Tool_State::PLACE);
-    TileID id = (place) ? get_selected_tile() : 0;
+    TileID id = (place) ? GetSelectedTile() : 0;
 
     tab.tool_info.fill.start      = { tile_pos.x, tile_pos.y };
-    tab.tool_info.fill.layer      = get_selected_layer();
+    tab.tool_info.fill.layer      = GetSelectedLayer();
     tab.tool_info.fill.find_id    = internal__get_fill_find_id(x, y, tab.tool_info.fill.layer);
     tab.tool_info.fill.replace_id = id;
 
@@ -519,8 +519,8 @@ TEINAPI void internal__flip_level_h (const bool tile_layer_active[LEVEL_LAYER_TO
                 TileID rt = layer[r];
                 TileID lt = layer[l];
 
-                layer[r--] = get_tile_horizontal_flip(lt);
-                layer[l++] = get_tile_horizontal_flip(rt);
+                layer[r--] = GetTileHorizontalFlip(lt);
+                layer[l++] = GetTileHorizontalFlip(rt);
             }
         }
     }
@@ -563,8 +563,8 @@ TEINAPI void internal__flip_level_v (const bool tile_layer_active[LEVEL_LAYER_TO
 
             for (int j=0; j<lw; ++j)
             {
-                layer[t+j] = get_tile_vertical_flip(layer[t+j]);
-                layer[b+j] = get_tile_vertical_flip(layer[b+j]);
+                layer[t+j] = GetTileVerticalFlip(layer[t+j]);
+                layer[b+j] = GetTileVerticalFlip(layer[b+j]);
             }
 
             b += lw;
@@ -622,14 +622,14 @@ TEINAPI void internal__draw_mirrored_cursor ()
     int tx = static_cast<int>(t.x);
     int ty = static_cast<int>(t.y);
 
-    TileID id = get_selected_tile();
+    TileID id = GetSelectedTile();
 
     BeginStencil();
 
                                internal__draw_cursor(   tx,    ty,                                                 id  );
-    if (level_editor.mirror_h) internal__draw_cursor(lw-tx,    ty, get_tile_horizontal_flip                       (id) );
-    if (level_editor.mirror_v) internal__draw_cursor(   tx, lh-ty,                          get_tile_vertical_flip(id) );
-    if (both)                  internal__draw_cursor(lw-tx, lh-ty, get_tile_horizontal_flip(get_tile_vertical_flip(id)));
+    if (level_editor.mirror_h) internal__draw_cursor(lw-tx,    ty, GetTileHorizontalFlip                       (id) );
+    if (level_editor.mirror_v) internal__draw_cursor(   tx, lh-ty,                          GetTileVerticalFlip(id) );
+    if (both)                  internal__draw_cursor(lw-tx, lh-ty, GetTileHorizontalFlip(GetTileVerticalFlip(id)));
 
     EndStencil();
 }
@@ -729,8 +729,8 @@ TEINAPI void internal__draw_clipboard (UiDir xdir, UiDir ydir)
                 {
                     if (!layer_space_occupied.count(j))
                     {
-                        if (xdir == UI_DIR_LEFT) id = get_tile_horizontal_flip(id);
-                        if (ydir == UI_DIR_DOWN) id = get_tile_vertical_flip(id);
+                        if (xdir == UI_DIR_LEFT) id = GetTileHorizontalFlip(id);
+                        if (ydir == UI_DIR_DOWN) id = GetTileVerticalFlip(id);
 
                         DrawBatchedTile(tx+DEFAULT_TILE_SIZE_HALF, ty+DEFAULT_TILE_SIZE_HALF, &internal__get_tile_graphic_clip(atlas, id));
                         layer_space_occupied.insert(std::pair<size_t, bool>(j, true));
@@ -997,7 +997,7 @@ TEINAPI void do_level_editor ()
     float w = level_editor.bounds.w;
     float h = level_editor.bounds.h;
 
-    float tile_scale = DEFAULT_TILE_SIZE / TILE_IMAGE_SIZE;
+    float tile_scale = DEFAULT_TILE_SIZE / gTileImageSize;
     SetTextureDrawScale(tile_scale, tile_scale);
 
     // We cache the transformed level editor bounds in screen coordinates so
@@ -1020,7 +1020,7 @@ TEINAPI void do_level_editor ()
     // Determine the currently selected layer so that we can make all of the
     // layers above semi-transparent. If we're the spawn layer (top) then it
     // we don't really have a layer so we just assign to minus one to mark.
-    LevelLayer selected_layer = get_selected_layer();
+    LevelLayer selected_layer = GetSelectedLayer();
 
     constexpr float SEMI_TRANS = .6f;
 
@@ -1137,7 +1137,7 @@ TEINAPI void do_level_editor ()
         // If we have a camera tile selected we can also use that to showcase how it will impact the bounds.
         if (level_editor.tool_type != Tool_Type::SELECT)
         {
-            if (get_selected_tile() == CAMERA_ID)
+            if (GetSelectedTile() == CAMERA_ID)
             {
                 if (mouse_inside_level_editor_viewport())
                 {

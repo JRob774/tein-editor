@@ -54,8 +54,8 @@ TEINAPI bool internal__do_layer_button (UiFlag flags, int layer, const char* nam
         }
         else
         {
-            Tile_Category category = get_selected_category();
-            if (category_to_layer(category) == static_cast<LevelLayer>(layer))
+            TileCategory category = GetSelectedCategory();
+            if (CategoryToLayer(category) == static_cast<LevelLayer>(layer))
             {
                 flags |= UI_HIGHLIGHT;
             }
@@ -88,7 +88,7 @@ TEINAPI void internal__toggle_layer (LevelLayer layer)
     {
         Tab& tab = get_current_tab();
         tab.tile_layer_active[layer] = !tab.tile_layer_active[layer];
-        select_next_active_group();
+        SelectNextActiveGroup();
     }
 }
 
@@ -104,7 +104,7 @@ TEINAPI void internal__toggle_layer_action (LevelLayer layer)
             // we can select now that there are entities that can be selected again.
             if (all_layers_were_inactive && !are_all_layers_inactive())
             {
-                reset_selected_group();
+                ResetSelectedGroup();
             }
         }
     }
@@ -127,9 +127,9 @@ TEINAPI void do_layer_panel (bool scrollbar)
     if (!is_layer_panel_present()) return;
 
     layer_panel_bounds.x = 0;
-    layer_panel_bounds.y = get_tile_panel_height();
+    layer_panel_bounds.y = GetTilePanelHeight();
     layer_panel_bounds.w = GetPanelWidth();
-    layer_panel_bounds.h = GetPanelHeight() - get_tile_panel_height();
+    layer_panel_bounds.h = GetPanelHeight() - GetTilePanelHeight();
 
     Vec2 cursor(0,0);
 
@@ -187,7 +187,7 @@ TEINAPI void do_layer_panel (bool scrollbar)
     // we can select now that there are entities that can be selected again.
     if (all_layers_were_inactive && !are_all_layers_inactive())
     {
-        reset_selected_group();
+        ResetSelectedGroup();
     }
 
     EndPanel();

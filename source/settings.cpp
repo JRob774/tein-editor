@@ -94,7 +94,7 @@ TEINAPI void UpdateSystemsThatRelyOnSettings (bool tileGraphicsChanged)
     LoadUiTheme();
     if (tileGraphicsChanged)
     {
-        reload_tile_graphics();
+        ReloadTileGraphics();
     }
 }
 

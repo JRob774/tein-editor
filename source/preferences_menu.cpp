@@ -483,7 +483,7 @@ TEINAPI void internal__do_preferences_settings ()
         if (gEditorSettings.tileGraphics != "new")
         {
             gEditorSettings.tileGraphics = "new";
-            reload_tile_graphics();
+            ReloadTileGraphics();
         }
     }
     if (DoTextButton(NULL, bw,sh, tile_graphics_old_flags, "Old"))
@@ -491,7 +491,7 @@ TEINAPI void internal__do_preferences_settings ()
         if (gEditorSettings.tileGraphics != "old")
         {
             gEditorSettings.tileGraphics = "old";
-            reload_tile_graphics();
+            ReloadTileGraphics();
         }
     }
     internal__next_section(cursor);

@@ -135,7 +135,7 @@ TEINAPI void init_application (int argc, char** argv)
     if (!LoadEditorSettings   ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
     if (!LoadEditorKeyBindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
     if (!LoadEditorResources  ()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
-    if (!init_tile_panel      ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
+    if (!InitTilePanel        ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
 
     init_layer_panel   ();
     init_color_picker  ();
@@ -349,7 +349,7 @@ TEINAPI bool handle_application_events ()
         HandleWindowEvents();
         HandleKeyBindingEvents();
         HandleUiEvents();
-        handle_tile_panel_events();
+        HandleTilePanelEvents();
         handle_tab_bar_events();
         handle_editor_events();
         handle_preferences_menu_events();

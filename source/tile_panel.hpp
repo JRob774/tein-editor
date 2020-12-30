@@ -1,69 +1,55 @@
-/*******************************************************************************
- * Editor GUI widget containing a palette of all the game's tiles.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gTileImageSize = 64;
 
-/* -------------------------------------------------------------------------- */
+enum TileCategory
+{
+    TILE_CATEGORY_BASIC,
+    TILE_CATEGORY_TAG,
+    TILE_CATEGORY_OVERLAY,
+    TILE_CATEGORY_ENTITY,
+    TILE_CATEGORY_BACK1,
+    TILE_CATEGORY_BACK2,
+    TILE_CATEGORY_TOTAL
+};
 
-static constexpr float TILE_IMAGE_SIZE = 64;
+TEINAPI bool InitTilePanel ();
+TEINAPI void DoTilePanel (bool scrollbar);
 
-typedef int Tile_Category;
+TEINAPI bool TilePanelNeedsScrollbar ();
 
-static constexpr Tile_Category TILE_CATEGORY_BASIC   = 0;
-static constexpr Tile_Category TILE_CATEGORY_TAG     = 1;
-static constexpr Tile_Category TILE_CATEGORY_OVERLAY = 2;
-static constexpr Tile_Category TILE_CATEGORY_ENTITY  = 3;
-static constexpr Tile_Category TILE_CATEGORY_BACK1   = 4;
-static constexpr Tile_Category TILE_CATEGORY_BACK2   = 5;
-static constexpr Tile_Category TILE_CATEGORY_TOTAL   = 6;
+TEINAPI void HandleTilePanelEvents ();
 
-/* -------------------------------------------------------------------------- */
+TEINAPI float GetTilePanelHeight ();
 
-TEINAPI bool init_tile_panel ();
-TEINAPI void do_tile_panel   (bool scrollbar);
+TEINAPI void ReloadTileGraphics ();
 
-TEINAPI bool tile_panel_needs_scrollbar ();
+TEINAPI TileCategory GetSelectedCategory ();
+TEINAPI TileID GetSelectedTile ();
+TEINAPI LevelLayer GetSelectedLayer ();
 
-TEINAPI void handle_tile_panel_events ();
+TEINAPI LevelLayer CategoryToLayer (TileCategory category);
 
-TEINAPI float get_tile_panel_height ();
+TEINAPI void SelectNextActiveGroup ();
+TEINAPI void SelectPrevActiveGroup ();
 
-TEINAPI void reload_tile_graphics ();
+TEINAPI void ResetSelectedGroup ();
 
-TEINAPI Tile_Category get_selected_category ();
-TEINAPI TileID        get_selected_tile     ();
-TEINAPI LevelLayer    get_selected_layer    ();
+TEINAPI void IncrementSelectedTile ();
+TEINAPI void DecrementSelectedTile ();
 
-TEINAPI LevelLayer category_to_layer (Tile_Category category);
+TEINAPI void IncrementSelectedGroup ();
+TEINAPI void DecrementSelectedGroup ();
 
-TEINAPI void select_next_active_group ();
-TEINAPI void select_prev_active_group ();
+TEINAPI void IncrementSelectedCategory ();
+TEINAPI void DecrementSelectedCategory ();
 
-TEINAPI void reset_selected_group ();
+TEINAPI TileID GetTileHorizontalFlip (TileID id);
+TEINAPI TileID GetTileVerticalFlip   (TileID id);
 
-TEINAPI void increment_selected_tile     ();
-TEINAPI void decrement_selected_tile     ();
-TEINAPI void increment_selected_group    ();
-TEINAPI void decrement_selected_group    ();
-TEINAPI void increment_selected_category ();
-TEINAPI void decrement_selected_category ();
-
-TEINAPI TileID get_tile_horizontal_flip (TileID id);
-TEINAPI TileID get_tile_vertical_flip   (TileID id);
-
-TEINAPI void jump_to_category_basic   ();
-TEINAPI void jump_to_category_tag     ();
-TEINAPI void jump_to_category_overlay ();
-TEINAPI void jump_to_category_entity  ();
-TEINAPI void jump_to_category_back1   ();
-TEINAPI void jump_to_category_back2   ();
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI void JumpToCategoryBasic   ();
+TEINAPI void JumpToCategoryTag     ();
+TEINAPI void JumpToCategoryOverlay ();
+TEINAPI void JumpToCategoryEntity  ();
+TEINAPI void JumpToCategoryBack1   ();
+TEINAPI void JumpToCategoryBack2   ();

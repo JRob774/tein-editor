@@ -96,9 +96,9 @@
 #include "gpak.hpp"
 #include "hotbar.hpp"
 #include "toolbar.hpp"
-
 #include "tooltip.hpp"
 #include "tile_panel.hpp"
+
 #include "layer_panel.hpp"
 #include "control_panel.hpp"
 #include "new_dialog.hpp"
