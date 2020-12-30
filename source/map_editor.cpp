@@ -246,7 +246,7 @@ TEINAPI void internal__draw_map_clipboard ()
         x2 -= px;
         y2 -= px;
 
-        Vec4 bg = get_tileset_main_color(tileset);
+        Vec4 bg = GetTilesetMainColor(tileset);
         SetDrawColor(bg);
         FillQuad(x1,y1,x2,y2);
 
@@ -395,7 +395,7 @@ TEINAPI void do_map_editor ()
         x2 -= px;
         y2 -= px;
 
-        Vec4 bg = get_tileset_main_color(tileset);
+        Vec4 bg = GetTilesetMainColor(tileset);
 
         // Highlight the moused over node and the active node.
         IVec2 m = internal__mouse_to_node_position_int();

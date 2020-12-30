@@ -1,19 +1,4 @@
-/*******************************************************************************
- * System for retrieving the game's palette colors for the map editor to use.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void init_palette_lookup    ();
-TEINAPI Vec4 get_tileset_main_color (std::string tileset);
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI void InitPaletteLookup ();
+TEINAPI Vec4 GetTilesetMainColor (std::string tileset);

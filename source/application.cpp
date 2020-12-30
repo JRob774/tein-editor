@@ -139,7 +139,7 @@ TEINAPI void init_application (int argc, char** argv)
 
     InitLayerPanel();
     init_color_picker();
-    init_palette_lookup();
+    InitPaletteLookup();
 
     init_editor(argc, argv);
 
