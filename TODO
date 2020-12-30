@@ -1,3 +1,10 @@
-- Remove the update notification system.
+Features:
 - Keys for moving scrolling around the level (Arrows?).
 - Better tab controls: mouse input and list of off-screen tabs.
+
+Bug Fixes:
+- ...
+
+Removals:
+- Remove the update notification system (lots of extra code for something not really necessary or stable).
+- We can probably remove GLM if we wanted, we really dont't use much of it at all.
