@@ -121,7 +121,7 @@ TEINAPI void DoHotbar ()
     SetPanelCursorDir(UI_DIR_RIGHT);
 
     // We want these to be the same width as the toolbar (looks nice).
-    float bw = TOOLBAR_WIDTH+1;
+    float bw = gToolbarDefaultWidth+1;
 
     float width = 0;
 

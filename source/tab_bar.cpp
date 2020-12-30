@@ -99,7 +99,7 @@ TEINAPI void handle_tab_bar_events ()
 
 TEINAPI void do_tab_bar ()
 {
-    float x = get_toolbar_w() + 1;
+    float x = GetToolbarWidth() + 1;
     float y = 0;
 
     float bw = SHIFT_TAB_BUTTON_WIDTH;
@@ -108,7 +108,7 @@ TEINAPI void do_tab_bar ()
     SetUiTexture(&gResourceIcons);
     SetUiFont(&GetEditorRegularFont());
 
-    float whole_tab_bar_w = GetViewport().w - get_toolbar_w() - get_control_panel_w();
+    float whole_tab_bar_w = GetViewport().w - GetToolbarWidth() - get_control_panel_w();
 
     float pw = whole_tab_bar_w - (bw*2) - 4;
     float ph = TAB_BAR_HEIGHT;

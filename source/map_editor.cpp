@@ -315,9 +315,9 @@ TEINAPI void do_map_editor ()
 
     Quad p1;
 
-    p1.x = get_toolbar_w() + 1;
+    p1.x = GetToolbarWidth() + 1;
     p1.y = TAB_BAR_HEIGHT  + 1;
-    p1.w = GetViewport().w - get_toolbar_w() - (get_control_panel_w()) - 2;
+    p1.w = GetViewport().w - GetToolbarWidth() - (get_control_panel_w()) - 2;
     p1.h = GetViewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
 
     // To account for the control panel disappearing.

@@ -218,7 +218,7 @@ TEINAPI void do_application ()
     BeginPanel(p2, UI_NONE);
 
     do_control_panel();
-    do_toolbar();
+    DoToolbar();
     do_tab_bar();
     do_editor();
     do_status_bar();

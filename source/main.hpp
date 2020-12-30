@@ -94,8 +94,8 @@
 #include "level.hpp"
 #include "map.hpp"
 #include "gpak.hpp"
-
 #include "hotbar.hpp"
+
 #include "toolbar.hpp"
 #include "tooltip.hpp"
 #include "tile_panel.hpp"
