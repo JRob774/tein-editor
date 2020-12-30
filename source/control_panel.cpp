@@ -21,7 +21,7 @@ TEINAPI void do_control_panel ()
     control_panel_bounds.y = 0;
 
     // Determine if we need scrollbars for either sub-panels.
-    bool scrollbar = TilePanelNeedsScrollbar() || layer_panel_needs_scrollbar();
+    bool scrollbar = TilePanelNeedsScrollbar() || LayerPanelNeedsScrollbar();
     if (!scrollbar)
     {
         control_panel_bounds.w = CONTROL_PANEL_WIDTH;
@@ -32,7 +32,7 @@ TEINAPI void do_control_panel ()
     {
         BeginPanel(control_panel_bounds, UI_NONE);
         DoTilePanel(scrollbar);
-        do_layer_panel(scrollbar);
+        DoLayerPanel(scrollbar);
         EndPanel();
     }
 }

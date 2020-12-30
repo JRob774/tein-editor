@@ -305,9 +305,9 @@ TEINAPI void DoTilePanel (bool scrollbar)
 
     Vec2 cursor(gTilePanelInnerPad, 0);
     gTilePanel.bounds = { 0,0,GetPanelWidth(),GetPanelHeight() };
-    if (is_layer_panel_present())
+    if (IsLayerPanelPresent())
     {
-        gTilePanel.bounds.h = roundf(gTilePanel.bounds.h - get_layer_panel_height());
+        gTilePanel.bounds.h = roundf(gTilePanel.bounds.h - GetLayerPanelHeight());
     }
 
     BeginPanel(gTilePanel.bounds, UI_NONE, gUiColorMedium);

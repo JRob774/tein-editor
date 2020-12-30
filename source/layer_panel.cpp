@@ -1,17 +1,6 @@
-/*******************************************************************************
- * Editor GUI widget allowing for level layers to be toggled on/off.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr const char* gTileLayerInfo  = "Toggle this tile layer's visibility (invisible layers can't be interacted with).";
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-static constexpr const char* TILE_LAYER_INFO  = "Toggle this tile layer's visibility (invisible layers can't be interacted with).";
-
-static const Vec4 LAYER_COLORS[LEVEL_LAYER_TOTAL]
+static const Vec4 gLayerColors[LEVEL_LAYER_TOTAL]
 {
 { .75f, .38f, .38f, 1 }, // Tag
 { .44f, .51f, .72f, 1 }, // Overlay
@@ -20,133 +9,129 @@ static const Vec4 LAYER_COLORS[LEVEL_LAYER_TOTAL]
 { .57f, .48f, .71f, 1 }  // Back 2
 };
 
-static constexpr float LAYER_PANEL_INNER_PAD =  3;
-static constexpr float LAYER_PANEL_BUTTON_H  = 24;
+static constexpr float gLayerPanelInnerPad = 3;
+static constexpr float gLayerPanelButtonHeight = 24;
 
-static float layer_panel_content_height;
-static float layer_panel_panel_height;
+static float gLayerPanelContentHeight;
+static float gLayerPanelHeight;
+static float gLayerPanelScrollOffset;
 
-static float layer_panel_scroll_offset;
+static Quad gLayerPanelBounds;
 
-static Quad layer_panel_bounds;
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool internal__do_layer_button (UiFlag flags, int layer, const char* name, const char* info)
+namespace Internal
 {
-    const Quad& clip = (flags & UI_INACTIVE) ? gClipCross : gClipEye;
-
-    constexpr float PAD = 5;
-    Vec2 cursor(PAD, 0);
-
-    float bw = GetPanelWidth();
-    float bh = LAYER_PANEL_BUTTON_H;
-
-    // If not inactive then we need to determine if this is the active layer.
-    if (!(flags & UI_INACTIVE))
+    TEINAPI bool DoLayerButton (UiFlag flags, int layer, std::string name, std::string info)
     {
-        // If the tool is the select tool then technically all of the layers
-        // are active (except for disabled ones). So it makes sense to just
-        // highlight ever single layer when using this particular tool.
-        if (level_editor.tool_type == Tool_Type::SELECT)
+        const Quad& clip = ((flags & UI_INACTIVE) ? gClipCross : gClipEye);
+
+        constexpr float Pad = 5;
+        Vec2 cursor(Pad, 0);
+
+        float bw = GetPanelWidth();
+        float bh = gLayerPanelButtonHeight;
+
+        // If not inactive then we need to determine if this is the active layer.
+        if (!(flags & UI_INACTIVE))
         {
-            flags |= UI_HIGHLIGHT;
-        }
-        else
-        {
-            TileCategory category = GetSelectedCategory();
-            if (CategoryToLayer(category) == static_cast<LevelLayer>(layer))
+            // If the tool is the select tool then technically all of the layers
+            // are active (except for disabled ones). So it makes sense to just
+            // highlight ever single layer when using this particular tool.
+            if (level_editor.tool_type == Tool_Type::SELECT)
             {
                 flags |= UI_HIGHLIGHT;
             }
+            else
+            {
+                TileCategory category = GetSelectedCategory();
+                if (CategoryToLayer(category) == static_cast<LevelLayer>(layer))
+                {
+                    flags |= UI_HIGHLIGHT;
+                }
+            }
+        }
+
+        bool result = BeginClickPanel(NULL, bw,bh, flags, info);
+
+        SetPanelCursor(&cursor);
+        SetPanelCursorDir(UI_DIR_RIGHT);
+
+        float w = 10;
+        float h = (gLayerPanelButtonHeight-4)-1; // -1 due to separator!
+
+        cursor.y = (bh-h)/2;
+        DoQuad(w, h, gLayerColors[layer]);
+        cursor.y = 0;
+        AdvancePanelCursor(Pad);
+        DoIcon(24, GetPanelHeight(), gResourceIcons, &clip);
+        AdvancePanelCursor(Pad);
+        DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, GetPanelHeight(), name);
+
+        EndPanel();
+        return result;
+    }
+
+    TEINAPI void ToggleLayer (LevelLayer layer)
+    {
+        if (current_tab_is_level())
+        {
+            Tab& tab = get_current_tab();
+            tab.tile_layer_active[layer] = !tab.tile_layer_active[layer];
+            SelectNextActiveGroup();
         }
     }
 
-    bool result = BeginClickPanel(NULL, bw,bh, flags, info);
-
-    SetPanelCursor(&cursor);
-    SetPanelCursorDir(UI_DIR_RIGHT);
-
-    float w = 10;
-    float h = (LAYER_PANEL_BUTTON_H-4)-1; // -1 due to separator!
-
-    cursor.y = (bh-h)/2;
-    DoQuad(w, h, LAYER_COLORS[layer]);
-    cursor.y = 0;
-    AdvancePanelCursor(PAD);
-    DoIcon(24, GetPanelHeight(), gResourceIcons, &clip);
-    AdvancePanelCursor(PAD);
-    DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, GetPanelHeight(), name);
-
-    EndPanel();
-    return result;
-}
-
-TEINAPI void internal__toggle_layer (LevelLayer layer)
-{
-    if (current_tab_is_level())
+    TEINAPI void ToggleLayerAction (LevelLayer layer)
     {
-        Tab& tab = get_current_tab();
-        tab.tile_layer_active[layer] = !tab.tile_layer_active[layer];
-        SelectNextActiveGroup();
-    }
-}
-
-TEINAPI void internal__toggle_layer_action (LevelLayer layer)
-{
-    if (current_tab_is_level())
-    {
-        if (IsWindowFocused("WINMAIN"))
+        if (current_tab_is_level())
         {
-            bool all_layers_were_inactive = are_all_layers_inactive();
-            internal__toggle_layer(layer);
-            // If we're coming from all layers being inactive we need to find an entity
-            // we can select now that there are entities that can be selected again.
-            if (all_layers_were_inactive && !are_all_layers_inactive())
+            if (IsWindowFocused("WINMAIN"))
             {
-                ResetSelectedGroup();
+                bool allLayersWereInactive = are_all_layers_inactive();
+                Internal::ToggleLayer(layer);
+                // If we're coming from all layers being inactive we need to find an entity
+                // we can select now that there are entities that can be selected again.
+                if (allLayersWereInactive && !are_all_layers_inactive())
+                {
+                    ResetSelectedGroup();
+                }
             }
         }
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void init_layer_panel ()
+TEINAPI void InitLayerPanel ()
 {
-    layer_panel_scroll_offset   = 0;
-    layer_panel_bounds          = {};
-    // Calculate the content height for the layer panel.
-    layer_panel_content_height  = LAYER_PANEL_BUTTON_H * LEVEL_LAYER_TOTAL;
-    layer_panel_content_height -= 1; // We don't care about the last separator!
-    layer_panel_panel_height    = 0;
+    gLayerPanelScrollOffset = 0;
+    gLayerPanelBounds = {};
+    gLayerPanelContentHeight = (gLayerPanelButtonHeight * LEVEL_LAYER_TOTAL) - 1; // -1 because we don't care about the last separator!
+    gLayerPanelHeight = 0;
 }
 
-TEINAPI void do_layer_panel (bool scrollbar)
+TEINAPI void DoLayerPanel (bool scrollbar)
 {
-    if (!is_layer_panel_present()) return;
+    if (!IsLayerPanelPresent()) return;
 
-    layer_panel_bounds.x = 0;
-    layer_panel_bounds.y = GetTilePanelHeight();
-    layer_panel_bounds.w = GetPanelWidth();
-    layer_panel_bounds.h = GetPanelHeight() - GetTilePanelHeight();
+    gLayerPanelBounds.x = 0;
+    gLayerPanelBounds.y = GetTilePanelHeight();
+    gLayerPanelBounds.w = GetPanelWidth();
+    gLayerPanelBounds.h = GetPanelHeight() - GetTilePanelHeight();
 
     Vec2 cursor(0,0);
 
     SetUiTexture(&gResourceIcons);
     SetUiFont(&GetEditorRegularFont());
 
-    constexpr float PAD = LAYER_PANEL_INNER_PAD;
+    constexpr float Pad = gLayerPanelInnerPad;
 
-    BeginPanel(layer_panel_bounds, UI_NONE, gUiColorMedium);
-    BeginPanel(PAD, PAD, CONTROL_PANEL_WIDTH-(PAD*2), layer_panel_bounds.h-(PAD*2), UI_NONE, gUiColorMedDark);
+    BeginPanel(gLayerPanelBounds, UI_NONE, gUiColorMedium);
+    BeginPanel(Pad, Pad, CONTROL_PANEL_WIDTH-(Pad*2), gLayerPanelBounds.h-(Pad*2), UI_NONE, gUiColorMedDark);
 
     // NOTE: We do this to add a 1px border around the actual layer buttons in
     // the case that the panel is too small and needs a scrollbar it looks
     // nicer. Its a bit hacky and at some point we should probs have a feature
     // to add a padding border around a panel but for now we just do this...
     BeginPanel(1, 1, GetPanelWidth()-2, GetPanelHeight()-2, UI_NONE, gUiColorMedDark);
-    layer_panel_panel_height = GetPanelHeight();
+    gLayerPanelHeight = GetPanelHeight();
 
     SetPanelCursor(&cursor);
     SetPanelCursorDir(UI_DIR_DOWN);
@@ -158,34 +143,34 @@ TEINAPI void do_layer_panel (bool scrollbar)
         float sw =  CONTROL_PANEL_SCROLLBAR_WIDTH - CONTROL_PANEL_INNER_PAD;
         float sh =  2 + GetViewport().h;
 
-        DoScrollbar(sx,sy,sw,sh, layer_panel_content_height, layer_panel_scroll_offset);
+        DoScrollbar(sx,sy,sw,sh, gLayerPanelContentHeight, gLayerPanelScrollOffset);
     }
 
-    bool all_layers_were_inactive = are_all_layers_inactive();
+    bool allLayersWereInactive = are_all_layers_inactive();
     Tab& tab = get_current_tab();
 
     for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
     {
-        const char* layer_name = NULL;
+        const char* layerName = NULL;
         switch (i)
         {
-            case (LEVEL_LAYER_TAG    ): layer_name = "Tag";     break;
-            case (LEVEL_LAYER_OVERLAY): layer_name = "Overlay"; break;
-            case (LEVEL_LAYER_ACTIVE ): layer_name = "Active";  break;
-            case (LEVEL_LAYER_BACK1  ): layer_name = "Back 1";  break;
-            case (LEVEL_LAYER_BACK2  ): layer_name = "Back 2";  break;
+            case (LEVEL_LAYER_TAG    ): layerName = "Tag";     break;
+            case (LEVEL_LAYER_OVERLAY): layerName = "Overlay"; break;
+            case (LEVEL_LAYER_ACTIVE ): layerName = "Active";  break;
+            case (LEVEL_LAYER_BACK1  ): layerName = "Back 1";  break;
+            case (LEVEL_LAYER_BACK2  ): layerName = "Back 2";  break;
         }
 
-        UiFlag tile_flag = (tab.tile_layer_active[i]) ? UI_NONE : UI_INACTIVE;
-        if (internal__do_layer_button(tile_flag, static_cast<LevelLayer>(i), layer_name, TILE_LAYER_INFO))
+        UiFlag tileFlag = ((tab.tile_layer_active[i]) ? UI_NONE : UI_INACTIVE);
+        if (Internal::DoLayerButton(tileFlag, static_cast<LevelLayer>(i), layerName, gTileLayerInfo))
         {
-            internal__toggle_layer(static_cast<LevelLayer>(i));
+            Internal::ToggleLayer(static_cast<LevelLayer>(i));
         }
     }
 
     // If we're coming from all layers being inactive we need to find an entity
     // we can select now that there are entities that can be selected again.
-    if (all_layers_were_inactive && !are_all_layers_inactive())
+    if (allLayersWereInactive && !are_all_layers_inactive())
     {
         ResetSelectedGroup();
     }
@@ -196,76 +181,38 @@ TEINAPI void do_layer_panel (bool scrollbar)
     EndPanel();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI float get_layer_panel_height ()
+TEINAPI float GetLayerPanelHeight ()
 {
-    return ceilf((layer_panel_content_height + 1 + 2 + (LAYER_PANEL_INNER_PAD * 2)));
+    return ceilf((gLayerPanelContentHeight + 1 + 2 + (gLayerPanelInnerPad * 2)));
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool layer_panel_needs_scrollbar ()
+TEINAPI bool LayerPanelNeedsScrollbar ()
 {
-    return ((current_tab_is_level()) ? (layer_panel_content_height > layer_panel_panel_height) : false);
+    return ((current_tab_is_level()) ? (gLayerPanelContentHeight > gLayerPanelHeight) : false);
 }
 
-TEINAPI bool is_layer_panel_present ()
+TEINAPI bool IsLayerPanelPresent ()
 {
     return current_tab_is_level();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void toggle_layer_active ()
+TEINAPI void ToggleLayerActive ()
 {
-    internal__toggle_layer_action(LEVEL_LAYER_ACTIVE);
+    Internal::ToggleLayerAction(LEVEL_LAYER_ACTIVE);
 }
-
-TEINAPI void toggle_layer_tag ()
+TEINAPI void ToggleLayerTag ()
 {
-    internal__toggle_layer_action(LEVEL_LAYER_TAG);
+    Internal::ToggleLayerAction(LEVEL_LAYER_TAG);
 }
-
-TEINAPI void toggle_layer_overlay ()
+TEINAPI void ToggleLayerOverlay ()
 {
-    internal__toggle_layer_action(LEVEL_LAYER_OVERLAY);
+    Internal::ToggleLayerAction(LEVEL_LAYER_OVERLAY);
 }
-
-TEINAPI void toggle_layer_back1 ()
+TEINAPI void ToggleLayerBack1 ()
 {
-    internal__toggle_layer_action(LEVEL_LAYER_BACK1);
+    Internal::ToggleLayerAction(LEVEL_LAYER_BACK1);
 }
-
-TEINAPI void toggle_layer_back2 ()
+TEINAPI void ToggleLayerBack2 ()
 {
-    internal__toggle_layer_action(LEVEL_LAYER_BACK2);
+    Internal::ToggleLayerAction(LEVEL_LAYER_BACK2);
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

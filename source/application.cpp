@@ -137,8 +137,8 @@ TEINAPI void init_application (int argc, char** argv)
     if (!LoadEditorResources  ()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
     if (!InitTilePanel        ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
 
-    init_layer_panel   ();
-    init_color_picker  ();
+    InitLayerPanel();
+    init_color_picker();
     init_palette_lookup();
 
     init_editor(argc, argv);

@@ -266,11 +266,11 @@ namespace Internal
         AddKeyBinding(a, b, gKbDecrementGroup,     DecrementSelectedGroup);
         AddKeyBinding(a, b, gKbIncrementCategory,  IncrementSelectedCategory);
         AddKeyBinding(a, b, gKbDecrementCategory,  DecrementSelectedCategory);
-        AddKeyBinding(a, b, gKbToggleLayerActive,  toggle_layer_active);
-        AddKeyBinding(a, b, gKbToggleLayerTag,     toggle_layer_tag);
-        AddKeyBinding(a, b, gKbToggleLayerOverlay, toggle_layer_overlay);
-        AddKeyBinding(a, b, gKbToggleLayerBack1,   toggle_layer_back1);
-        AddKeyBinding(a, b, gKbToggleLayerBack2,   toggle_layer_back2);
+        AddKeyBinding(a, b, gKbToggleLayerActive,  ToggleLayerActive);
+        AddKeyBinding(a, b, gKbToggleLayerTag,     ToggleLayerTag);
+        AddKeyBinding(a, b, gKbToggleLayerOverlay, ToggleLayerOverlay);
+        AddKeyBinding(a, b, gKbToggleLayerBack1,   ToggleLayerBack1);
+        AddKeyBinding(a, b, gKbToggleLayerBack2,   ToggleLayerBack2);
         AddKeyBinding(a, b, gKbCategoryBasic,      JumpToCategoryBasic);
         AddKeyBinding(a, b, gKbCategoryTag,        JumpToCategoryTag);
         AddKeyBinding(a, b, gKbCategoryOverlay,    JumpToCategoryOverlay);
