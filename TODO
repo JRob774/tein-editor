@@ -1,6 +1,9 @@
 Features:
 - Keys for moving scrolling around the level (Arrows?).
 - Better tab controls: mouse input and list of off-screen tabs.
+- Close all tabs button + close all but *this* tab button, etc.
+- Ability to reorganise tiles into custom categories, etc.
+- Change the scale and spacing of the tile icons for readability
 
 Bug Fixes:
 - ...
