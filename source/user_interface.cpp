@@ -1144,13 +1144,13 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to hyperlinks. Could be cleaned.
-            if (current_tab_is_level() && mouse_inside_level_editor_viewport() && IsWindowFocused("WINMAIN"))
+            if (current_tab_is_level() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
             {
-                switch (level_editor.tool_type)
+                switch (gLevelEditor.toolType)
                 {
-                    case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH);  break;
-                    case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL);   break;
-                    case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
+                    case (ToolType::BRUSH): SetCursorType(Cursor::BRUSH); break;
+                    case (ToolType::FILL): SetCursorType(Cursor::FILL); break;
+                    case (ToolType::SELECT): SetCursorType(Cursor::SELECT); break;
                 }
             }
             else
@@ -1345,13 +1345,13 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to text boxes. Could be cleaned.
-            if (current_tab_is_level() && mouse_inside_level_editor_viewport() && IsWindowFocused("WINMAIN"))
+            if (current_tab_is_level() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
             {
-                switch (level_editor.tool_type)
+                switch (gLevelEditor.toolType)
                 {
-                    case (Tool_Type::BRUSH ): SetCursorType(Cursor::BRUSH ); break;
-                    case (Tool_Type::FILL  ): SetCursorType(Cursor::FILL  ); break;
-                    case (Tool_Type::SELECT): SetCursorType(Cursor::SELECT); break;
+                    case (ToolType::BRUSH): SetCursorType(Cursor::BRUSH); break;
+                    case (ToolType::FILL): SetCursorType(Cursor::FILL); break;
+                    case (ToolType::SELECT): SetCursorType(Cursor::SELECT); break;
                 }
             }
             else

@@ -1,37 +1,26 @@
-/*******************************************************************************
- * THe systems and functionality for the level editing portion of the editor.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
+enum class ToolState { IDLE, PLACE, ERASE };
+enum class ToolType { BRUSH, FILL, SELECT };
 
-/* -------------------------------------------------------------------------- */
+struct Tab;
 
-enum class Tool_State { IDLE, PLACE, ERASE  };
-enum class Tool_Type  { BRUSH, FILL, SELECT };
-
-struct Tab; // Defined in <editor.hpp>
-
-struct Tool_Fill
+struct ToolFill
 {
     std::vector<Vec2> frontier;
     std::vector<bool> searched;
 
     LevelLayer layer;
 
-    TileID find_id;
-    TileID replace_id;
+    TileID findID;
+    TileID replaceID;
 
     Vec2 start;
 
-    bool inside_select;
+    bool insideSelect;
 };
 
-struct Select_Bounds
+struct SelectBounds
 {
     int top;
     int right;
@@ -41,25 +30,23 @@ struct Select_Bounds
     bool visible;
 };
 
-struct Tool_Select
+struct ToolSelect
 {
-    std::vector<Select_Bounds> bounds;
+    std::vector<SelectBounds> bounds;
 
     bool start;
     bool add;
 
-    size_t cached_size;
+    size_t cachedSize;
 };
 
-struct Tool_Info
+struct ToolInfo
 {
-    Tool_Fill   fill;
-    Tool_Select select;
+    ToolFill fill;
+    ToolSelect select;
 };
 
-/* -------------------------------------------------------------------------- */
-
-enum class Level_History_Action
+enum class LevelHistoryAction
 {
     NORMAL,
     FLIP_LEVEL_H,
@@ -69,57 +56,55 @@ enum class Level_History_Action
     RESIZE
 };
 
-struct Level_History_Info
+struct LevelHistoryInfo
 {
     int x;
     int y;
 
-    TileID old_id;
-    TileID new_id;
+    TileID oldID;
+    TileID newID;
 
-    LevelLayer tile_layer;
+    LevelLayer tileLayer;
 };
 
-struct Level_History_State
+struct LevelHistoryState
 {
-    Level_History_Action action;
+    LevelHistoryAction action;
 
-    std::vector<Level_History_Info> info;
+    std::vector<LevelHistoryInfo> info;
 
     // What layers were active at the time. Used by flips so only those
     // layers end up getting flipped during the undo and redo actions.
-    bool tile_layer_active[LEVEL_LAYER_TOTAL];
+    bool tileLayerActive[LEVEL_LAYER_TOTAL];
 
     // Used by the select box history to know the size and position.
-    std::vector<Select_Bounds> old_select_state;
-    std::vector<Select_Bounds> new_select_state;
+    std::vector<SelectBounds> oldSelectState;
+    std::vector<SelectBounds> newSelectState;
 
     // Used by the resizing history to restore old/new size.
-    ResizeDir resize_dir;
+    ResizeDir resizeDir;
 
-    int old_width;
-    int old_height;
+    int oldWidth;
+    int oldHeight;
 
-    int new_width;
-    int new_height;
+    int newWidth;
+    int newHeight;
 
     // The data of the level before and after a resize.
-    LevelData old_data;
-    LevelData new_data;
+    LevelData oldData;
+    LevelData newData;
 };
 
-struct Level_History
+struct LevelHistory
 {
-    int current_position;
-    std::vector<Level_History_State> state;
+    int currentPosition;
+    std::vector<LevelHistoryState> state;
 };
 
-/* -------------------------------------------------------------------------- */
+static constexpr float gDefaultTileSize = 16;
+static constexpr float gDefaultTileSizeHalf = gDefaultTileSize / 2;
 
-static constexpr float DEFAULT_TILE_SIZE      = 16;
-static constexpr float DEFAULT_TILE_SIZE_HALF = DEFAULT_TILE_SIZE / 2;
-
-struct Level_Clipboard
+struct LevelClipboard
 {
     LevelData data;
 
@@ -129,88 +114,80 @@ struct Level_Clipboard
     int h;
 };
 
-struct Level_Editor
+struct LevelEditor
 {
-    Tool_State tool_state = Tool_State::IDLE;
-    Tool_Type  tool_type  = Tool_Type::BRUSH;
+    ToolState toolState = ToolState::IDLE;
+    ToolType toolType = ToolType::BRUSH;
 
-    std::vector<Level_Clipboard> clipboard;
+    std::vector<LevelClipboard> clipboard;
 
-    Vec2 mouse_world;
+    Vec2 mouseWorld;
     Vec2 mouse;
-    Vec2 mouse_tile;
+    Vec2 mouseTile;
 
-    bool bounds_visible;
-    bool layer_transparency;
-    bool large_tiles = true;
-    bool entity_guides;
+    bool boundsVisible;
+    bool layerTransparency;
+    bool largeTiles = true;
+    bool entityGuides;
 
-    bool mirror_h;
-    bool mirror_v;
+    bool mirrorH;
+    bool mirrorV;
 
     Quad bounds;
     Quad viewport;
 };
 
-/* -------------------------------------------------------------------------- */
+static LevelEditor gLevelEditor;
 
-static Level_Editor level_editor;
+TEINAPI void InitLevelEditor ();
+TEINAPI void DoLevelEditor ();
 
-/* -------------------------------------------------------------------------- */
+TEINAPI void HandleLevelEditorEvents ();
 
-TEINAPI void init_level_editor ();
-TEINAPI void do_level_editor   ();
+TEINAPI bool MouseInsideLevelEditorViewport ();
 
-TEINAPI void handle_level_editor_events ();
+TEINAPI void NewLevelHistoryState (LevelHistoryAction action);
 
-TEINAPI bool mouse_inside_level_editor_viewport ();
+TEINAPI void AddToHistoryNormalState (LevelHistoryInfo info);
+TEINAPI void AddToHistoryClearState (LevelHistoryInfo info);
 
-TEINAPI void new_level_history_state (Level_History_Action action);
+TEINAPI bool AreAllLayersInactive ();
 
-TEINAPI void add_to_history_normal_state (Level_History_Info info);
-TEINAPI void add_to_history_clear_state  (Level_History_Info info);
+TEINAPI bool AreAnySelectBoxesVisible ();
+TEINAPI void GetOrderedSelectBounds (const SelectBounds& bounds, int* l, int* t, int* r, int* b);
+TEINAPI void GetTotalSelectBoundary (int* l, int* t, int* r, int* b);
 
-TEINAPI bool are_all_layers_inactive ();
+TEINAPI void LoadLevelTab (std::string fileName);
 
-TEINAPI bool are_any_select_boxes_visible ();
-TEINAPI void get_ordered_select_bounds    (const Select_Bounds& bounds, int* l, int* t, int* r, int* b);
-TEINAPI void get_total_select_boundary    (int* l, int* t, int* r, int* b);
+TEINAPI bool LevelEditorSave (Tab& tab);
+TEINAPI bool LevelEditorSaveAs ();
+TEINAPI void LevelEditorClearSelect ();
+TEINAPI void LevelEditorDeselect ();
+TEINAPI void LevelEditorCursorDeseelct ();
+TEINAPI void LevelEditorSelectAll ();
+TEINAPI void LevelEditorCopy ();
+TEINAPI void LevelEditorCut ();
+TEINAPI void LevelEditorPaste ();
 
-TEINAPI void load_level_tab (std::string file_name);
+TEINAPI void FlipLevelH ();
+TEINAPI void FlipLevelV ();
 
-TEINAPI bool le_save            (Tab& level);
-TEINAPI bool le_save_as         ();
-TEINAPI void le_clear_select    ();
-TEINAPI void le_deselect        ();
-TEINAPI void le_cursor_deselect ();
-TEINAPI void le_select_all      ();
-TEINAPI void le_copy            ();
-TEINAPI void le_cut             ();
-TEINAPI void le_paste           ();
+TEINAPI void LevelHasUnsavedChanges ();
 
-TEINAPI void flip_level_h ();
-TEINAPI void flip_level_v ();
+TEINAPI void LevelEditorUndo ();
+TEINAPI void LevelEditorRedo ();
 
-TEINAPI void level_has_unsaved_changes ();
+TEINAPI void LevelEditorHistoryBegin ();
+TEINAPI void LevelEditorHistoryEnd ();
 
-TEINAPI void le_undo ();
-TEINAPI void le_redo ();
+TEINAPI void LevelEditorResize ();
+TEINAPI void LevelEditorResizeOkay ();
 
-TEINAPI void le_history_begin ();
-TEINAPI void le_history_end   ();
+TEINAPI void LevelEditorLoadPrevLevel ();
+TEINAPI void LevelEditorLoadNextLevel ();
 
-TEINAPI void le_resize      ();
-TEINAPI void le_resize_okay ();
+TEINAPI void LevelDropFile (Tab* tab, std::string fileName);
 
-TEINAPI void le_load_prev_level ();
-TEINAPI void le_load_next_level ();
+TEINAPI void BackupLevelTab (const Level& level, const std::string& fileName);
 
-TEINAPI void level_drop_file (Tab* tab, std::string file_name);
-
-TEINAPI void backup_level_tab (const Level& level, const std::string& file_name);
-
-TEINAPI bool is_current_level_empty ();
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI bool IsCurrentLevelEmpty ();

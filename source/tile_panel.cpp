@@ -129,7 +129,7 @@ namespace Internal
                 }
             }
 
-            if (current_tab_is_level() && !are_all_layers_inactive())
+            if (current_tab_is_level() && !AreAllLayersInactive())
             {
                 float qx = tileCursor.x - 1;
                 float qy = tileCursor.y - 1;
@@ -216,11 +216,11 @@ namespace Internal
         if (oldSelectedGroup != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
         {
             // When the selected gets changed then we make a new state.
-            if (level_editor.tool_type == Tool_Type::BRUSH || level_editor.tool_type == Tool_Type::FILL)
+            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
             {
-                if (level_editor.tool_state != Tool_State::IDLE)
+                if (gLevelEditor.toolState != ToolState::IDLE)
                 {
-                    new_level_history_state(Level_History_Action::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
                 }
             }
         }
@@ -230,7 +230,7 @@ namespace Internal
     {
         if (current_tab_is_level())
         {
-            if (!are_all_layers_inactive())
+            if (!AreAllLayersInactive())
             {
                 if (IsWindowFocused("WINMAIN"))
                 {
@@ -339,7 +339,7 @@ TEINAPI void HandleTilePanelEvents ()
 {
     if (current_tab_is_level())
     {
-        if (!are_all_layers_inactive())
+        if (!AreAllLayersInactive())
         {
             if (IsWindowFocused("WINMAIN"))
             {
@@ -435,7 +435,7 @@ TEINAPI LevelLayer CategoryToLayer (TileCategory category)
 
 TEINAPI void SelectNextActiveGroup ()
 {
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         while (!Internal::IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory)))
         {
@@ -450,7 +450,7 @@ TEINAPI void SelectNextActiveGroup ()
 }
 TEINAPI void SelectPrevActiveGroup ()
 {
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         while (!Internal::IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory)))
         {
@@ -474,7 +474,7 @@ TEINAPI void IncrementSelectedTile ()
 {
     if (!current_tab_is_level()) return;
 
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         auto& group = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)][gTilePanel.selectedGroup];
         int oldSelectedIndex = group.selectedIndex;
@@ -485,11 +485,11 @@ TEINAPI void IncrementSelectedTile ()
         // Feels correct that a new history state should be made.
         if (oldSelectedIndex != group.selectedIndex)
         {
-            if (level_editor.tool_type == Tool_Type::BRUSH || level_editor.tool_type == Tool_Type::FILL)
+            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
             {
-                if (level_editor.tool_state != Tool_State::IDLE)
+                if (gLevelEditor.toolState != ToolState::IDLE)
                 {
-                    new_level_history_state(Level_History_Action::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
                 }
             }
         }
@@ -499,7 +499,7 @@ TEINAPI void DecrementSelectedTile ()
 {
     if (!current_tab_is_level()) return;
 
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         auto& group = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)][gTilePanel.selectedGroup];
         int oldSelectedIndex = group.selectedIndex;
@@ -510,11 +510,11 @@ TEINAPI void DecrementSelectedTile ()
         // Feels correct that a new history state should be made.
         if (oldSelectedIndex != group.selectedIndex)
         {
-            if (level_editor.tool_type == Tool_Type::BRUSH || level_editor.tool_type == Tool_Type::FILL)
+            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
             {
-                if (level_editor.tool_state != Tool_State::IDLE)
+                if (gLevelEditor.toolState != ToolState::IDLE)
                 {
-                    new_level_history_state(Level_History_Action::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
                 }
             }
         }
@@ -525,7 +525,7 @@ TEINAPI void IncrementSelectedGroup ()
 {
     if (!current_tab_is_level()) return;
 
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         auto& category = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)];
         int oldSelectedGroup = gTilePanel.selectedGroup;
@@ -536,11 +536,11 @@ TEINAPI void IncrementSelectedGroup ()
         // Feels correct that a new history state should be made.
         if (oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (level_editor.tool_type == Tool_Type::BRUSH || level_editor.tool_type == Tool_Type::FILL)
+            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
             {
-                if (level_editor.tool_state != Tool_State::IDLE)
+                if (gLevelEditor.toolState != ToolState::IDLE)
                 {
-                    new_level_history_state(Level_History_Action::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
                 }
             }
         }
@@ -550,7 +550,7 @@ TEINAPI void DecrementSelectedGroup ()
 {
     if (!current_tab_is_level()) return;
 
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         auto& category = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)];
         int oldSelectedGroup = gTilePanel.selectedGroup;
@@ -561,11 +561,11 @@ TEINAPI void DecrementSelectedGroup ()
         // Feels correct that a new history state should be made.
         if (oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (level_editor.tool_type == Tool_Type::BRUSH || level_editor.tool_type == Tool_Type::FILL)
+            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
             {
-                if (level_editor.tool_state != Tool_State::IDLE)
+                if (gLevelEditor.toolState != ToolState::IDLE)
                 {
-                    new_level_history_state(Level_History_Action::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
                 }
             }
         }
@@ -579,7 +579,7 @@ TEINAPI void IncrementSelectedCategory ()
     int oldSelectedCategory = gTilePanel.selectedCategory;
     int oldSelectedGroup = gTilePanel.selectedGroup;
 
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         if ((++gTilePanel.selectedCategory) > TILE_CATEGORY_BACK2)
         {
@@ -590,11 +590,11 @@ TEINAPI void IncrementSelectedCategory ()
         // Feels correct that a new history state should be made.
         if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (level_editor.tool_type == Tool_Type::BRUSH || level_editor.tool_type == Tool_Type::FILL)
+            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
             {
-                if (level_editor.tool_state != Tool_State::IDLE)
+                if (gLevelEditor.toolState != ToolState::IDLE)
                 {
-                    new_level_history_state(Level_History_Action::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
                 }
             }
         }
@@ -607,7 +607,7 @@ TEINAPI void DecrementSelectedCategory ()
     int oldSelectedCategory = gTilePanel.selectedCategory;
     int oldSelectedGroup = gTilePanel.selectedGroup;
 
-    if (!are_all_layers_inactive())
+    if (!AreAllLayersInactive())
     {
         if ((--gTilePanel.selectedCategory) < TILE_CATEGORY_BASIC)
         {
@@ -618,11 +618,11 @@ TEINAPI void DecrementSelectedCategory ()
         // Feels correct that a new history state should be made.
         if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (level_editor.tool_type == Tool_Type::BRUSH || level_editor.tool_type == Tool_Type::FILL)
+            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
             {
-                if (level_editor.tool_state != Tool_State::IDLE)
+                if (gLevelEditor.toolState != ToolState::IDLE)
                 {
-                    new_level_history_state(Level_History_Action::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
                 }
             }
         }

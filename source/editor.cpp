@@ -124,7 +124,7 @@ TEINAPI void internal__load_session_tabs ()
                     {
                         std::string ext(buffer.substr(buffer.find_last_of(".")));
                         Tab* tab = NULL;
-                        if      (ext == ".lvl") level_drop_file(tab, buffer);
+                        if      (ext == ".lvl") LevelDropFile(tab, buffer);
                         else if (ext == ".csv") map_drop_file  (tab, buffer);
                     }
 
@@ -221,7 +221,7 @@ TEINAPI void init_editor (int argc, char** argv)
     editor.is_panning   = false;
     editor.dialog_box   = false;
 
-    init_level_editor();
+    InitLevelEditor();
     init_map_editor();
 
     // Handle restoring levels/maps from a previous instance that crashed.
@@ -271,7 +271,7 @@ TEINAPI void init_editor (int argc, char** argv)
                 std::string file(argv[i]);
                 std::string ext(file.substr(file.find_last_of(".")));
                 Tab* tab = NULL;
-                if      (ext == ".lvl") level_drop_file(tab, file);
+                if      (ext == ".lvl") LevelDropFile(tab, file);
                 else if (ext == ".csv") map_drop_file  (tab, file);
             }
         }
@@ -312,7 +312,7 @@ TEINAPI void do_editor ()
 
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): do_level_editor(); break;
+        case (Tab_Type::LEVEL): DoLevelEditor(); break;
         case (Tab_Type::MAP  ): do_map_editor  (); break;
     }
 }
@@ -329,7 +329,7 @@ TEINAPI void handle_editor_events ()
         {
             std::string file(main_event.drop.file);
             std::string ext(file.substr(file.find_last_of(".")));
-            if      (ext == ".lvl") level_drop_file(tab, file);
+            if      (ext == ".lvl") LevelDropFile(tab, file);
             else if (ext == ".csv") map_drop_file  (tab, file);
         }
         SDL_free(main_event.drop.file); // Docs say to free it!
@@ -419,7 +419,7 @@ TEINAPI void handle_editor_events ()
 
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): handle_level_editor_events(); break;
+        case (Tab_Type::LEVEL): HandleLevelEditorEvents(); break;
         case (Tab_Type::MAP  ): handle_map_editor_events  (); break;
     }
 }
@@ -468,7 +468,7 @@ TEINAPI void set_current_tab (size_t index)
     // NOTE: Kind of a bit hacky to have these here...
     if (editor.current_tab != index)
     {
-        level_editor.tool_state = Tool_State::IDLE;
+        gLevelEditor.toolState = ToolState::IDLE;
         map_editor.pressed = false;
         map_editor.left_pressed = false;
     }
@@ -512,7 +512,7 @@ TEINAPI void increment_tab ()
         MaybeScrollTabBar();
 
         // NOTE: Kind of a bit hacky to have these here...
-        level_editor.tool_state = Tool_State::IDLE;
+        gLevelEditor.toolState = ToolState::IDLE;
         map_editor.pressed = false;
         map_editor.left_pressed = false;
     }
@@ -530,7 +530,7 @@ TEINAPI void decrement_tab ()
         MaybeScrollTabBar();
 
         // NOTE: Kind of a bit hacky to have these here...
-        level_editor.tool_state = Tool_State::IDLE;
+        gLevelEditor.toolState = ToolState::IDLE;
         map_editor.pressed = false;
         map_editor.left_pressed = false;
     }
@@ -570,8 +570,8 @@ TEINAPI void create_new_level_tab_and_focus (int w, int h)
 
     // Level-specific initialization stuff.
     for (auto& active: tab.tile_layer_active) active = true;
-    tab.level_history.current_position = -1;
-    tab.tool_info.select.cached_size   =  0;
+    tab.level_history.currentPosition = -1;
+    tab.tool_info.select.cachedSize = 0;
     CreateBlankLevel(tab.level, w, h);
 }
 
@@ -620,7 +620,7 @@ TEINAPI void close_tab (size_t index)
         // NOTE: Kind of a bit hacky to have these here...
         if (editor.current_tab == index)
         {
-            level_editor.tool_state = Tool_State::IDLE;
+            gLevelEditor.toolState = ToolState::IDLE;
             map_editor.pressed = false;
             map_editor.left_pressed = false;
         }
@@ -718,7 +718,7 @@ TEINAPI int save_changes_prompt (Tab& tab)
         // the user was going to perform in order to maintain the level/map data.
         switch (tab.type)
         {
-            case (Tab_Type::LEVEL): if (!le_save     (tab)) return ALERT_RESULT_CANCEL; break;
+            case (Tab_Type::LEVEL): if (!LevelEditorSave(tab)) return ALERT_RESULT_CANCEL; break;
             case (Tab_Type::MAP  ): if (!save_map_tab(tab)) return ALERT_RESULT_CANCEL; break;
         }
     }
@@ -733,7 +733,7 @@ TEINAPI void backup_tab (Tab& tab)
 {
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): backup_level_tab(tab.level, tab.name); break;
+        case (Tab_Type::LEVEL): BackupLevelTab(tab.level, tab.name); break;
         case (Tab_Type::MAP  ): backup_map_tab  (tab,       tab.name); break;
     }
 }
@@ -746,7 +746,7 @@ TEINAPI bool is_current_tab_empty ()
     const Tab& tab = get_current_tab();
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): return is_current_level_empty();
+        case (Tab_Type::LEVEL): return IsCurrentLevelEmpty();
         case (Tab_Type::MAP  ): return is_current_map_empty();
     }
     return false;
@@ -760,7 +760,7 @@ TEINAPI void editor_select_all ()
     Tab& tab = get_current_tab();
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): le_select_all(); break;
+        case (Tab_Type::LEVEL): LevelEditorSelectAll(); break;
         case (Tab_Type::MAP  ): me_select_all(); break;
     }
 }
@@ -771,7 +771,7 @@ TEINAPI void editor_paste ()
     Tab& tab = get_current_tab();
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): le_paste(); break;
+        case (Tab_Type::LEVEL): LevelEditorPaste(); break;
         case (Tab_Type::MAP  ): me_paste(); break;
     }
 }
@@ -803,7 +803,7 @@ TEINAPI void open_recently_closed_tab ()
     {
         std::string ext(name.substr(name.find_last_of(".")));
         Tab* tab = NULL;
-        if      (ext == ".lvl") level_drop_file(tab, name);
+        if      (ext == ".lvl") LevelDropFile(tab, name);
         else if (ext == ".csv") map_drop_file  (tab, name);
     }
 }

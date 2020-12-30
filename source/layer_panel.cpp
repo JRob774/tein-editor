@@ -36,7 +36,7 @@ namespace Internal
             // If the tool is the select tool then technically all of the layers
             // are active (except for disabled ones). So it makes sense to just
             // highlight ever single layer when using this particular tool.
-            if (level_editor.tool_type == Tool_Type::SELECT)
+            if (gLevelEditor.toolType == ToolType::SELECT)
             {
                 flags |= UI_HIGHLIGHT;
             }
@@ -86,11 +86,11 @@ namespace Internal
         {
             if (IsWindowFocused("WINMAIN"))
             {
-                bool allLayersWereInactive = are_all_layers_inactive();
+                bool allLayersWereInactive = AreAllLayersInactive();
                 Internal::ToggleLayer(layer);
                 // If we're coming from all layers being inactive we need to find an entity
                 // we can select now that there are entities that can be selected again.
-                if (allLayersWereInactive && !are_all_layers_inactive())
+                if (allLayersWereInactive && !AreAllLayersInactive())
                 {
                     ResetSelectedGroup();
                 }
@@ -146,7 +146,7 @@ TEINAPI void DoLayerPanel (bool scrollbar)
         DoScrollbar(sx,sy,sw,sh, gLayerPanelContentHeight, gLayerPanelScrollOffset);
     }
 
-    bool allLayersWereInactive = are_all_layers_inactive();
+    bool allLayersWereInactive = AreAllLayersInactive();
     Tab& tab = get_current_tab();
 
     for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
@@ -170,7 +170,7 @@ TEINAPI void DoLayerPanel (bool scrollbar)
 
     // If we're coming from all layers being inactive we need to find an entity
     // we can select now that there are entities that can be selected again.
-    if (allLayersWereInactive && !are_all_layers_inactive())
+    if (allLayersWereInactive && !AreAllLayersInactive())
     {
         ResetSelectedGroup();
     }

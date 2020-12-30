@@ -58,10 +58,10 @@ TEINAPI void do_status_bar ()
     {
         if (current_tab_is_level())
         {
-            if (PointInBoundsXYWH(GetMousePos(), level_editor.viewport))
+            if (PointInBoundsXYWH(GetMousePos(), gLevelEditor.viewport))
             {
-                mx = static_cast<int>(level_editor.mouse_tile.x);
-                my = static_cast<int>(level_editor.mouse_tile.y);
+                mx = static_cast<int>(gLevelEditor.mouseTile.x);
+                my = static_cast<int>(gLevelEditor.mouseTile.y);
             }
         }
         else if (current_tab_is_map())
@@ -76,10 +76,10 @@ TEINAPI void do_status_bar ()
 
     // Get the select bounds.
     int sx = 0, sy = 0, sw = 0, sh = 0;
-    if (current_tab_is_level() && are_any_select_boxes_visible())
+    if (current_tab_is_level() && AreAnySelectBoxesVisible())
     {
         int l,t,r,b;
-        get_total_select_boundary(&l,&t,&r,&b);
+        GetTotalSelectBoundary(&l,&t,&r,&b);
         sx = l, sy = b, sw = (r-l)+1, sh = (t-b)+1;
     }
     else if (current_tab_is_map() && map_select_box_present())

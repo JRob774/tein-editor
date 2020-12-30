@@ -61,11 +61,11 @@ TEINAPI void DoHotbar ()
         // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
         if (tab.type == Tab_Type::LEVEL)
         {
-            if (tab.level_history.current_position == tab.level_history.state.size()-1)
+            if (tab.level_history.currentPosition == tab.level_history.state.size()-1)
             {
                 redoFlags = UI_LOCKED;
             }
-            if (tab.level_history.current_position <= -1)
+            if (tab.level_history.currentPosition <= -1)
             {
                 undoFlags = UI_LOCKED;
             }
@@ -203,7 +203,7 @@ TEINAPI void HotbarLoad ()
         for (auto file: fileNames)
         {
             std::string ext(file.substr(file.find_last_of(".")));
-            if (ext == ".lvl") load_level_tab(file);
+            if (ext == ".lvl") LoadLevelTab(file);
             else if (ext == ".csv") load_map_tab(file);
         }
     }
@@ -214,7 +214,7 @@ TEINAPI void HotbarSave ()
     if (!are_there_any_tabs()) return;
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_save(get_current_tab()); break;
+        case (Tab_Type::LEVEL): LevelEditorSave(get_current_tab()); break;
         case (Tab_Type::MAP): save_map_tab(get_current_tab()); break;
     }
 }
@@ -224,7 +224,7 @@ TEINAPI void HotbarSaveAs ()
     if (!are_there_any_tabs()) return;
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_save_as(); break;
+        case (Tab_Type::LEVEL): LevelEditorSaveAs(); break;
         case (Tab_Type::MAP): save_map_tab_as(); break;
     }
 }
@@ -234,7 +234,7 @@ TEINAPI void HotbarUndo ()
     if (!are_there_any_tabs()) return;
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_undo(); break;
+        case (Tab_Type::LEVEL): LevelEditorUndo(); break;
         case (Tab_Type::MAP): me_undo(); break;
     }
 }
@@ -244,7 +244,7 @@ TEINAPI void HotbarRedo ()
     if (!are_there_any_tabs()) return;
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_redo(); break;
+        case (Tab_Type::LEVEL): LevelEditorRedo(); break;
         case (Tab_Type::MAP): me_redo(); break;
     }
 }
@@ -254,7 +254,7 @@ TEINAPI void HotbarHistoryBegin ()
     if (!are_there_any_tabs()) return;
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_history_begin(); break;
+        case (Tab_Type::LEVEL): LevelEditorHistoryBegin(); break;
         case (Tab_Type::MAP): me_history_begin(); break;
     }
 }
@@ -264,7 +264,7 @@ TEINAPI void HotbarHistoryEnd ()
     if (!are_there_any_tabs()) return;
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_history_end(); break;
+        case (Tab_Type::LEVEL): LevelEditorHistoryEnd(); break;
         case (Tab_Type::MAP): me_history_end(); break;
     }
 }

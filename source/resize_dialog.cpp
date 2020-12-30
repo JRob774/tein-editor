@@ -201,7 +201,7 @@ namespace Internal
             return;
         }
 
-        le_resize_okay();
+        LevelEditorResizeOkay();
         HideWindow("WINRESIZE");
     }
 }

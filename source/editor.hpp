@@ -39,10 +39,10 @@ struct Tab
 
     // LEVEL
     Level         level;
-    Tool_Info     tool_info;
-    Level_History level_history;
+    ToolInfo      tool_info;
+    LevelHistory  level_history;
     bool tile_layer_active[LEVEL_LAYER_TOTAL];
-    std::vector<Select_Bounds> old_select_state; // We use this for the selection history undo/redo system.
+    std::vector<SelectBounds> old_select_state; // We use this for the selection history undo/redo system.
 
     // MAP
     Map           map;

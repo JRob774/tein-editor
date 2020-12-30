@@ -227,7 +227,7 @@ namespace Internal
         AddKeyBinding(a, b, gKbLevelSaveAs,        HotbarSaveAs);
         AddKeyBinding(a, b, gKbLevelClose,         close_current_tab);
         AddKeyBinding(a, b, gKbLevelCloseAll,      close_all_tabs);
-        AddKeyBinding(a, b, gKbLevelResize,        le_resize);
+        AddKeyBinding(a, b, gKbLevelResize,        LevelEditorResize);
         AddKeyBinding(a, b, gKbUndo,               HotbarUndo);
         AddKeyBinding(a, b, gKbRedo,               HotbarRedo);
         AddKeyBinding(a, b, gKbHistoryBegin,       HotbarHistoryBegin);
@@ -282,8 +282,8 @@ namespace Internal
         AddKeyBinding(a, b, gKbMoveTabLeft,        MoveTabLeft);
         AddKeyBinding(a, b, gKbMoveTabRight,       MoveTabRight);
         AddKeyBinding(a, b, gKbOpenRecentTab,      open_recently_closed_tab);
-        AddKeyBinding(a, b, gKbLoadPrevLevel,      le_load_prev_level);
-        AddKeyBinding(a, b, gKbLoadNextLevel,      le_load_next_level);
+        AddKeyBinding(a, b, gKbLoadPrevLevel,      LevelEditorLoadPrevLevel);
+        AddKeyBinding(a, b, gKbLoadNextLevel,      LevelEditorLoadNextLevel);
     }
 }
 
