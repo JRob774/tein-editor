@@ -148,7 +148,7 @@ TEINAPI void do_update ()
 
     BeginPanel(p1, UI_NONE, gUiColorExDark);
 
-    float bb = PATH_DIALOG_BOTTOM_BORDER;
+    float bb = gPathDialogBottomBorder;
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;

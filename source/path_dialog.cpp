@@ -1,26 +1,13 @@
-/*******************************************************************************
- * Dialog box that opens up for the user to locate the TEIN executable file.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr float gPathDialogBottomBorder = 26;
+static std::string gTempGamePath;
 
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-static constexpr float PATH_DIALOG_BOTTOM_BORDER = 26;
-static std::string temp_game_path;
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void open_path ()
+TEINAPI void OpenPath ()
 {
-    temp_game_path = gEditorSettings.gamePath;
+    gTempGamePath = gEditorSettings.gamePath;
     ShowWindow("WINPATH");
 }
 
-TEINAPI void do_path ()
+TEINAPI void DoPath ()
 {
     Quad p1, p2;
 
@@ -33,7 +20,7 @@ TEINAPI void do_path ()
 
     BeginPanel(p1, UI_NONE, gUiColorExDark);
 
-    float bb = PATH_DIALOG_BOTTOM_BORDER;
+    float bb = gPathDialogBottomBorder;
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -42,83 +29,80 @@ TEINAPI void do_path ()
     float bh = bb - gWindowBorder;
 
     // Bottom buttons for okaying or cancelling the path dialog.
-    Vec2 btn_cursor(0, gWindowBorder);
+    Vec2 buttonCursor(0, gWindowBorder);
     BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
 
     SetPanelCursorDir(UI_DIR_RIGHT);
-    SetPanelCursor(&btn_cursor);
+    SetPanelCursor(&buttonCursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Okay"  )) okay_path  ();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_path();
+    if (DoTextButton(NULL, bw,bh, UI_NONE, "Okay")) OkayPath();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelPath();
 
     // Add a separator to the left for symmetry.
-    btn_cursor.x = 1;
+    buttonCursor.x = 1;
     DoSeparator(bh);
 
     EndPanel();
 
-    p2.x =                  1;
-    p2.y =                  1;
-    p2.w = vw             - 2;
+    p2.x = 1;
+    p2.y = 1;
+    p2.w = vw - 2;
     p2.h = vh - p2.y - bb - 1;
 
     BeginPanel(p2, UI_NONE, gUiColorMedium);
 
-    constexpr float XPAD = 8;
-    constexpr float YPAD = 4;
+    constexpr float XPad = 8;
+    constexpr float YPad = 4;
 
-    Vec2 cursor(XPAD, YPAD);
+    Vec2 cursor(XPad, YPad);
 
     SetPanelCursorDir(UI_DIR_DOWN);
     SetPanelCursor(&cursor);
 
-    constexpr float BUTTON_W = 80;
-    constexpr float LABEL_H = 24;
+    constexpr float ButtonWidth = 80;
+    constexpr float LabelHeight = 24;
 
     cursor.x += 2;
-    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LABEL_H, "Please locate 'The End is Nigh' executable:");
+    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LabelHeight, "Please locate 'The End is Nigh' executable:");
     cursor.x -= 2;
 
     SetPanelCursorDir(UI_DIR_RIGHT);
 
-    float tw = GetViewport().w - BUTTON_W - (XPAD*2);
+    float tw = GetViewport().w - ButtonWidth - (XPad*2);
     float th = 24;
 
     cursor.y += 2;
-    DoTextBox(tw,th, UI_FILEPATH, temp_game_path, "", UI_ALIGN_LEFT);
+    DoTextBox(tw,th, UI_FILEPATH, gTempGamePath, "", UI_ALIGN_LEFT);
     cursor.y += 1;
 
-    float btnh = th-2;
+    float buttonHeight = th-2;
 
-    float x1 = cursor.x            - 1;
-    float y1 = cursor.y            - 1;
-    float x2 = cursor.x + BUTTON_W + 1;
-    float y2 = cursor.y + btnh     + 1;
+    float x1 = cursor.x - 1;
+    float y1 = cursor.y - 1;
+    float x2 = cursor.x + ButtonWidth + 1;
+    float y2 = cursor.y + buttonHeight + 1;
 
     // Create a nice border so the button's bounds are actually visible!
     SetDrawColor(gUiColorExDark);
-    FillQuad(x1, y1, x2, y2);
+    FillQuad(x1,y1,x2,y2);
 
-    if (DoTextButton(NULL, BUTTON_W,btnh, UI_SINGLE, "Search"))
+    if (DoTextButton(NULL, ButtonWidth,buttonHeight, UI_SINGLE, "Search"))
     {
         auto result = OpenDialog(DialogType::EXE, false);
-        if (!result.empty())
-        {
-            temp_game_path = result.at(0);
-        }
+        if (!result.empty()) gTempGamePath = result.at(0);
     }
 
     EndPanel();
     EndPanel();
 }
 
-TEINAPI void okay_path ()
+TEINAPI void OkayPath ()
 {
-    temp_game_path = FixPathSlashes(temp_game_path);
-    gEditorSettings.gamePath = temp_game_path;
+    gTempGamePath = FixPathSlashes(gTempGamePath);
+    gEditorSettings.gamePath = gTempGamePath;
 
     save_preferences();
     HideWindow("WINPATH");
@@ -129,15 +113,13 @@ TEINAPI void okay_path ()
     }
 }
 
-TEINAPI void cancel_path ()
+TEINAPI void CancelPath ()
 {
-    temp_game_path.clear();
+    gTempGamePath.clear();
     HideWindow("WINPATH");
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void handle_path_events ()
+TEINAPI void HandlePathEvents ()
 {
     if (!IsWindowFocused("WINPATH")) return;
 
@@ -147,37 +129,9 @@ TEINAPI void handle_path_events ()
         {
             switch (main_event.key.keysym.sym)
             {
-                case (SDLK_RETURN): okay_path  (); break;
-                case (SDLK_ESCAPE): cancel_path(); break;
+                case (SDLK_RETURN): OkayPath(); break;
+                case (SDLK_ESCAPE): CancelPath(); break;
             }
         }
     }
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

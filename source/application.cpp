@@ -117,7 +117,7 @@ TEINAPI void init_application (int argc, char** argv)
     GetWindowFromName("WINABOUT"      ). closeCallback = []() { HideWindow("WINABOUT" ); };
     GetWindowFromName("WINUNPACK"     ). closeCallback = []() { CancelUnpack         (); };
     GetWindowFromName("WINPACK"       ). closeCallback = []() { CancelPack           (); };
-    GetWindowFromName("WINPATH"       ). closeCallback = []() { cancel_path          (); };
+    GetWindowFromName("WINPATH"       ). closeCallback = []() { CancelPath           (); };
     GetWindowFromName("WINUPDATE"     ). closeCallback = []() { HideWindow("WINUPDATE"); };
     GetWindowFromName("WINMAIN"       ).resizeCallback = []() { do_application       (); };
 
@@ -298,7 +298,7 @@ TEINAPI void do_application ()
         SetRenderTarget(&GetWindowFromName("WINPATH"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
-        do_path();
+        DoPath();
         RenderPresent();
     }
 
@@ -358,7 +358,7 @@ TEINAPI bool handle_application_events ()
         HandleResizeEvents();
         HandleTooltipEvents();
         handle_about_events();
-        handle_path_events();
+        HandlePathEvents();
         handle_update_events();
     }
     while (SDL_PollEvent(&main_event));

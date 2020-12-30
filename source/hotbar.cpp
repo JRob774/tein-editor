@@ -380,7 +380,7 @@ TEINAPI void HotbarRunGame ()
     // Executable couldn't be found so we will ask for the location.
     if (executable.empty())
     {
-        open_path();
+        OpenPath();
     }
     else if (!RunExecutable(executable))
     {
