@@ -1,134 +1,121 @@
-/*******************************************************************************
- * Editor GUI widget containing global editor actions/buttons.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr const char* gHotbarNameNew = "New";
+static constexpr const char* gHotbarNameLoad = "Load";
+static constexpr const char* gHotbarNameSave = "Save";
+static constexpr const char* gHotbarNameSaveAs = "Save As";
+static constexpr const char* gHotbarNameUndo = "Undo";
+static constexpr const char* gHotbarNameRedo = "Redo";
+static constexpr const char* gHotbarNameZoomOut = "Zoom Out";
+static constexpr const char* gHotbarNameZoomIn = "Zoom In";
+static constexpr const char* gHotbarNamePack = "Pack GPAK";
+static constexpr const char* gHotbarNameUnpack = "Unpack GPAK";
+static constexpr const char* gHotbarNameRunGame = "Play";
+static constexpr const char* gHotbarNamePreferences = "Preferences";
+static constexpr const char* gHotbarNameAbout = "About";
+static constexpr const char* gHotbarNameHelp = "Help";
+static constexpr const char* gHotbarNameBugReport = "Bug Report";
+static constexpr const char* gHotbarNameUpdate = "Update";
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr const char* gHotbarInfoNew = "Create a new empty level.";
+static constexpr const char* gHotbarInfoLoad = "Load an existing level.";
+static constexpr const char* gHotbarInfoSave = "Save the current level.";
+static constexpr const char* gHotbarInfoSaveAs = "Save the current level as a new file.";
+static constexpr const char* gHotbarInfoUndo = "Undo the last recorded action.";
+static constexpr const char* gHotbarInfoRedo = "Redo the last recorded action.";
+static constexpr const char* gHotbarInfoZoomOut = "Zoom out the editor camera.";
+static constexpr const char* gHotbarInfoZoomIn = "Zoom in the editor camera.";
+static constexpr const char* gHotbarInfoPack = "Pack data files into the GPAK file format.";
+static constexpr const char* gHotbarInfoUnpack = "Unpack data files from the GPAK file format.";
+static constexpr const char* gHotbarInfoRunGame = "Runs The End is Nigh game application.";
+static constexpr const char* gHotbarInfoPreferences = "Open the preferences menu to customize the editor.";
+static constexpr const char* gHotbarInfoAbout = "Open the about menu for application information.";
+static constexpr const char* gHotbarInfoBugReport  = "Report technical issues or bugs with the editor.";
+static constexpr const char* gHotbarInfoHelp = "Information and help about modding The End is Nigh.";
+static constexpr const char* gHotbarInfoUpdate = "There is a new update available for the editor.";
 
-/* -------------------------------------------------------------------------- */
-
-static constexpr const char* HB_NAME_NEW         = "New";
-static constexpr const char* HB_NAME_LOAD        = "Load";
-static constexpr const char* HB_NAME_SAVE        = "Save";
-static constexpr const char* HB_NAME_SAVE_AS     = "Save As";
-static constexpr const char* HB_NAME_UNDO        = "Undo";
-static constexpr const char* HB_NAME_REDO        = "Redo";
-static constexpr const char* HB_NAME_ZOOM_OUT    = "Zoom Out";
-static constexpr const char* HB_NAME_ZOOM_IN     = "Zoom In";
-static constexpr const char* HB_NAME_PACK        = "Pack GPAK";
-static constexpr const char* HB_NAME_UNPACK      = "Unpack GPAK";
-static constexpr const char* HB_NAME_RUN_GAME    = "Play";
-static constexpr const char* HB_NAME_PREFERENCES = "Preferences";
-static constexpr const char* HB_NAME_ABOUT       = "About";
-static constexpr const char* HB_NAME_HELP        = "Help";
-static constexpr const char* HB_NAME_BUG_REPORT  = "Bug Report";
-static constexpr const char* HB_NAME_UPDATE      = "Update";
-
-/* -------------------------------------------------------------------------- */
-
-static constexpr const char* HB_INFO_NEW         = "Create a new empty level.";
-static constexpr const char* HB_INFO_LOAD        = "Load an existing level.";
-static constexpr const char* HB_INFO_SAVE        = "Save the current level.";
-static constexpr const char* HB_INFO_SAVE_AS     = "Save the current level as a new file.";
-static constexpr const char* HB_INFO_UNDO        = "Undo the last recorded action.";
-static constexpr const char* HB_INFO_REDO        = "Redo the last recorded action.";
-static constexpr const char* HB_INFO_ZOOM_OUT    = "Zoom out the editor camera.";
-static constexpr const char* HB_INFO_ZOOM_IN     = "Zoom in the editor camera.";
-static constexpr const char* HB_INFO_PACK        = "Pack data files into the GPAK file format.";
-static constexpr const char* HB_INFO_UNPACK      = "Unpack data files from the GPAK file format.";
-static constexpr const char* HB_INFO_RUN_GAME    = "Runs The End is Nigh game application.";
-static constexpr const char* HB_INFO_PREFERENCES = "Open the preferences menu to customize the editor.";
-static constexpr const char* HB_INFO_ABOUT       = "Open the about menu for application information.";
-static constexpr const char* HB_INFO_BUG_REPORT  = "Report technical issues or bugs with the editor.";
-static constexpr const char* HB_INFO_HELP        = "Information and help about modding The End is Nigh.";
-static constexpr const char* HB_INFO_UPDATE      = "There is a new update available for the editor.";
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_hotbar ()
+TEINAPI void DoHotbar ()
 {
     Vec2 cursor(0,0);
 
     // Height for the toolbar buttons.
-    float bh = HOTBAR_HEIGHT - gWindowBorder;
+    float bh = gHotbarHeight - gWindowBorder;
 
     SetUiTexture(&gResourceIcons);
     SetUiFont(&GetEditorRegularFont());
 
-    UiFlag save_flags     = UI_NONE;
-    UiFlag save_as_flags  = UI_NONE;
-    UiFlag undo_flags     = UI_NONE;
-    UiFlag redo_flags     = UI_NONE;
-    UiFlag zoom_out_flags = UI_NONE;
-    UiFlag zoom_in_flags  = UI_NONE;
-    UiFlag pack_flags     = UI_NONE;
-    UiFlag unpack_flags   = UI_NONE;
+    UiFlag saveFlags = UI_NONE;
+    UiFlag saveAsFlags = UI_NONE;
+    UiFlag undoFlags = UI_NONE;
+    UiFlag redoFlags = UI_NONE;
+    UiFlag zoomOutFlags = UI_NONE;
+    UiFlag zoomInFlags = UI_NONE;
+    UiFlag packFlags = UI_NONE;
+    UiFlag unpackFlags = UI_NONE;
 
-    pack_flags = (IsGPAKPackComplete()) ? UI_NONE : UI_LOCKED;
-    unpack_flags = (IsGPAKUnpackComplete()) ? UI_NONE : UI_LOCKED;
+    packFlags = ((IsGPAKPackComplete()) ? UI_NONE : UI_LOCKED);
+    unpackFlags = ((IsGPAKUnpackComplete()) ? UI_NONE : UI_LOCKED);
 
     if (are_there_any_tabs())
     {
         const Tab& tab = get_current_tab();
 
+        // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
         if (tab.type == Tab_Type::LEVEL)
         {
             if (tab.level_history.current_position == tab.level_history.state.size()-1)
             {
-                redo_flags = UI_LOCKED;
+                redoFlags = UI_LOCKED;
             }
             if (tab.level_history.current_position <= -1)
             {
-                undo_flags = UI_LOCKED;
+                undoFlags = UI_LOCKED;
             }
             if (tab.level_history.state.empty())
             {
-                undo_flags = UI_LOCKED;
-                redo_flags = UI_LOCKED;
+                undoFlags = UI_LOCKED;
+                redoFlags = UI_LOCKED;
             }
         }
         else
         {
             if (tab.map_history.current_position == tab.map_history.state.size()-1)
             {
-                redo_flags = UI_LOCKED;
+                redoFlags = UI_LOCKED;
             }
             if (tab.map_history.current_position <= 0)
             {
-                undo_flags = UI_LOCKED;
+                undoFlags = UI_LOCKED;
             }
             if (tab.map_history.state.size() == 1)
             {
-                undo_flags = UI_LOCKED;
-                redo_flags = UI_LOCKED;
+                undoFlags = UI_LOCKED;
+                redoFlags = UI_LOCKED;
             }
         }
 
+        // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
         if (tab.type == Tab_Type::LEVEL)
         {
-            zoom_out_flags = (tab.camera.zoom == MIN_LVL_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
-            zoom_in_flags  = (tab.camera.zoom == MAX_LVL_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
+            zoomOutFlags = ((tab.camera.zoom == MIN_LVL_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE);
+            zoomInFlags = ((tab.camera.zoom == MAX_LVL_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE);
         }
         else
         {
-            zoom_out_flags = (tab.camera.zoom == MIN_MAP_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
-            zoom_in_flags  = (tab.camera.zoom == MAX_MAP_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
+            zoomOutFlags = (tab.camera.zoom == MIN_MAP_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
+            zoomInFlags = (tab.camera.zoom == MAX_MAP_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
         }
     }
     else
     {
-        save_flags     = UI_LOCKED;
-        save_as_flags  = UI_LOCKED;
-        undo_flags     = UI_LOCKED;
-        redo_flags     = UI_LOCKED;
-        zoom_out_flags = UI_LOCKED;
-        zoom_in_flags  = UI_LOCKED;
+        saveFlags = UI_LOCKED;
+        saveAsFlags = UI_LOCKED;
+        undoFlags = UI_LOCKED;
+        redoFlags = UI_LOCKED;
+        zoomOutFlags = UI_LOCKED;
+        zoomInFlags = UI_LOCKED;
     }
 
     // The hotbar is a horizontal list of available actions.
-    BeginPanel(0, 0, GetViewport().w, HOTBAR_HEIGHT, UI_NONE, gUiColorMedium);
+    BeginPanel(0, 0, GetViewport().w, gHotbarHeight, UI_NONE, gUiColorMedium);
 
     SetPanelCursor(&cursor);
     SetPanelCursorDir(UI_DIR_RIGHT);
@@ -138,174 +125,154 @@ TEINAPI void do_hotbar ()
 
     float width = 0;
 
-    width += CalculateTextButtonWidth(HB_NAME_NEW        );
-    width += CalculateTextButtonWidth(HB_NAME_LOAD       );
-    width += CalculateTextButtonWidth(HB_NAME_SAVE       );
-    width += CalculateTextButtonWidth(HB_NAME_SAVE_AS    );
-    width += CalculateTextButtonWidth(HB_NAME_UNDO       );
-    width += CalculateTextButtonWidth(HB_NAME_REDO       );
-    width += CalculateTextButtonWidth(HB_NAME_ZOOM_OUT   );
-    width += CalculateTextButtonWidth(HB_NAME_ZOOM_IN    );
-    width += CalculateTextButtonWidth(HB_NAME_PACK       );
-    width += CalculateTextButtonWidth(HB_NAME_UNPACK     );
-    width += CalculateTextButtonWidth(HB_NAME_RUN_GAME   );
-    width += CalculateTextButtonWidth(HB_NAME_PREFERENCES);
-    width += CalculateTextButtonWidth(HB_NAME_ABOUT      );
-    width += CalculateTextButtonWidth(HB_NAME_BUG_REPORT );
-    width += CalculateTextButtonWidth(HB_NAME_HELP       );
+    width += CalculateTextButtonWidth(gHotbarNameNew);
+    width += CalculateTextButtonWidth(gHotbarNameLoad);
+    width += CalculateTextButtonWidth(gHotbarNameSave);
+    width += CalculateTextButtonWidth(gHotbarNameSaveAs);
+    width += CalculateTextButtonWidth(gHotbarNameUndo);
+    width += CalculateTextButtonWidth(gHotbarNameRedo);
+    width += CalculateTextButtonWidth(gHotbarNameZoomOut);
+    width += CalculateTextButtonWidth(gHotbarNameZoomIn);
+    width += CalculateTextButtonWidth(gHotbarNamePack);
+    width += CalculateTextButtonWidth(gHotbarNameUnpack);
+    width += CalculateTextButtonWidth(gHotbarNameRunGame);
+    width += CalculateTextButtonWidth(gHotbarNamePreferences);
+    width += CalculateTextButtonWidth(gHotbarNameAbout);
+    width += CalculateTextButtonWidth(gHotbarNameBugReport);
+    width += CalculateTextButtonWidth(gHotbarNameHelp);
     width += (are_there_updates()) ? bw : 0;
 
     // Display text or icons depending on what we have room for.
     if (width < GetViewport().w)
     {
-    DoTextButton(hb_new,             bh,  UI_NONE,         HB_NAME_NEW,          HB_INFO_NEW,          gKbLevelNew                          );
-    DoTextButton(hb_load,            bh,  UI_NONE,         HB_NAME_LOAD,         HB_INFO_LOAD,         gKbLevelOpen                         );
-    DoTextButton(hb_save,            bh,  save_flags,      HB_NAME_SAVE,         HB_INFO_SAVE,         gKbLevelSave                         );
-    DoTextButton(hb_save_as,         bh,  save_as_flags,   HB_NAME_SAVE_AS,      HB_INFO_SAVE_AS,      gKbLevelSaveAs                       );
-    DoTextButton(hb_undo_action,     bh,  undo_flags,      HB_NAME_UNDO,         HB_INFO_UNDO,         gKbUndo                              );
-    DoTextButton(hb_redo_action,     bh,  redo_flags,      HB_NAME_REDO,         HB_INFO_REDO,         gKbRedo                              );
-    DoTextButton(hb_zoom_out,        bh,  zoom_out_flags,  HB_NAME_ZOOM_OUT,     HB_INFO_ZOOM_OUT,     gKbCameraZoomOut                     );
-    DoTextButton(hb_zoom_in,         bh,  zoom_in_flags,   HB_NAME_ZOOM_IN,      HB_INFO_ZOOM_IN,      gKbCameraZoomIn                      );
-    DoTextButton(hb_gpak_pack,       bh,  pack_flags,      HB_NAME_PACK,         HB_INFO_PACK,         gKbGpakPack                          );
-    DoTextButton(hb_gpak_unpack,     bh,  unpack_flags,    HB_NAME_UNPACK,       HB_INFO_UNPACK,       gKbGpakUnpack                        );
-    DoTextButton(hb_run_game,        bh,  UI_NONE,         HB_NAME_RUN_GAME,     HB_INFO_RUN_GAME,     gKbRunGame                           );
-    DoTextButton(hb_preferences,     bh,  UI_NONE,         HB_NAME_PREFERENCES,  HB_INFO_PREFERENCES,  gKbPreferences                       );
-    DoTextButton(hb_about,           bh,  UI_NONE,         HB_NAME_ABOUT,        HB_INFO_ABOUT,        gKbAbout                             );
-    DoTextButton(hb_bug_report,      bh,  UI_NONE,         HB_NAME_BUG_REPORT,   HB_INFO_BUG_REPORT,   gKbBugReport                         );
-    DoTextButton(hb_help,            bh,  UI_NONE,         HB_NAME_HELP,         HB_INFO_HELP,         gKbHelp                              );
+        DoTextButton(HotbarNew, bh, UI_NONE, gHotbarNameNew, gHotbarInfoNew, gKbLevelNew);
+        DoTextButton(HotbarLoad, bh, UI_NONE, gHotbarNameLoad, gHotbarInfoLoad, gKbLevelOpen);
+        DoTextButton(HotbarSave, bh, saveFlags, gHotbarNameSave, gHotbarInfoSave, gKbLevelSave);
+        DoTextButton(HotbarSaveAs, bh, saveAsFlags, gHotbarNameSaveAs, gHotbarInfoSaveAs, gKbLevelSaveAs);
+        DoTextButton(HotbarUndo, bh, undoFlags, gHotbarNameUndo, gHotbarInfoUndo, gKbUndo);
+        DoTextButton(HotbarRedo, bh, redoFlags, gHotbarNameRedo, gHotbarInfoRedo, gKbRedo);
+        DoTextButton(HotbarZoomOut, bh, zoomOutFlags, gHotbarNameZoomOut, gHotbarInfoZoomOut, gKbCameraZoomOut);
+        DoTextButton(HotbarZoomIn, bh, zoomInFlags, gHotbarNameZoomIn, gHotbarInfoZoomIn, gKbCameraZoomIn);
+        DoTextButton(HotbarGPAKPack, bh, packFlags, gHotbarNamePack, gHotbarInfoPack, gKbGpakPack);
+        DoTextButton(HotbarGPAKUnpack, bh, unpackFlags, gHotbarNameUnpack, gHotbarInfoUnpack, gKbGpakUnpack);
+        DoTextButton(HotbarRunGame, bh, UI_NONE, gHotbarNameRunGame, gHotbarInfoRunGame, gKbRunGame);
+        DoTextButton(HotbarPreferences, bh, UI_NONE, gHotbarNamePreferences, gHotbarInfoPreferences, gKbPreferences);
+        DoTextButton(HotbarAbout, bh, UI_NONE, gHotbarNameAbout, gHotbarInfoAbout, gKbAbout);
+        DoTextButton(HotbarBugReport, bh, UI_NONE, gHotbarNameBugReport, gHotbarInfoBugReport, gKbBugReport);
+        DoTextButton(HotbarHelp, bh, UI_NONE, gHotbarNameHelp, gHotbarInfoHelp, gKbHelp);
     }
     else
     {
-    DoImageButton(hb_new,          bw,bh,  UI_NONE,         &gClipNew,            HB_INFO_NEW,          gKbLevelNew,      HB_NAME_NEW        );
-    DoImageButton(hb_load,         bw,bh,  UI_NONE,         &gClipLoad,           HB_INFO_LOAD,         gKbLevelOpen,     HB_NAME_LOAD       );
-    DoImageButton(hb_save,         bw,bh,  save_flags,      &gClipSave,           HB_INFO_SAVE,         gKbLevelSave,     HB_NAME_SAVE       );
-    DoImageButton(hb_save,         bw,bh,  save_as_flags,   &gClipSaveAs,         HB_INFO_SAVE_AS,      gKbLevelSaveAs,   HB_NAME_SAVE_AS    );
-    DoImageButton(hb_undo_action,  bw,bh,  undo_flags,      &gClipUndo,           HB_INFO_UNDO,         gKbUndo,          HB_NAME_UNDO       );
-    DoImageButton(hb_redo_action,  bw,bh,  redo_flags,      &gClipRedo,           HB_INFO_REDO,         gKbRedo,          HB_NAME_REDO       );
-    DoImageButton(hb_zoom_out,     bw,bh,  zoom_out_flags,  &gClipZoomOut,        HB_INFO_ZOOM_OUT,     gKbCameraZoomOut, HB_NAME_ZOOM_OUT   );
-    DoImageButton(hb_zoom_in,      bw,bh,  zoom_in_flags,   &gClipZoomIn,         HB_INFO_ZOOM_IN,      gKbCameraZoomIn,  HB_NAME_ZOOM_IN    );
-    DoImageButton(hb_gpak_pack,    bw,bh,  pack_flags,      &gClipPack,           HB_INFO_PACK,         gKbGpakPack,      HB_NAME_PACK       );
-    DoImageButton(hb_gpak_unpack,  bw,bh,  unpack_flags,    &gClipUnpack,         HB_INFO_UNPACK,       gKbGpakUnpack,    HB_NAME_UNPACK     );
-    DoImageButton(hb_run_game,     bw,bh,  UI_NONE,         &gClipRun,            HB_INFO_RUN_GAME,     gKbRunGame,       HB_NAME_RUN_GAME   );
-    DoImageButton(hb_preferences,  bw,bh,  UI_NONE,         &gClipSettings,       HB_INFO_PREFERENCES,  gKbPreferences,   HB_NAME_PREFERENCES);
-    DoImageButton(hb_about,        bw,bh,  UI_NONE,         &gClipAbout,          HB_INFO_ABOUT,        gKbAbout,         HB_NAME_ABOUT      );
-    DoImageButton(hb_bug_report,   bw,bh,  UI_NONE,         &gClipBug,            HB_INFO_BUG_REPORT,   gKbBugReport,     HB_NAME_BUG_REPORT );
-    DoImageButton(hb_help,         bw,bh,  UI_NONE,         &gClipHelp,           HB_INFO_HELP,         gKbHelp,          HB_NAME_HELP       );
+        DoImageButton(HotbarNew, bw,bh, UI_NONE, &gClipNew, gHotbarInfoNew, gKbLevelNew, gHotbarNameNew);
+        DoImageButton(HotbarLoad, bw,bh, UI_NONE, &gClipLoad, gHotbarInfoLoad, gKbLevelOpen, gHotbarNameLoad);
+        DoImageButton(HotbarSave, bw,bh, saveFlags, &gClipSave, gHotbarInfoSave, gKbLevelSave, gHotbarNameSave);
+        DoImageButton(HotbarSaveAs, bw,bh, saveAsFlags, &gClipSaveAs, gHotbarInfoSaveAs, gKbLevelSaveAs, gHotbarNameSaveAs);
+        DoImageButton(HotbarUndo, bw,bh, undoFlags, &gClipUndo, gHotbarInfoUndo, gKbUndo, gHotbarNameUndo);
+        DoImageButton(HotbarRedo, bw,bh, redoFlags, &gClipRedo, gHotbarInfoRedo, gKbRedo, gHotbarNameRedo);
+        DoImageButton(HotbarZoomOut, bw,bh, zoomOutFlags, &gClipZoomOut, gHotbarInfoZoomOut, gKbCameraZoomOut, gHotbarNameZoomOut);
+        DoImageButton(HotbarZoomIn, bw,bh, zoomInFlags, &gClipZoomIn, gHotbarInfoZoomIn, gKbCameraZoomIn, gHotbarNameZoomIn);
+        DoImageButton(HotbarGPAKPack, bw,bh, packFlags, &gClipPack, gHotbarInfoPack, gKbGpakPack, gHotbarNamePack);
+        DoImageButton(HotbarGPAKUnpack, bw,bh, unpackFlags, &gClipUnpack, gHotbarInfoUnpack, gKbGpakUnpack, gHotbarNameUnpack);
+        DoImageButton(HotbarRunGame, bw,bh, UI_NONE, &gClipRun, gHotbarInfoRunGame, gKbRunGame, gHotbarNameRunGame);
+        DoImageButton(HotbarPreferences, bw,bh, UI_NONE, &gClipSettings, gHotbarInfoPreferences, gKbPreferences, gHotbarNamePreferences);
+        DoImageButton(HotbarAbout, bw,bh, UI_NONE, &gClipAbout, gHotbarInfoAbout, gKbAbout, gHotbarNameAbout);
+        DoImageButton(HotbarBugReport, bw,bh, UI_NONE, &gClipBug, gHotbarInfoBugReport, gKbBugReport, gHotbarNameBugReport);
+        DoImageButton(HotbarHelp, bw,bh, UI_NONE, &gClipHelp, gHotbarInfoHelp, gKbHelp, gHotbarNameHelp);
     }
 
     // Right-aligned update button.
     if (are_there_updates())
     {
         cursor.x = GetViewport().w - (bw-1);
-        DoImageButton(hb_update, bw,bh, UI_NONE, &gClipUpdate, HB_INFO_UPDATE, "", HB_NAME_UPDATE);
+        DoImageButton(HotbarUpdate, bw,bh, UI_NONE, &gClipUpdate, gHotbarInfoUpdate, "", gHotbarNameUpdate);
     }
 
     EndPanel();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_new ()
+TEINAPI void HotbarNew ()
 {
     open_new();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_load ()
+TEINAPI void HotbarLoad ()
 {
-    std::vector<std::string> file_names = OpenDialog(DialogType::LVL_CSV);
-    if (!file_names.empty())
+    std::vector<std::string> fileNames = OpenDialog(DialogType::LVL_CSV);
+    if (!fileNames.empty())
     {
-        for (auto file: file_names)
+        for (auto file: fileNames)
         {
             std::string ext(file.substr(file.find_last_of(".")));
-            if      (ext == ".lvl") load_level_tab(file);
-            else if (ext == ".csv") load_map_tab  (file);
+            if (ext == ".lvl") load_level_tab(file);
+            else if (ext == ".csv") load_map_tab(file);
         }
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_save ()
+TEINAPI void HotbarSave ()
 {
     if (!are_there_any_tabs()) return;
-
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_save     (get_current_tab()); break;
-        case (Tab_Type::MAP  ): save_map_tab(get_current_tab()); break;
+        case (Tab_Type::LEVEL): le_save(get_current_tab()); break;
+        case (Tab_Type::MAP): save_map_tab(get_current_tab()); break;
     }
 }
 
-TEINAPI void hb_save_as ()
+TEINAPI void HotbarSaveAs ()
 {
     if (!are_there_any_tabs()) return;
-
     switch (get_current_tab().type)
     {
-        case (Tab_Type::LEVEL): le_save_as     (); break;
-        case (Tab_Type::MAP  ): save_map_tab_as(); break;
+        case (Tab_Type::LEVEL): le_save_as(); break;
+        case (Tab_Type::MAP): save_map_tab_as(); break;
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_undo_action ()
+TEINAPI void HotbarUndo ()
 {
     if (!are_there_any_tabs()) return;
-
     switch (get_current_tab().type)
     {
         case (Tab_Type::LEVEL): le_undo(); break;
-        case (Tab_Type::MAP  ): me_undo(); break;
+        case (Tab_Type::MAP): me_undo(); break;
     }
 }
 
-TEINAPI void hb_redo_action ()
+TEINAPI void HotbarRedo ()
 {
     if (!are_there_any_tabs()) return;
-
     switch (get_current_tab().type)
     {
         case (Tab_Type::LEVEL): le_redo(); break;
-        case (Tab_Type::MAP  ): me_redo(); break;
+        case (Tab_Type::MAP): me_redo(); break;
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_history_begin ()
+TEINAPI void HotbarHistoryBegin ()
 {
     if (!are_there_any_tabs()) return;
-
     switch (get_current_tab().type)
     {
         case (Tab_Type::LEVEL): le_history_begin(); break;
-        case (Tab_Type::MAP  ): me_history_begin(); break;
+        case (Tab_Type::MAP): me_history_begin(); break;
     }
 }
 
-TEINAPI void hb_history_end ()
+TEINAPI void HotbarHistoryEnd ()
 {
     if (!are_there_any_tabs()) return;
-
     switch (get_current_tab().type)
     {
         case (Tab_Type::LEVEL): le_history_end(); break;
-        case (Tab_Type::MAP  ): me_history_end(); break;
+        case (Tab_Type::MAP): me_history_end(); break;
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_zoom_out ()
+TEINAPI void HotbarZoomOut ()
 {
     if (!are_there_any_tabs()) return;
-
     Tab& tab = get_current_tab();
-
     if (tab.type == Tab_Type::LEVEL)
     {
         if ((tab.camera.zoom /= 2) < MIN_LVL_EDITOR_ZOOM)
@@ -322,12 +289,10 @@ TEINAPI void hb_zoom_out ()
     }
 }
 
-TEINAPI void hb_zoom_in ()
+TEINAPI void HotbarZoomIn ()
 {
     if (!are_there_any_tabs()) return;
-
     Tab& tab = get_current_tab();
-
     if (tab.type == Tab_Type::LEVEL)
     {
         if ((tab.camera.zoom *= 2) > MAX_LVL_EDITOR_ZOOM)
@@ -344,24 +309,22 @@ TEINAPI void hb_zoom_in ()
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_gpak_unpack ()
+TEINAPI void HotbarGPAKUnpack ()
 {
     std::vector<std::string> files = OpenDialog(DialogType::GPAK, false);
     if (!files.empty())
     {
-        bool should_overwrite = true;
+        bool shouldOverwrite = true;
         if (ShowAlert("Overwrite", "Do you want to overwrite any existing files during unpack?", ALERT_TYPE_INFO, ALERT_BUTTON_YES_NO) == ALERT_RESULT_NO)
         {
-            should_overwrite = false;
+            shouldOverwrite = false;
         }
 
-        GPAKUnpack(files.at(0), should_overwrite);
+        GPAKUnpack(files.at(0), shouldOverwrite);
     }
 }
 
-TEINAPI void hb_gpak_pack ()
+TEINAPI void HotbarGPAKPack ()
 {
     std::vector<std::string> paths = PathDialog();
     if (!paths.empty())
@@ -374,22 +337,19 @@ TEINAPI void hb_gpak_pack ()
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_run_game ()
+TEINAPI void HotbarRunGame ()
 {
-    constexpr const char* EXE_STEAM_X86 = "C:/Program Files (x86)/Steam/steamapps/common/theendisnigh/TheEndIsNigh.exe";
-    constexpr const char* EXE_STEAM_X64 = "C:/Program Files/Steam/steamapps/common/theendisnigh/TheEndIsNigh.exe";
-    constexpr const char* EXE_STEAM_APP = "TheEndIsNigh.exe";
+    constexpr const char* ExeSteamX86 = "C:/Program Files (x86)/Steam/steamapps/common/theendisnigh/TheEndIsNigh.exe";
+    constexpr const char* ExeSteamX64 = "C:/Program Files/Steam/steamapps/common/theendisnigh/TheEndIsNigh.exe";
+    constexpr const char* ExeSteamApp = "TheEndIsNigh.exe";
+    constexpr const char* ExeEpicX86  = "C:/Program Files (x86)/Epic Games/theendisnigh/TheEnd.exe";
+    constexpr const char* ExeEpicX64  = "C:/Program Files)/Epic Games/theendisnigh/TheEnd.exe";
+    constexpr const char* ExeEpicApp  = "TheEnd.exe";
 
-    constexpr const char* EXE_EPIC_X86  = "C:/Program Files (x86)/Epic Games/theendisnigh/TheEnd.exe";
-    constexpr const char* EXE_EPIC_X64  = "C:/Program Files)/Epic Games/theendisnigh/TheEnd.exe";
-    constexpr const char* EXE_EPIC_APP  = "TheEnd.exe";
-
-    const std::vector<std::string> EXECUTABLES
+    const std::vector<std::string> Executables
     {
-        EXE_STEAM_X86, EXE_STEAM_X64, EXE_STEAM_APP,
-        EXE_EPIC_X86, EXE_EPIC_X64, EXE_EPIC_APP
+        ExeSteamX86, ExeSteamX64, ExeSteamApp,
+        ExeEpicX86, ExeEpicX64, ExeEpicApp
     };
 
     std::string executable;
@@ -403,7 +363,7 @@ TEINAPI void hb_run_game ()
     }
     if (executable.empty())
     {
-        for (auto exe: EXECUTABLES)
+        for (auto exe: Executables)
         {
             executable = exe;
             if (DoesFileExist(executable))
@@ -428,9 +388,7 @@ TEINAPI void hb_run_game ()
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void hb_preferences ()
+TEINAPI void HotbarPreferences ()
 {
     if (IsWindowHidden("WINPREFERENCES"))
     {
@@ -443,33 +401,22 @@ TEINAPI void hb_preferences ()
     }
 }
 
-TEINAPI void hb_about ()
+TEINAPI void HotbarAbout ()
 {
-    if (IsWindowHidden("WINABOUT"))
-    {
-        ShowWindow("WINABOUT");
-    }
-    else
-    {
-        RaiseWindow("WINABOUT");
-    }
+    if (IsWindowHidden("WINABOUT")) ShowWindow("WINABOUT"); else RaiseWindow("WINABOUT");
 }
 
-TEINAPI void hb_help ()
+TEINAPI void HotbarHelp ()
 {
     LoadWebpage("http://glaielgames.com/teinworkshop/moddermanual/");
 }
 
-TEINAPI void hb_bug_report ()
+TEINAPI void HotbarBugReport ()
 {
     LoadWebpage("https://itch.io/t/822898/bug-reports");
 }
 
-TEINAPI void hb_update ()
+TEINAPI void HotbarUpdate ()
 {
     open_update_window();
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/

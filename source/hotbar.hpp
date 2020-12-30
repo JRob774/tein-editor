@@ -1,41 +1,25 @@
-/*******************************************************************************
- * Editor GUI widget containing global editor actions/buttons.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gHotbarHeight = 26;
 
-/* -------------------------------------------------------------------------- */
-
-static constexpr float HOTBAR_HEIGHT = 26;
-
-TEINAPI void do_hotbar ();
+TEINAPI void DoHotbar ();
 
 // Functionality for the various commands/actions located on the hotbar.
-
-TEINAPI void hb_new           ();
-TEINAPI void hb_load          ();
-TEINAPI void hb_save          ();
-TEINAPI void hb_save_as       ();
-TEINAPI void hb_undo_action   ();
-TEINAPI void hb_redo_action   ();
-TEINAPI void hb_history_begin ();
-TEINAPI void hb_history_end   ();
-TEINAPI void hb_zoom_out      ();
-TEINAPI void hb_zoom_in       ();
-TEINAPI void hb_gpak_unpack   ();
-TEINAPI void hb_gpak_pack     ();
-TEINAPI void hb_run_game      ();
-TEINAPI void hb_preferences   ();
-TEINAPI void hb_about         ();
-TEINAPI void hb_bug_report    ();
-TEINAPI void hb_help          ();
-TEINAPI void hb_update        ();
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI void HotbarNew ();
+TEINAPI void HotbarLoad ();
+TEINAPI void HotbarSave ();
+TEINAPI void HotbarSaveAs ();
+TEINAPI void HotbarUndo ();
+TEINAPI void HotbarRedo ();
+TEINAPI void HotbarHistoryBegin ();
+TEINAPI void HotbarHistoryEnd ();
+TEINAPI void HotbarZoomOut ();
+TEINAPI void HotbarZoomIn ();
+TEINAPI void HotbarGPAKUnpack ();
+TEINAPI void HotbarGPAKPack ();
+TEINAPI void HotbarRunGame ();
+TEINAPI void HotbarPreferences ();
+TEINAPI void HotbarAbout ();
+TEINAPI void HotbarBugReport ();
+TEINAPI void HotbarHelp ();
+TEINAPI void HotbarUpdate ();

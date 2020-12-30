@@ -93,8 +93,8 @@
 #include "user_interface.hpp"
 #include "level.hpp"
 #include "map.hpp"
-
 #include "gpak.hpp"
+
 #include "hotbar.hpp"
 #include "toolbar.hpp"
 #include "tooltip.hpp"

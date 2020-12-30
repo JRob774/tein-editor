@@ -208,10 +208,10 @@ TEINAPI void do_application ()
 
     BeginPanel(p1, UI_NONE, gUiColorExDark);
 
-    do_hotbar();
+    DoHotbar();
 
-    p2.x =                           1;
-    p2.y = HOTBAR_HEIGHT           + 1;
+    p2.x =                          1;
+    p2.y = gHotbarHeight          + 1;
     p2.w = GetViewport().w        - 2;
     p2.h = GetViewport().h - p2.y - 1;
 
