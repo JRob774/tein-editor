@@ -66,8 +66,8 @@ TEINAPI void do_hotbar ()
     UiFlag pack_flags     = UI_NONE;
     UiFlag unpack_flags   = UI_NONE;
 
-    pack_flags   = (is_gpak_pack_complete  ()) ? UI_NONE : UI_LOCKED;
-    unpack_flags = (is_gpak_unpack_complete()) ? UI_NONE : UI_LOCKED;
+    pack_flags = (IsGPAKPackComplete()) ? UI_NONE : UI_LOCKED;
+    unpack_flags = (IsGPAKUnpackComplete()) ? UI_NONE : UI_LOCKED;
 
     if (are_there_any_tabs())
     {
@@ -357,7 +357,7 @@ TEINAPI void hb_gpak_unpack ()
             should_overwrite = false;
         }
 
-        gpak_unpack(files.at(0), should_overwrite);
+        GPAKUnpack(files.at(0), should_overwrite);
     }
 }
 
@@ -369,7 +369,7 @@ TEINAPI void hb_gpak_pack ()
         std::string file = SaveDialog(DialogType::GPAK);
         if (!file.empty())
         {
-            gpak_pack(file, paths);
+            GPAKPack(file, paths);
         }
     }
 }

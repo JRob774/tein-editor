@@ -115,8 +115,8 @@ TEINAPI void init_application (int argc, char** argv)
     GetWindowFromName("WINNEW"        ). closeCallback = []() { cancel_new           (); };
     GetWindowFromName("WINRESIZE"     ). closeCallback = []() { cancel_resize        (); };
     GetWindowFromName("WINABOUT"      ). closeCallback = []() { HideWindow("WINABOUT" ); };
-    GetWindowFromName("WINUNPACK"     ). closeCallback = []() { cancel_unpack        (); };
-    GetWindowFromName("WINPACK"       ). closeCallback = []() { cancel_pack          (); };
+    GetWindowFromName("WINUNPACK"     ). closeCallback = []() { CancelUnpack         (); };
+    GetWindowFromName("WINPACK"       ). closeCallback = []() { CancelPack           (); };
     GetWindowFromName("WINPATH"       ). closeCallback = []() { cancel_path          (); };
     GetWindowFromName("WINUPDATE"     ). closeCallback = []() { HideWindow("WINUPDATE"); };
     GetWindowFromName("WINMAIN"       ).resizeCallback = []() { do_application       (); };
@@ -280,7 +280,7 @@ TEINAPI void do_application ()
         SetRenderTarget(&GetWindowFromName("WINUNPACK"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
-        do_unpack();
+        DoUnpack();
         RenderPresent();
     }
 
@@ -289,7 +289,7 @@ TEINAPI void do_application ()
         SetRenderTarget(&GetWindowFromName("WINPACK"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
-        do_pack();
+        DoPack();
         RenderPresent();
     }
 

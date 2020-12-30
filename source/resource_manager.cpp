@@ -21,7 +21,7 @@ TEINAPI bool InitResourceManager ()
     }
     Defer { fclose(gpak); };
 
-    std::vector<GPAK_Entry> entries;
+    std::vector<GPAKEntry> entries;
     U32 entryCount;
 
     fread(&entryCount, sizeof(U32), 1, gpak);
@@ -29,17 +29,17 @@ TEINAPI bool InitResourceManager ()
 
     for (auto& e: entries)
     {
-        fread(&e.name_length, sizeof(U16),  1,             gpak);
-        e.name.resize(e.name_length);
-        fread(&e.name[0],     sizeof(char), e.name_length, gpak);
-        fread(&e.file_size,   sizeof(U32),  1,             gpak);
+        fread(&e.nameLength, sizeof(U16), 1, gpak);
+        e.name.resize(e.nameLength);
+        fread(&e.name[0], sizeof(char), e.nameLength, gpak);
+        fread(&e.fileSize, sizeof(U32), 1, gpak);
     }
 
     std::vector<U8> fileBuffer;
     for (auto& e: entries)
     {
-        fileBuffer.resize(e.file_size);
-        fread(&fileBuffer[0], sizeof(U8), e.file_size, gpak);
+        fileBuffer.resize(e.fileSize);
+        fread(&fileBuffer[0], sizeof(U8), e.fileSize, gpak);
         gGpakResourceLookup.insert({ e.name, fileBuffer });
     }
 

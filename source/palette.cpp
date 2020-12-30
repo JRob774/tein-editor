@@ -56,7 +56,7 @@ TEINAPI void init_palette_lookup ()
         if (palette_data.empty() || tileset_data.empty())
         {
             std::string file_name(path + "game.gpak");
-            std::vector<GPAK_Entry> entries;
+            std::vector<GPAKEntry> entries;
             if (DoesFileExist(file_name))
             {
                 FILE* file = fopen(file_name.c_str(), "rb");
@@ -70,17 +70,17 @@ TEINAPI void init_palette_lookup ()
 
                     for (auto& e: entries)
                     {
-                        fread(&e.name_length, sizeof(U16),  1,             file);
-                        e.name.resize(e.name_length);
-                        fread(&e.name[0],     sizeof(char), e.name_length, file);
-                        fread(&e.file_size,   sizeof(U32),  1,             file);
+                        fread(&e.nameLength, sizeof(U16), 1, file);
+                        e.name.resize(e.nameLength);
+                        fread(&e.name[0], sizeof(char), e.nameLength, file);
+                        fread(&e.fileSize, sizeof(U32), 1, file);
                     }
 
                     std::vector<U8> file_buffer;
                     for (auto& e: entries)
                     {
-                        file_buffer.resize(e.file_size);
-                        fread(&file_buffer[0], sizeof(U8), e.file_size, file);
+                        file_buffer.resize(e.fileSize);
+                        fread(&file_buffer[0], sizeof(U8), e.fileSize, file);
                         if (palette_data.empty() && e.name == PALETTE_FILE)
                         {
                             palette_data = file_buffer;
