@@ -128,7 +128,7 @@ TEINAPI float internal__do_tile_panel_category (Vec2& cursor, Tile_Category cate
             if (in_bounds)
             {
                 push_status_bar_message("Tile Group: %s", tile_group.name.c_str());
-                set_current_tooltip(tile_group.name, tile_group.desc);
+                SetCurrentTooltip(tile_group.name, tile_group.desc);
             }
             if (tile_panel.mouse_down && !IsThereAHitUiElement())
             {

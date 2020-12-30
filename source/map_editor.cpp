@@ -480,7 +480,7 @@ TEINAPI void do_map_editor ()
         {
             if (static_cast<int>(m.x) == node.x && static_cast<int>(m.y) == node.y)
             {
-                set_current_tooltip(node.lvl);
+                SetCurrentTooltip(node.lvl);
             }
         }
     }

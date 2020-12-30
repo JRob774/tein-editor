@@ -865,7 +865,7 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
     // If we are currently hot then set the tooltip.
     if (!locked && !name.empty() && Internal::IsHot())
     {
-        set_current_tooltip(name);
+        SetCurrentTooltip(name);
     }
 
     ++gUiCurrentID;
@@ -962,7 +962,7 @@ TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std:
     // If we are currently hot then set the tooltip.
     if (!locked && !name.empty() && Internal::IsHot())
     {
-        set_current_tooltip(name);
+        SetCurrentTooltip(name);
     }
 
     ++gUiCurrentID;
@@ -1067,7 +1067,7 @@ TEINAPI void DoLabel (UiAlign horz, UiAlign vert, float w, float h, std::string 
     Quad clippedBounds = Internal::GetClippedBounds(cursor.x, cursor.y, w, h);
     Vec2 mouse = GetMousePos();
     bool inside = PointInBoundsXYXY(mouse, clippedBounds);
-    if (textClipped && inside) set_current_tooltip(text);
+    if (textClipped && inside) SetCurrentTooltip(text);
 
     Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 }
@@ -2353,7 +2353,7 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
     // If we are currently hot then set the tooltip.
     if (!locked && !name.empty() && Internal::IsHot())
     {
-        set_current_tooltip(name);
+        SetCurrentTooltip(name);
     }
 
     ++gUiCurrentID;

@@ -226,7 +226,7 @@ TEINAPI void do_application ()
     EndPanel();
     EndPanel();
 
-    do_tooltip();
+    DoTooltip();
 
     RenderPresent();
 
@@ -356,7 +356,7 @@ TEINAPI bool handle_application_events ()
         handle_color_picker_events();
         handle_new_events();
         handle_resize_events();
-        handle_tooltip_events();
+        HandleTooltipEvents();
         handle_about_events();
         handle_path_events();
         handle_update_events();
