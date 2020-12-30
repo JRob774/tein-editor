@@ -192,7 +192,7 @@ TEINAPI void DoHotbar ()
 
 TEINAPI void HotbarNew ()
 {
-    open_new();
+    OpenNew();
 }
 
 TEINAPI void HotbarLoad ()

@@ -1,62 +1,48 @@
-/*******************************************************************************
- * Dialog box that opens up when the user wants to create a new level/map.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr float gNewVerticalFrameHeight = 26;
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gNewXPad = 8;
+static constexpr float gNewYPad = 8;
 
-/* -------------------------------------------------------------------------- */
+static constexpr float gNewTextBoxHeight = 20;
 
-static constexpr float NEW_V_FRAME_H = 26;
+static constexpr const char* gNewWidthLabel = "Level Width:  ";
+static constexpr const char* gNewHeightLabel = "Level Height:  ";
 
-static constexpr float NEW_XPAD = 8;
-static constexpr float NEW_YPAD = 8;
+static int gCurrentNewWidth = static_cast<int>(gDefaultLevelWidth);
+static int gCurrentNewHeight = static_cast<int>(gDefaultLevelHeight);
 
-static constexpr float NEW_TEXT_BOX_H = 20;
+static Tab_Type gCurrentTabType = Tab_Type::LEVEL;
 
-static constexpr const char* NEW_WIDTH_LABEL = "Level Width:  ";
-static constexpr const char* NEW_HEIGHT_LABEL = "Level Height:  ";
-
-static int current_new_width = static_cast<int>(gDefaultLevelWidth);
-static int current_new_height = static_cast<int>(gDefaultLevelHeight);
-
-static Tab_Type current_tab_type = Tab_Type::LEVEL;
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void internal__okay_new ()
+namespace Internal
 {
-    if (current_new_width < gMinimumLevelWidth || current_new_height < gMinimumLevelHeight)
+    TEINAPI void OkayNew ()
     {
-        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINNEW");
-        return;
+        if (gCurrentNewWidth < gMinimumLevelWidth || gCurrentNewHeight < gMinimumLevelHeight)
+        {
+            ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINNEW");
+            return;
+        }
+        switch (gCurrentTabType)
+        {
+            case (Tab_Type::LEVEL): create_new_level_tab_and_focus(GetNewWidth(), GetNewHeight()); break;
+            case (Tab_Type::MAP): create_new_map_tab_and_focus(); break;
+        }
+        HideWindow("WINNEW");
     }
-
-    switch (current_tab_type)
-    {
-        case (Tab_Type::LEVEL): create_new_level_tab_and_focus(get_new_w(), get_new_h()); break;
-        case (Tab_Type::MAP  ): create_new_map_tab_and_focus  ();                         break;
-    }
-
-    HideWindow("WINNEW");
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void open_new ()
+TEINAPI void OpenNew ()
 {
-    current_new_width = static_cast<int>(gDefaultLevelWidth);
-    current_new_height = static_cast<int>(gDefaultLevelHeight);
+    gCurrentNewWidth = static_cast<int>(gDefaultLevelWidth);
+    gCurrentNewHeight = static_cast<int>(gDefaultLevelHeight);
 
     // Default to level because people make more levels than they do maps.
-    current_tab_type = Tab_Type::LEVEL;
+    gCurrentTabType = Tab_Type::LEVEL;
 
     ShowWindow("WINNEW");
 }
 
-TEINAPI void do_new ()
+TEINAPI void DoNew ()
 {
     Quad p1, p2;
 
@@ -71,7 +57,7 @@ TEINAPI void do_new ()
 
     Vec2 cursor;
 
-    float nvfh = NEW_V_FRAME_H;
+    float nvfh = gNewVerticalFrameHeight;
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -86,11 +72,11 @@ TEINAPI void do_new ()
     SetPanelCursorDir(UI_DIR_RIGHT);
     SetPanelCursor(&cursor);
 
-    UiFlag level_flags = (current_tab_type == Tab_Type::LEVEL) ? UI_HIGHLIGHT : UI_INACTIVE;
-    UiFlag map_flags   = (current_tab_type == Tab_Type::MAP  ) ? UI_HIGHLIGHT : UI_INACTIVE;
+    UiFlag levelFlags = ((gCurrentTabType == Tab_Type::LEVEL) ? UI_HIGHLIGHT : UI_INACTIVE);
+    UiFlag mapFlags = ((gCurrentTabType == Tab_Type::MAP) ? UI_HIGHLIGHT : UI_INACTIVE);
 
-    if (DoTextButton(NULL, bw,bh, level_flags, "Level"    )) current_tab_type = Tab_Type::LEVEL;
-    if (DoTextButton(NULL, bw,bh, map_flags,   "World Map")) current_tab_type = Tab_Type::MAP;
+    if (DoTextButton(NULL, bw,bh, levelFlags, "Level")) gCurrentTabType = Tab_Type::LEVEL;
+    if (DoTextButton(NULL, bw,bh, mapFlags, "World Map")) gCurrentTabType = Tab_Type::MAP;
 
     // Just in case of weird rounding manually add the right separator.
     cursor.x = vw;
@@ -112,8 +98,8 @@ TEINAPI void do_new ()
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Create")) internal__okay_new();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_new();
+    if (DoTextButton(NULL, bw,bh, UI_NONE, "Create")) Internal::OkayNew();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelNew();
 
     // Add a separator to the left for symmetry.
     cursor.x = 1;
@@ -126,47 +112,41 @@ TEINAPI void do_new ()
     p2.w = vw               - 2;
     p2.h = vh - p2.y - nvfh - 1;
 
-    UiFlag panel_flags = (current_tab_type == Tab_Type::LEVEL) ? UI_NONE : UI_LOCKED;
-    BeginPanel(p2, panel_flags, gUiColorMedium);
+    UiFlag panelFlags = ((gCurrentTabType == Tab_Type::LEVEL) ? UI_NONE : UI_LOCKED);
+    BeginPanel(p2, panelFlags, gUiColorMedium);
 
-    cursor = Vec2(NEW_XPAD, NEW_YPAD);
+    cursor = Vec2(gNewXPad, gNewYPad);
 
     SetPanelCursorDir(UI_DIR_DOWN);
     SetPanelCursor(&cursor);
 
-    float label_w_w = GetTextWidthScaled(GetEditorRegularFont(), NEW_WIDTH_LABEL);
-    float label_h_w = GetTextWidthScaled(GetEditorRegularFont(), NEW_HEIGHT_LABEL);
+    float labelWidthWidth = GetTextWidthScaled(GetEditorRegularFont(), gNewWidthLabel);
+    float labelHeightWidth = GetTextWidthScaled(GetEditorRegularFont(), gNewHeightLabel);
 
-    float text_box_w = (vw-(NEW_XPAD*2));
-    float label_w = std::max(label_w_w, label_h_w);
+    float textBoxWidth = (vw-(gNewXPad*2));
+    float labelWidth = std::max(labelWidthWidth, labelHeightWidth);
 
-    std::string w_str(std::to_string(current_new_width));
-    std::string h_str(std::to_string(current_new_height));
+    std::string widthString(std::to_string(gCurrentNewWidth));
+    std::string heightString(std::to_string(gCurrentNewHeight));
 
-    DoTextBoxLabeled(text_box_w, NEW_TEXT_BOX_H, UI_NUMERIC, w_str, label_w, NEW_WIDTH_LABEL, "0");
-    AdvancePanelCursor(NEW_YPAD);
-    DoTextBoxLabeled(text_box_w, NEW_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, NEW_HEIGHT_LABEL, "0");
+    DoTextBoxLabeled(textBoxWidth, gNewTextBoxHeight, UI_NUMERIC, widthString, labelWidth, gNewWidthLabel, "0");
+    AdvancePanelCursor(gNewYPad);
+    DoTextBoxLabeled(textBoxWidth, gNewTextBoxHeight, UI_NUMERIC, heightString, labelWidth, gNewHeightLabel, "0");
 
-    if (atoi(w_str.c_str()) > gMaximumLevelWidth)
+    if (atoi(widthString.c_str()) > gMaximumLevelWidth) widthString = std::to_string(gMaximumLevelWidth);
+    if (atoi(heightString.c_str()) > gMaximumLevelHeight) heightString = std::to_string(gMaximumLevelHeight);
+
+    int oldNewWidth = gCurrentNewWidth;
+    int newNewWidth = atoi(widthString.c_str());
+    if (newNewWidth != oldNewWidth)
     {
-        w_str = std::to_string(gMaximumLevelWidth);
+        gCurrentNewWidth = newNewWidth;
     }
-    if (atoi(h_str.c_str()) > gMaximumLevelHeight)
+    int oldNewHeight = gCurrentNewHeight;
+    int newNewHeight = atoi(heightString.c_str());
+    if (newNewHeight != oldNewHeight)
     {
-        h_str = std::to_string(gMaximumLevelHeight);
-    }
-
-    int old_new_width = current_new_width;
-    int new_new_width = atoi(w_str.c_str());
-    if (new_new_width != old_new_width)
-    {
-        current_new_width = new_new_width;
-    }
-    int old_new_height = current_new_height;
-    int new_new_height = atoi(h_str.c_str());
-    if (new_new_height != old_new_height)
-    {
-        current_new_height = new_new_height;
+        gCurrentNewHeight = newNewHeight;
     }
 
     EndPanel();
@@ -174,14 +154,12 @@ TEINAPI void do_new ()
     EndPanel();
 }
 
-TEINAPI void cancel_new ()
+TEINAPI void CancelNew ()
 {
     HideWindow("WINNEW");
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void handle_new_events ()
+TEINAPI void HandleNewEvents ()
 {
     if (IsWindowFocused("WINNEW"))
     {
@@ -191,50 +169,19 @@ TEINAPI void handle_new_events ()
             {
                 switch (main_event.key.keysym.sym)
                 {
-                    case (SDLK_RETURN): internal__okay_new(); break;
-                    case (SDLK_ESCAPE): cancel_new();         break;
+                    case (SDLK_RETURN): Internal::OkayNew(); break;
+                    case (SDLK_ESCAPE): CancelNew(); break;
                 }
             }
         }
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI int get_new_w ()
+TEINAPI int GetNewWidth ()
 {
-    return current_new_width;
+    return gCurrentNewWidth;
 }
-
-TEINAPI int get_new_h ()
+TEINAPI int GetNewHeight ()
 {
-    return current_new_height;
+    return gCurrentNewHeight;
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/
