@@ -841,7 +841,7 @@ TEINAPI void internal__dump_level_history ()
     EndDebugSection();
 }
 
-TEINAPI void internal__resize (Resize_Dir dir, int nw, int nh)
+TEINAPI void internal__resize (ResizeDir dir, int nw, int nh)
 {
     Tab& tab = get_current_tab();
 
@@ -871,23 +871,23 @@ TEINAPI void internal__resize (Resize_Dir dir, int nw, int nh)
     // Determine the content offset needed if shrinking the level down.
     if (dx < 0)
     {
-        if      (resize_dir_is_west (dir)) lvlw -= abs(dx);
-        else if (resize_dir_is_east (dir)) lvlw -= abs(dx), offx += abs(dx);
+        if      (ResizeDirIsWest (dir)) lvlw -= abs(dx);
+        else if (ResizeDirIsEast (dir)) lvlw -= abs(dx), offx += abs(dx);
         else                               lvlw -= abs(dx), offx += abs(dx) / 2;
     }
     if (dy < 0)
     {
-        if      (resize_dir_is_north(dir)) lvlh -= abs(dy);
-        else if (resize_dir_is_south(dir)) lvlh -= abs(dy), offy += abs(dy);
+        if      (ResizeDirIsNorth(dir)) lvlh -= abs(dy);
+        else if (ResizeDirIsSouth(dir)) lvlh -= abs(dy), offy += abs(dy);
         else                               lvlh -= abs(dy), offy += abs(dy) / 2;
     }
 
     // Determine the horizontal position of the level content.
-    if      (resize_dir_is_west (dir)) lvlx = 0;
-    else if (resize_dir_is_east (dir)) lvlx = nw - lvlw;
+    if      (ResizeDirIsWest (dir)) lvlx = 0;
+    else if (ResizeDirIsEast (dir)) lvlx = nw - lvlw;
     // Determine the vertical position of the level content.
-    if      (resize_dir_is_north(dir)) lvly = 0;
-    else if (resize_dir_is_south(dir)) lvly = nh - lvlh;
+    if      (ResizeDirIsNorth(dir)) lvly = 0;
+    else if (ResizeDirIsSouth(dir)) lvly = nh - lvlh;
 
     // Make sure not out of bounds!
     if (lvlx < 0) lvlx = 0;
@@ -1518,11 +1518,11 @@ TEINAPI void new_level_history_state (Level_History_Action action)
     // Also deal with width and height for resizing.
     if (action == Level_History_Action::RESIZE)
     {
-        tab.level_history.state.back().resize_dir = get_resize_dir();
+        tab.level_history.state.back().resize_dir = GetResizeDir();
         tab.level_history.state.back().old_width  = tab.level.header.width;
         tab.level_history.state.back().old_height = tab.level.header.height;
-        tab.level_history.state.back().new_width  = get_resize_w();
-        tab.level_history.state.back().new_height = get_resize_h();
+        tab.level_history.state.back().new_width  = GetResizeWidth();
+        tab.level_history.state.back().new_height = GetResizeHeight();
     }
 
     ++tab.level_history.current_position;
@@ -2042,7 +2042,7 @@ TEINAPI void le_resize ()
 {
     if (!current_tab_is_level()) return;
     const Tab& tab = get_current_tab();
-    open_resize(tab.level.header.width, tab.level.header.height);
+    OpenResize(tab.level.header.width, tab.level.header.height);
 }
 
 TEINAPI void le_resize_okay ()
@@ -2052,8 +2052,8 @@ TEINAPI void le_resize_okay ()
     int lw = tab.level.header.width;
     int lh = tab.level.header.height;
 
-    int nw = get_resize_w();
-    int nh = get_resize_h();
+    int nw = GetResizeWidth();
+    int nh = GetResizeHeight();
 
     int dx = nw - lw;
     int dy = nh - lh;
@@ -2063,7 +2063,7 @@ TEINAPI void le_resize_okay ()
 
     new_level_history_state(Level_History_Action::RESIZE);
     internal__get_current_history_state().old_data = tab.level.data;
-    internal__resize(get_resize_dir(), nw, nh);
+    internal__resize(GetResizeDir(), nw, nh);
     internal__get_current_history_state().new_data = tab.level.data;
 }
 

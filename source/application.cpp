@@ -113,7 +113,7 @@ TEINAPI void init_application (int argc, char** argv)
     GetWindowFromName("WINPREFERENCES"). closeCallback = []() { cancel_preferences   (); };
     GetWindowFromName("WINCOLOR"      ). closeCallback = []() { cancel_color_picker  (); };
     GetWindowFromName("WINNEW"        ). closeCallback = []() { CancelNew            (); };
-    GetWindowFromName("WINRESIZE"     ). closeCallback = []() { cancel_resize        (); };
+    GetWindowFromName("WINRESIZE"     ). closeCallback = []() { CancelResize         (); };
     GetWindowFromName("WINABOUT"      ). closeCallback = []() { HideWindow("WINABOUT" ); };
     GetWindowFromName("WINUNPACK"     ). closeCallback = []() { CancelUnpack         (); };
     GetWindowFromName("WINPACK"       ). closeCallback = []() { CancelPack           (); };
@@ -271,7 +271,7 @@ TEINAPI void do_application ()
         SetRenderTarget(&GetWindowFromName("WINRESIZE"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
-        do_resize();
+        DoResize();
         RenderPresent();
     }
 
@@ -355,7 +355,7 @@ TEINAPI bool handle_application_events ()
         handle_preferences_menu_events();
         handle_color_picker_events();
         HandleNewEvents();
-        handle_resize_events();
+        HandleResizeEvents();
         HandleTooltipEvents();
         handle_about_events();
         handle_path_events();

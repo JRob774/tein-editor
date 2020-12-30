@@ -1,239 +1,225 @@
-/*******************************************************************************
- * Dialog box that opens up when the user wants to create a new level/map.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr float gResizeBottomBorder = 26;
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gResizeXPad = 8;
+static constexpr float gResizeYPad = 8;
 
-/* -------------------------------------------------------------------------- */
+static constexpr float gResizeTextBoxHeight = 20;
 
-static constexpr float RESIZE_BOTTOM_BORDER = 26;
+static constexpr const char* gResizeWidthLabel = "Level Width:  ";
+static constexpr const char* gResizeHeightLabel = "Level Height:  ";
 
-static constexpr float RESIZE_XPAD = 8;
-static constexpr float RESIZE_YPAD = 8;
+static int gCurrentResizeWidth = static_cast<int>(gDefaultLevelWidth);
+static int gCurrentResizeHeight = static_cast<int>(gDefaultLevelHeight);
 
-static constexpr float RESIZE_TEXT_BOX_H = 20;
+static ResizeDir gResizeDialogDir = ResizeDir::CENTER;
 
-static constexpr const char* RESIZE_WIDTH_LABEL = "Level Width:  ";
-static constexpr const char* RESIZE_HEIGHT_LABEL = "Level Height:  ";
+static const Quad* gNWClip     = &gClipResizeNW;
+static const Quad* gNClip      = &gClipResizeN;
+static const Quad* gNEClip     = &gClipResizeNE;
+static const Quad* gWClip      = &gClipResizeW;
+static const Quad* gCenterClip = &gClipBullet;
+static const Quad* gEClip      = &gClipResizeE;
+static const Quad* gSWClip     = &gClipResizeSW;
+static const Quad* gSClip      = &gClipResizeS;
+static const Quad* gSEClip     = &gClipResizeSE;
 
-static int current_resize_width = static_cast<int>(gDefaultLevelWidth);
-static int current_resize_height = static_cast<int>(gDefaultLevelHeight);
-
-static Resize_Dir resize_dialog_dir = Resize_Dir::CENTER;
-
-static const Quad* nw_clip     = &gClipResizeNW;
-static const Quad* n_clip      = &gClipResizeN;
-static const Quad* ne_clip     = &gClipResizeNE;
-static const Quad* w_clip      = &gClipResizeW;
-static const Quad* center_clip = &gClipBullet;
-static const Quad* e_clip      = &gClipResizeE;
-static const Quad* sw_clip     = &gClipResizeSW;
-static const Quad* s_clip      = &gClipResizeS;
-static const Quad* se_clip     = &gClipResizeSE;
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void internal__calculate_dir_clips ()
+namespace Internal
 {
-    switch (resize_dialog_dir)
+    TEINAPI void CalculateDirClips ()
     {
-        case (Resize_Dir::NW):
+        switch (gResizeDialogDir)
         {
-            nw_clip     = &gClipBullet;
-            n_clip      = &gClipResizeE;
-            ne_clip     = &gClipNone;
-            w_clip      = &gClipResizeS;
-            center_clip = &gClipResizeSE;
-            e_clip      = &gClipNone;
-            sw_clip     = &gClipNone;
-            s_clip      = &gClipNone;
-            se_clip     = &gClipNone;
-        } break;
-        case (Resize_Dir::N):
+            case (ResizeDir::NW):
+            {
+                gNWClip     = &gClipBullet;
+                gNClip      = &gClipResizeE;
+                gNEClip     = &gClipNone;
+                gWClip      = &gClipResizeS;
+                gCenterClip = &gClipResizeSE;
+                gEClip      = &gClipNone;
+                gSWClip     = &gClipNone;
+                gSClip      = &gClipNone;
+                gSEClip     = &gClipNone;
+            } break;
+            case (ResizeDir::N):
+            {
+                gNWClip     = &gClipResizeW;
+                gNClip      = &gClipBullet;
+                gNEClip     = &gClipResizeE;
+                gWClip      = &gClipResizeSW;
+                gCenterClip = &gClipResizeS;
+                gEClip      = &gClipResizeSE;
+                gSWClip     = &gClipNone;
+                gSClip      = &gClipNone;
+                gSEClip     = &gClipNone;
+            } break;
+            case (ResizeDir::NE):
+            {
+                gNWClip     = &gClipNone;
+                gNClip      = &gClipResizeW;
+                gNEClip     = &gClipBullet;
+                gWClip      = &gClipNone;
+                gCenterClip = &gClipResizeSW;
+                gEClip      = &gClipResizeS;
+                gSWClip     = &gClipNone;
+                gSClip      = &gClipNone;
+                gSEClip     = &gClipNone;
+            } break;
+            case (ResizeDir::W):
+            {
+                gNWClip     = &gClipResizeN;
+                gNClip      = &gClipResizeNE;
+                gNEClip     = &gClipNone;
+                gWClip      = &gClipBullet;
+                gCenterClip = &gClipResizeE;
+                gEClip      = &gClipNone;
+                gSWClip     = &gClipResizeS;
+                gSClip      = &gClipResizeSE;
+                gSEClip     = &gClipNone;
+            } break;
+            case (ResizeDir::CENTER):
+            {
+                gNWClip     = &gClipResizeNW;
+                gNClip      = &gClipResizeN;
+                gNEClip     = &gClipResizeNE;
+                gWClip      = &gClipResizeW;
+                gCenterClip = &gClipBullet;
+                gEClip      = &gClipResizeE;
+                gSWClip     = &gClipResizeSW;
+                gSClip      = &gClipResizeS;
+                gSEClip     = &gClipResizeSE;
+            } break;
+            case (ResizeDir::E):
+            {
+                gNWClip     = &gClipNone;
+                gNClip      = &gClipResizeNW;
+                gNEClip     = &gClipResizeN;
+                gWClip      = &gClipNone;
+                gCenterClip = &gClipResizeW;
+                gEClip      = &gClipBullet;
+                gSWClip     = &gClipNone;
+                gSClip      = &gClipResizeSW;
+                gSEClip     = &gClipResizeS;
+            } break;
+            case (ResizeDir::SW):
+            {
+                gNWClip     = &gClipNone;
+                gNClip      = &gClipNone;
+                gNEClip     = &gClipNone;
+                gWClip      = &gClipResizeN;
+                gCenterClip = &gClipResizeNE;
+                gEClip      = &gClipNone;
+                gSWClip     = &gClipBullet;
+                gSClip      = &gClipResizeE;
+                gSEClip     = &gClipNone;
+            } break;
+            case (ResizeDir::S):
+            {
+                gNWClip     = &gClipNone;
+                gNClip      = &gClipNone;
+                gNEClip     = &gClipNone;
+                gWClip      = &gClipResizeNW;
+                gCenterClip = &gClipResizeN;
+                gEClip      = &gClipResizeNE;
+                gSWClip     = &gClipResizeW;
+                gSClip      = &gClipBullet;
+                gSEClip     = &gClipResizeE;
+            } break;
+            case (ResizeDir::SE):
+            {
+                gNWClip     = &gClipNone;
+                gNClip      = &gClipNone;
+                gNEClip     = &gClipNone;
+                gWClip      = &gClipNone;
+                gCenterClip = &gClipResizeNW;
+                gEClip      = &gClipResizeN;
+                gSWClip     = &gClipNone;
+                gSClip      = &gClipResizeW;
+                gSEClip     = &gClipBullet;
+            } break;
+        }
+    }
+
+    TEINAPI void DoResizeAlignment (Vec2& cursor)
+    {
+        // Do the long horizontal separator first.
+        float w = GetViewport().w - (gResizeXPad*2);
+
+        AdvancePanelCursor(gResizeYPad*1.5f);
+        DoSeparator(w);
+        AdvancePanelCursor(gResizeYPad*1.5f);
+
+        SetPanelCursorDir(UI_DIR_RIGHT);
+
+        float bw = 25;
+        float bh = 25;
+
+        float x = (GetViewport().w/2) - ((bw*3)/2);
+
+        cursor.x = x;
+        cursor.y -= 2; // Just to get the spacing above and below even.
+
+        float qx1 = cursor.x - 1;
+        float qy1 = cursor.y - 1;
+        float qx2 = cursor.x + (bw * 3) + 1;
+        float qy2 = cursor.y + (bh * 3) + 1;
+
+        SetDrawColor(gUiColorExDark);
+        FillQuad(qx1,qy1,qx2,qy2);
+
+        ResizeDir oldDir = gResizeDialogDir;
+
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gNWClip)) gResizeDialogDir = ResizeDir::NW;
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gNClip)) gResizeDialogDir = ResizeDir::N;
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gNEClip)) gResizeDialogDir = ResizeDir::NE;
+
+        cursor.x = x;
+        cursor.y += bh;
+
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gWClip)) gResizeDialogDir = ResizeDir::W;
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gCenterClip)) gResizeDialogDir = ResizeDir::CENTER;
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gEClip)) gResizeDialogDir = ResizeDir::E;
+
+        cursor.x = x;
+        cursor.y += bh;
+
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gSWClip)) gResizeDialogDir = ResizeDir::SW;
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gSClip)) gResizeDialogDir = ResizeDir::S;
+        if (DoImageButton(NULL, bw,bh, UI_NONE, gSEClip)) gResizeDialogDir = ResizeDir::SE;
+
+        if (oldDir != gResizeDialogDir)
         {
-            nw_clip     = &gClipResizeW;
-            n_clip      = &gClipBullet;
-            ne_clip     = &gClipResizeE;
-            w_clip      = &gClipResizeSW;
-            center_clip = &gClipResizeS;
-            e_clip      = &gClipResizeSE;
-            sw_clip     = &gClipNone;
-            s_clip      = &gClipNone;
-            se_clip     = &gClipNone;
-        } break;
-        case (Resize_Dir::NE):
+            CalculateDirClips();
+        }
+    }
+
+    TEINAPI void OkayResize ()
+    {
+        if (gCurrentResizeWidth < gMinimumLevelWidth || gCurrentResizeHeight < gMinimumLevelHeight)
         {
-            nw_clip     = &gClipNone;
-            n_clip      = &gClipResizeW;
-            ne_clip     = &gClipBullet;
-            w_clip      = &gClipNone;
-            center_clip = &gClipResizeSW;
-            e_clip      = &gClipResizeS;
-            sw_clip     = &gClipNone;
-            s_clip      = &gClipNone;
-            se_clip     = &gClipNone;
-        } break;
-        case (Resize_Dir::W):
-        {
-            nw_clip     = &gClipResizeN;
-            n_clip      = &gClipResizeNE;
-            ne_clip     = &gClipNone;
-            w_clip      = &gClipBullet;
-            center_clip = &gClipResizeE;
-            e_clip      = &gClipNone;
-            sw_clip     = &gClipResizeS;
-            s_clip      = &gClipResizeSE;
-            se_clip     = &gClipNone;
-        } break;
-        case (Resize_Dir::CENTER):
-        {
-            nw_clip     = &gClipResizeNW;
-            n_clip      = &gClipResizeN;
-            ne_clip     = &gClipResizeNE;
-            w_clip      = &gClipResizeW;
-            center_clip = &gClipBullet;
-            e_clip      = &gClipResizeE;
-            sw_clip     = &gClipResizeSW;
-            s_clip      = &gClipResizeS;
-            se_clip     = &gClipResizeSE;
-        } break;
-        case (Resize_Dir::E):
-        {
-            nw_clip     = &gClipNone;
-            n_clip      = &gClipResizeNW;
-            ne_clip     = &gClipResizeN;
-            w_clip      = &gClipNone;
-            center_clip = &gClipResizeW;
-            e_clip      = &gClipBullet;
-            sw_clip     = &gClipNone;
-            s_clip      = &gClipResizeSW;
-            se_clip     = &gClipResizeS;
-        } break;
-        case (Resize_Dir::SW):
-        {
-            nw_clip     = &gClipNone;
-            n_clip      = &gClipNone;
-            ne_clip     = &gClipNone;
-            w_clip      = &gClipResizeN;
-            center_clip = &gClipResizeNE;
-            e_clip      = &gClipNone;
-            sw_clip     = &gClipBullet;
-            s_clip      = &gClipResizeE;
-            se_clip     = &gClipNone;
-        } break;
-        case (Resize_Dir::S):
-        {
-            nw_clip     = &gClipNone;
-            n_clip      = &gClipNone;
-            ne_clip     = &gClipNone;
-            w_clip      = &gClipResizeNW;
-            center_clip = &gClipResizeN;
-            e_clip      = &gClipResizeNE;
-            sw_clip     = &gClipResizeW;
-            s_clip      = &gClipBullet;
-            se_clip     = &gClipResizeE;
-        } break;
-        case (Resize_Dir::SE):
-        {
-            nw_clip     = &gClipNone;
-            n_clip      = &gClipNone;
-            ne_clip     = &gClipNone;
-            w_clip      = &gClipNone;
-            center_clip = &gClipResizeNW;
-            e_clip      = &gClipResizeN;
-            sw_clip     = &gClipNone;
-            s_clip      = &gClipResizeW;
-            se_clip     = &gClipBullet;
-        } break;
+            ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINRESIZE");
+            return;
+        }
+
+        le_resize_okay();
+        HideWindow("WINRESIZE");
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void internal__do_resize_alignment (Vec2& cursor)
-{
-    // Do the long horizontal separator first.
-    float w = GetViewport().w - (RESIZE_XPAD*2);
-
-    AdvancePanelCursor(RESIZE_YPAD*1.5f);
-    DoSeparator(w);
-    AdvancePanelCursor(RESIZE_YPAD*1.5f);
-
-    SetPanelCursorDir(UI_DIR_RIGHT);
-
-    float bw = 25;
-    float bh = 25;
-
-    float x = (GetViewport().w/2) - ((bw*3)/2);
-
-    cursor.x  = x;
-    cursor.y -= 2; // Just to get the spacing above and below even.
-
-    float qx1 = cursor.x            - 1;
-    float qy1 = cursor.y            - 1;
-    float qx2 = cursor.x + (bw * 3) + 1;
-    float qy2 = cursor.y + (bh * 3) + 1;
-
-    SetDrawColor(gUiColorExDark);
-    FillQuad(qx1, qy1, qx2, qy2);
-
-    Resize_Dir old_dir = resize_dialog_dir;
-
-    if (DoImageButton(NULL, bw,bh, UI_NONE, nw_clip    )) resize_dialog_dir = Resize_Dir::NW;
-    if (DoImageButton(NULL, bw,bh, UI_NONE, n_clip     )) resize_dialog_dir = Resize_Dir::N;
-    if (DoImageButton(NULL, bw,bh, UI_NONE, ne_clip    )) resize_dialog_dir = Resize_Dir::NE;
-
-    cursor.x  = x;
-    cursor.y += bh;
-
-    if (DoImageButton(NULL, bw,bh, UI_NONE, w_clip     )) resize_dialog_dir = Resize_Dir::W;
-    if (DoImageButton(NULL, bw,bh, UI_NONE, center_clip)) resize_dialog_dir = Resize_Dir::CENTER;
-    if (DoImageButton(NULL, bw,bh, UI_NONE, e_clip     )) resize_dialog_dir = Resize_Dir::E;
-
-    cursor.x  = x;
-    cursor.y += bh;
-
-    if (DoImageButton(NULL, bw,bh, UI_NONE, sw_clip    )) resize_dialog_dir = Resize_Dir::SW;
-    if (DoImageButton(NULL, bw,bh, UI_NONE, s_clip     )) resize_dialog_dir = Resize_Dir::S;
-    if (DoImageButton(NULL, bw,bh, UI_NONE, se_clip    )) resize_dialog_dir = Resize_Dir::SE;
-
-    if (old_dir != resize_dialog_dir)
-    {
-        internal__calculate_dir_clips();
-    }
-}
-
-TEINAPI void internal__okay_resize ()
-{
-    if (current_resize_width < gMinimumLevelWidth || current_resize_height < gMinimumLevelHeight)
-    {
-        ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINRESIZE");
-        return;
-    }
-
-    le_resize_okay();
-    HideWindow("WINRESIZE");
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void open_resize (int lw, int lh)
+TEINAPI void OpenResize (int levelWidth, int levelHeight)
 {
     SetWindowPos("WINRESIZE", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED);
 
-    if (lw > 0) current_resize_width = lw;
-    if (lh > 0) current_resize_height = lh;
+    if (levelWidth > 0) gCurrentResizeWidth = levelWidth;
+    if (levelHeight > 0) gCurrentResizeHeight = levelHeight;
 
-    resize_dialog_dir = Resize_Dir::CENTER;
-    internal__calculate_dir_clips();
+    gResizeDialogDir = ResizeDir::CENTER;
+    Internal::CalculateDirClips();
 
     ShowWindow("WINRESIZE");
 }
 
-TEINAPI void do_resize ()
+TEINAPI void DoResize ()
 {
     Quad p1, p2;
 
@@ -246,7 +232,7 @@ TEINAPI void do_resize ()
 
     BeginPanel(p1, UI_NONE, gUiColorExDark);
 
-    float bb = RESIZE_BOTTOM_BORDER;
+    float bb = gResizeBottomBorder;
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -255,85 +241,77 @@ TEINAPI void do_resize ()
     float bh = bb - gWindowBorder;
 
     // Bottom buttons for okaying or cancelling the resize.
-    Vec2 btn_cursor(0, gWindowBorder);
+    Vec2 buttonCursor(0, gWindowBorder);
     BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
 
     SetPanelCursorDir(UI_DIR_RIGHT);
-    SetPanelCursor(&btn_cursor);
+    SetPanelCursor(&buttonCursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Resize")) internal__okay_resize();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) cancel_resize();
+    if (DoTextButton(NULL, bw,bh, UI_NONE, "Resize")) Internal::OkayResize();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelResize();
 
     // Add a separator to the left for symmetry.
-    btn_cursor.x = 1;
+    buttonCursor.x = 1;
     DoSeparator(bh);
 
     EndPanel();
 
-    p2.x =                  1;
-    p2.y =                  1;
-    p2.w = vw             - 2;
+    p2.x = 1;
+    p2.y = 1;
+    p2.w = vw - 2;
     p2.h = vh - p2.y - bb - 1;
 
     BeginPanel(p2, UI_NONE, gUiColorMedium);
 
-    Vec2 cursor(RESIZE_XPAD, RESIZE_YPAD);
+    Vec2 cursor(gResizeXPad, gResizeYPad);
 
     SetPanelCursorDir(UI_DIR_DOWN);
     SetPanelCursor(&cursor);
 
-    float label_w_w = GetTextWidthScaled(GetEditorRegularFont(), RESIZE_WIDTH_LABEL);
-    float label_h_w = GetTextWidthScaled(GetEditorRegularFont(), RESIZE_HEIGHT_LABEL);
+    float labelWidthWidth = GetTextWidthScaled(GetEditorRegularFont(), gResizeWidthLabel);
+    float labelHeightWidth = GetTextWidthScaled(GetEditorRegularFont(), gResizeHeightLabel);
 
-    float text_box_w = (vw-(RESIZE_XPAD*2));
-    float label_w = std::max(label_w_w, label_h_w);
+    float textBoxWidth = (vw-(gResizeXPad*2));
+    float labelWidth = std::max(labelWidthWidth, labelHeightWidth);
 
-    std::string w_str(std::to_string(current_resize_width));
-    std::string h_str(std::to_string(current_resize_height));
+    std::string widthString(std::to_string(gCurrentResizeWidth));
+    std::string heightString(std::to_string(gCurrentResizeHeight));
 
-    DoTextBoxLabeled(text_box_w, RESIZE_TEXT_BOX_H, UI_NUMERIC, w_str, label_w, RESIZE_WIDTH_LABEL, "0");
-    AdvancePanelCursor(RESIZE_YPAD);
-    DoTextBoxLabeled(text_box_w, RESIZE_TEXT_BOX_H, UI_NUMERIC, h_str, label_w, RESIZE_HEIGHT_LABEL, "0");
+    DoTextBoxLabeled(textBoxWidth, gResizeTextBoxHeight, UI_NUMERIC, widthString, labelWidth, gResizeWidthLabel, "0");
+    AdvancePanelCursor(gResizeYPad);
+    DoTextBoxLabeled(textBoxWidth, gResizeTextBoxHeight, UI_NUMERIC, heightString, labelWidth, gResizeHeightLabel, "0");
 
-    if (atoi(w_str.c_str()) > gMaximumLevelWidth)
+    if (atoi(widthString.c_str()) > gMaximumLevelWidth) widthString = std::to_string(gMaximumLevelWidth);
+    if (atoi(heightString.c_str()) > gMaximumLevelHeight) heightString = std::to_string(gMaximumLevelHeight);
+
+    int oldResizeWidth = gCurrentResizeWidth;
+    int newResizeWidth = atoi(widthString.c_str());
+    if (newResizeWidth != oldResizeWidth)
     {
-        w_str = std::to_string(gMaximumLevelWidth);
+        gCurrentResizeWidth = newResizeWidth;
     }
-    if (atoi(h_str.c_str()) > gMaximumLevelHeight)
+    int oldResizeHeight = gCurrentResizeHeight;
+    int newResizeHeight = atoi(heightString.c_str());
+    if (newResizeHeight != oldResizeHeight)
     {
-        h_str = std::to_string(gMaximumLevelHeight);
-    }
-
-    int old_resize_width = current_resize_width;
-    int new_resize_width = atoi(w_str.c_str());
-    if (new_resize_width != old_resize_width)
-    {
-        current_resize_width = new_resize_width;
-    }
-    int old_resize_height = current_resize_height;
-    int new_resize_height = atoi(h_str.c_str());
-    if (new_resize_height != old_resize_height)
-    {
-        current_resize_height = new_resize_height;
+        gCurrentResizeHeight = newResizeHeight;
     }
 
-    internal__do_resize_alignment(cursor);
+    Internal::DoResizeAlignment(cursor);
 
     EndPanel();
     EndPanel();
 }
 
-TEINAPI void cancel_resize ()
+TEINAPI void CancelResize ()
 {
     HideWindow("WINRESIZE");
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void handle_resize_events ()
+TEINAPI void HandleResizeEvents ()
 {
     if (!IsWindowFocused("WINRESIZE")) return;
 
@@ -343,78 +321,40 @@ TEINAPI void handle_resize_events ()
         {
             switch (main_event.key.keysym.sym)
             {
-                case (SDLK_RETURN): internal__okay_resize(); break;
-                case (SDLK_ESCAPE): cancel_resize();         break;
+                case (SDLK_RETURN): Internal::OkayResize(); break;
+                case (SDLK_ESCAPE): CancelResize(); break;
             }
         }
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI int get_resize_w ()
+TEINAPI int GetResizeWidth ()
 {
-    return current_resize_width;
+    return gCurrentResizeWidth;
+}
+TEINAPI int GetResizeHeight ()
+{
+    return gCurrentResizeHeight;
 }
 
-TEINAPI int get_resize_h ()
+TEINAPI ResizeDir GetResizeDir ()
 {
-    return current_resize_height;
+    return gResizeDialogDir;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI Resize_Dir get_resize_dir ()
+TEINAPI bool ResizeDirIsNorth (ResizeDir dir)
 {
-    return resize_dialog_dir;
+    return (dir == ResizeDir::NW || dir == ResizeDir::N || dir == ResizeDir::NE);
 }
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool resize_dir_is_north (Resize_Dir dir)
+TEINAPI bool ResizeDirIsEast (ResizeDir dir)
 {
-    return (dir == Resize_Dir::NW || dir == Resize_Dir::N || dir == Resize_Dir::NE);
+    return (dir == ResizeDir::NE || dir == ResizeDir::E || dir == ResizeDir::SE);
 }
-
-TEINAPI bool resize_dir_is_east (Resize_Dir dir)
+TEINAPI bool ResizeDirIsSouth (ResizeDir dir)
 {
-    return (dir == Resize_Dir::NE || dir == Resize_Dir::E || dir == Resize_Dir::SE);
+    return (dir == ResizeDir::SW || dir == ResizeDir::S || dir == ResizeDir::SE);
 }
-
-TEINAPI bool resize_dir_is_south (Resize_Dir dir)
+TEINAPI bool ResizeDirIsWest (ResizeDir dir)
 {
-    return (dir == Resize_Dir::SW || dir == Resize_Dir::S || dir == Resize_Dir::SE);
+    return (dir == ResizeDir::NW || dir == ResizeDir::W || dir == ResizeDir::SW);
 }
-
-TEINAPI bool resize_dir_is_west (Resize_Dir dir)
-{
-    return (dir == Resize_Dir::NW || dir == Resize_Dir::W || dir == Resize_Dir::SW);
-}
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

@@ -95,7 +95,7 @@ struct Level_History_State
     std::vector<Select_Bounds> new_select_state;
 
     // Used by the resizing history to restore old/new size.
-    Resize_Dir resize_dir;
+    ResizeDir resize_dir;
 
     int old_width;
     int old_height;
