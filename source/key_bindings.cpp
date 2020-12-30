@@ -279,9 +279,9 @@ namespace Internal
         AddKeyBinding(a, b, gKbCategoryBack2,      JumpToCategoryBack2);
         AddKeyBinding(a, b, gKbIncrementTab,       increment_tab);
         AddKeyBinding(a, b, gKbDecrementTab,       decrement_tab);
-        AddKeyBinding(a, b, gKbMoveTabLeft,        open_recently_closed_tab);
-        AddKeyBinding(a, b, gKbMoveTabRight,       move_tab_left);
-        AddKeyBinding(a, b, gKbOpenRecentTab,      move_tab_right);
+        AddKeyBinding(a, b, gKbMoveTabLeft,        MoveTabLeft);
+        AddKeyBinding(a, b, gKbMoveTabRight,       MoveTabRight);
+        AddKeyBinding(a, b, gKbOpenRecentTab,      open_recently_closed_tab);
         AddKeyBinding(a, b, gKbLoadPrevLevel,      le_load_prev_level);
         AddKeyBinding(a, b, gKbLoadNextLevel,      le_load_next_level);
     }

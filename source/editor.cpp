@@ -37,7 +37,7 @@ TEINAPI Tab& internal__create_new_tab_and_focus (Tab_Type type)
 
     set_main_window_subtitle_for_tab(tab.name);
 
-    maybe_scroll_tab_bar();
+    MaybeScrollTabBar();
 
     return tab;
 }
@@ -478,7 +478,7 @@ TEINAPI void set_current_tab (size_t index)
     // Update the title of the actual window.
     set_main_window_subtitle_for_tab(get_current_tab().name);
 
-    maybe_scroll_tab_bar();
+    MaybeScrollTabBar();
 }
 
 TEINAPI Tab& get_current_tab ()
@@ -509,7 +509,7 @@ TEINAPI void increment_tab ()
             editor.current_tab = 0;
         }
         set_main_window_subtitle_for_tab(get_current_tab().name);
-        maybe_scroll_tab_bar();
+        MaybeScrollTabBar();
 
         // NOTE: Kind of a bit hacky to have these here...
         level_editor.tool_state = Tool_State::IDLE;
@@ -527,7 +527,7 @@ TEINAPI void decrement_tab ()
             editor.current_tab = editor.tabs.size()-1;
         }
         set_main_window_subtitle_for_tab(get_current_tab().name);
-        maybe_scroll_tab_bar();
+        MaybeScrollTabBar();
 
         // NOTE: Kind of a bit hacky to have these here...
         level_editor.tool_state = Tool_State::IDLE;

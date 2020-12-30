@@ -355,7 +355,7 @@ TEINAPI void HandleTilePanelEvents ()
                     } break;
                     case (SDL_MOUSEWHEEL):
                     {
-                        if (!mouse_is_over_tab_bar())
+                        if (!MouseIsOverTabBar())
                         {
                             if (IsKeyModStateActive(0))
                             {

@@ -1,92 +1,77 @@
-/*******************************************************************************
- * GUI widget that showcases the currently opened level/map tabs in the editor.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+static constexpr float gDefaultLevelTabWidth = 128;
+static constexpr float gShiftTabButtonWidth = 13;
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr size_t gNoTabToClose = static_cast<size_t>(-1);
 
-/* -------------------------------------------------------------------------- */
+static size_t gStartingTabOffset = 0;
+static size_t gMaxNumberOfTabs = 0;
 
-static constexpr float DEFAULT_LEVEL_TAB_WIDTH = 128;
-static constexpr float SHIFT_TAB_BUTTON_WIDTH  =  13;
+static bool gNeedToScrollTabBar;
 
-static constexpr size_t NO_TAB_TO_CLOSE = static_cast<size_t>(-1);
+static bool gCanScrollInTabBar = false;
 
-static size_t starting_tab_offset = 0;
-static size_t max_number_of_tabs  = 0;
-
-static bool need_to_scroll_tab_bar;
-
-static bool can_scroll_in_tab_bar = false;
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool internal__do_level_tab (float w, const Tab& tab, size_t index, bool current)
+namespace Internal
 {
-    bool should_close = false;
-
-    float xpad = 6;
-
-    float tw = w;
-    float th = GetPanelHeight();
-
-    Vec2 cursor1(0, 0);
-    Vec2 cursor2(xpad, 0);
-
-    float bw = 24;
-    float pw = tw-(bw);
-    float lw = pw-(xpad*2);
-
-    std::string name((!tab.name.empty()) ? StripFilePath(tab.name) : "Untitled");
-    // We insert at the start so that it is always visible even if the
-    // level's name gets cut off by the width of the final level tab.
-    if (tab.unsaved_changes) name.insert(0, "* ");
-
-    UiFlag flags = (current) ? UI_HIGHLIGHT : UI_INACTIVE;
-    BeginPanel(GetPanelCursor().x, 0, tw, th, flags, gUiColorMedium);
-
-    SetPanelCursorDir(UI_DIR_DOWN);
-    SetPanelCursor(&cursor1);
-
-    // We display the level tab's full file name in the status bar on hover.
-    std::string info((tab.name.empty()) ? "Untitled" : tab.name);
-    if (BeginClickPanelGradient(NULL, pw,th+1.0f, flags, info))
+    TEINAPI bool DoLevelTab (float w, const Tab& tab, size_t index, bool current)
     {
-        set_current_tab(index);
+        bool shouldClose = false;
+
+        float xPad = 6;
+
+        float tw = w;
+        float th = GetPanelHeight();
+
+        Vec2 cursor1(0,0);
+        Vec2 cursor2(xPad,0);
+
+        float bw = 24;
+        float pw = tw-(bw);
+        float lw = pw-(xPad*2);
+
+        std::string name((!tab.name.empty()) ? StripFilePath(tab.name) : "Untitled");
+        // We insert at the start so that it is always visible even if the
+        // level's name gets cut off by the width of the final level tab.
+        if (tab.unsaved_changes) name.insert(0, "* ");
+
+        UiFlag flags = ((current) ? UI_HIGHLIGHT : UI_INACTIVE);
+        BeginPanel(GetPanelCursor().x,0,tw,th, flags, gUiColorMedium);
+
+        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursor(&cursor1);
+
+        // We display the level tab's full file name in the status bar on hover.
+        std::string info((tab.name.empty()) ? "Untitled" : tab.name);
+        if (BeginClickPanelGradient(NULL, pw,th+1.0f, flags, info))
+        {
+            set_current_tab(index);
+        }
+
+        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursor(&cursor2);
+
+        DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw,th, name);
+
+        EndPanel();
+
+        cursor1.x += pw;
+        cursor1.y = 0.0f;
+
+        if (DoImageButtonGradient(NULL, bw,th+1, flags, &gClipCross, info)) shouldClose = true;
+
+        EndPanel();
+
+        AdvancePanelCursor(tw+1);
+        return shouldClose;
     }
-
-    SetPanelCursorDir(UI_DIR_RIGHT);
-    SetPanelCursor(&cursor2);
-
-    DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw,th, name);
-
-    EndPanel();
-
-    cursor1.x += pw;
-    cursor1.y  = 0.0f;
-
-    if (DoImageButtonGradient(NULL, bw,th+1, flags, &gClipCross, info))
-    {
-        should_close = true;
-    }
-
-    EndPanel();
-
-    AdvancePanelCursor(tw+1);
-    return should_close;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void handle_tab_bar_events ()
+TEINAPI void HandleTabBarEvents ()
 {
     switch (main_event.type)
     {
         case (SDL_MOUSEWHEEL):
         {
-            if (can_scroll_in_tab_bar)
+            if (gCanScrollInTabBar)
             {
                 if (main_event.wheel.y > 0) increment_tab();
                 if (main_event.wheel.y < 0) decrement_tab();
@@ -95,69 +80,67 @@ TEINAPI void handle_tab_bar_events ()
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_tab_bar ()
+TEINAPI void DoTabBar ()
 {
     float x = GetToolbarWidth() + 1;
     float y = 0;
 
-    float bw = SHIFT_TAB_BUTTON_WIDTH;
-    float bh = TAB_BAR_HEIGHT;
+    float bw = gShiftTabButtonWidth;
+    float bh = gTabBarHeight;
 
     SetUiTexture(&gResourceIcons);
     SetUiFont(&GetEditorRegularFont());
 
-    float whole_tab_bar_w = GetViewport().w - GetToolbarWidth() - GetControlPanelWidth();
+    float wholeTabBarWidth = GetViewport().w - GetToolbarWidth() - GetControlPanelWidth();
 
-    float pw = whole_tab_bar_w - (bw*2) - 4;
-    float ph = TAB_BAR_HEIGHT;
+    float pw = wholeTabBarWidth - (bw*2) - 4;
+    float ph = gTabBarHeight;
 
     // To account for the control panel disappearing.
     if (!current_tab_is_level()) pw += 1;
 
     // Figure out how many tabs we can fit on the bar before we need to start scrolling.
-    max_number_of_tabs = static_cast<int>(ceilf(pw / (DEFAULT_LEVEL_TAB_WIDTH + 1)));
+    gMaxNumberOfTabs = static_cast<int>(ceilf(pw / (gDefaultLevelTabWidth + 1)));
 
-    if (need_to_scroll_tab_bar)
+    if (gNeedToScrollTabBar)
     {
-        need_to_scroll_tab_bar = false;
-        maybe_scroll_tab_bar();
+        gNeedToScrollTabBar = false;
+        MaybeScrollTabBar();
     }
 
-    float tab_width = DEFAULT_LEVEL_TAB_WIDTH;
-    float left_over = 0;
+    float tabWidth = gDefaultLevelTabWidth;
+    float leftover = 0;
 
-    if (editor.tabs.size() >= max_number_of_tabs)
+    if (editor.tabs.size() >= gMaxNumberOfTabs)
     {
-        tab_width = floorf((pw-((max_number_of_tabs-1)*1)) / max_number_of_tabs);
-        left_over = (pw-((max_number_of_tabs-1)*1)) - (tab_width * max_number_of_tabs);
+        tabWidth = floorf((pw-((gMaxNumberOfTabs-1)*1)) / gMaxNumberOfTabs);
+        leftover = (pw-((gMaxNumberOfTabs-1)*1)) - (tabWidth * gMaxNumberOfTabs);
     }
     else
     {
-        starting_tab_offset = 0;
+        gStartingTabOffset = 0;
     }
 
     // Prevents the tab bar from being offset too far to the right creating an ugly space when there shouldn't be.
-    if (editor.tabs.size() >= max_number_of_tabs)
+    if (editor.tabs.size() >= gMaxNumberOfTabs)
     {
-        while (starting_tab_offset+max_number_of_tabs > editor.tabs.size())
+        while (gStartingTabOffset+gMaxNumberOfTabs > editor.tabs.size())
         {
-             --starting_tab_offset;
+             --gStartingTabOffset;
         }
     }
 
     // THE LEFT ARROW BUTTON
     if (are_there_any_tabs())
     {
-        BeginPanel(x, y, bw,bh, UI_NONE);
-        Vec2 tmp(0,0);
-        SetPanelCursor(&tmp);
-        bool l_arrow_active = (starting_tab_offset != 0);
-        UiFlag flags = (l_arrow_active) ? UI_NONE : UI_LOCKED;
+        BeginPanel(x,y,bw,bh, UI_NONE);
+        Vec2 tempCursor(0,0);
+        SetPanelCursor(&tempCursor);
+        bool leftArrowActive = (gStartingTabOffset != 0);
+        UiFlag flags = ((leftArrowActive) ? UI_NONE : UI_LOCKED);
         if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowLeft))
         {
-            --starting_tab_offset;
+            --gStartingTabOffset;
         }
         EndPanel();
     }
@@ -165,24 +148,24 @@ TEINAPI void do_tab_bar ()
     // THE LIST OF TABS
     Vec2 cursor(0,0);
 
-    Vec4 color = (are_there_any_tabs()) ? gUiColorMedDark : gUiColorExDark;
-    BeginPanel(x+bw+1, y, pw, ph, UI_NONE, color);
+    Vec4 color = ((are_there_any_tabs()) ? gUiColorMedDark : gUiColorExDark);
+    BeginPanel(x+bw+1,y,pw,ph, UI_NONE, color);
 
     SetPanelCursorDir(UI_DIR_RIGHT);
     SetPanelCursor(&cursor);
 
     // Check to see if the mouse is in the panel, if it is then the mouse scroll wheel will scroll through tabs.
-    can_scroll_in_tab_bar = (MouseInUiBoundsXYWH(0, 0, pw, ph) && IsKeyModStateActive(KMOD_NONE));
+    gCanScrollInTabBar = (MouseInUiBoundsXYWH(0,0,pw,ph) && IsKeyModStateActive(KMOD_NONE));
 
-    size_t index_to_close = NO_TAB_TO_CLOSE;
-    size_t last = std::min(editor.tabs.size(), starting_tab_offset+max_number_of_tabs);
-    for (size_t i=starting_tab_offset; i<last; ++i)
+    size_t indexToClose = gNoTabToClose;
+    size_t last = std::min(editor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs);
+    for (size_t i=gStartingTabOffset; i<last; ++i)
     {
-        float w = tab_width + ((i == last-1) ? left_over : 0);
+        float w = tabWidth + ((i == last-1) ? leftover : 0);
         bool current = (i == editor.current_tab);
-        if (internal__do_level_tab(w, editor.tabs.at(i), i, current))
+        if (Internal::DoLevelTab(w, editor.tabs.at(i), i, current))
         {
-            index_to_close = i;
+            indexToClose = i;
         }
     }
 
@@ -191,39 +174,32 @@ TEINAPI void do_tab_bar ()
     // THE RIGHT ARROW BUTTON
     if (are_there_any_tabs())
     {
-        BeginPanel(x+bw+2+pw, 0, bw,bh, UI_NONE);
-        Vec2 tmp(0,0);
-        SetPanelCursor(&tmp);
-        bool r_arrow_active = (starting_tab_offset+max_number_of_tabs < editor.tabs.size());
-        UiFlag flags = (r_arrow_active) ? UI_NONE : UI_LOCKED;
+        BeginPanel(x+bw+2+pw,0,bw,bh, UI_NONE);
+        Vec2 tempCursor(0,0);
+        SetPanelCursor(&tempCursor);
+        bool rightArrowActive = (gStartingTabOffset+gMaxNumberOfTabs < editor.tabs.size());
+        UiFlag flags = ((rightArrowActive) ? UI_NONE : UI_LOCKED);
         if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowRight))
         {
-            ++starting_tab_offset;
+            ++gStartingTabOffset;
         }
         EndPanel();
     }
 
     // If a level needs to be closed then we do it now.
-    if (index_to_close != NO_TAB_TO_CLOSE)
-    {
-        close_tab(index_to_close);
-    }
+    if (indexToClose != gNoTabToClose) close_tab(indexToClose);
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void maybe_scroll_tab_bar ()
+TEINAPI void MaybeScrollTabBar ()
 {
-    if (editor.current_tab < starting_tab_offset) starting_tab_offset = editor.current_tab;
-    while (editor.current_tab >= std::min(editor.tabs.size(), starting_tab_offset+max_number_of_tabs))
+    if (editor.current_tab < gStartingTabOffset) gStartingTabOffset = editor.current_tab;
+    while (editor.current_tab >= std::min(editor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs))
     {
-        ++starting_tab_offset;
+        ++gStartingTabOffset;
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void move_tab_left ()
+TEINAPI void MoveTabLeft ()
 {
     if (are_there_any_tabs())
     {
@@ -235,13 +211,12 @@ TEINAPI void move_tab_left ()
                 auto begin = editor.tabs.begin();
                 std::iter_swap(begin+editor.current_tab-1, begin+editor.current_tab);
                 --editor.current_tab;
-                maybe_scroll_tab_bar();
+                MaybeScrollTabBar();
             }
         }
     }
 }
-
-TEINAPI void move_tab_right ()
+TEINAPI void MoveTabRight ()
 {
     if (are_there_any_tabs())
     {
@@ -253,50 +228,18 @@ TEINAPI void move_tab_right ()
                 auto begin = editor.tabs.begin();
                 std::iter_swap(begin+editor.current_tab+1, begin+editor.current_tab);
                 ++editor.current_tab;
-                maybe_scroll_tab_bar();
+                MaybeScrollTabBar();
             }
         }
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void need_to_scroll_next_update ()
+TEINAPI void NeedToScrollNextUpdate ()
 {
-    need_to_scroll_tab_bar = true;
+    gNeedToScrollTabBar = true;
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool mouse_is_over_tab_bar ()
+TEINAPI bool MouseIsOverTabBar ()
 {
-    return can_scroll_in_tab_bar;
+    return gCanScrollInTabBar;
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

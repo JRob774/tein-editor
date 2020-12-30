@@ -103,8 +103,8 @@
 #include "new_dialog.hpp"
 #include "resize_dialog.hpp"
 #include "path_dialog.hpp"
-
 #include "tab_bar.hpp"
+
 #include "palette.hpp"
 #include "level_editor.hpp"
 #include "map_editor.hpp"

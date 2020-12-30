@@ -316,9 +316,9 @@ TEINAPI void do_map_editor ()
     Quad p1;
 
     p1.x = GetToolbarWidth() + 1;
-    p1.y = TAB_BAR_HEIGHT  + 1;
+    p1.y = gTabBarHeight  + 1;
     p1.w = GetViewport().w - GetToolbarWidth() - (GetControlPanelWidth()) - 2;
-    p1.h = GetViewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
+    p1.h = GetViewport().h - STATUS_BAR_HEIGHT - gTabBarHeight - 2;
 
     // To account for the control panel disappearing.
     p1.w += 1;
@@ -1023,7 +1023,7 @@ TEINAPI void load_map_tab (std::string file_name)
         tab.map_history.state.at(0) = tab.map;
     }
 
-    need_to_scroll_next_update();
+    NeedToScrollNextUpdate();
 }
 
 TEINAPI bool save_map_tab (Tab& tab)
@@ -1097,7 +1097,7 @@ TEINAPI void map_drop_file (Tab* tab, std::string file_name)
         tab->map_history.state.at(0) = tab->map;
     }
 
-    need_to_scroll_next_update();
+    NeedToScrollNextUpdate();
 }
 
 /* -------------------------------------------------------------------------- */

@@ -942,9 +942,9 @@ TEINAPI void do_level_editor ()
     Quad p1;
 
     p1.x = GetToolbarWidth() + 1;
-    p1.y = TAB_BAR_HEIGHT  + 1;
+    p1.y = gTabBarHeight  + 1;
     p1.w = GetViewport().w - GetToolbarWidth() - (GetControlPanelWidth()) - 2;
-    p1.h = GetViewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
+    p1.h = GetViewport().h - STATUS_BAR_HEIGHT - gTabBarHeight - 2;
 
     BeginPanel(p1.x, p1.y, p1.w, p1.h, UI_NONE);
 
@@ -1684,7 +1684,7 @@ TEINAPI void load_level_tab (std::string file_name)
         }
     }
 
-    need_to_scroll_next_update();
+    NeedToScrollNextUpdate();
 }
 
 /* -------------------------------------------------------------------------- */
@@ -2209,7 +2209,7 @@ TEINAPI void level_drop_file (Tab* tab, std::string file_name)
         }
     }
 
-    need_to_scroll_next_update();
+    NeedToScrollNextUpdate();
 }
 
 /* -------------------------------------------------------------------------- */

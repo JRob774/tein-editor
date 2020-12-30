@@ -219,7 +219,7 @@ TEINAPI void do_application ()
 
     DoControlPanel();
     DoToolbar();
-    do_tab_bar();
+    DoTabBar();
     do_editor();
     do_status_bar();
 
@@ -350,7 +350,7 @@ TEINAPI bool handle_application_events ()
         HandleKeyBindingEvents();
         HandleUiEvents();
         HandleTilePanelEvents();
-        handle_tab_bar_events();
+        HandleTabBarEvents();
         handle_editor_events();
         handle_preferences_menu_events();
         handle_color_picker_events();
