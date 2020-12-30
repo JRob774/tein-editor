@@ -59,7 +59,7 @@ namespace Internal
         // Do a separate panel for the category's label before the main panel.
         float x = gTilePanelInnerPad;
         float y = cursor.y;
-        float w = (CONTROL_PANEL_WIDTH - categoryPad);
+        float w = (gControlPanelWidth - categoryPad);
         float h = gTilePanelLabelHeight;
 
         bool isActive = IsCategoryActive(categoryIndex);
@@ -89,7 +89,7 @@ namespace Internal
         // Bounding box for the particular category in the panel.
         x = gTilePanelInnerPad;
         y = cursor.y;
-        w = (CONTROL_PANEL_WIDTH - categoryPad);
+        w = (gControlPanelWidth - categoryPad);
         h = (rows * gTilePanelItemSize) + categoryPad + totalItemPad;
 
         Vec2 cur(gTilePanelInnerPad, gTilePanelInnerPad);
@@ -314,10 +314,10 @@ TEINAPI void DoTilePanel (bool scrollbar)
 
     if (scrollbar)
     {
-        float x = CONTROL_PANEL_WIDTH;
-        float y = CONTROL_PANEL_INNER_PAD;
-        float w = CONTROL_PANEL_SCROLLBAR_WIDTH - CONTROL_PANEL_INNER_PAD;
-        float h = GetViewport().h - (CONTROL_PANEL_INNER_PAD * 2);
+        float x = gControlPanelWidth;
+        float y = gControlPanelInnerPad;
+        float w = gControlPanelScrollbarWidth - gControlPanelInnerPad;
+        float h = GetViewport().h - (gControlPanelInnerPad * 2);
 
         DoScrollbar(x,y,w,h, gTilePanel.contentHeight, gTilePanel.scrollOffset);
     }

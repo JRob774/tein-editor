@@ -99,8 +99,8 @@
 #include "tooltip.hpp"
 #include "tile_panel.hpp"
 #include "layer_panel.hpp"
-
 #include "control_panel.hpp"
+
 #include "new_dialog.hpp"
 #include "resize_dialog.hpp"
 #include "path_dialog.hpp"

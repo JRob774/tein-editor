@@ -1,23 +1,8 @@
-/*******************************************************************************
- * Editor GUI widget that contains all of the other editor sub-panels.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gControlPanelWidth = 272;
+static constexpr float gControlPanelScrollbarWidth = 12;
+static constexpr float gControlPanelInnerPad = 3;
 
-/* -------------------------------------------------------------------------- */
-
-static constexpr float CONTROL_PANEL_WIDTH           = 272;
-static constexpr float CONTROL_PANEL_SCROLLBAR_WIDTH =  12;
-static constexpr float CONTROL_PANEL_INNER_PAD       =   3;
-
-TEINAPI void  do_control_panel    ();
-TEINAPI float get_control_panel_w ();
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI void DoControlPanel ();
+TEINAPI float GetControlPanelWidth ();

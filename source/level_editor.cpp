@@ -943,7 +943,7 @@ TEINAPI void do_level_editor ()
 
     p1.x = GetToolbarWidth() + 1;
     p1.y = TAB_BAR_HEIGHT  + 1;
-    p1.w = GetViewport().w - GetToolbarWidth() - (get_control_panel_w()) - 2;
+    p1.w = GetViewport().w - GetToolbarWidth() - (GetControlPanelWidth()) - 2;
     p1.h = GetViewport().h - STATUS_BAR_HEIGHT - TAB_BAR_HEIGHT - 2;
 
     BeginPanel(p1.x, p1.y, p1.w, p1.h, UI_NONE);

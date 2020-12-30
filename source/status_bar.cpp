@@ -39,7 +39,7 @@ TEINAPI void do_status_bar ()
 
     float x = GetToolbarWidth() + 1;
     float y = GetViewport().h - STATUS_BAR_HEIGHT;
-    float w = GetViewport().w - GetToolbarWidth() - (get_control_panel_w()) - 2;
+    float w = GetViewport().w - GetToolbarWidth() - (GetControlPanelWidth()) - 2;
     float h = STATUS_BAR_HEIGHT;
 
     // To account for the control panel and toolbar disappearing.

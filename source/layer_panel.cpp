@@ -124,7 +124,7 @@ TEINAPI void DoLayerPanel (bool scrollbar)
     constexpr float Pad = gLayerPanelInnerPad;
 
     BeginPanel(gLayerPanelBounds, UI_NONE, gUiColorMedium);
-    BeginPanel(Pad, Pad, CONTROL_PANEL_WIDTH-(Pad*2), gLayerPanelBounds.h-(Pad*2), UI_NONE, gUiColorMedDark);
+    BeginPanel(Pad, Pad, gControlPanelWidth-(Pad*2), gLayerPanelBounds.h-(Pad*2), UI_NONE, gUiColorMedDark);
 
     // NOTE: We do this to add a 1px border around the actual layer buttons in
     // the case that the panel is too small and needs a scrollbar it looks
@@ -138,9 +138,9 @@ TEINAPI void DoLayerPanel (bool scrollbar)
 
     if (scrollbar)
     {
-        float sx =  1 + GetViewport().w + CONTROL_PANEL_INNER_PAD;
+        float sx =  1 + GetViewport().w + gControlPanelInnerPad;
         float sy = -1;
-        float sw =  CONTROL_PANEL_SCROLLBAR_WIDTH - CONTROL_PANEL_INNER_PAD;
+        float sw =  gControlPanelScrollbarWidth - gControlPanelInnerPad;
         float sh =  2 + GetViewport().h;
 
         DoScrollbar(sx,sy,sw,sh, gLayerPanelContentHeight, gLayerPanelScrollOffset);
