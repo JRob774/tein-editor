@@ -116,7 +116,7 @@ namespace Internal
                 bool inBounds = MouseInUiBoundsXYWH(tileGroupBounds);
                 if (inBounds)
                 {
-                    push_status_bar_message("Tile Group: %s", tileGroup.name.c_str());
+                    PushStatusBarMessage("Tile Group: %s", tileGroup.name.c_str());
                     SetCurrentTooltip(tileGroup.name, tileGroup.desc);
                 }
                 if (gTilePanel.mouseDown && !IsThereAHitUiElement())

@@ -111,7 +111,7 @@ TEINAPI void init_application (int argc, char** argv)
     if (!RegisterWindow("WINUPDATE"     , "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"      ); return; }
 
     GetWindowFromName("WINPREFERENCES"). closeCallback = []() { cancel_preferences   (); };
-    GetWindowFromName("WINCOLOR"      ). closeCallback = []() { cancel_color_picker  (); };
+    GetWindowFromName("WINCOLOR"      ). closeCallback = []() { CancelColorPicker    (); };
     GetWindowFromName("WINNEW"        ). closeCallback = []() { CancelNew            (); };
     GetWindowFromName("WINRESIZE"     ). closeCallback = []() { CancelResize         (); };
     GetWindowFromName("WINABOUT"      ). closeCallback = []() { HideWindow("WINABOUT" ); };
@@ -138,7 +138,7 @@ TEINAPI void init_application (int argc, char** argv)
     if (!InitTilePanel        ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
 
     InitLayerPanel();
-    init_color_picker();
+    InitColorPicker();
     InitPaletteLookup();
 
     InitEditor(argc, argv);
@@ -221,7 +221,7 @@ TEINAPI void do_application ()
     DoToolbar();
     DoTabBar();
     DoEditor();
-    do_status_bar();
+    DoStatusBar();
 
     EndPanel();
     EndPanel();
@@ -244,7 +244,7 @@ TEINAPI void do_application ()
         SetRenderTarget(&GetWindowFromName("WINCOLOR"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
-        do_color_picker();
+        DoColorPicker();
         RenderPresent();
     }
 
@@ -344,7 +344,7 @@ TEINAPI bool handle_application_events ()
         #if defined(BUILD_DEBUG)
         generate_texture_atlases();
         pack_textures();
-        #endif
+        #endif // BUILD_DEBUG
 
         HandleWindowEvents();
         HandleKeyBindingEvents();
@@ -353,7 +353,7 @@ TEINAPI bool handle_application_events ()
         HandleTabBarEvents();
         HandleEditorEvents();
         handle_preferences_menu_events();
-        handle_color_picker_events();
+        HandleColorPickerEvents();
         HandleNewEvents();
         HandleResizeEvents();
         HandleTooltipEvents();

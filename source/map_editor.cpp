@@ -300,7 +300,7 @@ TEINAPI void DoMapEditor ()
     p1.x = GetToolbarWidth() + 1;
     p1.y = gTabBarHeight  + 1;
     p1.w = GetViewport().w - GetToolbarWidth() - (GetControlPanelWidth()) - 2;
-    p1.h = GetViewport().h - STATUS_BAR_HEIGHT - gTabBarHeight - 2;
+    p1.h = GetViewport().h - gStatusBarHeight - gTabBarHeight - 2;
 
     // To account for the control panel disappearing.
     p1.w += 1;
@@ -387,7 +387,7 @@ TEINAPI void DoMapEditor ()
             {
                 if ((m.x == node.x && m.y == node.y))
                 {
-                    push_status_bar_message(node.lvl.c_str());
+                    PushStatusBarMessage(node.lvl.c_str());
                     mouseOverNode = true;
 
                     if (IsWindowFocused("WINMAIN"))

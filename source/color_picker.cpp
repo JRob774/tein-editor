@@ -1,364 +1,331 @@
-/*******************************************************************************
- * Editor GUI widget that allows for picking a color using various sliders.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
+enum class ChannelType { INVALID, R, G, B, A };
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gColorPickerChannelWidth = 40;
+static constexpr float gColorPickerChannelHeight = 180;
 
-/* -------------------------------------------------------------------------- */
+static constexpr float gColorPickerXPad = 8;
+static constexpr float gColorPickerYPad = 8;
 
-enum class Channel_Type { INVALID, R, G, B, A };
+static constexpr float gColorPickerTextBoxHeight = 20;
+static constexpr float gColorPickerAlphaHeight = 20;
 
-static constexpr float COLOR_PICKER_CHANNEL_W =  40;
-static constexpr float COLOR_PICKER_CHANNEL_H = 180;
+static constexpr float gColorPickerBottomBorder = 26;
 
-static constexpr float COLOR_PICKER_XPAD = 8;
-static constexpr float COLOR_PICKER_YPAD = 8;
+static constexpr float gColorPickerSwatchLarge = 32;
+static constexpr float gColorPickerSwatchSmall = 16;
 
-static constexpr float COLOR_PICKER_TEXT_BOX_H = 20;
-static constexpr float COLOR_PICKER_ALPHA_H    = 20;
+static constexpr float gColorPickerSwatchXPad = 7;
+static constexpr float gColorPickerSwatchYPad = 8;
 
-static constexpr float COLOR_PICKER_BOTTOM_BORDER = 26.;
+static constexpr float gColorPickerSwatchGap = 6;
 
-static constexpr float COLOR_PICKER_SWATCH_LG    = 32;
-static constexpr float COLOR_PICKER_SWATCH_SM    = 16;
-static constexpr float COLOR_PICKER_SWATCH_XPAD  =  7;
-static constexpr float COLOR_PICKER_SWATCH_YPAD  =  8;
-static constexpr float COLOR_PICKER_SWATCH_GAP   =  6;
-static constexpr int   COLOR_PICKER_SWATCH_COUNT =  9;
+static constexpr int gColorPickerSwatchCount = 9;
 
-static Channel_Type color_picker_active_channel;
-static bool color_picker_mouse_pressed;
+static ChannelType gColorPickerActiveChannel;
+static bool gColorPickerMousePressed;
 
-static std::deque<Vec4> color_picker_swatches;
+static std::deque<Vec4> gColorPickerSwatches;
 
 // When the color picker menu is opened we cache the current color value.
 // This allows the color picker menu to modify the current color immediately
 // for instant feedback. If the user then wants to cancel the changes made,
 // we can just restore the cached version of the color to turn it back.
 
-static Vec4* current_color_picker_color;
-static Vec4  cached_color_picker_color;
+static Vec4* gCurrentColorPickerColor;
+static Vec4 gCachedColorPickerColor;
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void internal__do_color_channel (Vec2& cursor, Vec4 min, Vec4 max, float& channel, Channel_Type type)
+namespace Internal
 {
-    float xpad = COLOR_PICKER_XPAD;
-    float ypad = COLOR_PICKER_YPAD;
-
-    float cw = COLOR_PICKER_CHANNEL_W;
-    float ch = COLOR_PICKER_CHANNEL_H;
-
-    float x1 = cursor.x;
-    float y1 = cursor.y;
-    float x2 = cursor.x + cw;
-    float y2 = cursor.y + ch;
-
-    // The dark and light border surrounding the channel quad.
-    SetDrawColor(gUiColorLight);
-    FillQuad(x1-2, y1-2, x2+2, y2+2);
-    SetDrawColor(gUiColorExDark);
-    FillQuad(x1-1, y1-1, x2+1, y2+1);
-
-    BeginDraw(BufferMode::TRIANGLE_STRIP);
-    PutVertex(cursor.x   , cursor.y+ch, min); // BL
-    PutVertex(cursor.x   , cursor.y   , max); // TL
-    PutVertex(cursor.x+cw, cursor.y+ch, min); // BR
-    PutVertex(cursor.x+cw, cursor.y   , max); // TR
-    EndDraw();
-
-    float percent = std::clamp(roundf(channel*100), 0.0f, 100.0f);
-    std::string channel_str(std::to_string(static_cast<int>(percent)));
-    cursor.y += (ch + ypad);
-    DoTextBox(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, channel_str, "0");
-    if (atoi(channel_str.c_str()) > 100) channel_str = "100";
-    float new_channel = static_cast<float>(atoi(channel_str.c_str())) / 100;
-    if (channel != new_channel) channel = new_channel;
-    // Reset cursor after text box.
-    cursor.x -=  cw;
-    cursor.y -= (ch + ypad);
-
-    // Draw the indicator for what value is currently selected.
-    float pos = (cursor.y + ch) - roundf(ch * channel);
-
-    float ix1 = cursor.x   -2;
-    float iy1 = pos        -2;
-    float ix2 = cursor.x+cw+2;
-    float iy2 = pos        +2;
-
-    Vec4 cur = min;
-    switch (type)
+    TEINAPI void DoColorChannel (Vec2& cursor, Vec4 min, Vec4 max, float& channel, ChannelType type)
     {
-        case (Channel_Type::R): cur.r = channel; break;
-        case (Channel_Type::G): cur.g = channel; break;
-        case (Channel_Type::B): cur.b = channel; break;
-    }
+        float xPad = gColorPickerXPad;
+        float yPad = gColorPickerYPad;
 
-    SetDrawColor(gUiColorLight);
-    FillQuad(ix1-2, iy1-2, ix2+2, iy2+2);
-    SetDrawColor(gUiColorExDark);
-    FillQuad(ix1-1, iy1-1, ix2+1, iy2+1);
-    SetDrawColor(cur);
-    FillQuad(ix1-0, iy1-0, ix2+0, iy2+0);
+        float cw = gColorPickerChannelWidth;
+        float ch = gColorPickerChannelHeight;
 
-    // Handle the indicator both being selected, deselected, and moved.
-    if (color_picker_mouse_pressed)
-    {
-        if (MouseInUiBoundsXYWH(ix1-1, iy1-1, cw+2, 7))
+        float x1 = cursor.x;
+        float y1 = cursor.y;
+        float x2 = cursor.x + cw;
+        float y2 = cursor.y + ch;
+
+        // The dark and light border surrounding the channel quad.
+        SetDrawColor(gUiColorLight);
+        FillQuad(x1-2,y1-2,x2+2,y2+2);
+        SetDrawColor(gUiColorExDark);
+        FillQuad(x1-1,y1-1,x2+1,y2+1);
+
+        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        PutVertex(cursor.x   , cursor.y+ch, min); // BL
+        PutVertex(cursor.x   , cursor.y   , max); // TL
+        PutVertex(cursor.x+cw, cursor.y+ch, min); // BR
+        PutVertex(cursor.x+cw, cursor.y   , max); // TR
+        EndDraw();
+
+        float percent = std::clamp(roundf(channel*100), 0.0f, 100.0f);
+        std::string channelString(std::to_string(static_cast<int>(percent)));
+        cursor.y += (ch + yPad);
+        DoTextBox(cw, gColorPickerTextBoxHeight, UI_NUMERIC, channelString, "0");
+        if (atoi(channelString.c_str()) > 100) channelString = "100";
+        float newChannel = static_cast<float>(atoi(channelString.c_str())) / 100;
+        if (channel != newChannel) channel = newChannel;
+        // Reset cursor after text box.
+        cursor.x -= cw;
+        cursor.y -= (ch + yPad);
+
+        // Draw the indicator for what value is currently selected.
+        float pos = (cursor.y + ch) - roundf(ch * channel);
+
+        float ix1 = cursor.x-2;
+        float iy1 = pos-2;
+        float ix2 = cursor.x+cw+2;
+        float iy2 = pos+2;
+
+        Vec4 cur = min;
+        switch (type)
         {
-            color_picker_active_channel = type;
+            case (ChannelType::R): cur.r = channel; break;
+            case (ChannelType::G): cur.g = channel; break;
+            case (ChannelType::B): cur.b = channel; break;
         }
-        else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, cw, ch))
+
+        SetDrawColor(gUiColorLight);
+        FillQuad(ix1-2,iy1-2,ix2+2,iy2+2);
+        SetDrawColor(gUiColorExDark);
+        FillQuad(ix1-1,iy1-1,ix2+1,iy2+1);
+        SetDrawColor(cur);
+        FillQuad(ix1-0,iy1-0,ix2+0,iy2+0);
+
+        // Handle the indicator both being selected, deselected, and moved.
+        if (gColorPickerMousePressed)
         {
-            color_picker_active_channel = type;
-            // Determine where the click was and jump to that position.
-            float my = ch - (GetMousePos().y - GetViewport().y - cursor.y);
-            channel = my / ch;
-        }
-    }
-    if (color_picker_active_channel == type)
-    {
-        channel -= (UiGetRelativeMouse().y / ch);
-        channel = std::clamp(channel, 0.0f, 1.0f);
-    }
-
-    // Move the cursor into position for next channel.
-    cursor.x += cw + (xpad*3);
-}
-
-TEINAPI void internal__do_color_preview (Vec2& cursor, Vec4 c, float size)
-{
-    const Texture& tex = (static_cast<int>(size) % 14 == 0) ? gResourceChecker14 : gResourceChecker16;
-
-    float x = cursor.x;
-    float y = cursor.y;
-
-    // The dark and light border surrounding the color.
-    SetDrawColor(gUiColorLight);
-    FillQuad(x-2, y-2, x+size+2, y+size+2);
-    SetDrawColor(gUiColorExDark);
-    FillQuad(x-1, y-1, x+size+1, y+size+1);
-
-    float tx = x + (size / 2);
-    float ty = y + (size / 2);
-
-    Quad clip = { 0, 0, size, size };
-    DrawTexture(tex, tx, ty, &clip);
-
-    Vec4 max(c.r, c.g, c.b,   1);
-    Vec4 min(c.r, c.g, c.b, c.a);
-
-    BeginDraw(BufferMode::TRIANGLE_STRIP);
-    PutVertex(x     , y+size, min); // BL
-    PutVertex(x     , y     , max); // TL
-    PutVertex(x+size, y+size, min); // BR
-    PutVertex(x+size, y     , max); // TR
-    EndDraw();
-}
-
-TEINAPI void internal__do_swatch_panel (Vec2& cursor)
-{
-    assert(current_color_picker_color);
-
-    cursor.y += COLOR_PICKER_SWATCH_LG + COLOR_PICKER_YPAD;
-
-    SetDrawColor(gUiColorMedDark);
-    DrawQuad(cursor.x, cursor.y, cursor.x+COLOR_PICKER_SWATCH_LG, GetPanelHeight()-COLOR_PICKER_YPAD);
-
-    float x = cursor.x                                  +1;
-    float y = cursor.y                                  +1;
-    float w = COLOR_PICKER_SWATCH_LG                    -2;
-    float h = (GetPanelHeight()-COLOR_PICKER_YPAD)-cursor.y-2;
-
-    Vec2 cursor2(COLOR_PICKER_SWATCH_XPAD, COLOR_PICKER_SWATCH_YPAD);
-    BeginPanel(x, y, w, h, UI_NONE);
-
-    for (auto& c: color_picker_swatches)
-    {
-        internal__do_color_preview(cursor2, c, COLOR_PICKER_SWATCH_SM);
-        if (color_picker_mouse_pressed)
-        {
-            if (MouseInUiBoundsXYWH(cursor2.x, cursor2.y, COLOR_PICKER_SWATCH_SM, COLOR_PICKER_SWATCH_SM))
+            if (MouseInUiBoundsXYWH(ix1-1, iy1-1, cw+2, 7))
             {
-                *current_color_picker_color = c;
+                gColorPickerActiveChannel = type;
+            }
+            else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, cw, ch))
+            {
+                gColorPickerActiveChannel = type;
+                // Determine where the click was and jump to that position.
+                float my = ch - (GetMousePos().y - GetViewport().y - cursor.y);
+                channel = my / ch;
             }
         }
-
-        cursor2.y += COLOR_PICKER_SWATCH_SM;
-        cursor2.y += COLOR_PICKER_SWATCH_GAP;
-    }
-
-    EndPanel();
-}
-
-TEINAPI void internal__do_alpha_channel (Vec2& cursor, Vec4& c)
-{
-    float xpad = COLOR_PICKER_XPAD;
-    float ypad = COLOR_PICKER_YPAD;
-
-    float cw = COLOR_PICKER_CHANNEL_W;
-    float ch = COLOR_PICKER_CHANNEL_H;
-
-    cursor.x =  xpad;
-    cursor.y = (ypad*3.25f) + ch + COLOR_PICKER_TEXT_BOX_H;
-
-    SetPanelCursorDir(UI_DIR_DOWN);
-    DoSeparator((cw*3)+(xpad*6));
-    cursor.y -= 1;
-    SetPanelCursorDir(UI_DIR_RIGHT);
-
-    cursor.y += (ypad*1.25f);
-
-    float percent = std::clamp(roundf(c.a*100), 0.0f, 100.0f);
-    std::string alpha_str(std::to_string(static_cast<int>(percent)));
-    DoTextBox(cw, COLOR_PICKER_TEXT_BOX_H, UI_NUMERIC, alpha_str, "0");
-    if (atoi(alpha_str.c_str()) > 100) alpha_str = "100";
-    float new_alpha = static_cast<float>(atoi(alpha_str.c_str())) / 100;
-    if (c.a != new_alpha) c.a = new_alpha;
-
-    cursor.x += xpad;
-
-    float x1 = cursor.x;
-    float y1 = cursor.y;
-    float x2 = cursor.x + ((cw*2)+(xpad*5));
-    float y2 = cursor.y + COLOR_PICKER_ALPHA_H;
-
-    SetDrawColor(gUiColorLight);
-    FillQuad(x1-2, y1-2, x2+2, y2+2);
-    SetDrawColor(gUiColorExDark);
-    FillQuad(x1-1, y1-1, x2+1, y2+1);
-
-    float tw = x2-x1;
-    float th = COLOR_PICKER_ALPHA_H;
-    float tx = cursor.x + (tw / 2);
-    float ty = cursor.y + (th / 2);
-
-    Quad clip1 = { 0, 0, tw, th };
-    DrawTexture(gResourceChecker20, tx, ty, &clip1);
-
-    Vec4 min(c.r, c.g, c.b, 0);
-    Vec4 max(c.r, c.g, c.b, 1);
-
-    BeginDraw(BufferMode::TRIANGLE_STRIP);
-    PutVertex(x1, y2, min); // BL
-    PutVertex(x1, y1, min); // TL
-    PutVertex(x2, y2, max); // BR
-    PutVertex(x2, y1, max); // TR
-    EndDraw();
-
-    // Draw the indicator for what value is currently selected.
-    float pos = (cursor.x + tw) - roundf(tw * (1-c.a));
-
-    float ix1 = pos        -2;
-    float iy1 = cursor.y   -2;
-    float ix2 = pos        +2;
-    float iy2 = cursor.y+th+2;
-
-    SetDrawColor(gUiColorLight);
-    FillQuad(ix1-2, iy1-2, ix2+2, iy2+2);
-    SetDrawColor(gUiColorExDark);
-    FillQuad(ix1-1, iy1-1, ix2+1, iy2+1);
-
-    float itw = ix2-ix1;
-    float ith = iy2-iy1;
-    float itx = ix1 + (itw / 2);
-    float ity = iy1 + (ith / 2);
-
-    Quad clip2 = { ix1-cursor.x, -2, itw, ith };
-    DrawTexture(gResourceChecker20, itx, ity, &clip2);
-
-    SetDrawColor(c);
-    FillQuad(ix1, iy1, ix2, iy2);
-
-    // Handle the indicator both being selected, deselected, and moved.
-    if (color_picker_mouse_pressed)
-    {
-        if (MouseInUiBoundsXYWH(ix1-1, iy1-1, 7, th+2))
+        if (gColorPickerActiveChannel == type)
         {
-            color_picker_active_channel = Channel_Type::A;
+            channel -= (UiGetRelativeMouse().y / ch);
+            channel = std::clamp(channel, 0.0f, 1.0f);
         }
-        else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, tw, th))
+
+        // Move the cursor into position for next channel.
+        cursor.x += cw + (xPad*3);
+    }
+
+    TEINAPI void DoColorPreview (Vec2& cursor, Vec4 color, float size)
+    {
+        const Texture& texture = (static_cast<int>(size) % 14 == 0) ? gResourceChecker14 : gResourceChecker16;
+
+        float x = cursor.x;
+        float y = cursor.y;
+
+        // The dark and light border surrounding the color.
+        SetDrawColor(gUiColorLight);
+        FillQuad(x-2,y-2,x+size+2,y+size+2);
+        SetDrawColor(gUiColorExDark);
+        FillQuad(x-1,y-1,x+size+1,y+size+1);
+
+        float tx = x + (size / 2);
+        float ty = y + (size / 2);
+
+        Quad clip = { 0,0,size,size };
+        DrawTexture(texture, tx,ty, &clip);
+
+        Vec4 max = color;
+        Vec4 min = color;
+
+        max.a = 1;
+
+        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        PutVertex(x     , y+size, min); // BL
+        PutVertex(x     , y     , max); // TL
+        PutVertex(x+size, y+size, min); // BR
+        PutVertex(x+size, y     , max); // TR
+        EndDraw();
+    }
+
+    TEINAPI void DoSwatchPanel (Vec2& cursor)
+    {
+        assert(gCurrentColorPickerColor);
+
+        cursor.y += gColorPickerSwatchLarge + gColorPickerYPad;
+
+        SetDrawColor(gUiColorMedDark);
+        DrawQuad(cursor.x, cursor.y, cursor.x+gColorPickerSwatchLarge, GetPanelHeight()-gColorPickerYPad);
+
+        float x = cursor.x+1;
+        float y = cursor.y+1;
+        float w = gColorPickerSwatchLarge-2;
+        float h = (GetPanelHeight()-gColorPickerYPad)-cursor.y-2;
+
+        Vec2 cursor2(gColorPickerSwatchXPad, gColorPickerSwatchYPad);
+        BeginPanel(x,y,w,h, UI_NONE);
+
+        for (auto& swatch: gColorPickerSwatches)
         {
-            color_picker_active_channel = Channel_Type::A;
-            // Determine where the click was and jump to that position.
-            float mx = tw - (GetMousePos().x - GetViewport().x - cursor.x);
-            c.a = 1 - (mx / tw);
+            DoColorPreview(cursor2, swatch, gColorPickerSwatchSmall);
+            if (gColorPickerMousePressed)
+            {
+                if (MouseInUiBoundsXYWH(cursor2.x, cursor2.y, gColorPickerSwatchSmall, gColorPickerSwatchSmall))
+                {
+                    *gCurrentColorPickerColor = swatch;
+                }
+            }
+
+            cursor2.y += gColorPickerSwatchSmall;
+            cursor2.y += gColorPickerSwatchGap;
+        }
+
+        EndPanel();
+    }
+
+    TEINAPI void DoAlphaChannel (Vec2& cursor, Vec4& color)
+    {
+        float xPad = gColorPickerXPad;
+        float yPad = gColorPickerYPad;
+
+        float cw = gColorPickerChannelWidth;
+        float ch = gColorPickerChannelHeight;
+
+        cursor.x = xPad;
+        cursor.y = (yPad*3.25f) + ch + gColorPickerTextBoxHeight;
+
+        SetPanelCursorDir(UI_DIR_DOWN);
+        DoSeparator((cw*3)+(xPad*6));
+        cursor.y -= 1;
+        SetPanelCursorDir(UI_DIR_RIGHT);
+
+        cursor.y += (yPad*1.25f);
+
+        float percent = std::clamp(roundf(color.a*100), 0.0f, 100.0f);
+        std::string alphaString(std::to_string(static_cast<int>(percent)));
+        DoTextBox(cw, gColorPickerTextBoxHeight, UI_NUMERIC, alphaString, "0");
+        if (atoi(alphaString.c_str()) > 100) alphaString = "100";
+        float newAlpha = static_cast<float>(atoi(alphaString.c_str())) / 100;
+        if (color.a != newAlpha) color.a = newAlpha;
+
+        cursor.x += xPad;
+
+        float x1 = cursor.x;
+        float y1 = cursor.y;
+        float x2 = cursor.x + ((cw*2)+(xPad*5));
+        float y2 = cursor.y + gColorPickerAlphaHeight;
+
+        SetDrawColor(gUiColorLight);
+        FillQuad(x1-2,y1-2,x2+2,y2+2);
+        SetDrawColor(gUiColorExDark);
+        FillQuad(x1-1,y1-1,x2+1,y2+1);
+
+        float tw = x2-x1;
+        float th = gColorPickerAlphaHeight;
+        float tx = cursor.x + (tw / 2);
+        float ty = cursor.y + (th / 2);
+
+        Quad clip1 = { 0,0,tw,th };
+        DrawTexture(gResourceChecker20, tx,ty, &clip1);
+
+        Vec4 min = color;
+        Vec4 max = color;
+
+        min.a = 0;
+        max.a = 1;
+
+        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        PutVertex(x1, y2, min); // BL
+        PutVertex(x1, y1, min); // TL
+        PutVertex(x2, y2, max); // BR
+        PutVertex(x2, y1, max); // TR
+        EndDraw();
+
+        // Draw the indicator for what value is currently selected.
+        float pos = (cursor.x + tw) - roundf(tw * (1-color.a));
+
+        float ix1 = pos-2;
+        float iy1 = cursor.y-2;
+        float ix2 = pos+2;
+        float iy2 = cursor.y+th+2;
+
+        SetDrawColor(gUiColorLight);
+        FillQuad(ix1-2,iy1-2,ix2+2,iy2+2);
+        SetDrawColor(gUiColorExDark);
+        FillQuad(ix1-1,iy1-1,ix2+1,iy2+1);
+
+        float itw = ix2-ix1;
+        float ith = iy2-iy1;
+        float itx = ix1 + (itw / 2);
+        float ity = iy1 + (ith / 2);
+
+        Quad clip2 = { ix1-cursor.x, -2, itw, ith };
+        DrawTexture(gResourceChecker20, itx, ity, &clip2);
+
+        SetDrawColor(color);
+        FillQuad(ix1,iy1,ix2,iy2);
+
+        // Handle the indicator both being selected, deselected, and moved.
+        if (gColorPickerMousePressed)
+        {
+            if (MouseInUiBoundsXYWH(ix1-1,iy1-1,7,th+2))
+            {
+                gColorPickerActiveChannel = ChannelType::A;
+            }
+            else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, tw, th))
+            {
+                gColorPickerActiveChannel = ChannelType::A;
+                // Determine where the click was and jump to that position.
+                float mx = tw - (GetMousePos().x - GetViewport().x - cursor.x);
+                color.a = 1 - (mx / tw);
+            }
+        }
+        if (gColorPickerActiveChannel == ChannelType::A)
+        {
+            color.a += (UiGetRelativeMouse().x / tw);
+            color.a = std::clamp(color.a, 0.0f, 1.0f);
         }
     }
-    if (color_picker_active_channel == Channel_Type::A)
+
+    TEINAPI void SaveColorSwatch ()
     {
-        c.a += (UiGetRelativeMouse().x / tw);
-        c.a = std::clamp(c.a, 0.0f, 1.0f);
+        assert(gCurrentColorPickerColor);
+        gColorPickerSwatches.pop_front();
+        gColorPickerSwatches.push_back(*gCurrentColorPickerColor);
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void internal__okay_color ()
+TEINAPI void InitColorPicker ()
 {
-    // Special checks for background and tile grid color because of the defaulting.
-    if (current_color_picker_color == &gEditorSettings.backgroundColor)
-    {
-        gEditorSettings.backgroundColorDefaulted = false;
-    }
-    if (current_color_picker_color == &gEditorSettings.tileGridColor)
-    {
-        gEditorSettings.tileGridColorDefaulted = false;
-    }
-
-    HideWindow("WINCOLOR");
-}
-
-TEINAPI void internal__save_color_swatch ()
-{
-    assert(current_color_picker_color);
-
-    color_picker_swatches.pop_front();
-    color_picker_swatches.push_back(*current_color_picker_color);
-}
-
-TEINAPI void internal__cancel_color ()
-{
-    assert(current_color_picker_color);
-    *current_color_picker_color = cached_color_picker_color;
-
-    HideWindow("WINCOLOR");
-}
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void init_color_picker ()
-{
-    current_color_picker_color = NULL;
+    gCurrentColorPickerColor = NULL;
     // Add some empty swatches to the color picker on start-up.
-    for (int i=0; i<COLOR_PICKER_SWATCH_COUNT; ++i)
+    for (int i=0; i<gColorPickerSwatchCount; ++i)
     {
-        color_picker_swatches.push_back(Vec4(1,1,1,0));
+        gColorPickerSwatches.push_back(Vec4(1,1,1,0));
     }
 }
 
-TEINAPI void open_color_picker (Vec4* color)
+TEINAPI void OpenColorPicker (Vec4* color)
 {
     RaiseWindow("WINCOLOR");
 
-    color_picker_active_channel = Channel_Type::INVALID;
-    color_picker_mouse_pressed = false;
+    gColorPickerActiveChannel = ChannelType::INVALID;
+    gColorPickerMousePressed = false;
 
     assert(color);
 
-    current_color_picker_color = color;
-    cached_color_picker_color = *color;
+    gCurrentColorPickerColor = color;
+    gCachedColorPickerColor = *color;
 
-    if (IsWindowHidden("WINCOLOR"))
-    {
-        ShowWindow("WINCOLOR");
-    }
+    if (IsWindowHidden("WINCOLOR")) ShowWindow("WINCOLOR");
 }
 
-TEINAPI void do_color_picker ()
+TEINAPI void DoColorPicker ()
 {
     if (IsWindowHidden("WINCOLOR")) return;
 
@@ -373,7 +340,7 @@ TEINAPI void do_color_picker ()
 
     BeginPanel(p1, UI_NONE, gUiColorExDark);
 
-    float bb = COLOR_PICKER_BOTTOM_BORDER;
+    float bb = gColorPickerBottomBorder;
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -382,75 +349,81 @@ TEINAPI void do_color_picker ()
     float bh = bb - gWindowBorder;
 
     // Bottom buttons for okaying or cancelling the color picker.
-    Vec2 btn_cursor(0, gWindowBorder);
-    BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
+    Vec2 buttonCursor(0, gWindowBorder);
+    BeginPanel(0,vh-bb,vw,bb, UI_NONE, gUiColorMedium);
 
     SetPanelCursorDir(UI_DIR_RIGHT);
-    SetPanelCursor(&btn_cursor);
+    SetPanelCursor(&buttonCursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - (bw*2);
 
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Okay"  )) internal__okay_color();
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Save"  )) internal__save_color_swatch();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) internal__cancel_color();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Okay"  )) OkayColorPicker();
+    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Save"  )) Internal::SaveColorSwatch();
+    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelColorPicker();
 
     // Add a separator to the left for symmetry.
-    btn_cursor.x = 1;
+    buttonCursor.x = 1;
     DoSeparator(bh);
 
     EndPanel();
 
-    p2.x =                  1;
-    p2.y =                  1;
-    p2.w = vw             - 2;
+    p2.x = 1;
+    p2.y = 1;
+    p2.w = vw - 2;
     p2.h = vh - p2.y - bb - 1;
 
     BeginPanel(p2, UI_NONE, gUiColorMedium);
 
-    assert(current_color_picker_color);
+    assert(gCurrentColorPickerColor);
 
-    Vec4& c = *current_color_picker_color; // So much shorter to type out...
-    Vec2 cursor(COLOR_PICKER_XPAD, COLOR_PICKER_YPAD);
+    Vec4& color = *gCurrentColorPickerColor; // So much shorter to type out...
+    Vec2 cursor(gColorPickerXPad, gColorPickerYPad);
 
     SetPanelCursorDir(UI_DIR_RIGHT);
     SetPanelCursor(&cursor);
 
     // Draw the three R G B channel selectors/sliders.
-    Vec4 r_min(  0, c.g, c.b, 1);
-    Vec4 r_max(  1, c.g, c.b, 1);
-    Vec4 g_min(c.r,   0, c.b, 1);
-    Vec4 g_max(c.r,   1, c.b, 1);
-    Vec4 b_min(c.r, c.g,   0, 1);
-    Vec4 b_max(c.r, c.g,   1, 1);
+    Vec4 rMin(      0, color.g, color.b, 1);
+    Vec4 rMax(      1, color.g, color.b, 1);
+    Vec4 gMin(color.r,       0, color.b, 1);
+    Vec4 gMax(color.r,       1, color.b, 1);
+    Vec4 bMin(color.r, color.g,       0, 1);
+    Vec4 bMax(color.r, color.g,       1, 1);
 
-    internal__do_color_channel(cursor, r_min, r_max, c.r, Channel_Type::R);
-    internal__do_color_channel(cursor, g_min, g_max, c.g, Channel_Type::G);
-    internal__do_color_channel(cursor, b_min, b_max, c.b, Channel_Type::B);
+    Internal::DoColorChannel(cursor, rMin, rMax, color.r, ChannelType::R);
+    Internal::DoColorChannel(cursor, gMin, gMax, color.g, ChannelType::G);
+    Internal::DoColorChannel(cursor, bMin, bMax, color.b, ChannelType::B);
 
     // Draw the current color to showcase to the user.
-    internal__do_color_preview(cursor, c, COLOR_PICKER_SWATCH_LG);
-
+    Internal::DoColorPreview(cursor, color, gColorPickerSwatchLarge);
     // Draw box surrounding the saved swatches.
-    internal__do_swatch_panel(cursor);
-
+    Internal::DoSwatchPanel(cursor);
     // Draw the alpha/opacity text box section.
-    internal__do_alpha_channel(cursor, c);
+    Internal::DoAlphaChannel(cursor, color);
 
     EndPanel();
     EndPanel();
 }
 
-TEINAPI void cancel_color_picker ()
+TEINAPI void OkayColorPicker ()
 {
-    internal__cancel_color();
+    // Special checks for background and tile grid color because of the defaulting.
+    if (gCurrentColorPickerColor == &gEditorSettings.backgroundColor) gEditorSettings.backgroundColorDefaulted = false;
+    if (gCurrentColorPickerColor == &gEditorSettings.tileGridColor) gEditorSettings.tileGridColorDefaulted = false;
+    HideWindow("WINCOLOR");
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void handle_color_picker_events ()
+TEINAPI void CancelColorPicker ()
 {
-    color_picker_mouse_pressed = false;
+    assert(gCurrentColorPickerColor);
+    *gCurrentColorPickerColor = gCachedColorPickerColor;
+    HideWindow("WINCOLOR");
+}
+
+TEINAPI void HandleColorPickerEvents ()
+{
+    gColorPickerMousePressed = false;
 
     if (!IsWindowFocused("WINCOLOR")) return;
 
@@ -461,14 +434,14 @@ TEINAPI void handle_color_picker_events ()
         {
             if (main_event.button.button == SDL_BUTTON_LEFT)
             {
-                color_picker_mouse_pressed = true;
+                gColorPickerMousePressed = true;
             }
         } break;
         case (SDL_MOUSEBUTTONUP):
         {
             if (main_event.button.button == SDL_BUTTON_LEFT)
             {
-                color_picker_active_channel = Channel_Type::INVALID;
+                gColorPickerActiveChannel = ChannelType::INVALID;
             }
         } break;
         case (SDL_KEYDOWN):
@@ -477,38 +450,10 @@ TEINAPI void handle_color_picker_events ()
             {
                 switch (main_event.key.keysym.sym)
                 {
-                    case (SDLK_RETURN): internal__okay_color();   break;
-                    case (SDLK_ESCAPE): internal__cancel_color(); break;
+                    case (SDLK_RETURN): OkayColorPicker(); break;
+                    case (SDLK_ESCAPE): CancelColorPicker(); break;
                 }
             }
         } break;
     }
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

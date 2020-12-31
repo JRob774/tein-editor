@@ -694,7 +694,7 @@ TEINAPI bool BeginClickPanel (UiAction action, float w, float h, UiFlag flags, s
     // If we are currently hot then we push our info to the status bar.
     if (!locked && !info.empty() && Internal::IsHot())
     {
-        push_status_bar_message(info.c_str());
+        PushStatusBarMessage(info.c_str());
     }
 
     ++gUiCurrentID;
@@ -860,7 +860,7 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
             }
         }
         std::string infoText((kbInfo.empty()) ? info : FormatString("%s %s", kbInfo.c_str(), info.c_str()));
-        push_status_bar_message(infoText.c_str());
+        PushStatusBarMessage(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
     if (!locked && !name.empty() && Internal::IsHot())
@@ -957,7 +957,7 @@ TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std:
             }
         }
         std::string infoText((kbInfo.empty()) ? info : FormatString("%s %s", kbInfo.c_str(), info.c_str()));
-        push_status_bar_message(infoText.c_str());
+        PushStatusBarMessage(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
     if (!locked && !name.empty() && Internal::IsHot())
@@ -2238,7 +2238,7 @@ TEINAPI bool BeginClickPanelGradient (UiAction action, float w, float h, UiFlag 
     // If we are currently hot then we push our info to the status bar.
     if (!locked && !info.empty() && Internal::IsHot())
     {
-        push_status_bar_message(info.c_str());
+        PushStatusBarMessage(info.c_str());
     }
 
     ++gUiCurrentID;
@@ -2348,7 +2348,7 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
             }
         }
         std::string infoText((kbInfo.empty()) ? info : FormatString("%s %s", kbInfo.c_str(), info.c_str()));
-        push_status_bar_message(infoText.c_str());
+        PushStatusBarMessage(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
     if (!locked && !name.empty() && Internal::IsHot())

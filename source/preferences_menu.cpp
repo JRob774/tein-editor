@@ -197,10 +197,7 @@ TEINAPI void internal__end_settings_area ()
 TEINAPI void internal__do_settings_color_swatch (Vec2& cursor, float sw, float sh, Vec4& color)
 {
     // If we were presses we want to open the color picker with our color.
-    if (preferences_mouse_pressed && MouseInUiBoundsXYWH(cursor.x, cursor.y, sw, sh))
-    {
-        open_color_picker(&color);
-    }
+    if (preferences_mouse_pressed && MouseInUiBoundsXYWH(cursor.x, cursor.y, sw, sh)) OpenColorPicker(&color);
 
     cursor.y += 3;
     SetDrawColor(gUiColorLight);
@@ -702,7 +699,7 @@ TEINAPI void init_preferences_menu ()
     cached_editor_settings = gEditorSettings;
     cached_editor_hotkeys  = gKeyBindings;
 
-    color_picker_mouse_pressed = false;
+    gColorPickerMousePressed = false;
 }
 
 TEINAPI void do_preferences_menu ()
