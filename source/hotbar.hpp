@@ -20,4 +20,3 @@ TEINAPI void HotbarPreferences ();
 TEINAPI void HotbarAbout ();
 TEINAPI void HotbarBugReport ();
 TEINAPI void HotbarHelp ();
-TEINAPI void HotbarUpdate ();

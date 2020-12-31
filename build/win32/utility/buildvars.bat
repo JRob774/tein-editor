@@ -2,11 +2,7 @@
 
 @echo off
 
-set Libraries=                                                                    ^
-SDL2main.lib SDL2.lib freetype.lib libcurl.lib ws2_32.lib wldap32.lib crypt32.lib ^
-opengl32.lib dinput8.lib dxguid.lib user32.lib gdi32.lib winmm.lib imm32.lib      ^
-ole32.lib oleaut32.lib shell32.lib version.lib uuid.lib advapi32.lib setupapi.lib ^
-comdlg32.lib shlwapi.lib dbghelp.lib setargv.obj
+set Libraries=SDL2main.lib SDL2.lib freetype.lib opengl32.lib dinput8.lib dxguid.lib user32.lib gdi32.lib winmm.lib imm32.lib ole32.lib oleaut32.lib shell32.lib version.lib uuid.lib advapi32.lib setupapi.lib comdlg32.lib shlwapi.lib dbghelp.lib setargv.obj
 
 :: Select the build mode, options are: "Debug" and "Release"
 set BuildMode=Debug
@@ -16,8 +12,8 @@ set Architecture=amd64
 if %Architecture%==x86   ( set LibArch=x86 )
 if %Architecture%==amd64 ( set LibArch=x64 )
 
-set IncludeDirs=-I ..\source\depends\libcurl\include -I ..\source\depends\libfreetype\include -I ..\source\depends\libglad -I ..\source\depends\libglm -I ..\source\depends\libgon -I ..\source\depends\libjson -I ..\source\depends\libsdl2\include -I ..\source\depends\libstb
-set LibraryDirs=-libpath:..\source\depends\libcurl\library\%LibArch% -libpath:..\source\depends\libfreetype\library\%LibArch% -libpath:..\source\depends\libsdl2\library\%LibArch%
+set IncludeDirs= -I ..\source\depends\libfreetype\include -I ..\source\depends\libglad -I ..\source\depends\libglm -I ..\source\depends\libgon -I ..\source\depends\libsdl2\include -I ..\source\depends\libstb
+set LibraryDirs= -libpath:..\source\depends\libfreetype\library\%LibArch% -libpath:..\source\depends\libsdl2\library\%LibArch%
 
 set Defines=
 

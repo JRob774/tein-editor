@@ -104,7 +104,6 @@ TEINAPI void InitApplication (int argc, char** argv)
     if (!RegisterWindow("WINUNPACK", "Unpack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!"); return; }
     if (!RegisterWindow("WINPACK", "Pack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!"); return; }
     if (!RegisterWindow("WINPATH", "Locate Game", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"); return; }
-    if (!RegisterWindow("WINUPDATE", "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"); return; }
 
     GetWindowFromName("WINPREFERENCES").closeCallback = [](){ CancelPreferences(); };
     GetWindowFromName("WINCOLOR").closeCallback = [](){ CancelColorPicker(); };
@@ -114,7 +113,6 @@ TEINAPI void InitApplication (int argc, char** argv)
     GetWindowFromName("WINUNPACK").closeCallback = [](){ CancelUnpack(); };
     GetWindowFromName("WINPACK").closeCallback = [](){ CancelPack(); };
     GetWindowFromName("WINPATH").closeCallback = [](){ CancelPath(); };
-    GetWindowFromName("WINUPDATE").closeCallback = [](){ HideWindow("WINUPDATE"); };
     GetWindowFromName("WINMAIN").resizeCallback = [](){ DoApplication(); };
 
     SetWindowChild("WINPREFERENCES");
@@ -125,7 +123,6 @@ TEINAPI void InitApplication (int argc, char** argv)
     SetWindowChild("WINUNPACK");
     SetWindowChild("WINPACK");
     SetWindowChild("WINPATH");
-    SetWindowChild("WINUPDATE");
 
     if (!InitRenderer())
     {
@@ -157,8 +154,6 @@ TEINAPI void InitApplication (int argc, char** argv)
 
     InitEditor(argc, argv);
 
-    check_for_updates();
-
     // Now that setup has been complete we can show the complete window.
     // See the 'window.hpp' file for why we initially hide the window.
     //
@@ -170,11 +165,6 @@ TEINAPI void InitApplication (int argc, char** argv)
     // things end up being initialized/setup. This fixes the scrollbars
     // appearing in the control panel sub-panels when they are not needed.
     gShouldPushUiRedrawEvent = true;
-
-    // We don't do this in our debug builds because it will get annoying.
-    #if !defined(BUILD_DEBUG)
-    if (are_there_updates()) open_update_window_timed();
-    #endif // !BUILD_DEBUG
 
     EndDebugSection();
 
@@ -314,15 +304,6 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINUPDATE"))
-    {
-        SetRenderTarget(&GetWindowFromName("WINUPDATE"));
-        SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
-        RenderClear(gUiColorMedium);
-        do_update();
-        RenderPresent();
-    }
-
     // IMPORTANT: Otherwise the UI will not redraw very well!
     if (gShouldPushUiRedrawEvent)
     {
@@ -366,7 +347,6 @@ TEINAPI bool HandleApplicationEvents ()
         HandleTooltipEvents();
         HandleAboutEvents();
         HandlePathEvents();
-        handle_update_events();
     }
     while (SDL_PollEvent(&gMainEvent));
 

@@ -61,13 +61,8 @@
 #include <stb_image.h>
 #include <stb_rect_pack.h>
 
-#define CURL_STATICLIB
-#include <curl/curl.h>
-
 #include <gon.h>
 #include <gon.cpp>
-
-#include <nlohmann/json.hpp>
 
 #include <glad/glad.c>
 #include <glad/glad.h>
@@ -110,7 +105,6 @@
 #include "color_picker.hpp"
 #include "preferences_menu.hpp"
 #include "about.hpp"
-#include "update.hpp"
 #include "application.hpp"
 
 #include "utility.cpp"
@@ -151,7 +145,6 @@
 #include "color_picker.cpp"
 #include "preferences_menu.cpp"
 #include "about.cpp"
-#include "update.cpp"
 
 #if defined(BUILD_DEBUG)
 #include "utility/generate_atlas.hpp"

@@ -13,7 +13,6 @@ static constexpr const char* gHotbarNamePreferences = "Preferences";
 static constexpr const char* gHotbarNameAbout = "About";
 static constexpr const char* gHotbarNameHelp = "Help";
 static constexpr const char* gHotbarNameBugReport = "Bug Report";
-static constexpr const char* gHotbarNameUpdate = "Update";
 
 static constexpr const char* gHotbarInfoNew = "Create a new empty level.";
 static constexpr const char* gHotbarInfoLoad = "Load an existing level.";
@@ -30,7 +29,6 @@ static constexpr const char* gHotbarInfoPreferences = "Open the preferences menu
 static constexpr const char* gHotbarInfoAbout = "Open the about menu for application information.";
 static constexpr const char* gHotbarInfoBugReport  = "Report technical issues or bugs with the editor.";
 static constexpr const char* gHotbarInfoHelp = "Information and help about modding The End is Nigh.";
-static constexpr const char* gHotbarInfoUpdate = "There is a new update available for the editor.";
 
 TEINAPI void DoHotbar ()
 {
@@ -140,7 +138,6 @@ TEINAPI void DoHotbar ()
     width += CalculateTextButtonWidth(gHotbarNameAbout);
     width += CalculateTextButtonWidth(gHotbarNameBugReport);
     width += CalculateTextButtonWidth(gHotbarNameHelp);
-    width += (are_there_updates()) ? bw : 0;
 
     // Display text or icons depending on what we have room for.
     if (width < GetViewport().w)
@@ -178,13 +175,6 @@ TEINAPI void DoHotbar ()
         DoImageButton(HotbarAbout, bw,bh, UI_NONE, &gClipAbout, gHotbarInfoAbout, gKbAbout, gHotbarNameAbout);
         DoImageButton(HotbarBugReport, bw,bh, UI_NONE, &gClipBug, gHotbarInfoBugReport, gKbBugReport, gHotbarNameBugReport);
         DoImageButton(HotbarHelp, bw,bh, UI_NONE, &gClipHelp, gHotbarInfoHelp, gKbHelp, gHotbarNameHelp);
-    }
-
-    // Right-aligned update button.
-    if (are_there_updates())
-    {
-        cursor.x = GetViewport().w - (bw-1);
-        DoImageButton(HotbarUpdate, bw,bh, UI_NONE, &gClipUpdate, gHotbarInfoUpdate, "", gHotbarNameUpdate);
     }
 
     EndPanel();
@@ -414,9 +404,4 @@ TEINAPI void HotbarHelp ()
 TEINAPI void HotbarBugReport ()
 {
     LoadWebpage("https://itch.io/t/822898/bug-reports");
-}
-
-TEINAPI void HotbarUpdate ()
-{
-    open_update_window();
 }

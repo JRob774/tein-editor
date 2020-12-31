@@ -1,5 +1,6 @@
 Release v1.1.00 on ???, ???? ????
 ---------------------------------------------------------
+- Removed the update notification system, as it wasn't really necessary or useful compated to the amount of complexity it added to the program.
 - ...
 
 
