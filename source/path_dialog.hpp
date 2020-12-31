@@ -1,5 +1,3 @@
-#pragma once
-
 TEINAPI void OpenPath   ();
 TEINAPI void DoPath     ();
 TEINAPI void OkayPath   ();

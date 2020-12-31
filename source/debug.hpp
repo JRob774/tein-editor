@@ -1,5 +1,3 @@
-#pragma once
-
 #define LogDebug(format, ...) Internal::LogDebugMessage(format, __VA_ARGS__)
 
 // Used to handle indentation of debug messages to the log.

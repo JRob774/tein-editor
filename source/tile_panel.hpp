@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gTileImageSize = 64;
 
 enum TileCategory

@@ -1,5 +1,3 @@
-#pragma once
-
 typedef GLuint Shader;
 
 TEINAPI Shader LoadShaderFromSource (std::string              source);

@@ -1,5 +1,3 @@
-#pragma once
-
 enum class MatrixMode: GLenum { PROJECTION = GL_PROJECTION, MODELVIEW = GL_MODELVIEW };
 
 struct Texture;

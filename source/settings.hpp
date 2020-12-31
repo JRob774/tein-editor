@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr const char* gSettingsFileName = "settings_editor.txt";
 
 // The names for all of the user settings found in the user settings file.

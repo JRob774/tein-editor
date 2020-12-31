@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr int gAppVerMajor = 1;
 static constexpr int gAppVerMinor = 1;
 static constexpr int gAppVerPatch = 0;

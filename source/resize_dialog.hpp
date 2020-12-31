@@ -1,5 +1,3 @@
-#pragma once
-
 enum class ResizeDir { N, E, S, W, NE, SE, SW, NW, CENTER };
 
 TEINAPI void OpenResize (int levelWidth = -1, int levelHeight = -1);

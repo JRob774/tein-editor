@@ -1,5 +1,3 @@
-#pragma once
-
 enum TextureWrap: GLenum
 {
     TEXTURE_WRAP_REPEAT = GL_REPEAT,

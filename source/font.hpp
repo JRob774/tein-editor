@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gDefaultFontGlyphCacheSize = 1024;
 static constexpr int   gTotalGlyphCount           = 128;
 static constexpr int   gSmallFontPointSize        = 9;

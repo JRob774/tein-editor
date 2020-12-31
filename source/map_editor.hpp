@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gMapEditorTextCutOff = .5f;
 static constexpr float gMapEditorTextPad = 3;
 

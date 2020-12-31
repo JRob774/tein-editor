@@ -1,5 +1,3 @@
-#pragma once
-
 enum class Cursor { ARROW, BEAM, POINTER, BRUSH, FILL, SELECT, Total };
 
 TEINAPI bool LoadEditorCursors ();

@@ -1,5 +1,3 @@
-#pragma once
-
 // These colors are filled with the appropriate values based on whether the
 // user would prefer to use the dark or light theme for the level editor.
 

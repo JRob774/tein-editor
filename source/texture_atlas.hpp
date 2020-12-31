@@ -1,5 +1,3 @@
-#pragma once
-
 // @Improve: This is kind of weird and should probably be changed?
 // The offset in the atlas for the large tile clips.
 static constexpr S32 gAltOffset = 60000;

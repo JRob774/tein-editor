@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gHotbarHeight = 26;
 
 TEINAPI void DoHotbar ();

@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gStatusBarInnerPad = 6;
 static constexpr float gStatusBarHeight = 20;
 

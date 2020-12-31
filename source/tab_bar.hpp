@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gTabBarHeight = 25;
 
 TEINAPI void HandleTabBarEvents ();

@@ -1,5 +1,3 @@
-#pragma once
-
 TEINAPI void OpenNew ();
 TEINAPI void DoNew ();
 TEINAPI void CancelNew ();

@@ -1,5 +1,3 @@
-#pragma once
-
 enum class DialogType { LVL, CSV, LVL_CSV, GPAK, EXE };
 
 // Platform-agnostic open/save/path dialog operations.

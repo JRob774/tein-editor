@@ -1,5 +1,3 @@
-#pragma once
-
 #define PLATFORM_WIN32 1
 
 // We do not intend on using the secure CRT.

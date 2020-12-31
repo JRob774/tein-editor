@@ -1,5 +1,3 @@
-#pragma once
-
 // The GPAK system returns error codes as we don't want to call the error log
 // system on another thread. So the returned code tells us which error to log.
 enum class GPAKError

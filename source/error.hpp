@@ -1,5 +1,3 @@
-#pragma once
-
 #define LogError(...) Internal::LogErrorMessage(__FILE__, __LINE__, __VA_ARGS__)
 
 // Set this callback and it will be called during fatal exception termination.

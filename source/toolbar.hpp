@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gToolbarInnerPad = 1;
 static constexpr float gToolbarDefaultWidth = 30;
 

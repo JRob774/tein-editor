@@ -1,5 +1,3 @@
-#pragma once
-
 struct MapNode
 {
     int x,y;

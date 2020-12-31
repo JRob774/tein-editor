@@ -1,5 +1,3 @@
-#pragma once
-
 enum class BufferMode: GLenum
 {
     POINTS         = GL_POINTS,

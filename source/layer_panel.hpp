@@ -1,5 +1,3 @@
-#pragma once
-
 TEINAPI void InitLayerPanel ();
 TEINAPI void DoLayerPanel (bool scrollbar);
 

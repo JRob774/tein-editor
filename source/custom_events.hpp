@@ -1,5 +1,3 @@
-#pragma once
-
 enum EditorEvent: U32
 {
     EDITOR_EVENT_UI_REDRAW,

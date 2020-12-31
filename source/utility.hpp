@@ -1,5 +1,3 @@
-#pragma once
-
 // We use static linkage for faster compilation times as we use unity/jumbo build.
 #define TEINAPI static
 

@@ -1,5 +1,3 @@
-#pragma once
-
 // Various clips for the different icons that are found in resources_icons.
 
 static constexpr Quad gClipNone       = {   0,   0,  0,  0 };

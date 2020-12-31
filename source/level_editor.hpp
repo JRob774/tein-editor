@@ -1,5 +1,3 @@
-#pragma once
-
 enum class ToolState { IDLE, PLACE, ERASE };
 enum class ToolType { BRUSH, FILL, SELECT };
 

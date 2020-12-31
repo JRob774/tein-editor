@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr const char* gKeyBindingsFileName = "editor_settings.txt";
 
 // The names for all of the key bindings found in the user settings file.

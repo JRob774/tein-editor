@@ -1,5 +1,3 @@
-#pragma once
-
 //
 // GLOBAL WINDOW FUNCTIONALITY
 //

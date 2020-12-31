@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gDefaultLevelWidth  = 54;
 static constexpr float gDefaultLevelHeight = 32;
 static constexpr int   gMinimumLevelWidth  = 54;

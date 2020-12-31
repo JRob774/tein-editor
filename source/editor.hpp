@@ -1,5 +1,3 @@
-#pragma once
-
 static constexpr float gMinLevelEditorZoom = .25f;
 static constexpr float gMaxLevelEditorZoom = 4;
 
