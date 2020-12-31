@@ -190,9 +190,9 @@ TEINAPI bool InitWindow ()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 
     #if defined(BUILD_DEBUG)
-    std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #else
-    std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #endif // BUILD_DEBUG
 
     if (!RegisterWindow("WINMAIN", mainTitle, gMainWindowX,gMainWindowY,gMainWindowBaseW,gMainWindowBaseH,gMainWindowMinW,gMainWindowMinH,gMainWindowFlags))
@@ -224,12 +224,12 @@ TEINAPI void QuitWindow ()
 
 TEINAPI void HandleWindowEvents ()
 {
-    if (main_event.type != SDL_WINDOWEVENT) return;
+    if (gMainEvent.type != SDL_WINDOWEVENT) return;
 
-    std::string windowName = GetWindowNameFromID(main_event.window.windowID);
-    Window& window = GetWindowFromID(main_event.window.windowID);
+    std::string windowName = GetWindowNameFromID(gMainEvent.window.windowID);
+    Window& window = GetWindowFromID(gMainEvent.window.windowID);
 
-    switch (main_event.window.event)
+    switch (gMainEvent.window.event)
     {
         case (SDL_WINDOWEVENT_FOCUS_GAINED):
         {
@@ -302,9 +302,9 @@ TEINAPI void HandleWindowEvents ()
 TEINAPI void SetMainWindowSubtitle (std::string subtitle)
 {
     #if defined(BUILD_DEBUG)
-    std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #else
-    std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #endif // BUILD_DEBUG
 
     if (!subtitle.empty())

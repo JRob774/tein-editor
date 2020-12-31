@@ -67,14 +67,14 @@ namespace Internal
 
 TEINAPI void HandleTabBarEvents ()
 {
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_MOUSEWHEEL):
         {
             if (gCanScrollInTabBar)
             {
-                if (main_event.wheel.y > 0) IncrementTab();
-                if (main_event.wheel.y < 0) DecrementTab();
+                if (gMainEvent.wheel.y > 0) IncrementTab();
+                if (gMainEvent.wheel.y < 0) DecrementTab();
             }
         } break;
     }

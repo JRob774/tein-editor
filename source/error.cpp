@@ -77,7 +77,7 @@ namespace Internal
 
         if (level == ERR_MED) return;
 
-        main_running = false;
+        gMainRunning = false;
 
         if (gErrorMaximumCallback)
         {

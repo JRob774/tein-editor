@@ -772,11 +772,11 @@ TEINAPI void HandlePreferencesMenuEvents ()
 
     if (!IsWindowFocused("WINPREFERENCES")) return;
 
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_MOUSEBUTTONDOWN):
         {
-            if (main_event.button.button == SDL_BUTTON_LEFT)
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
             {
                 gPreferencesMousePressed = true;
             }
@@ -785,7 +785,7 @@ TEINAPI void HandlePreferencesMenuEvents ()
         {
             if (!TextBoxIsActive() && !HotkeyIsActive())
             {
-                switch (main_event.key.keysym.sym)
+                switch (gMainEvent.key.keysym.sym)
                 {
                     case (SDLK_RETURN): SavePreferences(); break;
                     case (SDLK_ESCAPE): CancelPreferences(); break;

@@ -1,74 +1,58 @@
-/*******************************************************************************
- * Main application initalization/termination and main execution loop.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void internal__dump_debug_application_info ()
+namespace Internal
 {
-    int num_display_modes = SDL_GetNumVideoDisplays();
-    int num_video_drivers = SDL_GetNumVideoDrivers();
+    TEINAPI void DumpDebugApplicationInfo ()
+    {
+        int numDisplayModes = SDL_GetNumVideoDisplays();
+        int numVideoDrivers = SDL_GetNumVideoDrivers();
 
-    LogDebug("Platform: %s", SDL_GetPlatform());
-    if (num_display_modes > 0)
-    {
-        BeginDebugSection("Displays:");
-        for (int i=0; i<num_display_modes; ++i)
+        LogDebug("Platform: %s", SDL_GetPlatform());
+        if (numDisplayModes > 0)
         {
-            SDL_DisplayMode display_mode = {};
-            if (SDL_GetCurrentDisplayMode(i, &display_mode) == 0)
+            BeginDebugSection("Displays:");
+            for (int i=0; i<numDisplayModes; ++i)
             {
-                const char* name = SDL_GetDisplayName(i);
-                int w            = display_mode.w;
-                int h            = display_mode.h;
-                int hz           = display_mode.refresh_rate;
-                LogDebug("(%d) %s %dx%d %dHz", i, name, w, h, hz);
+                SDL_DisplayMode displayMode = {};
+                if (SDL_GetCurrentDisplayMode(i, &displayMode) == 0)
+                {
+                    const char* name = SDL_GetDisplayName(i);
+                    int w = displayMode.w;
+                    int h = displayMode.h;
+                    int hz = displayMode.refresh_rate;
+                    LogDebug("(%d) %s %dx%d %dHz", i, name, w,h, hz);
+                }
             }
+            EndDebugSection();
         }
-        EndDebugSection();
-    }
-    if (num_video_drivers > 0)
-    {
-        BeginDebugSection("Drivers:");
-        for (int i=0; i<num_video_drivers; ++i)
+        if (numVideoDrivers > 0)
         {
-            const char* name = SDL_GetVideoDriver(i);
-            LogDebug("(%d) %s", i, name);
+            BeginDebugSection("Drivers:");
+            for (int i=0; i<numVideoDrivers; ++i)
+            {
+                const char* name = SDL_GetVideoDriver(i);
+                LogDebug("(%d) %s", i, name);
+            }
+            EndDebugSection();
         }
-        EndDebugSection();
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void init_application (int argc, char** argv)
+TEINAPI void InitApplication (int argc, char** argv)
 {
-    BeginDebugTimer("init_application");
+    BeginDebugTimer("InitApplication");
 
     // We set this here at program start so any fatal calls to LogError can
     // set this to false and we will never enter the main application loop.
-    main_running = true;
+    gMainRunning = true;
 
     GetResourceLocation();
 
     BeginDebugSection("Editor:");
-    LogDebug("Version %d.%d.%d", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH);
+    LogDebug("Version %d.%d.%d", gAppVerMajor,gAppVerMinor,gAppVerPatch);
     #if defined(BUILD_DEBUG)
     LogDebug("Build: Debug");
     #else
     LogDebug("Build: Release");
-    #endif
-    #if defined(ARCHITECTURE_32BIT)
-    LogDebug("Architecture: x86");
-    #endif
-    #if defined(ARCHITECTURE_64BIT)
-    LogDebug("Architecture: x64");
-    #endif
+    #endif // BUILD_DEBUG
     EndDebugSection();
 
     BeginDebugSection("Initialization:");
@@ -79,8 +63,8 @@ TEINAPI void init_application (int argc, char** argv)
         return;
     }
 
-    U32 sdl_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
-    if (SDL_Init(sdl_flags) != 0)
+    U32 sdlFLags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
+    if (SDL_Init(sdlFLags) != 0)
     {
         LogError(ERR_MAX, "Failed to initialize SDL! (%s)", SDL_GetError());
         return;
@@ -94,32 +78,44 @@ TEINAPI void init_application (int argc, char** argv)
     }
     else LogDebug("Initialized FreeType2 Library");
 
-    internal__dump_debug_application_info();
+    Internal::DumpDebugApplicationInfo();
 
-    if (!InitResourceManager()) { LogError(ERR_MAX, "Failed to setup the resource manager!"); return; }
-    if (!InitUiSystem       ()) { LogError(ERR_MAX, "Failed to setup the UI system!"       ); return; }
-    if (!InitWindow         ()) { LogError(ERR_MAX, "Failed to setup the window system!"   ); return; }
+    if (!InitResourceManager())
+    {
+        LogError(ERR_MAX, "Failed to setup the resource manager!");
+        return;
+    }
+    if (!InitUiSystem())
+    {
+        LogError(ERR_MAX, "Failed to setup the UI system!");
+        return;
+    }
+    if (!InitWindow())
+    {
+        LogError(ERR_MAX, "Failed to setup the window system!");
+        return;
+    }
 
-    if (!RegisterWindow("WINPREFERENCES", "Preferences"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!" ); return; }
-    if (!RegisterWindow("WINCOLOR"      , "Color Picker"    , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create color picker window!"); return; }
-    if (!RegisterWindow("WINNEW"        , "New"             , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create new window!"         ); return; }
-    if (!RegisterWindow("WINRESIZE"     , "Resize"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create resize window!"      ); return; }
-    if (!RegisterWindow("WINABOUT"      , "About"           , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440, 96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create about window!"       ); return; }
-    if (!RegisterWindow("WINUNPACK"     , "Unpack"          , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
-    if (!RegisterWindow("WINPACK"       , "Pack"            , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360, 80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!" ); return; }
-    if (!RegisterWindow("WINPATH"       , "Locate Game"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"        ); return; }
-    if (!RegisterWindow("WINUPDATE"     , "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"      ); return; }
+    if (!RegisterWindow("WINPREFERENCES", "Preferences", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!"); return; }
+    if (!RegisterWindow("WINCOLOR", "Color Picker", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create color picker window!"); return; }
+    if (!RegisterWindow("WINNEW", "New", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create new window!"); return; }
+    if (!RegisterWindow("WINRESIZE", "Resize", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create resize window!"); return; }
+    if (!RegisterWindow("WINABOUT", "About", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create about window!"); return; }
+    if (!RegisterWindow("WINUNPACK", "Unpack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!"); return; }
+    if (!RegisterWindow("WINPACK", "Pack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!"); return; }
+    if (!RegisterWindow("WINPATH", "Locate Game", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"); return; }
+    if (!RegisterWindow("WINUPDATE", "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"); return; }
 
-    GetWindowFromName("WINPREFERENCES"). closeCallback = []() { CancelPreferences    (); };
-    GetWindowFromName("WINCOLOR"      ). closeCallback = []() { CancelColorPicker    (); };
-    GetWindowFromName("WINNEW"        ). closeCallback = []() { CancelNew            (); };
-    GetWindowFromName("WINRESIZE"     ). closeCallback = []() { CancelResize         (); };
-    GetWindowFromName("WINABOUT"      ). closeCallback = []() { HideWindow("WINABOUT" ); };
-    GetWindowFromName("WINUNPACK"     ). closeCallback = []() { CancelUnpack         (); };
-    GetWindowFromName("WINPACK"       ). closeCallback = []() { CancelPack           (); };
-    GetWindowFromName("WINPATH"       ). closeCallback = []() { CancelPath           (); };
-    GetWindowFromName("WINUPDATE"     ). closeCallback = []() { HideWindow("WINUPDATE"); };
-    GetWindowFromName("WINMAIN"       ).resizeCallback = []() { do_application       (); };
+    GetWindowFromName("WINPREFERENCES").closeCallback = [](){ CancelPreferences(); };
+    GetWindowFromName("WINCOLOR").closeCallback = [](){ CancelColorPicker(); };
+    GetWindowFromName("WINNEW").closeCallback = [](){ CancelNew(); };
+    GetWindowFromName("WINRESIZE").closeCallback = [](){ CancelResize(); };
+    GetWindowFromName("WINABOUT").closeCallback = [](){ HideWindow("WINABOUT"); };
+    GetWindowFromName("WINUNPACK").closeCallback = [](){ CancelUnpack(); };
+    GetWindowFromName("WINPACK").closeCallback = [](){ CancelPack(); };
+    GetWindowFromName("WINPATH").closeCallback = [](){ CancelPath(); };
+    GetWindowFromName("WINUPDATE").closeCallback = [](){ HideWindow("WINUPDATE"); };
+    GetWindowFromName("WINMAIN").resizeCallback = [](){ DoApplication(); };
 
     SetWindowChild("WINPREFERENCES");
     SetWindowChild("WINCOLOR");
@@ -131,11 +127,29 @@ TEINAPI void init_application (int argc, char** argv)
     SetWindowChild("WINPATH");
     SetWindowChild("WINUPDATE");
 
-    if (!InitRenderer         ()) { LogError(ERR_MAX, "Failed to setup the renderer!"      ); return; }
-    if (!LoadEditorSettings   ()) { LogError(ERR_MED, "Failed to load editor settings!"    );         }
-    if (!LoadEditorKeyBindings()) { LogError(ERR_MED, "Failed to load editor key bindings!");         }
-    if (!LoadEditorResources  ()) { LogError(ERR_MAX, "Failed to load editor resources!"   ); return; }
-    if (!InitTilePanel        ()) { LogError(ERR_MAX, "Failed to setup the tile panel!"    ); return; }
+    if (!InitRenderer())
+    {
+        LogError(ERR_MAX, "Failed to setup the renderer!");
+        return;
+    }
+    if (!LoadEditorSettings ())
+    {
+        LogError(ERR_MED, "Failed to load editor settings!");
+    }
+    if (!LoadEditorKeyBindings())
+    {
+        LogError(ERR_MED, "Failed to load editor key bindings!");
+    }
+    if (!LoadEditorResources())
+    {
+        LogError(ERR_MAX, "Failed to load editor resources!");
+        return;
+    }
+    if (!InitTilePanel())
+    {
+        LogError(ERR_MAX, "Failed to setup the tile panel!");
+        return;
+    }
 
     InitLayerPanel();
     InitColorPicker();
@@ -150,7 +164,7 @@ TEINAPI void init_application (int argc, char** argv)
     //
     // We don't bother showing if any of the setup functions resulted in
     // a fatal failure as it would look ugly to briefly flash the window.
-    if (main_running) ShowMainWindow();
+    if (gMainRunning) ShowMainWindow();
 
     // We do this so we do an extra redraw on start-up making sure certain
     // things end up being initialized/setup. This fixes the scrollbars
@@ -168,9 +182,9 @@ TEINAPI void init_application (int argc, char** argv)
     DumpDebugTimerResult();
 }
 
-TEINAPI void quit_application ()
+TEINAPI void QuitApplication ()
 {
-    LogDebug("quit_application()");
+    LogDebug("QuitApplication");
 
     QuitEditor();
 
@@ -187,9 +201,7 @@ TEINAPI void quit_application ()
     SDL_Quit();
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI void do_application ()
+TEINAPI void DoApplication ()
 {
     ClearDebugTimerResult();
     Defer { DumpDebugTimerResult(); };
@@ -210,9 +222,9 @@ TEINAPI void do_application ()
 
     DoHotbar();
 
-    p2.x =                          1;
-    p2.y = gHotbarHeight          + 1;
-    p2.w = GetViewport().w        - 2;
+    p2.x = 1;
+    p2.y = gHotbarHeight + 1;
+    p2.w = GetViewport().w - 2;
     p2.h = GetViewport().h - p2.y - 1;
 
     BeginPanel(p2, UI_NONE);
@@ -319,12 +331,10 @@ TEINAPI void do_application ()
     }
 }
 
-/* -------------------------------------------------------------------------- */
-
-TEINAPI bool handle_application_events ()
+TEINAPI bool HandleApplicationEvents ()
 {
     // We wait for events so we don't waste CPU and GPU power.
-    if (!SDL_WaitEvent(&main_event))
+    if (!SDL_WaitEvent(&gMainEvent))
     {
         LogError(ERR_MED, "Error waiting for events! (%s)", SDL_GetError());
         return false;
@@ -336,10 +346,7 @@ TEINAPI bool handle_application_events ()
     // multiple events that may have occurred on the same frame.
     do
     {
-        if (main_event.type == SDL_QUIT)
-        {
-            main_running = false;
-        }
+        if (gMainEvent.type == SDL_QUIT) gMainRunning = false;
 
         #if defined(BUILD_DEBUG)
         generate_texture_atlases();
@@ -361,35 +368,7 @@ TEINAPI bool handle_application_events ()
         HandlePathEvents();
         handle_update_events();
     }
-    while (SDL_PollEvent(&main_event));
+    while (SDL_PollEvent(&gMainEvent));
 
     return true;
 }
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
-
-/*******************************************************************************
- *
- * Copyright (c) 2020 Joshua Robertson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
-*******************************************************************************/

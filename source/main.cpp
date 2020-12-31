@@ -2,16 +2,16 @@
 
 int main (int argc, char** argv)
 {
-    gErrorTerminateCallback = quit_application;
+    gErrorTerminateCallback = QuitApplication;
     gErrorMaximumCallback = SaveRestoreFiles;
 
     // We defer so that this always gets scalled on scope exit no matter what.
-    Defer { quit_application(); };
+    Defer { QuitApplication(); };
 
-    init_application(argc, argv);
-    while (main_running && handle_application_events())
+    InitApplication(argc, argv);
+    while (gMainRunning && HandleApplicationEvents())
     {
-        do_application();
+        DoApplication();
     }
 
     return 0;

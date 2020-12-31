@@ -625,13 +625,13 @@ TEINAPI void HandleMapEditorEvents ()
     bool justSelected = false;
     bool doNotSetSelect = false;
 
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_MOUSEBUTTONDOWN):
         {
             if (Internal::MouseInsideMapEditorViewport())
             {
-                if (main_event.button.button == SDL_BUTTON_LEFT)
+                if (gMainEvent.button.button == SDL_BUTTON_LEFT)
                 {
                     Internal::DeselectActiveNode();
                     tab.mapNodeInfo.pressedNodePos = Internal::MouseToNodePositionInt();
@@ -646,7 +646,7 @@ TEINAPI void HandleMapEditorEvents ()
         {
             if (Internal::MouseInsideMapEditorViewport())
             {
-                if (main_event.button.button == SDL_BUTTON_LEFT)
+                if (gMainEvent.button.button == SDL_BUTTON_LEFT)
                 {
                     if (gMapEditor.pressed && (tab.mapNodeInfo.pressedNodePos == Internal::MouseToNodePositionInt()))
                     {
@@ -672,7 +672,7 @@ TEINAPI void HandleMapEditorEvents ()
                         justSelected = true;
                     }
                 }
-                else if (main_event.button.button == SDL_BUTTON_RIGHT)
+                else if (gMainEvent.button.button == SDL_BUTTON_RIGHT)
                 {
                     if (gMapEditor.pressed)
                     {
@@ -684,7 +684,7 @@ TEINAPI void HandleMapEditorEvents ()
                 }
             }
             gMapEditor.pressed = false;
-            if (main_event.button.button == SDL_BUTTON_LEFT)
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
             {
                 gMapEditor.leftPressed = false;
             }
@@ -709,19 +709,19 @@ TEINAPI void HandleMapEditorEvents ()
                     size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                     tab.mapNodeInfo.active->lvl.erase(begin, end-begin);
                     tab.mapNodeInfo.cursor = begin;
-                    for (size_t i=0; i<strlen(main_event.text.text); ++i)
+                    for (size_t i=0; i<strlen(gMainEvent.text.text); ++i)
                     {
                         auto pos = tab.mapNodeInfo.active->lvl.begin()+(tab.mapNodeInfo.cursor++);
-                        tab.mapNodeInfo.active->lvl.insert(pos, main_event.text.text[i]);
+                        tab.mapNodeInfo.active->lvl.insert(pos, gMainEvent.text.text[i]);
                     }
                     tab.mapNodeInfo.select = tab.mapNodeInfo.cursor;
                 }
                 else
                 {
-                    for (size_t i=0; i<strlen(main_event.text.text); ++i)
+                    for (size_t i=0; i<strlen(gMainEvent.text.text); ++i)
                     {
                         auto pos = tab.mapNodeInfo.active->lvl.begin()+(tab.mapNodeInfo.cursor++);
-                        tab.mapNodeInfo.active->lvl.insert(pos, main_event.text.text[i]);
+                        tab.mapNodeInfo.active->lvl.insert(pos, gMainEvent.text.text[i]);
                     }
                 }
             }
@@ -733,7 +733,7 @@ TEINAPI void HandleMapEditorEvents ()
                 bool shift = (SDL_GetModState() & KMOD_SHIFT);
                 bool ctrl = (SDL_GetModState() & KMOD_CTRL);
 
-                switch (main_event.key.keysym.sym)
+                switch (gMainEvent.key.keysym.sym)
                 {
                     case (SDLK_LEFT):
                     {
@@ -912,7 +912,7 @@ TEINAPI void HandleMapEditorEvents ()
         {
             if (tab.mapNodeInfo.active)
             {
-                if (main_event.key.keysym.sym == SDLK_LSHIFT || main_event.key.keysym.sym == SDLK_RSHIFT)
+                if (gMainEvent.key.keysym.sym == SDLK_LSHIFT || gMainEvent.key.keysym.sym == SDLK_RSHIFT)
                 {
                     tab.mapNodeInfo.selecting = false;
                 }
@@ -920,7 +920,7 @@ TEINAPI void HandleMapEditorEvents ()
         } break;
         case (SDL_USEREVENT):
         {
-            if (main_event.user.code == EDITOR_EVENT_BLINK_CURSOR)
+            if (gMainEvent.user.code == EDITOR_EVENT_BLINK_CURSOR)
             {
                 gMapEditor.cursorVisible = !gMapEditor.cursorVisible;
             }

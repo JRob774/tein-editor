@@ -348,7 +348,7 @@ TEINAPI void HandleKeyBindingEvents ()
     if (!TextBoxIsActive() || IsWindowFocused("WINMAIN"))
     {
         // We only care about key press events, anything else is ignored.
-        if (main_event.type == SDL_KEYDOWN)
+        if (gMainEvent.type == SDL_KEYDOWN)
         {
             for (auto [name,kb]: gKeyBindings)
             {

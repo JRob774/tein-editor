@@ -428,18 +428,18 @@ TEINAPI void HandleColorPickerEvents ()
     if (!IsWindowFocused("WINCOLOR")) return;
 
     // Determine if the mouse was pressed this update/cycle.
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_MOUSEBUTTONDOWN):
         {
-            if (main_event.button.button == SDL_BUTTON_LEFT)
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
             {
                 gColorPickerMousePressed = true;
             }
         } break;
         case (SDL_MOUSEBUTTONUP):
         {
-            if (main_event.button.button == SDL_BUTTON_LEFT)
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
             {
                 gColorPickerActiveChannel = ChannelType::INVALID;
             }
@@ -448,7 +448,7 @@ TEINAPI void HandleColorPickerEvents ()
         {
             if (!TextBoxIsActive())
             {
-                switch (main_event.key.keysym.sym)
+                switch (gMainEvent.key.keysym.sym)
                 {
                     case (SDLK_RETURN): OkayColorPicker(); break;
                     case (SDLK_ESCAPE): CancelColorPicker(); break;

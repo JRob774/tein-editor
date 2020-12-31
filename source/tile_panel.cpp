@@ -343,14 +343,14 @@ TEINAPI void HandleTilePanelEvents ()
         {
             if (IsWindowFocused("WINMAIN"))
             {
-                switch (main_event.type)
+                switch (gMainEvent.type)
                 {
                     case (SDL_MOUSEBUTTONDOWN):
                     case (SDL_MOUSEBUTTONUP):
                     {
-                        if (main_event.button.button == SDL_BUTTON_LEFT)
+                        if (gMainEvent.button.button == SDL_BUTTON_LEFT)
                         {
-                            gTilePanel.mouseDown = (main_event.button.state == SDL_PRESSED);
+                            gTilePanel.mouseDown = (gMainEvent.button.state == SDL_PRESSED);
                         }
                     } break;
                     case (SDL_MOUSEWHEEL):
@@ -359,18 +359,18 @@ TEINAPI void HandleTilePanelEvents ()
                         {
                             if (IsKeyModStateActive(0))
                             {
-                                if (main_event.wheel.y > 0) IncrementSelectedTile();
-                                else if (main_event.wheel.y < 0) DecrementSelectedTile();
+                                if (gMainEvent.wheel.y > 0) IncrementSelectedTile();
+                                else if (gMainEvent.wheel.y < 0) DecrementSelectedTile();
                             }
                             else if (IsKeyModStateActive(KMOD_ALT))
                             {
-                                if (main_event.wheel.y > 0) IncrementSelectedGroup();
-                                else if (main_event.wheel.y < 0) DecrementSelectedGroup();
+                                if (gMainEvent.wheel.y > 0) IncrementSelectedGroup();
+                                else if (gMainEvent.wheel.y < 0) DecrementSelectedGroup();
                             }
                             else if (IsKeyModStateActive(KMOD_ALT|KMOD_SHIFT))
                             {
-                                if (main_event.wheel.y > 0) IncrementSelectedCategory();
-                                else if (main_event.wheel.y < 0) DecrementSelectedCategory();
+                                if (gMainEvent.wheel.y > 0) IncrementSelectedCategory();
+                                else if (gMainEvent.wheel.y < 0) DecrementSelectedCategory();
                             }
                         }
                     } break;

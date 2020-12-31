@@ -23,9 +23,9 @@ TEINAPI void DoAbout ()
     float lh = 18;
 
     constexpr const char* Changelog = "https://github.com/thatb0y/tein-editor/blob/master/CHANGES.md";
-    std::string changelogURL(FormatString("%s#v%d.%d.%d", Changelog, APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string changelogURL(FormatString("%s#v%d.%d.%d", Changelog, gAppVerMajor,gAppVerMinor,gAppVerPatch));
 
-    DoLabelHyperlink(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, FormatString("The End is Nigh Editor (v%d.%d.%d) %s Build ", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH, build), "(Changelog)", changelogURL);
+    DoLabelHyperlink(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, FormatString("The End is Nigh Editor (v%d.%d.%d) %s Build ", gAppVerMajor,gAppVerMinor,gAppVerPatch, build), "(Changelog)", changelogURL);
     DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Copyright (C) 2020 Joshua Robertson");
     AdvancePanelCursor(lh/2);
     DoLabelHyperlink(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw,lh, "Flame icon made by Those Icons from ", "Flaticon", "https://www.flaticon.com/");
@@ -39,9 +39,9 @@ TEINAPI void HandleAboutEvents ()
 {
     if (!IsWindowFocused("WINABOUT")) return;
 
-    if (main_event.type == SDL_KEYDOWN)
+    if (gMainEvent.type == SDL_KEYDOWN)
     {
-        if (main_event.key.keysym.sym == SDLK_ESCAPE || main_event.key.keysym.sym == SDLK_RETURN)
+        if (gMainEvent.key.keysym.sym == SDLK_ESCAPE || gMainEvent.key.keysym.sym == SDLK_RETURN)
         {
             HideWindow("WINABOUT");
         }

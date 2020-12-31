@@ -436,23 +436,23 @@ TEINAPI void HandleUiEvents ()
     bool prevDown = gUiMouseLeftDown;
     bool prevUp = gUiMouseLeftUp;
 
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_MOUSEBUTTONDOWN):
         {
-            if (main_event.button.button == SDL_BUTTON_LEFT) gUiMouseLeftDown = true;
-            else if (main_event.button.button == SDL_BUTTON_RIGHT) gUiMouseRightDown = true;
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT) gUiMouseLeftDown = true;
+            else if (gMainEvent.button.button == SDL_BUTTON_RIGHT) gUiMouseRightDown = true;
         } break;
         case (SDL_MOUSEBUTTONUP):
         {
-            if (main_event.button.button == SDL_BUTTON_LEFT) gUiMouseLeftUp = true;
-            else if (main_event.button.button == SDL_BUTTON_RIGHT) gUiMouseRightUp = true;
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT) gUiMouseLeftUp = true;
+            else if (gMainEvent.button.button == SDL_BUTTON_RIGHT) gUiMouseRightUp = true;
         } break;
         case (SDL_WINDOWEVENT):
         {
             // When focus changes to a new window then the current text box should be deselected.
             // We also do not want the current hit and hot IDs to persist to the new window.
-            if (main_event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+            if (gMainEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
             {
                 DeselectActiveTextBox();
                 DeselectActiveHotkeyRebind();
@@ -463,7 +463,7 @@ TEINAPI void HandleUiEvents ()
         } break;
         case (SDL_USEREVENT):
         {
-            if (main_event.user.code == EDITOR_EVENT_BLINK_CURSOR)
+            if (gMainEvent.user.code == EDITOR_EVENT_BLINK_CURSOR)
             {
                 gUiCursorVisible = !gUiCursorVisible;
             }
@@ -474,28 +474,28 @@ TEINAPI void HandleUiEvents ()
     if (gUiActiveTextBox != gUiInvalidID)
     {
         UiTextEvent textEvent;
-        switch (main_event.type)
+        switch (gMainEvent.type)
         {
             case (SDL_TEXTINPUT):
             {
                 textEvent.type = UiTextEventType::TEXT;
-                textEvent.text = main_event.text.text;
+                textEvent.text = gMainEvent.text.text;
                 gUiTextEvents.push_back(textEvent);
             } break;
             case (SDL_KEYDOWN):
             {
                 textEvent.type = UiTextEventType::KEY;
-                textEvent.key = main_event.key.keysym.sym;
+                textEvent.key = gMainEvent.key.keysym.sym;
                 gUiTextEvents.push_back(textEvent);
             } break;
         }
     }
     else
     {
-        if (main_event.type == SDL_KEYDOWN)
+        if (gMainEvent.type == SDL_KEYDOWN)
         {
             // We do this so we can focus on the first text box in the window!
-            if (main_event.key.keysym.sym == SDLK_TAB)
+            if (gMainEvent.key.keysym.sym == SDLK_TAB)
             {
                 gUiMakeNextTextBoxActive = true;
                 gUiTextBoxTabWindowID = GetFocusedWindow().id;
@@ -1749,9 +1749,9 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
     // If we're active then we check if the user has entered a new binding.
     if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
-        if (main_event.type == SDL_KEYDOWN)
+        if (gMainEvent.type == SDL_KEYDOWN)
         {
-            SDL_Keycode k = main_event.key.keysym.sym;
+            SDL_Keycode k = gMainEvent.key.keysym.sym;
             // We do not want the key binding to be set when just the mod is pressed!
             if (k != SDLK_LCTRL  && k != SDLK_RCTRL  &&
                 k != SDLK_LALT   && k != SDLK_RALT   &&
@@ -1759,7 +1759,7 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
                 k != SDLK_RSHIFT && k != SDLK_LSHIFT &&
                 k != SDLK_LGUI   && k != SDLK_RGUI)
             {
-                kb.code = main_event.key.keysym.sym;
+                kb.code = gMainEvent.key.keysym.sym;
 
                 // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
                 kb.mod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));
@@ -1880,9 +1880,9 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
     // If we're active then we check if the user has entered a new binding.
     if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
-        if (main_event.type == SDL_KEYDOWN)
+        if (gMainEvent.type == SDL_KEYDOWN)
         {
-            SDL_Keycode k = main_event.key.keysym.sym;
+            SDL_Keycode k = gMainEvent.key.keysym.sym;
             // We do not want the key binding to be set when just the mod is pressed!
             if (k != SDLK_LCTRL  && k != SDLK_RCTRL  &&
                 k != SDLK_LALT   && k != SDLK_RALT   &&
@@ -1890,7 +1890,7 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
                 k != SDLK_RSHIFT && k != SDLK_LSHIFT &&
                 k != SDLK_LGUI   && k != SDLK_RGUI)
             {
-                kb.altCode = main_event.key.keysym.sym;
+                kb.altCode = gMainEvent.key.keysym.sym;
 
                 // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
                 kb.altMod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS));

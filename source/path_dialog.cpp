@@ -125,9 +125,9 @@ TEINAPI void HandlePathEvents ()
 
     if (!TextBoxIsActive())
     {
-        if (main_event.type == SDL_KEYDOWN)
+        if (gMainEvent.type == SDL_KEYDOWN)
         {
-            switch (main_event.key.keysym.sym)
+            switch (gMainEvent.key.keysym.sym)
             {
                 case (SDLK_RETURN): OkayPath(); break;
                 case (SDLK_ESCAPE): CancelPath(); break;

@@ -165,9 +165,9 @@ TEINAPI void HandleNewEvents ()
     {
         if (!TextBoxIsActive())
         {
-            if (main_event.type == SDL_KEYDOWN)
+            if (gMainEvent.type == SDL_KEYDOWN)
             {
-                switch (main_event.key.keysym.sym)
+                switch (gMainEvent.key.keysym.sym)
                 {
                     case (SDLK_RETURN): Internal::OkayNew(); break;
                     case (SDLK_ESCAPE): CancelNew(); break;

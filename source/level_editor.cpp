@@ -1269,7 +1269,7 @@ TEINAPI void HandleLevelEditorEvents ()
         return;
     }
 
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_MOUSEBUTTONDOWN):
         case (SDL_MOUSEBUTTONUP):
@@ -1277,10 +1277,10 @@ TEINAPI void HandleLevelEditorEvents ()
             // Do not handle these events whilst we are cooling down!
             if (gEditor.dialogBox) return;
 
-            bool pressed = (main_event.button.state == SDL_PRESSED);
+            bool pressed = (gMainEvent.button.state == SDL_PRESSED);
             if (pressed && IsThereAHitUiElement()) return;
 
-            switch (main_event.button.button)
+            switch (gMainEvent.button.button)
             {
                 case (SDL_BUTTON_LEFT):
                 {
@@ -1347,8 +1347,8 @@ TEINAPI void HandleLevelEditorEvents ()
         case (SDL_KEYDOWN):
         case (SDL_KEYUP):
         {
-            bool pressed = main_event.key.state;
-            switch (main_event.key.keysym.sym)
+            bool pressed = gMainEvent.key.state;
+            switch (gMainEvent.key.keysym.sym)
             {
                 // Handle toggling the select box addition mode using the CTRL key.
                 case (SDLK_RCTRL): case (SDLK_LCTRL): tab->toolInfo.select.add = pressed; break;

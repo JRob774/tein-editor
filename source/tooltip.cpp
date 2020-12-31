@@ -126,9 +126,9 @@ TEINAPI void HandleTooltipEvents ()
 {
     gTooltipSetThisUpdate = false;
 
-    if (main_event.type == SDL_USEREVENT)
+    if (gMainEvent.type == SDL_USEREVENT)
     {
-        if (main_event.user.code == EDITOR_EVENT_SHOW_TOOLTIP)
+        if (gMainEvent.user.code == EDITOR_EVENT_SHOW_TOOLTIP)
         {
             gTooltipVisible = true;
         }

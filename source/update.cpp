@@ -97,7 +97,7 @@ TEINAPI void check_for_updates ()
 
     update_json = nlohmann::json::parse(*http_data.get());
 
-    std::string current_version(FormatString("v%d.%d.%d", APP_VER_MAJOR,APP_VER_MINOR,APP_VER_PATCH));
+    std::string current_version(FormatString("v%d.%d.%d", gAppVerMajor,gAppVerMinor,gAppVerPatch));
     std::string latest_version(current_version);
     if (update_json.find("tag_name") != update_json.end())
     {
@@ -258,9 +258,9 @@ TEINAPI void do_update ()
 
 TEINAPI void handle_update_events ()
 {
-    if (main_event.type == SDL_USEREVENT)
+    if (gMainEvent.type == SDL_USEREVENT)
     {
-        if (main_event.user.code == EDITOR_EVENT_SHOW_UPDATE)
+        if (gMainEvent.user.code == EDITOR_EVENT_SHOW_UPDATE)
         {
             open_update_window();
         }
@@ -268,13 +268,13 @@ TEINAPI void handle_update_events ()
 
     if (!IsWindowFocused("WINUPDATE")) return;
 
-    if (main_event.type == SDL_KEYDOWN)
+    if (gMainEvent.type == SDL_KEYDOWN)
     {
-        if (main_event.key.keysym.sym == SDLK_RETURN)
+        if (gMainEvent.key.keysym.sym == SDLK_RETURN)
         {
             internal__update_dialog_update();
         }
-        else if (main_event.key.keysym.sym == SDLK_ESCAPE)
+        else if (gMainEvent.key.keysym.sym == SDLK_ESCAPE)
         {
             internal__update_dialog_cancel();
         }

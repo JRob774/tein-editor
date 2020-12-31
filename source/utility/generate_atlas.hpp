@@ -190,9 +190,9 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
 
 TEINAPI void generate_texture_atlases ()
 {
-    if (main_event.type == SDL_KEYDOWN)
+    if (gMainEvent.type == SDL_KEYDOWN)
     {
-        if (main_event.key.keysym.sym == SDLK_F11)
+        if (gMainEvent.key.keysym.sym == SDLK_F11)
         {
             internal__generate_texture_atlas("textures/editor_icons/new_large", "../dev/editor_icons_padded/new_large/",
                 TEXTURE_ATLAS_W_LARGE,TEXTURE_ATLAS_H_LARGE);

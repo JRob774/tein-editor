@@ -105,9 +105,9 @@ TEINAPI void internal__pack_textures (std::string in, std::string out)
 
 TEINAPI void pack_textures ()
 {
-    if (main_event.type == SDL_KEYDOWN)
+    if (gMainEvent.type == SDL_KEYDOWN)
     {
-        if (main_event.key.keysym.sym == SDLK_F10)
+        if (gMainEvent.key.keysym.sym == SDLK_F10)
         {
             internal__pack_textures("../dev/editor_icons/new_large/", "../dev/editor_icons_padded/new_large/");
             internal__pack_textures("../dev/editor_icons/new_small/", "../dev/editor_icons_padded/new_small/");

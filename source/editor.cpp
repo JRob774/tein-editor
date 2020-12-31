@@ -298,16 +298,16 @@ TEINAPI void HandleEditorEvents ()
 {
     Tab* tab = NULL;
 
-    if (main_event.type == SDL_DROPFILE)
+    if (gMainEvent.type == SDL_DROPFILE)
     {
-        if (GetWindowIDFromName("WINMAIN") == main_event.drop.windowID)
+        if (GetWindowIDFromName("WINMAIN") == gMainEvent.drop.windowID)
         {
-            std::string file(main_event.drop.file);
+            std::string file(gMainEvent.drop.file);
             std::string ext(file.substr(file.find_last_of(".")));
             if (ext == ".lvl") LevelDropFile(tab, file);
             else if (ext == ".csv") MapDropFile(tab, file);
         }
-        SDL_free(main_event.drop.file); // Docs say to free it!
+        SDL_free(gMainEvent.drop.file); // Docs say to free it!
     }
 
     if (!AreThereAnyTabs()) return;
@@ -317,11 +317,11 @@ TEINAPI void HandleEditorEvents ()
 
     tab = &GetCurrentTab();
 
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_USEREVENT):
         {
-            switch (main_event.user.code)
+            switch (gMainEvent.user.code)
             {
                 case (EDITOR_EVENT_BACKUP_TAB):
                 {
@@ -340,15 +340,15 @@ TEINAPI void HandleEditorEvents ()
         } break;
     }
 
-    switch (main_event.type)
+    switch (gMainEvent.type)
     {
         case (SDL_MOUSEWHEEL):
         {
             // Handle camera zoom!
             if (!IsKeyModStateActive(KMOD_CTRL)) return;
 
-            if (main_event.wheel.y > 0) tab->camera.zoom += (gEditorZoomIncrement * tab->camera.zoom); // Zoom in.
-            else if (main_event.wheel.y < 0) tab->camera.zoom -= (gEditorZoomIncrement * tab->camera.zoom); // Zoom out.
+            if (gMainEvent.wheel.y > 0) tab->camera.zoom += (gEditorZoomIncrement * tab->camera.zoom); // Zoom in.
+            else if (gMainEvent.wheel.y < 0) tab->camera.zoom -= (gEditorZoomIncrement * tab->camera.zoom); // Zoom out.
 
             // Make sure the editor camera zoom stays within reasonable boundaries.
             if (tab->type == TabType::LEVEL) tab->camera.zoom = std::clamp(tab->camera.zoom, gMinLevelEditorZoom, gMaxLevelEditorZoom);
@@ -359,8 +359,8 @@ TEINAPI void HandleEditorEvents ()
             // Handle the camera panning.
             if (gEditor.isPanning)
             {
-                tab->camera.x += static_cast<float>(main_event.motion.xrel) / tab->camera.zoom;
-                tab->camera.y += static_cast<float>(main_event.motion.yrel) / tab->camera.zoom;
+                tab->camera.x += static_cast<float>(gMainEvent.motion.xrel) / tab->camera.zoom;
+                tab->camera.y += static_cast<float>(gMainEvent.motion.yrel) / tab->camera.zoom;
             }
         } break;
         case (SDL_KEYDOWN):
@@ -374,10 +374,10 @@ TEINAPI void HandleEditorEvents ()
             // Do not handle these events whilst we are cooling down!
             if (gEditor.dialogBox) return;
 
-            bool pressed = (main_event.button.state == SDL_PRESSED);
+            bool pressed = (gMainEvent.button.state == SDL_PRESSED);
             if (pressed && IsThereAHitUiElement()) return;
 
-            if (main_event.button.button == SDL_BUTTON_MIDDLE)
+            if (gMainEvent.button.button == SDL_BUTTON_MIDDLE)
             {
                 gEditor.isPanning = pressed;
             }
@@ -697,7 +697,7 @@ TEINAPI bool SavePromptAllEditorTabs ()
     {
         if (SaveChangesPrompt(t) == ALERT_RESULT_CANCEL)
         {
-            main_running = true;
+            gMainRunning = true;
             return false;
         }
     }
