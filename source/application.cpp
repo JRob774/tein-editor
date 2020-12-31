@@ -253,7 +253,7 @@ TEINAPI void do_application ()
         SetRenderTarget(&GetWindowFromName("WINABOUT"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
-        do_about();
+        DoAbout();
         RenderPresent();
     }
 
@@ -357,7 +357,7 @@ TEINAPI bool handle_application_events ()
         HandleNewEvents();
         HandleResizeEvents();
         HandleTooltipEvents();
-        handle_about_events();
+        HandleAboutEvents();
         HandlePathEvents();
         handle_update_events();
     }

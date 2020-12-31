@@ -111,8 +111,8 @@
 #include "status_bar.hpp"
 #include "color_picker.hpp"
 #include "preferences_menu.hpp"
-
 #include "about.hpp"
+
 #include "update.hpp"
 #include "application.hpp"
 
