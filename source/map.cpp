@@ -128,7 +128,7 @@ namespace Internal
                         std::string txt(node.lvl);
                         if (tab.map_node_info.active && (node.x == tab.map_node_info.active->x && node.y == tab.map_node_info.active->y))
                         {
-                            txt = tab.map_node_info.cached_lvl_text;
+                            txt = tab.map_node_info.cachedLevelText;
                         }
                         // Need to wrap in quotes if it contains a comma.
                         if (txt.find(',') == std::string::npos)

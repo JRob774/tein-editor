@@ -66,10 +66,10 @@ TEINAPI void do_status_bar ()
         }
         else if (current_tab_is_map())
         {
-            if (PointInBoundsXYWH(GetMousePos(), map_editor.viewport))
+            if (PointInBoundsXYWH(GetMousePos(), gMapEditor.viewport))
             {
-                mx = static_cast<int>(map_editor.mouse_tile.x);
-                my = static_cast<int>(map_editor.mouse_tile.y);
+                mx = static_cast<int>(gMapEditor.mouseTile.x);
+                my = static_cast<int>(gMapEditor.mouseTile.y);
             }
         }
     }
@@ -82,10 +82,10 @@ TEINAPI void do_status_bar ()
         GetTotalSelectBoundary(&l,&t,&r,&b);
         sx = l, sy = b, sw = (r-l)+1, sh = (t-b)+1;
     }
-    else if (current_tab_is_map() && map_select_box_present())
+    else if (current_tab_is_map() && MapSelectBoxPresent())
     {
         int l,t,r,b;
-        get_map_select_bounds(&l,&t,&r,&b);
+        GetMapSelectBounds(&l,&t,&r,&b);
         sx = l, sy = b, sw = (r-l)+1, sh = (t-b)+1;
     }
 

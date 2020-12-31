@@ -1,52 +1,41 @@
-/*******************************************************************************
- * The systems and functionality for the map editing portion of the editor.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gMapEditorTextCutOff = .5f;
+static constexpr float gMapEditorTextPad = 3;
 
-/* -------------------------------------------------------------------------- */
+static constexpr float gMapNodeWidth = 88;
+static constexpr float gMapNodeHeight = 22;
 
-static constexpr float MAP_EDITOR_TEXT_CUT_OFF = .5f;
-static constexpr float MAP_EDITOR_TEXT_PAD = 3;
-
-static constexpr float MAP_NODE_W = 88;
-static constexpr float MAP_NODE_H = 22;
-
-struct Map_History
+struct MapHistory
 {
-    int current_position;
+    int currentPosition;
     std::vector<Map> state;
 };
 
-struct Map_Select
+struct MapSelect
 {
     IVec2 a; // Start
     IVec2 b; // End
 };
 
-typedef std::vector<MapNode> Map_Clipboard;
+typedef std::vector<MapNode> MapClipboard;
 
-struct Map_Node_Info
+struct MapNodeInfo
 {
-    std::string cached_lvl_text;
+    std::string cachedLevelText;
 
-    IVec2    pressed_node_pos;
-    IVec2    active_pos;
+    IVec2 pressedNodePos;
+    IVec2 activePos;
     MapNode* active;
 
     size_t cursor;
     size_t select; // Start point of text selection.
-    bool   selecting;
+    bool selecting;
 };
 
-struct Map_Editor
+struct MapEditor
 {
-    struct Color_Map_Compare
+    struct ColorMapCompare
     {
         inline bool operator() (const Vec4& lhs, const Vec4& rhs) const
         {
@@ -54,67 +43,61 @@ struct Map_Editor
         }
     };
 
-    Map_Clipboard clipboard;
+    MapClipboard clipboard;
 
-    Vec2 mouse_world;
+    Vec2 mouseWorld;
     Vec2 mouse;
-    Vec2 mouse_tile;
+    Vec2 mouseTile;
 
     bool pressed;
-    bool left_pressed;
+    bool leftPressed;
 
-    SDL_TimerID cursor_blink_timer;
-    bool        cursor_visible;
+    SDL_TimerID cursorBlinkTimer;
+    bool cursorVisible;
 
     Quad bounds;
     Quad viewport;
 
-    std::map<Vec4,Vec4, Color_Map_Compare> text_color_map;
+    std::map<Vec4,Vec4, ColorMapCompare> textColorMap;
 };
 
-static Map_Editor map_editor;
+static MapEditor gMapEditor;
 
-/* -------------------------------------------------------------------------- */
+TEINAPI void InitMapEditor ();
+TEINAPI void DoMapEditor ();
 
-TEINAPI void init_map_editor ();
-TEINAPI void do_map_editor   ();
+TEINAPI void HandleMapEditorEvents ();
 
-TEINAPI void handle_map_editor_events ();
+TEINAPI void LoadMapTab (std::string fileName);
+TEINAPI bool SaveMapTab (Tab& tab);
+TEINAPI void SaveMapTabAs ();
 
-TEINAPI void load_map_tab    (std::string file_name);
-TEINAPI bool save_map_tab    (Tab& tab);
-TEINAPI void save_map_tab_as ();
+TEINAPI void MapDropFile (Tab* tab, std::string fileName);
 
-TEINAPI void map_drop_file (Tab* tab, std::string file_name);
+TEINAPI void BackupMapTab (const Tab& tab, const std::string& fileName);
 
-TEINAPI void backup_map_tab (const Tab& tab, const std::string& file_name);
+TEINAPI bool IsCurrentMapEmpty ();
 
-TEINAPI bool is_current_map_empty ();
+TEINAPI float GetMinMapBoundsX ();
+TEINAPI float GetMinMapBoundsY ();
+TEINAPI float GetMaxMapBoundsX ();
+TEINAPI float GetMaxMapBoundsY ();
 
-TEINAPI float get_min_map_bounds_x ();
-TEINAPI float get_min_map_bounds_y ();
-TEINAPI float get_max_map_bounds_x ();
-TEINAPI float get_max_map_bounds_y ();
+TEINAPI void MapEditorCut ();
+TEINAPI void MapEditorCopy ();
+TEINAPI void MapEditorPaste ();
 
-TEINAPI void me_cut   ();
-TEINAPI void me_copy  ();
-TEINAPI void me_paste ();
+TEINAPI void MapEditorDeselect ();
+TEINAPI void MapEditorClearSelect ();
+TEINAPI void MapEditorSelectAll ();
 
-TEINAPI void me_deselect     ();
-TEINAPI void me_clear_select ();
-TEINAPI void me_select_all   ();
+TEINAPI void MapEditorUndo ();
+TEINAPI void MapEditorRedo ();
 
-TEINAPI void me_undo ();
-TEINAPI void me_redo ();
+TEINAPI void MapEditorHistoryBegin ();
+TEINAPI void MapEditorHistoryEnd ();
 
-TEINAPI void me_history_begin ();
-TEINAPI void me_history_end   ();
+TEINAPI void NewMapHistoryState (Map& map);
 
-TEINAPI void new_map_history_state (Map& map);
-
-TEINAPI bool map_select_box_present ();
-TEINAPI void get_map_select_bounds  (int* l, int* t, int* r, int* b);
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI bool MapSelectBoxPresent ();
+TEINAPI void GetMapSelectBounds (int* l, int* t, int* r, int* b);

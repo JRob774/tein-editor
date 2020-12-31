@@ -45,10 +45,10 @@ struct Tab
     std::vector<SelectBounds> old_select_state; // We use this for the selection history undo/redo system.
 
     // MAP
-    Map           map;
-    Map_History   map_history;
-    Map_Select    map_select;
-    Map_Node_Info map_node_info;
+    Map         map;
+    MapHistory  map_history;
+    MapSelect   map_select;
+    MapNodeInfo map_node_info;
 };
 
 struct Editor

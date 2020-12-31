@@ -138,10 +138,18 @@ namespace Internal
 
         Tab& tab = get_current_tab();
 
-        UiFlag cutFlags = ((map_select_box_present()) ? UI_NONE : UI_LOCKED);
-        UiFlag copyFlags = ((map_select_box_present()) ? UI_NONE : UI_LOCKED);
-        UiFlag deselectFlags = ((map_select_box_present()) ? UI_NONE : UI_LOCKED);
-        UiFlag clearFlags = ((map_select_box_present()) ? UI_NONE : UI_LOCKED);
+        UiFlag cutFlags = UI_LOCKED;
+        UiFlag copyFlags = UI_LOCKED;
+        UiFlag deselectFlags = UI_LOCKED;
+        UiFlag clearFlags = UI_LOCKED;
+
+        if (MapSelectBoxPresent())
+        {
+            cutFlags = UI_NONE;
+            copyFlags = UI_NONE;
+            deselectFlags = UI_NONE;
+            clearFlags = UI_NONE;
+        }
 
         gToolbarWidth = gToolbarDefaultWidth;
         BeginPanel(0, 0, gToolbarWidth, GetViewport().h, UI_NONE, gUiColorMedium);
@@ -254,8 +262,8 @@ TEINAPI void ToolbarResetCamera ()
 
     if (tab.type == Tab_Type::MAP)
     {
-        tab.camera.x = -get_min_map_bounds_x();
-        tab.camera.y = -get_min_map_bounds_y();
+        tab.camera.x = -GetMinMapBoundsX();
+        tab.camera.y = -GetMinMapBoundsY();
     }
     else
     {
@@ -289,7 +297,7 @@ TEINAPI void ToolbarCut ()
     switch (tab.type)
     {
         case (Tab_Type::LEVEL): LevelEditorCut(); break;
-        case (Tab_Type::MAP): me_cut(); break;
+        case (Tab_Type::MAP): MapEditorCut(); break;
     }
 }
 
@@ -300,7 +308,7 @@ TEINAPI void ToolbarCopy ()
     switch (tab.type)
     {
         case (Tab_Type::LEVEL): LevelEditorCopy(); break;
-        case (Tab_Type::MAP): me_copy(); break;
+        case (Tab_Type::MAP): MapEditorCopy(); break;
     }
 }
 
@@ -311,7 +319,7 @@ TEINAPI void ToolbarDeselect ()
     switch (tab.type)
     {
         case (Tab_Type::LEVEL): LevelEditorDeselect(); break;
-        case (Tab_Type::MAP): me_deselect(); break;
+        case (Tab_Type::MAP): MapEditorDeselect(); break;
     }
 }
 
@@ -322,7 +330,7 @@ TEINAPI void ToolbarClearSelect ()
     switch (tab.type)
     {
         case (Tab_Type::LEVEL): LevelEditorClearSelect(); break;
-        case (Tab_Type::MAP): me_clear_select(); break;
+        case (Tab_Type::MAP): MapEditorClearSelect(); break;
     }
 }
 
