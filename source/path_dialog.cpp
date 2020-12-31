@@ -104,7 +104,7 @@ TEINAPI void OkayPath ()
     gTempGamePath = FixPathSlashes(gTempGamePath);
     gEditorSettings.gamePath = gTempGamePath;
 
-    save_preferences();
+    SavePreferences();
     HideWindow("WINPATH");
 
     if (!RunExecutable(gEditorSettings.gamePath))

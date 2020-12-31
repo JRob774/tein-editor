@@ -110,7 +110,7 @@ TEINAPI void init_application (int argc, char** argv)
     if (!RegisterWindow("WINPATH"       , "Locate Game"     , SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"        ); return; }
     if (!RegisterWindow("WINUPDATE"     , "Update Available", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 370,440, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create update window!"      ); return; }
 
-    GetWindowFromName("WINPREFERENCES"). closeCallback = []() { cancel_preferences   (); };
+    GetWindowFromName("WINPREFERENCES"). closeCallback = []() { CancelPreferences    (); };
     GetWindowFromName("WINCOLOR"      ). closeCallback = []() { CancelColorPicker    (); };
     GetWindowFromName("WINNEW"        ). closeCallback = []() { CancelNew            (); };
     GetWindowFromName("WINRESIZE"     ). closeCallback = []() { CancelResize         (); };
@@ -235,7 +235,7 @@ TEINAPI void do_application ()
         SetRenderTarget(&GetWindowFromName("WINPREFERENCES"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
-        do_preferences_menu();
+        DoPreferencesMenu();
         RenderPresent();
     }
 
@@ -352,7 +352,7 @@ TEINAPI bool handle_application_events ()
         HandleTilePanelEvents();
         HandleTabBarEvents();
         HandleEditorEvents();
-        handle_preferences_menu_events();
+        HandlePreferencesMenuEvents();
         HandleColorPickerEvents();
         HandleNewEvents();
         HandleResizeEvents();

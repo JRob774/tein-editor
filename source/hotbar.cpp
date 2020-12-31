@@ -392,7 +392,7 @@ TEINAPI void HotbarPreferences ()
 {
     if (IsWindowHidden("WINPREFERENCES"))
     {
-        init_preferences_menu(); // Load current settings.
+        InitPreferencesMenu(); // Load current settings.
         ShowWindow("WINPREFERENCES");
     }
     else
