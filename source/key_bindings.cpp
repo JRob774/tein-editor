@@ -225,8 +225,8 @@ namespace Internal
         AddKeyBinding(a, b, gKbLevelOpen,          HotbarLoad);
         AddKeyBinding(a, b, gKbLevelSave,          HotbarSave);
         AddKeyBinding(a, b, gKbLevelSaveAs,        HotbarSaveAs);
-        AddKeyBinding(a, b, gKbLevelClose,         close_current_tab);
-        AddKeyBinding(a, b, gKbLevelCloseAll,      close_all_tabs);
+        AddKeyBinding(a, b, gKbLevelClose,         CloseCurrentTab);
+        AddKeyBinding(a, b, gKbLevelCloseAll,      CloseAllTabs);
         AddKeyBinding(a, b, gKbLevelResize,        LevelEditorResize);
         AddKeyBinding(a, b, gKbUndo,               HotbarUndo);
         AddKeyBinding(a, b, gKbRedo,               HotbarRedo);
@@ -256,10 +256,10 @@ namespace Internal
         AddKeyBinding(a, b, gKbCameraReset,        ToolbarResetCamera);
         AddKeyBinding(a, b, gKbClearSelect,        ToolbarClearSelect);
         AddKeyBinding(a, b, gKbDeselect,           ToolbarDeselect);
-        AddKeyBinding(a, b, gKbSelectAll,          editor_select_all);
+        AddKeyBinding(a, b, gKbSelectAll,          EditorSelectAll);
         AddKeyBinding(a, b, gKbCopy,               ToolbarCopy);
         AddKeyBinding(a, b, gKbCut,                ToolbarCut);
-        AddKeyBinding(a, b, gKbPaste,              editor_paste);
+        AddKeyBinding(a, b, gKbPaste,              EditorPaste);
         AddKeyBinding(a, b, gKbIncrementTile,      IncrementSelectedTile);
         AddKeyBinding(a, b, gKbDecrementTile,      DecrementSelectedTile);
         AddKeyBinding(a, b, gKbIncrementGroup,     IncrementSelectedGroup);
@@ -277,11 +277,11 @@ namespace Internal
         AddKeyBinding(a, b, gKbCategoryEntity,     JumpToCategoryEntity);
         AddKeyBinding(a, b, gKbCategoryBack1,      JumpToCategoryBack1);
         AddKeyBinding(a, b, gKbCategoryBack2,      JumpToCategoryBack2);
-        AddKeyBinding(a, b, gKbIncrementTab,       increment_tab);
-        AddKeyBinding(a, b, gKbDecrementTab,       decrement_tab);
+        AddKeyBinding(a, b, gKbIncrementTab,       IncrementTab);
+        AddKeyBinding(a, b, gKbDecrementTab,       DecrementTab);
         AddKeyBinding(a, b, gKbMoveTabLeft,        MoveTabLeft);
         AddKeyBinding(a, b, gKbMoveTabRight,       MoveTabRight);
-        AddKeyBinding(a, b, gKbOpenRecentTab,      open_recently_closed_tab);
+        AddKeyBinding(a, b, gKbOpenRecentTab,      OpenRecentlyClosedTab);
         AddKeyBinding(a, b, gKbLoadPrevLevel,      LevelEditorLoadPrevLevel);
         AddKeyBinding(a, b, gKbLoadNextLevel,      LevelEditorLoadNextLevel);
     }

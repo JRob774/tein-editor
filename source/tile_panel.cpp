@@ -42,9 +42,9 @@ namespace Internal
 {
     TEINAPI bool IsCategoryActive (TileCategory category)
     {
-        if (!current_tab_is_level()) return false;
-        const Tab& tab = get_current_tab();
-        return tab.tile_layer_active[CategoryToLayer(category)];
+        if (!CurrentTabIsLevel()) return false;
+        const Tab& tab = GetCurrentTab();
+        return tab.tileLayerActive[CategoryToLayer(category)];
     }
 
     TEINAPI float DoTilePanelCategory (Vec2& cursor, TileCategory categoryIndex, std::vector<TileGroup>& category)
@@ -129,7 +129,7 @@ namespace Internal
                 }
             }
 
-            if (current_tab_is_level() && !AreAllLayersInactive())
+            if (CurrentTabIsLevel() && !AreAllLayersInactive())
             {
                 float qx = tileCursor.x - 1;
                 float qy = tileCursor.y - 1;
@@ -228,7 +228,7 @@ namespace Internal
 
     TEINAPI void JumpToCategory (TileCategory category)
     {
-        if (current_tab_is_level())
+        if (CurrentTabIsLevel())
         {
             if (!AreAllLayersInactive())
             {
@@ -337,7 +337,7 @@ TEINAPI bool TilePanelNeedsScrollbar ()
 
 TEINAPI void HandleTilePanelEvents ()
 {
-    if (current_tab_is_level())
+    if (CurrentTabIsLevel())
     {
         if (!AreAllLayersInactive())
         {
@@ -472,7 +472,7 @@ TEINAPI void ResetSelectedGroup ()
 
 TEINAPI void IncrementSelectedTile ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     if (!AreAllLayersInactive())
     {
@@ -497,7 +497,7 @@ TEINAPI void IncrementSelectedTile ()
 }
 TEINAPI void DecrementSelectedTile ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     if (!AreAllLayersInactive())
     {
@@ -523,7 +523,7 @@ TEINAPI void DecrementSelectedTile ()
 
 TEINAPI void IncrementSelectedGroup ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     if (!AreAllLayersInactive())
     {
@@ -548,7 +548,7 @@ TEINAPI void IncrementSelectedGroup ()
 }
 TEINAPI void DecrementSelectedGroup ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     if (!AreAllLayersInactive())
     {
@@ -574,7 +574,7 @@ TEINAPI void DecrementSelectedGroup ()
 
 TEINAPI void IncrementSelectedCategory ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     int oldSelectedCategory = gTilePanel.selectedCategory;
     int oldSelectedGroup = gTilePanel.selectedGroup;
@@ -602,7 +602,7 @@ TEINAPI void IncrementSelectedCategory ()
 }
 TEINAPI void DecrementSelectedCategory ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     int oldSelectedCategory = gTilePanel.selectedCategory;
     int oldSelectedGroup = gTilePanel.selectedGroup;

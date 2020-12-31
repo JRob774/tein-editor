@@ -31,7 +31,7 @@ namespace Internal
         std::string name((!tab.name.empty()) ? StripFilePath(tab.name) : "Untitled");
         // We insert at the start so that it is always visible even if the
         // level's name gets cut off by the width of the final level tab.
-        if (tab.unsaved_changes) name.insert(0, "* ");
+        if (tab.unsavedChanges) name.insert(0, "* ");
 
         UiFlag flags = ((current) ? UI_HIGHLIGHT : UI_INACTIVE);
         BeginPanel(GetPanelCursor().x,0,tw,th, flags, gUiColorMedium);
@@ -43,7 +43,7 @@ namespace Internal
         std::string info((tab.name.empty()) ? "Untitled" : tab.name);
         if (BeginClickPanelGradient(NULL, pw,th+1.0f, flags, info))
         {
-            set_current_tab(index);
+            SetCurrentTab(index);
         }
 
         SetPanelCursorDir(UI_DIR_RIGHT);
@@ -73,8 +73,8 @@ TEINAPI void HandleTabBarEvents ()
         {
             if (gCanScrollInTabBar)
             {
-                if (main_event.wheel.y > 0) increment_tab();
-                if (main_event.wheel.y < 0) decrement_tab();
+                if (main_event.wheel.y > 0) IncrementTab();
+                if (main_event.wheel.y < 0) DecrementTab();
             }
         } break;
     }
@@ -97,7 +97,7 @@ TEINAPI void DoTabBar ()
     float ph = gTabBarHeight;
 
     // To account for the control panel disappearing.
-    if (!current_tab_is_level()) pw += 1;
+    if (!CurrentTabIsLevel()) pw += 1;
 
     // Figure out how many tabs we can fit on the bar before we need to start scrolling.
     gMaxNumberOfTabs = static_cast<int>(ceilf(pw / (gDefaultLevelTabWidth + 1)));
@@ -111,7 +111,7 @@ TEINAPI void DoTabBar ()
     float tabWidth = gDefaultLevelTabWidth;
     float leftover = 0;
 
-    if (editor.tabs.size() >= gMaxNumberOfTabs)
+    if (gEditor.tabs.size() >= gMaxNumberOfTabs)
     {
         tabWidth = floorf((pw-((gMaxNumberOfTabs-1)*1)) / gMaxNumberOfTabs);
         leftover = (pw-((gMaxNumberOfTabs-1)*1)) - (tabWidth * gMaxNumberOfTabs);
@@ -122,16 +122,16 @@ TEINAPI void DoTabBar ()
     }
 
     // Prevents the tab bar from being offset too far to the right creating an ugly space when there shouldn't be.
-    if (editor.tabs.size() >= gMaxNumberOfTabs)
+    if (gEditor.tabs.size() >= gMaxNumberOfTabs)
     {
-        while (gStartingTabOffset+gMaxNumberOfTabs > editor.tabs.size())
+        while (gStartingTabOffset+gMaxNumberOfTabs > gEditor.tabs.size())
         {
              --gStartingTabOffset;
         }
     }
 
     // THE LEFT ARROW BUTTON
-    if (are_there_any_tabs())
+    if (AreThereAnyTabs())
     {
         BeginPanel(x,y,bw,bh, UI_NONE);
         Vec2 tempCursor(0,0);
@@ -148,7 +148,7 @@ TEINAPI void DoTabBar ()
     // THE LIST OF TABS
     Vec2 cursor(0,0);
 
-    Vec4 color = ((are_there_any_tabs()) ? gUiColorMedDark : gUiColorExDark);
+    Vec4 color = ((AreThereAnyTabs()) ? gUiColorMedDark : gUiColorExDark);
     BeginPanel(x+bw+1,y,pw,ph, UI_NONE, color);
 
     SetPanelCursorDir(UI_DIR_RIGHT);
@@ -158,12 +158,12 @@ TEINAPI void DoTabBar ()
     gCanScrollInTabBar = (MouseInUiBoundsXYWH(0,0,pw,ph) && IsKeyModStateActive(KMOD_NONE));
 
     size_t indexToClose = gNoTabToClose;
-    size_t last = std::min(editor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs);
+    size_t last = std::min(gEditor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs);
     for (size_t i=gStartingTabOffset; i<last; ++i)
     {
         float w = tabWidth + ((i == last-1) ? leftover : 0);
-        bool current = (i == editor.current_tab);
-        if (Internal::DoLevelTab(w, editor.tabs.at(i), i, current))
+        bool current = (i == gEditor.currentTab);
+        if (Internal::DoLevelTab(w, gEditor.tabs.at(i), i, current))
         {
             indexToClose = i;
         }
@@ -172,12 +172,12 @@ TEINAPI void DoTabBar ()
     EndPanel();
 
     // THE RIGHT ARROW BUTTON
-    if (are_there_any_tabs())
+    if (AreThereAnyTabs())
     {
         BeginPanel(x+bw+2+pw,0,bw,bh, UI_NONE);
         Vec2 tempCursor(0,0);
         SetPanelCursor(&tempCursor);
-        bool rightArrowActive = (gStartingTabOffset+gMaxNumberOfTabs < editor.tabs.size());
+        bool rightArrowActive = (gStartingTabOffset+gMaxNumberOfTabs < gEditor.tabs.size());
         UiFlag flags = ((rightArrowActive) ? UI_NONE : UI_LOCKED);
         if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowRight))
         {
@@ -187,13 +187,13 @@ TEINAPI void DoTabBar ()
     }
 
     // If a level needs to be closed then we do it now.
-    if (indexToClose != gNoTabToClose) close_tab(indexToClose);
+    if (indexToClose != gNoTabToClose) CloseTab(indexToClose);
 }
 
 TEINAPI void MaybeScrollTabBar ()
 {
-    if (editor.current_tab < gStartingTabOffset) gStartingTabOffset = editor.current_tab;
-    while (editor.current_tab >= std::min(editor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs))
+    if (gEditor.currentTab < gStartingTabOffset) gStartingTabOffset = gEditor.currentTab;
+    while (gEditor.currentTab >= std::min(gEditor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs))
     {
         ++gStartingTabOffset;
     }
@@ -201,16 +201,16 @@ TEINAPI void MaybeScrollTabBar ()
 
 TEINAPI void MoveTabLeft ()
 {
-    if (are_there_any_tabs())
+    if (AreThereAnyTabs())
     {
-        Tab& tab = get_current_tab();
-        if (tab.type != Tab_Type::MAP || !tab.map_node_info.active)
+        Tab& tab = GetCurrentTab();
+        if (tab.type != TabType::MAP || !tab.mapNodeInfo.active)
         {
-            if (editor.current_tab > 0)
+            if (gEditor.currentTab > 0)
             {
-                auto begin = editor.tabs.begin();
-                std::iter_swap(begin+editor.current_tab-1, begin+editor.current_tab);
-                --editor.current_tab;
+                auto begin = gEditor.tabs.begin();
+                std::iter_swap(begin+gEditor.currentTab-1, begin+gEditor.currentTab);
+                --gEditor.currentTab;
                 MaybeScrollTabBar();
             }
         }
@@ -218,16 +218,16 @@ TEINAPI void MoveTabLeft ()
 }
 TEINAPI void MoveTabRight ()
 {
-    if (are_there_any_tabs())
+    if (AreThereAnyTabs())
     {
-        Tab& tab = get_current_tab();
-        if (tab.type != Tab_Type::MAP || !tab.map_node_info.active)
+        Tab& tab = GetCurrentTab();
+        if (tab.type != TabType::MAP || !tab.mapNodeInfo.active)
         {
-            if (editor.current_tab < editor.tabs.size()-1)
+            if (gEditor.currentTab < gEditor.tabs.size()-1)
             {
-                auto begin = editor.tabs.begin();
-                std::iter_swap(begin+editor.current_tab+1, begin+editor.current_tab);
-                ++editor.current_tab;
+                auto begin = gEditor.tabs.begin();
+                std::iter_swap(begin+gEditor.currentTab+1, begin+gEditor.currentTab);
+                ++gEditor.currentTab;
                 MaybeScrollTabBar();
             }
         }

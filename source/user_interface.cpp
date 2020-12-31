@@ -1144,7 +1144,7 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to hyperlinks. Could be cleaned.
-            if (current_tab_is_level() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
+            if (CurrentTabIsLevel() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
             {
                 switch (gLevelEditor.toolType)
                 {
@@ -1345,7 +1345,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
         {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to text boxes. Could be cleaned.
-            if (current_tab_is_level() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
+            if (CurrentTabIsLevel() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
             {
                 switch (gLevelEditor.toolType)
                 {

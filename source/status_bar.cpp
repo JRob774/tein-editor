@@ -43,8 +43,8 @@ TEINAPI void do_status_bar ()
     float h = STATUS_BAR_HEIGHT;
 
     // To account for the control panel and toolbar disappearing.
-    if (!current_tab_is_level())         w += 1;
-    if (!are_there_any_tabs  ()) x -= 1, w += 1;
+    if (!CurrentTabIsLevel())         w += 1;
+    if (!AreThereAnyTabs  ()) x -= 1, w += 1;
 
     float status_bar_width = w - (STATUS_BAR_INNER_PAD * 2);
     float advance = STATUS_BAR_INNER_PAD;
@@ -56,7 +56,7 @@ TEINAPI void do_status_bar ()
     int mx = 0, my = 0;
     if (IsWindowFocused("WINMAIN"))
     {
-        if (current_tab_is_level())
+        if (CurrentTabIsLevel())
         {
             if (PointInBoundsXYWH(GetMousePos(), gLevelEditor.viewport))
             {
@@ -64,7 +64,7 @@ TEINAPI void do_status_bar ()
                 my = static_cast<int>(gLevelEditor.mouseTile.y);
             }
         }
-        else if (current_tab_is_map())
+        else if (CurrentTabIsMap())
         {
             if (PointInBoundsXYWH(GetMousePos(), gMapEditor.viewport))
             {
@@ -76,13 +76,13 @@ TEINAPI void do_status_bar ()
 
     // Get the select bounds.
     int sx = 0, sy = 0, sw = 0, sh = 0;
-    if (current_tab_is_level() && AreAnySelectBoxesVisible())
+    if (CurrentTabIsLevel() && AreAnySelectBoxesVisible())
     {
         int l,t,r,b;
         GetTotalSelectBoundary(&l,&t,&r,&b);
         sx = l, sy = b, sw = (r-l)+1, sh = (t-b)+1;
     }
-    else if (current_tab_is_map() && MapSelectBoxPresent())
+    else if (CurrentTabIsMap() && MapSelectBoxPresent())
     {
         int l,t,r,b;
         GetMapSelectBounds(&l,&t,&r,&b);

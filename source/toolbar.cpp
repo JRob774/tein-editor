@@ -54,7 +54,7 @@ namespace Internal
         brushFlags = ((gLevelEditor.toolType == ToolType::BRUSH) ? UI_NONE : UI_INACTIVE);
         fillFlags = ((gLevelEditor.toolType == ToolType::FILL) ? UI_NONE : UI_INACTIVE);
         selectFlags = ((gLevelEditor.toolType == ToolType::SELECT) ? UI_NONE : UI_INACTIVE);
-        gridFlags = ((editor.grid_visible) ? UI_NONE : UI_INACTIVE);
+        gridFlags = ((gEditor.gridVisible) ? UI_NONE : UI_INACTIVE);
         boundsFlags = ((gLevelEditor.boundsVisible) ? UI_NONE : UI_INACTIVE);
         layerFlags = ((gLevelEditor.layerTransparency) ? UI_NONE : UI_INACTIVE);
         entityFlags = ((gLevelEditor.largeTiles) ? UI_NONE : UI_INACTIVE);
@@ -136,7 +136,7 @@ namespace Internal
 
         SetUiTexture(&gResourceIcons);
 
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         UiFlag cutFlags = UI_LOCKED;
         UiFlag copyFlags = UI_LOCKED;
@@ -169,23 +169,23 @@ namespace Internal
 
 TEINAPI void DoToolbar ()
 {
-    if (!are_there_any_tabs()) return;
-    if (current_tab_is_level()) Internal::DoLevelToolbar(); else Internal::DoMapToolbar();
+    if (!AreThereAnyTabs()) return;
+    if (CurrentTabIsLevel()) Internal::DoLevelToolbar(); else Internal::DoMapToolbar();
 }
 
 TEINAPI float GetToolbarWidth ()
 {
-    return ((are_there_any_tabs()) ? gToolbarWidth : 0);
+    return ((AreThereAnyTabs()) ? gToolbarWidth : 0);
 }
 
 TEINAPI void ToolbarSetToolToBrush ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     if (gLevelEditor.toolType == ToolType::SELECT && gLevelEditor.toolState == ToolState::PLACE)
     {
-        Tab& tab = get_current_tab();
-        if (!tab.tool_info.select.bounds.empty())
+        Tab& tab = GetCurrentTab();
+        if (!tab.toolInfo.select.bounds.empty())
         {
             NewLevelHistoryState(LevelHistoryAction::SELECT_STATE);
         }
@@ -201,12 +201,12 @@ TEINAPI void ToolbarSetToolToBrush ()
 
 TEINAPI void ToolbarSetToolToFill ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     if (gLevelEditor.toolType == ToolType::SELECT && gLevelEditor.toolState == ToolState::PLACE)
     {
-        Tab& tab = get_current_tab();
-        if (!tab.tool_info.select.bounds.empty())
+        Tab& tab = GetCurrentTab();
+        if (!tab.toolInfo.select.bounds.empty())
         {
             NewLevelHistoryState(LevelHistoryAction::SELECT_STATE);
         }
@@ -222,7 +222,7 @@ TEINAPI void ToolbarSetToolToFill ()
 
 TEINAPI void ToolbarSetToolToSelect ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
     if (gLevelEditor.toolType != ToolType::SELECT && gLevelEditor.toolState != ToolState::IDLE)
     {
@@ -231,8 +231,8 @@ TEINAPI void ToolbarSetToolToSelect ()
 
     if (gLevelEditor.toolState == ToolState::PLACE)
     {
-        Tab& tab = get_current_tab();
-        tab.tool_info.select.start = true;
+        Tab& tab = GetCurrentTab();
+        tab.toolInfo.select.start = true;
     }
 
     gLevelEditor.toolType = ToolType::SELECT;
@@ -240,27 +240,27 @@ TEINAPI void ToolbarSetToolToSelect ()
 
 TEINAPI void ToolbarToggleGrid ()
 {
-    if (current_tab_is_level()) editor.grid_visible = !editor.grid_visible;
+    if (CurrentTabIsLevel()) gEditor.gridVisible = !gEditor.gridVisible;
 }
 
 TEINAPI void ToolbarToggleBounds ()
 {
-    if (current_tab_is_level()) gLevelEditor.boundsVisible = !gLevelEditor.boundsVisible;
+    if (CurrentTabIsLevel()) gLevelEditor.boundsVisible = !gLevelEditor.boundsVisible;
 }
 
 TEINAPI void ToolbarToggleLayerTransparency ()
 {
-    if (current_tab_is_level()) gLevelEditor.layerTransparency = !gLevelEditor.layerTransparency;
+    if (CurrentTabIsLevel()) gLevelEditor.layerTransparency = !gLevelEditor.layerTransparency;
 }
 
 TEINAPI void ToolbarResetCamera ()
 {
-    if (!are_there_any_tabs()) return;
+    if (!AreThereAnyTabs()) return;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
     tab.camera.zoom = 1;
 
-    if (tab.type == Tab_Type::MAP)
+    if (tab.type == TabType::MAP)
     {
         tab.camera.x = -GetMinMapBoundsX();
         tab.camera.y = -GetMinMapBoundsY();
@@ -274,77 +274,77 @@ TEINAPI void ToolbarResetCamera ()
 
 TEINAPI void ToolbarFlipLevelH ()
 {
-    if (current_tab_is_level()) FlipLevelH();
+    if (CurrentTabIsLevel()) FlipLevelH();
 }
 TEINAPI void ToolbarFlipLevelV ()
 {
-    if (current_tab_is_level()) FlipLevelV();
+    if (CurrentTabIsLevel()) FlipLevelV();
 }
 
 TEINAPI void ToolbarToggleMirrorH ()
 {
-    if (current_tab_is_level()) gLevelEditor.mirrorH = !gLevelEditor.mirrorH;
+    if (CurrentTabIsLevel()) gLevelEditor.mirrorH = !gLevelEditor.mirrorH;
 }
 TEINAPI void ToolbarToggleMirrorV ()
 {
-    if (current_tab_is_level()) gLevelEditor.mirrorV = !gLevelEditor.mirrorV;
+    if (CurrentTabIsLevel()) gLevelEditor.mirrorV = !gLevelEditor.mirrorV;
 }
 
 TEINAPI void ToolbarCut ()
 {
-    if (!are_there_any_tabs()) return;
-    Tab& tab = get_current_tab();
+    if (!AreThereAnyTabs()) return;
+    Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): LevelEditorCut(); break;
-        case (Tab_Type::MAP): MapEditorCut(); break;
+        case (TabType::LEVEL): LevelEditorCut(); break;
+        case (TabType::MAP): MapEditorCut(); break;
     }
 }
 
 TEINAPI void ToolbarCopy ()
 {
-    if (!are_there_any_tabs()) return;
-    Tab& tab = get_current_tab();
+    if (!AreThereAnyTabs()) return;
+    Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): LevelEditorCopy(); break;
-        case (Tab_Type::MAP): MapEditorCopy(); break;
+        case (TabType::LEVEL): LevelEditorCopy(); break;
+        case (TabType::MAP): MapEditorCopy(); break;
     }
 }
 
 TEINAPI void ToolbarDeselect ()
 {
-    if (!are_there_any_tabs()) return;
-    Tab& tab = get_current_tab();
+    if (!AreThereAnyTabs()) return;
+    Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): LevelEditorDeselect(); break;
-        case (Tab_Type::MAP): MapEditorDeselect(); break;
+        case (TabType::LEVEL): LevelEditorDeselect(); break;
+        case (TabType::MAP): MapEditorDeselect(); break;
     }
 }
 
 TEINAPI void ToolbarClearSelect ()
 {
-    if (!are_there_any_tabs()) return;
-    Tab& tab = get_current_tab();
+    if (!AreThereAnyTabs()) return;
+    Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (Tab_Type::LEVEL): LevelEditorClearSelect(); break;
-        case (Tab_Type::MAP): MapEditorClearSelect(); break;
+        case (TabType::LEVEL): LevelEditorClearSelect(); break;
+        case (TabType::MAP): MapEditorClearSelect(); break;
     }
 }
 
 TEINAPI void ToolbarResize ()
 {
-    if (current_tab_is_level()) LevelEditorResize();
+    if (CurrentTabIsLevel()) LevelEditorResize();
 }
 
 TEINAPI void ToolbarToggleEntity ()
 {
-    if (current_tab_is_level()) gLevelEditor.largeTiles = !gLevelEditor.largeTiles;
+    if (CurrentTabIsLevel()) gLevelEditor.largeTiles = !gLevelEditor.largeTiles;
 }
 
 TEINAPI void ToolbarToggleGuides ()
 {
-    if (current_tab_is_level()) gLevelEditor.entityGuides = !gLevelEditor.entityGuides;
+    if (CurrentTabIsLevel()) gLevelEditor.entityGuides = !gLevelEditor.entityGuides;
 }

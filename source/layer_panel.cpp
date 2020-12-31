@@ -72,17 +72,17 @@ namespace Internal
 
     TEINAPI void ToggleLayer (LevelLayer layer)
     {
-        if (current_tab_is_level())
+        if (CurrentTabIsLevel())
         {
-            Tab& tab = get_current_tab();
-            tab.tile_layer_active[layer] = !tab.tile_layer_active[layer];
+            Tab& tab = GetCurrentTab();
+            tab.tileLayerActive[layer] = !tab.tileLayerActive[layer];
             SelectNextActiveGroup();
         }
     }
 
     TEINAPI void ToggleLayerAction (LevelLayer layer)
     {
-        if (current_tab_is_level())
+        if (CurrentTabIsLevel())
         {
             if (IsWindowFocused("WINMAIN"))
             {
@@ -147,7 +147,7 @@ TEINAPI void DoLayerPanel (bool scrollbar)
     }
 
     bool allLayersWereInactive = AreAllLayersInactive();
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
     {
@@ -161,7 +161,7 @@ TEINAPI void DoLayerPanel (bool scrollbar)
             case (LEVEL_LAYER_BACK2  ): layerName = "Back 2";  break;
         }
 
-        UiFlag tileFlag = ((tab.tile_layer_active[i]) ? UI_NONE : UI_INACTIVE);
+        UiFlag tileFlag = ((tab.tileLayerActive[i]) ? UI_NONE : UI_INACTIVE);
         if (Internal::DoLayerButton(tileFlag, static_cast<LevelLayer>(i), layerName, gTileLayerInfo))
         {
             Internal::ToggleLayer(static_cast<LevelLayer>(i));
@@ -188,12 +188,12 @@ TEINAPI float GetLayerPanelHeight ()
 
 TEINAPI bool LayerPanelNeedsScrollbar ()
 {
-    return ((current_tab_is_level()) ? (gLayerPanelContentHeight > gLayerPanelHeight) : false);
+    return ((CurrentTabIsLevel()) ? (gLayerPanelContentHeight > gLayerPanelHeight) : false);
 }
 
 TEINAPI bool IsLayerPanelPresent ()
 {
-    return current_tab_is_level();
+    return CurrentTabIsLevel();
 }
 
 TEINAPI void ToggleLayerActive ()

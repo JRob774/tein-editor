@@ -534,12 +534,12 @@ TEINAPI void internal__do_preferences_settings ()
     if (DoTextButton(NULL, bw,sh, backup_enabled_flags,  "Enabled"))
     {
         gEditorSettings.autoBackup = true;
-        update_backup_timer();
+        UpdateBackupTimer();
     }
     if (DoTextButton(NULL, bw,sh, backup_disabled_flags, "Disabled"))
     {
         gEditorSettings.autoBackup = false;
-        update_backup_timer();
+        UpdateBackupTimer();
     }
     internal__next_section(cursor);
 
@@ -571,7 +571,7 @@ TEINAPI void internal__do_preferences_settings ()
     if (backup_interval != gEditorSettings.backupInterval)
     {
         gEditorSettings.backupInterval = backup_interval;
-        update_backup_timer();
+        UpdateBackupTimer();
     }
     internal__next_section(cursor);
 

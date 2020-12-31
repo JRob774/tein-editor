@@ -141,7 +141,7 @@ TEINAPI void init_application (int argc, char** argv)
     init_color_picker();
     InitPaletteLookup();
 
-    init_editor(argc, argv);
+    InitEditor(argc, argv);
 
     check_for_updates();
 
@@ -172,7 +172,7 @@ TEINAPI void quit_application ()
 {
     LogDebug("quit_application()");
 
-    quit_editor();
+    QuitEditor();
 
     FreeEditorCursors();
     FreeEditorResources();
@@ -220,7 +220,7 @@ TEINAPI void do_application ()
     DoControlPanel();
     DoToolbar();
     DoTabBar();
-    do_editor();
+    DoEditor();
     do_status_bar();
 
     EndPanel();
@@ -351,7 +351,7 @@ TEINAPI bool handle_application_events ()
         HandleUiEvents();
         HandleTilePanelEvents();
         HandleTabBarEvents();
-        handle_editor_events();
+        HandleEditorEvents();
         handle_preferences_menu_events();
         handle_color_picker_events();
         HandleNewEvents();

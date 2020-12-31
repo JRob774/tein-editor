@@ -89,7 +89,7 @@ TEINAPI inline bool operator!= (const Settings& a, const Settings& b)
 
 TEINAPI void UpdateSystemsThatRelyOnSettings (bool tileGraphicsChanged)
 {
-    update_backup_timer();
+    UpdateBackupTimer();
     UpdateEditorFont();
     LoadUiTheme();
     if (tileGraphicsChanged)

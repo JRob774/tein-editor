@@ -54,22 +54,22 @@ TEINAPI void DoHotbar ()
     packFlags = ((IsGPAKPackComplete()) ? UI_NONE : UI_LOCKED);
     unpackFlags = ((IsGPAKUnpackComplete()) ? UI_NONE : UI_LOCKED);
 
-    if (are_there_any_tabs())
+    if (AreThereAnyTabs())
     {
-        const Tab& tab = get_current_tab();
+        const Tab& tab = GetCurrentTab();
 
         // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
-        if (tab.type == Tab_Type::LEVEL)
+        if (tab.type == TabType::LEVEL)
         {
-            if (tab.level_history.currentPosition == tab.level_history.state.size()-1)
+            if (tab.levelHistory.currentPosition == tab.levelHistory.state.size()-1)
             {
                 redoFlags = UI_LOCKED;
             }
-            if (tab.level_history.currentPosition <= -1)
+            if (tab.levelHistory.currentPosition <= -1)
             {
                 undoFlags = UI_LOCKED;
             }
-            if (tab.level_history.state.empty())
+            if (tab.levelHistory.state.empty())
             {
                 undoFlags = UI_LOCKED;
                 redoFlags = UI_LOCKED;
@@ -77,15 +77,15 @@ TEINAPI void DoHotbar ()
         }
         else
         {
-            if (tab.map_history.currentPosition == tab.map_history.state.size()-1)
+            if (tab.mapHistory.currentPosition == tab.mapHistory.state.size()-1)
             {
                 redoFlags = UI_LOCKED;
             }
-            if (tab.map_history.currentPosition <= 0)
+            if (tab.mapHistory.currentPosition <= 0)
             {
                 undoFlags = UI_LOCKED;
             }
-            if (tab.map_history.state.size() == 1)
+            if (tab.mapHistory.state.size() == 1)
             {
                 undoFlags = UI_LOCKED;
                 redoFlags = UI_LOCKED;
@@ -93,15 +93,15 @@ TEINAPI void DoHotbar ()
         }
 
         // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
-        if (tab.type == Tab_Type::LEVEL)
+        if (tab.type == TabType::LEVEL)
         {
-            zoomOutFlags = ((tab.camera.zoom == MIN_LVL_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE);
-            zoomInFlags = ((tab.camera.zoom == MAX_LVL_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE);
+            zoomOutFlags = ((tab.camera.zoom == gMinLevelEditorZoom) ? UI_LOCKED : UI_NONE);
+            zoomInFlags = ((tab.camera.zoom == gMaxLevelEditorZoom) ? UI_LOCKED : UI_NONE);
         }
         else
         {
-            zoomOutFlags = (tab.camera.zoom == MIN_MAP_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
-            zoomInFlags = (tab.camera.zoom == MAX_MAP_EDITOR_ZOOM) ? UI_LOCKED : UI_NONE;
+            zoomOutFlags = (tab.camera.zoom == gMinMapEditorZoom) ? UI_LOCKED : UI_NONE;
+            zoomInFlags = (tab.camera.zoom == gMaxMapEditorZoom) ? UI_LOCKED : UI_NONE;
         }
     }
     else
@@ -211,100 +211,100 @@ TEINAPI void HotbarLoad ()
 
 TEINAPI void HotbarSave ()
 {
-    if (!are_there_any_tabs()) return;
-    switch (get_current_tab().type)
+    if (!AreThereAnyTabs()) return;
+    switch (GetCurrentTab().type)
     {
-        case (Tab_Type::LEVEL): LevelEditorSave(get_current_tab()); break;
-        case (Tab_Type::MAP): SaveMapTab(get_current_tab()); break;
+        case (TabType::LEVEL): LevelEditorSave(GetCurrentTab()); break;
+        case (TabType::MAP): SaveMapTab(GetCurrentTab()); break;
     }
 }
 
 TEINAPI void HotbarSaveAs ()
 {
-    if (!are_there_any_tabs()) return;
-    switch (get_current_tab().type)
+    if (!AreThereAnyTabs()) return;
+    switch (GetCurrentTab().type)
     {
-        case (Tab_Type::LEVEL): LevelEditorSaveAs(); break;
-        case (Tab_Type::MAP): SaveMapTabAs(); break;
+        case (TabType::LEVEL): LevelEditorSaveAs(); break;
+        case (TabType::MAP): SaveMapTabAs(); break;
     }
 }
 
 TEINAPI void HotbarUndo ()
 {
-    if (!are_there_any_tabs()) return;
-    switch (get_current_tab().type)
+    if (!AreThereAnyTabs()) return;
+    switch (GetCurrentTab().type)
     {
-        case (Tab_Type::LEVEL): LevelEditorUndo(); break;
-        case (Tab_Type::MAP): MapEditorUndo(); break;
+        case (TabType::LEVEL): LevelEditorUndo(); break;
+        case (TabType::MAP): MapEditorUndo(); break;
     }
 }
 
 TEINAPI void HotbarRedo ()
 {
-    if (!are_there_any_tabs()) return;
-    switch (get_current_tab().type)
+    if (!AreThereAnyTabs()) return;
+    switch (GetCurrentTab().type)
     {
-        case (Tab_Type::LEVEL): LevelEditorRedo(); break;
-        case (Tab_Type::MAP): MapEditorRedo(); break;
+        case (TabType::LEVEL): LevelEditorRedo(); break;
+        case (TabType::MAP): MapEditorRedo(); break;
     }
 }
 
 TEINAPI void HotbarHistoryBegin ()
 {
-    if (!are_there_any_tabs()) return;
-    switch (get_current_tab().type)
+    if (!AreThereAnyTabs()) return;
+    switch (GetCurrentTab().type)
     {
-        case (Tab_Type::LEVEL): LevelEditorHistoryBegin(); break;
-        case (Tab_Type::MAP): MapEditorHistoryBegin(); break;
+        case (TabType::LEVEL): LevelEditorHistoryBegin(); break;
+        case (TabType::MAP): MapEditorHistoryBegin(); break;
     }
 }
 
 TEINAPI void HotbarHistoryEnd ()
 {
-    if (!are_there_any_tabs()) return;
-    switch (get_current_tab().type)
+    if (!AreThereAnyTabs()) return;
+    switch (GetCurrentTab().type)
     {
-        case (Tab_Type::LEVEL): LevelEditorHistoryEnd(); break;
-        case (Tab_Type::MAP): MapEditorHistoryEnd(); break;
+        case (TabType::LEVEL): LevelEditorHistoryEnd(); break;
+        case (TabType::MAP): MapEditorHistoryEnd(); break;
     }
 }
 
 TEINAPI void HotbarZoomOut ()
 {
-    if (!are_there_any_tabs()) return;
-    Tab& tab = get_current_tab();
-    if (tab.type == Tab_Type::LEVEL)
+    if (!AreThereAnyTabs()) return;
+    Tab& tab = GetCurrentTab();
+    if (tab.type == TabType::LEVEL)
     {
-        if ((tab.camera.zoom /= 2) < MIN_LVL_EDITOR_ZOOM)
+        if ((tab.camera.zoom /= 2) < gMinLevelEditorZoom)
         {
-            tab.camera.zoom = MIN_LVL_EDITOR_ZOOM;
+            tab.camera.zoom = gMinLevelEditorZoom;
         }
     }
     else
     {
-        if ((tab.camera.zoom /= 2) < MIN_MAP_EDITOR_ZOOM)
+        if ((tab.camera.zoom /= 2) < gMinMapEditorZoom)
         {
-            tab.camera.zoom = MIN_MAP_EDITOR_ZOOM;
+            tab.camera.zoom = gMinMapEditorZoom;
         }
     }
 }
 
 TEINAPI void HotbarZoomIn ()
 {
-    if (!are_there_any_tabs()) return;
-    Tab& tab = get_current_tab();
-    if (tab.type == Tab_Type::LEVEL)
+    if (!AreThereAnyTabs()) return;
+    Tab& tab = GetCurrentTab();
+    if (tab.type == TabType::LEVEL)
     {
-        if ((tab.camera.zoom *= 2) > MAX_LVL_EDITOR_ZOOM)
+        if ((tab.camera.zoom *= 2) > gMaxLevelEditorZoom)
         {
-            tab.camera.zoom = MAX_LVL_EDITOR_ZOOM;
+            tab.camera.zoom = gMaxLevelEditorZoom;
         }
     }
     else
     {
-        if ((tab.camera.zoom *= 2) > MAX_MAP_EDITOR_ZOOM)
+        if ((tab.camera.zoom *= 2) > gMaxMapEditorZoom)
         {
-            tab.camera.zoom = MAX_MAP_EDITOR_ZOOM;
+            tab.camera.zoom = gMaxMapEditorZoom;
         }
     }
 }

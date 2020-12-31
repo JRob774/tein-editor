@@ -11,7 +11,7 @@ static constexpr const char* gNewHeightLabel = "Level Height:  ";
 static int gCurrentNewWidth = static_cast<int>(gDefaultLevelWidth);
 static int gCurrentNewHeight = static_cast<int>(gDefaultLevelHeight);
 
-static Tab_Type gCurrentTabType = Tab_Type::LEVEL;
+static TabType gCurrentTabType = TabType::LEVEL;
 
 namespace Internal
 {
@@ -24,8 +24,8 @@ namespace Internal
         }
         switch (gCurrentTabType)
         {
-            case (Tab_Type::LEVEL): create_new_level_tab_and_focus(GetNewWidth(), GetNewHeight()); break;
-            case (Tab_Type::MAP): create_new_map_tab_and_focus(); break;
+            case (TabType::LEVEL): CreateNewLevelTabAndFocus(GetNewWidth(), GetNewHeight()); break;
+            case (TabType::MAP): CreateNewMapTabAndFocus(); break;
         }
         HideWindow("WINNEW");
     }
@@ -37,7 +37,7 @@ TEINAPI void OpenNew ()
     gCurrentNewHeight = static_cast<int>(gDefaultLevelHeight);
 
     // Default to level because people make more levels than they do maps.
-    gCurrentTabType = Tab_Type::LEVEL;
+    gCurrentTabType = TabType::LEVEL;
 
     ShowWindow("WINNEW");
 }
@@ -72,11 +72,11 @@ TEINAPI void DoNew ()
     SetPanelCursorDir(UI_DIR_RIGHT);
     SetPanelCursor(&cursor);
 
-    UiFlag levelFlags = ((gCurrentTabType == Tab_Type::LEVEL) ? UI_HIGHLIGHT : UI_INACTIVE);
-    UiFlag mapFlags = ((gCurrentTabType == Tab_Type::MAP) ? UI_HIGHLIGHT : UI_INACTIVE);
+    UiFlag levelFlags = ((gCurrentTabType == TabType::LEVEL) ? UI_HIGHLIGHT : UI_INACTIVE);
+    UiFlag mapFlags = ((gCurrentTabType == TabType::MAP) ? UI_HIGHLIGHT : UI_INACTIVE);
 
-    if (DoTextButton(NULL, bw,bh, levelFlags, "Level")) gCurrentTabType = Tab_Type::LEVEL;
-    if (DoTextButton(NULL, bw,bh, mapFlags, "World Map")) gCurrentTabType = Tab_Type::MAP;
+    if (DoTextButton(NULL, bw,bh, levelFlags, "Level")) gCurrentTabType = TabType::LEVEL;
+    if (DoTextButton(NULL, bw,bh, mapFlags, "World Map")) gCurrentTabType = TabType::MAP;
 
     // Just in case of weird rounding manually add the right separator.
     cursor.x = vw;
@@ -112,7 +112,7 @@ TEINAPI void DoNew ()
     p2.w = vw               - 2;
     p2.h = vh - p2.y - nvfh - 1;
 
-    UiFlag panelFlags = ((gCurrentTabType == Tab_Type::LEVEL) ? UI_NONE : UI_LOCKED);
+    UiFlag panelFlags = ((gCurrentTabType == TabType::LEVEL) ? UI_NONE : UI_LOCKED);
     BeginPanel(p2, panelFlags, gUiColorMedium);
 
     cursor = Vec2(gNewXPad, gNewYPad);

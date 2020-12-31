@@ -11,10 +11,10 @@ namespace Internal
 
     TEINAPI bool AreActiveLayersInBoundsEmpty (int x, int y, int w, int h)
     {
-        const Tab& tab = get_current_tab();
+        const Tab& tab = GetCurrentTab();
         for (size_t i=0; i<tab.level.data.size(); ++i)
         {
-            if (tab.tile_layer_active[i])
+            if (tab.tileLayerActive[i])
             {
                 const auto& tileLayer = tab.level.data.at(i);
                 for (int iy=y; iy<(y+h); ++iy)
@@ -32,13 +32,13 @@ namespace Internal
 
     TEINAPI LevelHistoryState& GetCurrentHistoryState ()
     {
-        Tab& tab = get_current_tab();
-        return tab.level_history.state[tab.level_history.currentPosition];
+        Tab& tab = GetCurrentTab();
+        return tab.levelHistory.state[tab.levelHistory.currentPosition];
     }
 
     TEINAPI bool TileInBounds (int x, int y)
     {
-        const Tab& tab = get_current_tab();
+        const Tab& tab = GetCurrentTab();
 
         int w = tab.level.header.width;
         int h = tab.level.header.height;
@@ -48,9 +48,9 @@ namespace Internal
 
     TEINAPI void PlaceTileClear (int x, int y, TileID id, LevelLayer tileLayer)
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
-        if (!tab.tile_layer_active[tileLayer]) return;
+        if (!tab.tileLayerActive[tileLayer]) return;
         if (!TileInBounds(x,y)) return;
 
         auto& layer = tab.level.data[tileLayer];
@@ -65,14 +65,14 @@ namespace Internal
 
         layer[y * tab.level.header.width + x] = id;
 
-        get_current_tab().unsaved_changes = true;
+        GetCurrentTab().unsavedChanges = true;
     }
 
     TEINAPI void PlaceTile (int x, int y, TileID id, LevelLayer tileLayer)
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
-        if (!tab.tile_layer_active[tileLayer]) return;
+        if (!tab.tileLayerActive[tileLayer]) return;
         if (!TileInBounds(x,y)) return;
 
         auto& layer = tab.level.data[tileLayer];
@@ -87,14 +87,14 @@ namespace Internal
 
         layer[y * tab.level.header.width + x] = id;
 
-        get_current_tab().unsaved_changes = true;
+        GetCurrentTab().unsavedChanges = true;
     }
 
     TEINAPI void PlaceMirroredTileClear (int x, int y, TileID id, LevelLayer tileLayer)
     {
         bool both = (gLevelEditor.mirrorH && gLevelEditor.mirrorV);
 
-        const Tab& tab = get_current_tab();
+        const Tab& tab = GetCurrentTab();
 
         int lw = tab.level.header.width-1;
         int lh = tab.level.header.height-1;
@@ -109,7 +109,7 @@ namespace Internal
     {
         bool both = (gLevelEditor.mirrorH && gLevelEditor.mirrorV);
 
-        const Tab& tab = get_current_tab();
+        const Tab& tab = GetCurrentTab();
 
         int lw = tab.level.header.width-1;
         int lh = tab.level.header.height-1;
@@ -134,7 +134,7 @@ namespace Internal
 
     TEINAPI void Copy ()
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         if (AreAnySelectBoxesVisible())
         {
@@ -148,7 +148,7 @@ namespace Internal
 
             GetTotalSelectBoundary(&sl,&st,&sr,&sb);
 
-            for (auto& bounds: tab.tool_info.select.bounds)
+            for (auto& bounds: tab.toolInfo.select.bounds)
             {
                 if (bounds.visible)
                 {
@@ -173,7 +173,7 @@ namespace Internal
                     // Copy the selected tiles into the buffer.
                     for (size_t i=0; i<clipboard.data.size(); ++i)
                     {
-                        if (!tab.tile_layer_active[i]) continue;
+                        if (!tab.tileLayerActive[i]) continue;
 
                         const auto& srcLayer = tab.level.data[i];
                         auto& dstLayer = clipboard.data[i];
@@ -216,15 +216,15 @@ namespace Internal
     TEINAPI TileID GetFillFindID (int x, int y, LevelLayer layer)
     {
         if (!TileInBounds(x,y)) return 0;
-        const auto& tab = get_current_tab();
+        const auto& tab = GetCurrentTab();
         return tab.level.data[layer][y*tab.level.header.width+x];
     }
 
     TEINAPI bool InsideSelectBounds (int x, int y)
     {
-        if (!are_there_any_tabs()) return false;
-        const Tab& tab = get_current_tab();
-        for (auto& bounds: tab.tool_info.select.bounds)
+        if (!AreThereAnyTabs()) return false;
+        const Tab& tab = GetCurrentTab();
+        for (auto& bounds: tab.toolInfo.select.bounds)
         {
             if (bounds.visible)
             {
@@ -241,59 +241,59 @@ namespace Internal
 
     TEINAPI void CheckFillNeighbor (int x, int y)
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         // If the select box is visible then check if we should be filling inside
         // or outside of the select box bounds. Based on that case we discard any
         // tiles/spawns that do not fit in the bounds we are to be filling within.
         if (AreAnySelectBoxesVisible())
         {
-            if (tab.tool_info.fill.insideSelect) if (!InsideSelectBounds(x,y)) return;
+            if (tab.toolInfo.fill.insideSelect) if (!InsideSelectBounds(x,y)) return;
             else if (InsideSelectBounds(x,y)) return;
         }
 
         // If we have already visited this space then we don't need to again.
         size_t index = y * tab.level.header.width + x;
-        if (tab.tool_info.fill.searched.at(index)) return;
+        if (tab.toolInfo.fill.searched.at(index)) return;
 
-        if (GetFillFindID(x, y, tab.tool_info.fill.layer) == tab.tool_info.fill.findID)
+        if (GetFillFindID(x, y, tab.toolInfo.fill.layer) == tab.toolInfo.fill.findID)
         {
-            PlaceMirroredTile(x, y, tab.tool_info.fill.replaceID, tab.tool_info.fill.layer);
-            tab.tool_info.fill.frontier.push_back({ x,y });
+            PlaceMirroredTile(x, y, tab.toolInfo.fill.replaceID, tab.toolInfo.fill.layer);
+            tab.toolInfo.fill.frontier.push_back({ x,y });
         }
 
-        tab.tool_info.fill.searched.at(index) = true; // Mark as searched!
+        tab.toolInfo.fill.searched.at(index) = true; // Mark as searched!
     }
 
     TEINAPI void Fill ()
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         int w = tab.level.header.width;
         int h = tab.level.header.height;
 
-        tab.tool_info.fill.searched.resize(w*h, false);
+        tab.toolInfo.fill.searched.resize(w*h, false);
 
-        int startX = static_cast<int>(tab.tool_info.fill.start.x);
-        int startY = static_cast<int>(tab.tool_info.fill.start.y);
+        int startX = static_cast<int>(tab.toolInfo.fill.start.x);
+        int startY = static_cast<int>(tab.toolInfo.fill.start.y);
 
         // Start tile marked searched as we can just replace it now.
-        PlaceMirroredTile(startX, startY, tab.tool_info.fill.replaceID, tab.tool_info.fill.layer);
+        PlaceMirroredTile(startX, startY, tab.toolInfo.fill.replaceID, tab.toolInfo.fill.layer);
 
-        tab.tool_info.fill.searched.at(startY * w + startX) = true;
-        tab.tool_info.fill.frontier.push_back(tab.tool_info.fill.start);
+        tab.toolInfo.fill.searched.at(startY * w + startX) = true;
+        tab.toolInfo.fill.frontier.push_back(tab.toolInfo.fill.start);
 
         // Once the frontier is empty this means all tiles within the potentially
         // enclosed space have been filled and there is no where else to expand
         // to within the level. Meaning that the fill is complete and we can leave.
-        while (tab.tool_info.fill.frontier.size() > 0)
+        while (tab.toolInfo.fill.frontier.size() > 0)
         {
-            Vec2 temp = tab.tool_info.fill.frontier.at(0);
+            Vec2 temp = tab.toolInfo.fill.frontier.at(0);
 
             int cx = static_cast<int>(temp.x);
             int cy = static_cast<int>(temp.y);
 
-            tab.tool_info.fill.frontier.erase(tab.tool_info.fill.frontier.begin());
+            tab.toolInfo.fill.frontier.erase(tab.toolInfo.fill.frontier.begin());
 
             // Check the neighbors, but don't try to access outside level bounds.
             if (cy > 0)     CheckFillNeighbor(cx,   cy-1);
@@ -302,15 +302,15 @@ namespace Internal
             if (cx > 0)     CheckFillNeighbor(cx-1, cy  );
         }
 
-        tab.tool_info.fill.searched.clear();
-        tab.tool_info.fill.frontier.clear();
+        tab.toolInfo.fill.searched.clear();
+        tab.toolInfo.fill.frontier.clear();
     }
 
     TEINAPI void Replace ()
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
-        auto& layer = tab.level.data[tab.tool_info.fill.layer];
+        auto& layer = tab.level.data[tab.toolInfo.fill.layer];
         for (int y=0; y<tab.level.header.height; ++y)
         {
             for (int x=0; x<tab.level.header.width; ++x)
@@ -320,13 +320,13 @@ namespace Internal
                 // tiles/spawns that do not fit in the bounds we are to be replacing within.
                 if (AreAnySelectBoxesVisible())
                 {
-                    if (tab.tool_info.fill.insideSelect) if (!InsideSelectBounds(x,y)) continue;
+                    if (tab.toolInfo.fill.insideSelect) if (!InsideSelectBounds(x,y)) continue;
                     else if (InsideSelectBounds(x,y)) continue;
                 }
 
-                if (layer[y*tab.level.header.width+x] == tab.tool_info.fill.findID)
+                if (layer[y*tab.level.header.width+x] == tab.toolInfo.fill.findID)
                 {
-                    PlaceTile(x, y, tab.tool_info.fill.replaceID, tab.tool_info.fill.layer);
+                    PlaceTile(x, y, tab.toolInfo.fill.replaceID, tab.toolInfo.fill.layer);
                 }
             }
         }
@@ -342,20 +342,20 @@ namespace Internal
         // Do not bother starting a fill if out of bounds!
         if (!TileInBounds(x,y)) return;
 
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         bool place = (gLevelEditor.toolState == ToolState::PLACE);
         TileID id = ((place) ? GetSelectedTile() : 0);
 
-        tab.tool_info.fill.start = { tilePos.x, tilePos.y };
-        tab.tool_info.fill.layer = GetSelectedLayer();
-        tab.tool_info.fill.findID = GetFillFindID(x, y, tab.tool_info.fill.layer);
-        tab.tool_info.fill.replaceID = id;
+        tab.toolInfo.fill.start = { tilePos.x, tilePos.y };
+        tab.toolInfo.fill.layer = GetSelectedLayer();
+        tab.toolInfo.fill.findID = GetFillFindID(x, y, tab.toolInfo.fill.layer);
+        tab.toolInfo.fill.replaceID = id;
 
         // Determine if the origin of the fill is inside a selection box or not.
         // This part does not matter if a selection box is not currently present.
-        tab.tool_info.fill.insideSelect = false;
-        for (auto& bounds: tab.tool_info.select.bounds)
+        tab.toolInfo.fill.insideSelect = false;
+        for (auto& bounds: tab.toolInfo.select.bounds)
         {
             if (bounds.visible)
             {
@@ -363,13 +363,13 @@ namespace Internal
                 GetOrderedSelectBounds(bounds, &sl,&st,&sr,&sb);
                 if (x >= sl && x <= sr && y >= sb && y <= st)
                 {
-                    tab.tool_info.fill.insideSelect = true;
+                    tab.toolInfo.fill.insideSelect = true;
                 }
             }
         }
 
         // If the IDs are the same there is no need to fill.
-        if (tab.tool_info.fill.findID == tab.tool_info.fill.replaceID) return;
+        if (tab.toolInfo.fill.findID == tab.toolInfo.fill.replaceID) return;
 
         // Determine if we are doing a fill or find/replace.
         if (IsKeyModStateActive(KMOD_ALT)) Replace(); else Fill();
@@ -377,18 +377,18 @@ namespace Internal
 
     TEINAPI void RestoreSelectState (const std::vector<SelectBounds>& selectState)
     {
-        if (are_there_any_tabs())
+        if (AreThereAnyTabs())
         {
-            Tab& tab = get_current_tab();
-            tab.tool_info.select.bounds = selectState;
+            Tab& tab = GetCurrentTab();
+            tab.toolInfo.select.bounds = selectState;
         }
     }
 
     TEINAPI void Deselect ()
     {
-        if (!are_there_any_tabs()) return;
-        Tab& tab = get_current_tab();
-        tab.tool_info.select.bounds.clear();
+        if (!AreThereAnyTabs()) return;
+        Tab& tab = GetCurrentTab();
+        tab.toolInfo.select.bounds.clear();
     }
 
     TEINAPI void HandleSelect ()
@@ -405,33 +405,33 @@ namespace Internal
         // a new selection box -- instead we want it to do absolutely nothing.
         if (!MouseInsideLevelEditorViewport()) return;
 
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         // If it is the start of a new selection then we do some extra stuff.
-        if (tab.tool_info.select.start)
+        if (tab.toolInfo.select.start)
         {
             // Cache the old state so we can add it to the history for undo/redo.
-            tab.old_select_state = tab.tool_info.select.bounds;
+            tab.oldSelectState = tab.toolInfo.select.bounds;
 
             // Clear the old selection box(es) if we are not adding a new one.
-            if (!tab.tool_info.select.add)
+            if (!tab.toolInfo.select.add)
             {
-                tab.tool_info.select.bounds.clear();
+                tab.toolInfo.select.bounds.clear();
             }
 
-            tab.tool_info.select.bounds.push_back(SelectBounds());
-            SelectBounds& selectBounds = tab.tool_info.select.bounds.back();
+            tab.toolInfo.select.bounds.push_back(SelectBounds());
+            SelectBounds& selectBounds = tab.toolInfo.select.bounds.back();
 
             Vec2 ta = MouseToTilePosition();
             // Set the starting anchor point of the selection (clamp in bounds).
             selectBounds.top = std::clamp(static_cast<int>(ta.y), 0, tab.level.header.height-1);
             selectBounds.left = std::clamp(static_cast<int>(ta.x), 0, tab.level.header.width-1);
 
-            tab.tool_info.select.start = false;
+            tab.toolInfo.select.start = false;
             selectBounds.visible = false;
         }
 
-        SelectBounds& selectBounds = tab.tool_info.select.bounds.back();
+        SelectBounds& selectBounds = tab.toolInfo.select.bounds.back();
 
         // We do this initial check so that if the user started by dragging
         // their selection box from outside the editor bounds then it will
@@ -469,7 +469,7 @@ namespace Internal
 
     TEINAPI void FlipLevelH (const bool tileLayerActive[LEVEL_LAYER_TOTAL])
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         int lw = tab.level.header.width;
         int lh = tab.level.header.height;
@@ -503,12 +503,12 @@ namespace Internal
             }
         }
 
-        get_current_tab().unsaved_changes = true;
+        GetCurrentTab().unsavedChanges = true;
     }
 
     TEINAPI void FlipLevelV (const bool tileLayerActive[LEVEL_LAYER_TOTAL])
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         int lw = tab.level.header.width;
         int lh = tab.level.header.height;
@@ -550,7 +550,7 @@ namespace Internal
             }
         }
 
-        get_current_tab().unsaved_changes = true;
+        GetCurrentTab().unsavedChanges = true;
     }
 
     TEINAPI void DrawCursor (int x, int y, TileID id)
@@ -590,7 +590,7 @@ namespace Internal
 
         bool both = (gLevelEditor.mirrorH && gLevelEditor.mirrorV);
 
-        const Tab& tab = get_current_tab();
+        const Tab& tab = GetCurrentTab();
 
         int lw = tab.level.header.width-1;
         int lh = tab.level.header.height-1;
@@ -617,7 +617,7 @@ namespace Internal
         BeginStencil();
         for (auto& clipboard: gLevelEditor.clipboard)
         {
-            const Tab& tab = get_current_tab();
+            const Tab& tab = GetCurrentTab();
 
             int lw = tab.level.header.width-1;
             int lh = tab.level.header.height-1;
@@ -660,7 +660,7 @@ namespace Internal
         std::array<std::map<size_t,bool>, LEVEL_LAYER_TOTAL> tileSpaceOccupied;
         for (auto& clipboard: gLevelEditor.clipboard)
         {
-            const Tab& tab = get_current_tab();
+            const Tab& tab = GetCurrentTab();
 
             int lw = tab.level.header.width-1;
             int lh = tab.level.header.height-1;
@@ -685,7 +685,7 @@ namespace Internal
             for (int i=0; i<clipboard.data.size(); ++i)
             {
                 // If the layer is not active then we do not bother drawing its clipboard content.
-                if (!tab.tile_layer_active[i]) continue;
+                if (!tab.tileLayerActive[i]) continue;
 
                 // We start the Y axis from the bottom because the game stores data
                 // with coordinate (0,0) being the bottom left of the current level.
@@ -777,7 +777,7 @@ namespace Internal
 
     TEINAPI void Resize (ResizeDir dir, int newWidth, int newHeight)
     {
-        Tab& tab = get_current_tab();
+        Tab& tab = GetCurrentTab();
 
         int lw = tab.level.header.width;
         int lh = tab.level.header.height;
@@ -886,16 +886,16 @@ TEINAPI void DoLevelEditor ()
     // transforms will be applied) can use the mouse position reliably as
     // prior to doing this there were bugs with the cursor's position being
     // slightly off during those operations + it's probably a bit faster.
-    push_editor_camera_transform();
+    PushEditorCameraTransform();
     gLevelEditor.mouseWorld = ScreenToWorld(GetMousePos());
     gLevelEditor.mouse = GetMousePos();
     gLevelEditor.mouseTile = Internal::MouseToTilePosition();
-    pop_editor_camera_transform();
+    PopEditorCameraTransform();
 
     // We cache this just in case anyone else wants to use it (status bar).
     gLevelEditor.viewport = GetViewport();
 
-    const Tab& tab = get_current_tab();
+    const Tab& tab = GetCurrentTab();
 
     // If we're in the level editor viewport then the cursor can be one of
     // the custom tool cursors based on what our current tool currently is.
@@ -917,7 +917,7 @@ TEINAPI void DoLevelEditor ()
         }
     }
 
-    push_editor_camera_transform();
+    PushEditorCameraTransform();
 
     // The boundaries of the actual level content (tiles/spawns).
     gLevelEditor.bounds.w = tab.level.header.width  * gDefaultTileSize;
@@ -972,7 +972,7 @@ TEINAPI void DoLevelEditor ()
     for (int i=LEVEL_LAYER_BACK2; (i<=LEVEL_LAYER_BACK2)&&(i>=LEVEL_LAYER_TAG); --i)
     {
         // If the layer is not active then we do not bother drawing its content.
-        if (!tab.tile_layer_active[i]) continue;
+        if (!tab.tileLayerActive[i]) continue;
 
         if (gLevelEditor.layerTransparency && ((selectedLayer != LEVEL_LAYER_TAG) && (static_cast<int>(selectedLayer) > i)))
         {
@@ -1114,7 +1114,7 @@ TEINAPI void DoLevelEditor ()
 
     // Draw the selection box(es) if visible.
     BeginStencil();
-    for (auto& bounds: tab.tool_info.select.bounds)
+    for (auto& bounds: tab.toolInfo.select.bounds)
     {
         if (bounds.visible)
         {
@@ -1143,7 +1143,7 @@ TEINAPI void DoLevelEditor ()
     EndStencil();
 
     // Draw the tile/spawn grid for the level editor.
-    if (editor.grid_visible)
+    if (gEditor.gridVisible)
     {
         BeginDraw(BufferMode::LINES);
         for (float ix=x+gDefaultTileSize; ix<(x+w); ix+=gDefaultTileSize)
@@ -1162,7 +1162,7 @@ TEINAPI void DoLevelEditor ()
     // Draw the large entity guides if they are enabled.
     if (gLevelEditor.largeTiles && gLevelEditor.entityGuides)
     {
-        if (tab.tile_layer_active[LEVEL_LAYER_ACTIVE])
+        if (tab.tileLayerActive[LEVEL_LAYER_ACTIVE])
         {
             BeginScissor(scx,scy,scw,sch);
 
@@ -1248,7 +1248,7 @@ TEINAPI void DoLevelEditor ()
 
     EndStencil();
 
-    pop_editor_camera_transform();
+    PopEditorCameraTransform();
 
     EndPanel();
 
@@ -1257,7 +1257,7 @@ TEINAPI void DoLevelEditor ()
 
 TEINAPI void HandleLevelEditorEvents ()
 {
-    Tab* tab = &get_current_tab();
+    Tab* tab = &GetCurrentTab();
 
     // We don't want to handle any of these events if we don't have focus.
     // We set the tool state to idle here so that if the user was doing
@@ -1275,7 +1275,7 @@ TEINAPI void HandleLevelEditorEvents ()
         case (SDL_MOUSEBUTTONUP):
         {
             // Do not handle these events whilst we are cooling down!
-            if (editor.dialog_box) return;
+            if (gEditor.dialogBox) return;
 
             bool pressed = (main_event.button.state == SDL_PRESSED);
             if (pressed && IsThereAHitUiElement()) return;
@@ -1291,8 +1291,8 @@ TEINAPI void HandleLevelEditorEvents ()
                         // This will be the start of a new selection!
                         if (gLevelEditor.toolType == ToolType::SELECT)
                         {
-                            tab->tool_info.select.start = true;
-                            tab->tool_info.select.cachedSize = tab->tool_info.select.bounds.size();
+                            tab->toolInfo.select.start = true;
+                            tab->toolInfo.select.cachedSize = tab->toolInfo.select.bounds.size();
                         }
                         if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
                         {
@@ -1308,10 +1308,10 @@ TEINAPI void HandleLevelEditorEvents ()
                         gLevelEditor.toolState = ToolState::IDLE;
                         if (gLevelEditor.toolType == ToolType::SELECT)
                         {
-                            if (tab->tool_info.select.bounds.size() > tab->tool_info.select.cachedSize)
+                            if (tab->toolInfo.select.bounds.size() > tab->toolInfo.select.cachedSize)
                             {
                                 NewLevelHistoryState(LevelHistoryAction::SELECT_STATE);
-                                tab->tool_info.select.cachedSize = tab->tool_info.select.bounds.size();
+                                tab->toolInfo.select.cachedSize = tab->toolInfo.select.bounds.size();
                             }
                         }
                     }
@@ -1351,7 +1351,7 @@ TEINAPI void HandleLevelEditorEvents ()
             switch (main_event.key.keysym.sym)
             {
                 // Handle toggling the select box addition mode using the CTRL key.
-                case (SDLK_RCTRL): case (SDLK_LCTRL): tab->tool_info.select.add = pressed; break;
+                case (SDLK_RCTRL): case (SDLK_LCTRL): tab->toolInfo.select.add = pressed; break;
             }
         } break;
     }
@@ -1375,11 +1375,11 @@ TEINAPI void NewLevelHistoryState (LevelHistoryAction action)
 {
     if (action == LevelHistoryAction::NORMAL && !MouseInsideLevelEditorViewport()) return;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     // Don't bother creating a new state if the current erase/place action is
     // empty otherwise we will end up with a bunch of empty states in the list.
-    if (tab.level_history.currentPosition > -1)
+    if (tab.levelHistory.currentPosition > -1)
     {
         LevelHistoryState& current = Internal::GetCurrentHistoryState();
         if (current.info.empty() && current.action == action && action == LevelHistoryAction::NORMAL)
@@ -1390,62 +1390,62 @@ TEINAPI void NewLevelHistoryState (LevelHistoryAction action)
 
     // Clear all the history after the current position, if there is any, as it
     // will no longer apply to the timeline of level editor actions anymore.
-    int deletePosition = tab.level_history.currentPosition+1;
-    if (deletePosition < static_cast<int>(tab.level_history.state.size()))
+    int deletePosition = tab.levelHistory.currentPosition+1;
+    if (deletePosition < static_cast<int>(tab.levelHistory.state.size()))
     {
-        auto begin = tab.level_history.state.begin();
-        auto end = tab.level_history.state.end();
+        auto begin = tab.levelHistory.state.begin();
+        auto end = tab.levelHistory.state.end();
 
-        tab.level_history.state.erase(begin+deletePosition, end);
+        tab.levelHistory.state.erase(begin+deletePosition, end);
     }
 
     // If it's a selection action then we don't need to modify this.
     if (action != LevelHistoryAction::SELECT_STATE)
     {
-        get_current_tab().unsaved_changes = true;
+        GetCurrentTab().unsavedChanges = true;
     }
 
-    tab.level_history.state.push_back(LevelHistoryState());
-    tab.level_history.state.back().action = action;
+    tab.levelHistory.state.push_back(LevelHistoryState());
+    tab.levelHistory.state.back().action = action;
 
     // Also deal with the layer states for flip actions.
     if (action == LevelHistoryAction::FLIP_LEVEL_H || action == LevelHistoryAction::FLIP_LEVEL_V)
     {
         for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
         {
-            tab.level_history.state.back().tileLayerActive[i] = tab.tile_layer_active[i];
+            tab.levelHistory.state.back().tileLayerActive[i] = tab.tileLayerActive[i];
         }
     }
 
     // Also deal with the select bounds for selection actions.
     if (action == LevelHistoryAction::SELECT_STATE)
     {
-        tab.level_history.state.back().oldSelectState = tab.old_select_state;
-        tab.level_history.state.back().newSelectState = tab.tool_info.select.bounds;
+        tab.levelHistory.state.back().oldSelectState = tab.oldSelectState;
+        tab.levelHistory.state.back().newSelectState = tab.toolInfo.select.bounds;
     }
 
     // Also deal with width and height for resizing.
     if (action == LevelHistoryAction::RESIZE)
     {
-        tab.level_history.state.back().resizeDir = GetResizeDir();
-        tab.level_history.state.back().oldWidth = tab.level.header.width;
-        tab.level_history.state.back().oldHeight = tab.level.header.height;
-        tab.level_history.state.back().newWidth = GetResizeWidth();
-        tab.level_history.state.back().newHeight = GetResizeHeight();
+        tab.levelHistory.state.back().resizeDir = GetResizeDir();
+        tab.levelHistory.state.back().oldWidth = tab.level.header.width;
+        tab.levelHistory.state.back().oldHeight = tab.level.header.height;
+        tab.levelHistory.state.back().newWidth = GetResizeWidth();
+        tab.levelHistory.state.back().newHeight = GetResizeHeight();
     }
 
-    ++tab.level_history.currentPosition;
+    ++tab.levelHistory.currentPosition;
 }
 
 TEINAPI void AddToHistoryNormalState (LevelHistoryInfo info)
 {
     if (!MouseInsideLevelEditorViewport()) return;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     // If there is no current action then we create one. This resolved some
     // potential bugs that can occur when undoing/redoing mid stroke, etc.
-    if (tab.level_history.currentPosition <= -1)
+    if (tab.levelHistory.currentPosition <= -1)
     {
         NewLevelHistoryState(LevelHistoryAction::NORMAL);
     }
@@ -1482,16 +1482,16 @@ TEINAPI void AddToHistoryClearState (LevelHistoryInfo info)
 
 TEINAPI bool AreAllLayersInactive ()
 {
-    const Tab& tab = get_current_tab();
-    for (auto tileLayerActive: tab.tile_layer_active) if (tileLayerActive) return false;
+    const Tab& tab = GetCurrentTab();
+    for (auto tileLayerActive: tab.tileLayerActive) if (tileLayerActive) return false;
     return true;
 }
 
 TEINAPI bool AreAnySelectBoxesVisible ()
 {
-    if (!are_there_any_tabs()) return false;
-    const Tab& tab = get_current_tab();
-    for (auto& bounds: tab.tool_info.select.bounds) if (bounds.visible) return true;
+    if (!AreThereAnyTabs()) return false;
+    const Tab& tab = GetCurrentTab();
+    for (auto& bounds: tab.toolInfo.select.bounds) if (bounds.visible) return true;
     return false;
 }
 
@@ -1512,16 +1512,16 @@ TEINAPI void GetTotalSelectBoundary (int* l, int* t, int* r, int* b)
     if (r) *r = 0;
     if (b) *b = 0;
 
-    if (!are_there_any_tabs() || !AreAnySelectBoxesVisible()) return;
+    if (!AreThereAnyTabs() || !AreAnySelectBoxesVisible()) return;
 
-    const Tab& tab = get_current_tab();
+    const Tab& tab = GetCurrentTab();
 
     int minL = INT_MAX;
     int maxT = 0;
     int maxR = 0;
     int minB = INT_MAX;
 
-    for (auto& bounds: tab.tool_info.select.bounds)
+    for (auto& bounds: tab.toolInfo.select.bounds)
     {
         if (bounds.visible)
         {
@@ -1545,28 +1545,28 @@ TEINAPI void LoadLevelTab (std::string fileName)
 {
     // If there is just one tab and it is completely empty with no changes
     // then we close this tab before opening the new level(s) in editor.
-    if (editor.tabs.size() == 1)
+    if (gEditor.tabs.size() == 1)
     {
-        if (is_current_tab_empty() && !get_current_tab().unsaved_changes && get_current_tab().name.empty())
+        if (IsCurrentTabEmpty() && !GetCurrentTab().unsavedChanges && GetCurrentTab().name.empty())
         {
-            close_current_tab();
+            CloseCurrentTab();
         }
     }
 
-    size_t tabIndex = get_tab_index_with_this_file_name(fileName);
-    if (tabIndex != INVALID_TAB) // This file is already open so just focus on it.
+    size_t tabIndex = GetTabIndexWithThisFileName(fileName);
+    if (tabIndex != gInvalidTab) // This file is already open so just focus on it.
     {
-        set_current_tab(tabIndex);
+        SetCurrentTab(tabIndex);
     }
     else
     {
-        create_new_level_tab_and_focus();
-        Tab& tab = get_current_tab();
+        CreateNewLevelTabAndFocus();
+        Tab& tab = GetCurrentTab();
         tab.name = fileName;
-        set_main_window_subtitle_for_tab(tab.name);
+        SetMainWindowSubtitleForTab(tab.name);
         if (!LoadLevel(tab.level, tab.name))
         {
-            close_current_tab();
+            CloseCurrentTab();
         }
     }
 
@@ -1587,8 +1587,8 @@ TEINAPI bool LevelEditorSave (Tab& tab)
     SaveLevel(tab.level, tab.name);
     BackupLevelTab(tab.level, tab.name);
 
-    tab.unsaved_changes = false;
-    set_main_window_subtitle_for_tab(tab.name);
+    tab.unsavedChanges = false;
+    SetMainWindowSubtitleForTab(tab.name);
 
     return true;
 }
@@ -1598,26 +1598,26 @@ TEINAPI bool LevelEditorSaveAs ()
     std::string fileName = SaveDialog(DialogType::LVL);
     if (fileName.empty()) return false;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     tab.name = fileName;
     SaveLevel(tab.level, tab.name);
     BackupLevelTab(tab.level, tab.name);
 
-    tab.unsaved_changes = false;
-    set_main_window_subtitle_for_tab(tab.name);
+    tab.unsavedChanges = false;
+    SetMainWindowSubtitleForTab(tab.name);
 
     return true;
 }
 
 TEINAPI void LevelEditorClearSelect ()
 {
-    if (!current_tab_is_level() || !AreAnySelectBoxesVisible()) return;
+    if (!CurrentTabIsLevel() || !AreAnySelectBoxesVisible()) return;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     NewLevelHistoryState(LevelHistoryAction::CLEAR);
-    for (auto& bounds: tab.tool_info.select.bounds)
+    for (auto& bounds: tab.toolInfo.select.bounds)
     {
         if (bounds.visible)
         {
@@ -1639,59 +1639,59 @@ TEINAPI void LevelEditorClearSelect ()
     }
 
     // We also deselect the select box(es) afterwards -- feels right.
-    tab.level_history.state.back().oldSelectState = tab.tool_info.select.bounds;
+    tab.levelHistory.state.back().oldSelectState = tab.toolInfo.select.bounds;
     Internal::Deselect();
-    tab.level_history.state.back().newSelectState = tab.tool_info.select.bounds;
+    tab.levelHistory.state.back().newSelectState = tab.toolInfo.select.bounds;
 
-    get_current_tab().unsaved_changes = true;
+    GetCurrentTab().unsavedChanges = true;
 }
 
 TEINAPI void LevelEditorDeselect ()
 {
-    if (!current_tab_is_level()) return;
-    Tab& tab = get_current_tab();
-    tab.old_select_state = tab.tool_info.select.bounds;
+    if (!CurrentTabIsLevel()) return;
+    Tab& tab = GetCurrentTab();
+    tab.oldSelectState = tab.toolInfo.select.bounds;
     Internal::Deselect();
     NewLevelHistoryState(LevelHistoryAction::SELECT_STATE);
 }
 
 TEINAPI void LevelEditorSelectAll ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
-    tab.old_select_state = tab.tool_info.select.bounds;
+    tab.oldSelectState = tab.toolInfo.select.bounds;
 
-    tab.tool_info.select.bounds.clear();
-    tab.tool_info.select.bounds.push_back(SelectBounds());
-    tab.tool_info.select.bounds.back().left = 0;
-    tab.tool_info.select.bounds.back().top = 0;
-    tab.tool_info.select.bounds.back().right = tab.level.header.width-1;
-    tab.tool_info.select.bounds.back().bottom = tab.level.header.height-1;
-    tab.tool_info.select.bounds.back().visible = true;
+    tab.toolInfo.select.bounds.clear();
+    tab.toolInfo.select.bounds.push_back(SelectBounds());
+    tab.toolInfo.select.bounds.back().left = 0;
+    tab.toolInfo.select.bounds.back().top = 0;
+    tab.toolInfo.select.bounds.back().right = tab.level.header.width-1;
+    tab.toolInfo.select.bounds.back().bottom = tab.level.header.height-1;
+    tab.toolInfo.select.bounds.back().visible = true;
 
     NewLevelHistoryState(LevelHistoryAction::SELECT_STATE);
 }
 
 TEINAPI void LevelEditorCopy ()
 {
-    if (!current_tab_is_level() || !AreAnySelectBoxesVisible()) return;
+    if (!CurrentTabIsLevel() || !AreAnySelectBoxesVisible()) return;
     Internal::Copy();
     LevelEditorDeselect(); // We also deselect the region afterwards, feels right.
 }
 
 TEINAPI void LevelEditorCut ()
 {
-    if (!current_tab_is_level() || !AreAnySelectBoxesVisible()) return;
+    if (!CurrentTabIsLevel() || !AreAnySelectBoxesVisible()) return;
     Internal::Copy();
     LevelEditorClearSelect(); // Does the deselect for us.
-    get_current_tab().unsaved_changes = true;
+    GetCurrentTab().unsavedChanges = true;
 }
 
 TEINAPI void LevelEditorPaste ()
 {
-    if (!current_tab_is_level() || Internal::ClipboardEmpty()) return;
+    if (!CurrentTabIsLevel() || Internal::ClipboardEmpty()) return;
 
     Vec2 tilePos = gLevelEditor.mouseTile;
     NewLevelHistoryState(LevelHistoryAction::NORMAL);
@@ -1717,7 +1717,7 @@ TEINAPI void LevelEditorPaste ()
         }
     }
 
-    get_current_tab().unsaved_changes = true;
+    GetCurrentTab().unsavedChanges = true;
 }
 
 TEINAPI void FlipLevelH ()
@@ -1725,7 +1725,7 @@ TEINAPI void FlipLevelH ()
     // If all layers are inactive then there is no point in doing the flip.
     if (AreAllLayersInactive()) return;
 
-    const Tab& tab = get_current_tab();
+    const Tab& tab = GetCurrentTab();
 
     int lw = tab.level.header.width;
     int lh = tab.level.header.height;
@@ -1734,14 +1734,14 @@ TEINAPI void FlipLevelH ()
     if (Internal::AreActiveLayersInBoundsEmpty(0,0,lw,lh)) return;
 
     NewLevelHistoryState(LevelHistoryAction::FLIP_LEVEL_H);
-    Internal::FlipLevelH(tab.tile_layer_active);
+    Internal::FlipLevelH(tab.tileLayerActive);
 }
 TEINAPI void FlipLevelV ()
 {
     // If all layers are inactive then there is no point in doing the flip.
     if (AreAllLayersInactive()) return;
 
-    const Tab& tab = get_current_tab();
+    const Tab& tab = GetCurrentTab();
 
     int lw = tab.level.header.width;
     int lh = tab.level.header.height;
@@ -1750,20 +1750,20 @@ TEINAPI void FlipLevelV ()
     if (Internal::AreActiveLayersInBoundsEmpty(0,0,lw,lh)) return;
 
     NewLevelHistoryState(LevelHistoryAction::FLIP_LEVEL_V);
-    Internal::FlipLevelV(tab.tile_layer_active);
+    Internal::FlipLevelV(tab.tileLayerActive);
 }
 
 TEINAPI void LevelHasUnsavedChanges ()
 {
-    get_current_tab().unsaved_changes = true;
+    GetCurrentTab().unsavedChanges = true;
 }
 
 TEINAPI void LevelEditorUndo ()
 {
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     // There is no history or we are already at the beginning.
-    if (tab.level_history.currentPosition <= -1) return;
+    if (tab.levelHistory.currentPosition <= -1) return;
 
     bool normalStateEmpty = false;
 
@@ -1806,9 +1806,9 @@ TEINAPI void LevelEditorUndo ()
         } break;
     }
 
-    if (tab.level_history.currentPosition > -1)
+    if (tab.levelHistory.currentPosition > -1)
     {
-        --tab.level_history.currentPosition;
+        --tab.levelHistory.currentPosition;
         // We only want to do this part if there is another state to undo.
         if (state.action == LevelHistoryAction::NORMAL && normalStateEmpty)
         {
@@ -1818,7 +1818,7 @@ TEINAPI void LevelEditorUndo ()
 
     if (state.action != LevelHistoryAction::SELECT_STATE)
     {
-        tab.unsaved_changes = true;
+        tab.unsavedChanges = true;
     }
 }
 
@@ -1826,12 +1826,12 @@ TEINAPI void LevelEditorRedo ()
 {
     printf("LevelEditorRedo\n");
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     // There is no history or we are already at the end.
-    if (tab.level_history.currentPosition >= tab.level_history.state.size()-1) return;
+    if (tab.levelHistory.currentPosition >= tab.levelHistory.state.size()-1) return;
 
-    ++tab.level_history.currentPosition;
+    ++tab.levelHistory.currentPosition;
 
     LevelHistoryState& state = Internal::GetCurrentHistoryState();
     switch (state.action)
@@ -1871,48 +1871,48 @@ TEINAPI void LevelEditorRedo ()
     // If we end on an empty normal state and we are not already at the end of
     // the redo history then we redo again as it feels nicer. This action is
     // the inverse of what we do when we do an undo with blank normal actions.
-    if (tab.level_history.currentPosition+1 < tab.level_history.state.size())
+    if (tab.levelHistory.currentPosition+1 < tab.levelHistory.state.size())
     {
         // Jump forward to see if it is empty, if it's not then revert back.
-        ++tab.level_history.currentPosition;
+        ++tab.levelHistory.currentPosition;
         LevelHistoryState& nextState = Internal::GetCurrentHistoryState();
 
         if (nextState.action != LevelHistoryAction::NORMAL || !nextState.info.empty())
         {
-            --tab.level_history.currentPosition;
+            --tab.levelHistory.currentPosition;
         }
     }
 
     if (state.action != LevelHistoryAction::SELECT_STATE)
     {
-        tab.unsaved_changes = true;
+        tab.unsavedChanges = true;
     }
 }
 
 TEINAPI void LevelEditorHistoryBegin ()
 {
-    Tab& tab = get_current_tab();
-    while (tab.level_history.currentPosition > -1) LevelEditorUndo();
-    tab.unsaved_changes = true;
+    Tab& tab = GetCurrentTab();
+    while (tab.levelHistory.currentPosition > -1) LevelEditorUndo();
+    tab.unsavedChanges = true;
 }
 TEINAPI void LevelEditorHistoryEnd ()
 {
     printf("LevelEditorHistoryEnd\n");
-    Tab& tab = get_current_tab();
-    int maximum = static_cast<int>(tab.level_history.state.size()-1);
-    while (tab.level_history.currentPosition < maximum) LevelEditorRedo();
-    tab.unsaved_changes = true;
+    Tab& tab = GetCurrentTab();
+    int maximum = static_cast<int>(tab.levelHistory.state.size()-1);
+    while (tab.levelHistory.currentPosition < maximum) LevelEditorRedo();
+    tab.unsavedChanges = true;
 }
 
 TEINAPI void LevelEditorResize ()
 {
-    if (!current_tab_is_level()) return;
-    const Tab& tab = get_current_tab();
+    if (!CurrentTabIsLevel()) return;
+    const Tab& tab = GetCurrentTab();
     OpenResize(tab.level.header.width, tab.level.header.height);
 }
 TEINAPI void LevelEditorResizeOkay ()
 {
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     int lw = tab.level.header.width;
     int lh = tab.level.header.height;
@@ -1934,9 +1934,9 @@ TEINAPI void LevelEditorResizeOkay ()
 
 TEINAPI void LevelEditorLoadPrevLevel ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     std::string path(StripFileName(tab.name));
 
@@ -1967,21 +1967,21 @@ TEINAPI void LevelEditorLoadPrevLevel ()
 
     prev += ".lvl";
 
-    if (save_changes_prompt(tab) == ALERT_RESULT_CANCEL) return;
-    tab.unsaved_changes = false;
+    if (SaveChangesPrompt(tab) == ALERT_RESULT_CANCEL) return;
+    tab.unsavedChanges = false;
 
     // Finally, we can load the prev level as the current tab.
     tab.name = prev;
-    set_main_window_subtitle_for_tab(tab.name);
+    SetMainWindowSubtitleForTab(tab.name);
 
-    if (!LoadLevel(tab.level, tab.name)) close_current_tab();
+    if (!LoadLevel(tab.level, tab.name)) CloseCurrentTab();
 }
 
 TEINAPI void LevelEditorLoadNextLevel ()
 {
-    if (!current_tab_is_level()) return;
+    if (!CurrentTabIsLevel()) return;
 
-    Tab& tab = get_current_tab();
+    Tab& tab = GetCurrentTab();
 
     std::string path(StripFileName(tab.name));
 
@@ -2016,14 +2016,14 @@ TEINAPI void LevelEditorLoadNextLevel ()
 
     next += ".lvl";
 
-    if (save_changes_prompt(tab) == ALERT_RESULT_CANCEL) return;
-    tab.unsaved_changes = false;
+    if (SaveChangesPrompt(tab) == ALERT_RESULT_CANCEL) return;
+    tab.unsavedChanges = false;
 
     // Finally, we can load the next level as the current tab.
     tab.name = next;
-    set_main_window_subtitle_for_tab(tab.name);
+    SetMainWindowSubtitleForTab(tab.name);
 
-    if (!LoadLevel(tab.level, tab.name)) close_current_tab();
+    if (!LoadLevel(tab.level, tab.name)) CloseCurrentTab();
 }
 
 TEINAPI void LevelDropFile (Tab* tab, std::string fileName)
@@ -2032,28 +2032,28 @@ TEINAPI void LevelDropFile (Tab* tab, std::string fileName)
 
     // If there is just one tab and it is completely empty with no changes
     // then we close this tab before opening the new level(s) in editor.
-    if (editor.tabs.size() == 1)
+    if (gEditor.tabs.size() == 1)
     {
-        if (is_current_tab_empty() && !get_current_tab().unsaved_changes && get_current_tab().name.empty())
+        if (IsCurrentTabEmpty() && !GetCurrentTab().unsavedChanges && GetCurrentTab().name.empty())
         {
-            close_current_tab();
+            CloseCurrentTab();
         }
     }
 
-    size_t tabIndex = get_tab_index_with_this_file_name(fileName);
-    if (tabIndex != INVALID_TAB) // This file is already open so just focus on it.
+    size_t tabIndex = GetTabIndexWithThisFileName(fileName);
+    if (tabIndex != gInvalidTab) // This file is already open so just focus on it.
     {
-        set_current_tab(tabIndex);
+        SetCurrentTab(tabIndex);
     }
     else
     {
-        create_new_level_tab_and_focus();
-        tab = &get_current_tab();
+        CreateNewLevelTabAndFocus();
+        tab = &GetCurrentTab();
         tab->name = fileName;
-        set_main_window_subtitle_for_tab(tab->name);
+        SetMainWindowSubtitleForTab(tab->name);
         if (!LoadLevel(tab->level, tab->name))
         {
-            close_current_tab();
+            CloseCurrentTab();
         }
     }
 
@@ -2129,10 +2129,10 @@ TEINAPI void BackupLevelTab (const Level& level, const std::string& fileName)
 
 TEINAPI bool IsCurrentLevelEmpty ()
 {
-    if (are_there_any_level_tabs())
+    if (AreThereAnyLevelTabs())
     {
-        const Tab& tab = get_current_tab();
-        if (tab.type == Tab_Type::LEVEL)
+        const Tab& tab = GetCurrentTab();
+        if (tab.type == TabType::LEVEL)
         {
             for (const auto& layer: tab.level.data)
             {

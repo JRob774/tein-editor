@@ -1,128 +1,110 @@
-/*******************************************************************************
- * Core editor functionality with features shared across the map/level editors.
- * Authored by Joshua Robertson
- * Available Under MIT License (See EOF)
- *
-*******************************************************************************/
-
 #pragma once
 
-/*////////////////////////////////////////////////////////////////////////////*/
+static constexpr float gMinLevelEditorZoom = .25f;
+static constexpr float gMaxLevelEditorZoom = 4;
 
-/* -------------------------------------------------------------------------- */
+static constexpr float gMinMapEditorZoom = .125f;
+static constexpr float gMaxMapEditorZoom = 1;
 
-static constexpr float MIN_LVL_EDITOR_ZOOM   =  .25f;
-static constexpr float MAX_LVL_EDITOR_ZOOM   =     4;
-static constexpr float MIN_MAP_EDITOR_ZOOM   = .125f;
-static constexpr float MAX_MAP_EDITOR_ZOOM   =     1;
-static constexpr float EDITOR_ZOOM_INCREMENT =   .1f;
+static constexpr float gEditorZoomIncrement = .1f;
 
 struct Camera
 {
-    float x;
-    float y;
-
+    float x,y;
     float zoom;
 };
 
-static constexpr size_t INVALID_TAB = static_cast<size_t>(-1);
+static constexpr size_t gInvalidTab = static_cast<size_t>(-1);
 
-enum class Tab_Type { LEVEL, MAP };
+enum class TabType { LEVEL, MAP };
 
 struct Tab
 {
-    // GENERAL
-    Tab_Type        type;
-    std::string     name;
-    Camera        camera;
-    bool unsaved_changes;
-
-    // LEVEL
-    Level         level;
-    ToolInfo      tool_info;
-    LevelHistory  level_history;
-    bool tile_layer_active[LEVEL_LAYER_TOTAL];
-    std::vector<SelectBounds> old_select_state; // We use this for the selection history undo/redo system.
-
-    // MAP
-    Map         map;
-    MapHistory  map_history;
-    MapSelect   map_select;
-    MapNodeInfo map_node_info;
+    // GENERAL EDITOR
+    TabType type;
+    std::string name;
+    Camera camera;
+    bool unsavedChanges;
+    // LEVEL EDITOR
+    Level level;
+    ToolInfo toolInfo;
+    LevelHistory levelHistory;
+    bool tileLayerActive[LEVEL_LAYER_TOTAL];
+    std::vector<SelectBounds> oldSelectState; // We use this for the selection history undo/redo system.
+    // MAP EDITOR
+    Map map;
+    MapHistory mapHistory;
+    MapSelect mapSelect;
+    MapNodeInfo mapNodeInfo;
 };
 
 struct Editor
 {
     // Names of recently closed tabs so that they can be restored.
-    std::vector<std::string> closed_tabs;
+    std::vector<std::string> closedTabs;
 
     std::vector<Tab> tabs;
-    size_t current_tab;
+    size_t currentTab;
 
-    SDL_TimerID backup_timer;
-    SDL_TimerID cooldown_timer;
+    SDL_TimerID backupTimer;
+    SDL_TimerID cooldownTimer;
 
-    bool grid_visible;
-    bool is_panning;
-    bool dialog_box; // NOTE: See <dialog.cpp> for information.
+    bool gridVisible;
+    bool isPanning;
+    bool dialogBox; // NOTE: See <dialog.cpp> for information.
 };
 
-static Editor editor;
+static Editor gEditor;
 
-/* -------------------------------------------------------------------------- */
+TEINAPI void InitEditor (int argc, char** argv);
+TEINAPI void QuitEditor ();
 
-TEINAPI void init_editor (int argc, char** argv);
-TEINAPI void quit_editor ();
+TEINAPI void DoEditor ();
 
-TEINAPI void do_editor ();
+TEINAPI void HandleEditorEvents ();
 
-TEINAPI void handle_editor_events ();
+TEINAPI void UpdateBackupTimer ();
 
-TEINAPI void update_backup_timer ();
+TEINAPI void SetCurrentTab (size_t index);
+TEINAPI Tab& GetCurrentTab ();
+TEINAPI Tab& GetTabAtIndex (size_t index);
 
-TEINAPI void set_current_tab    (size_t index);
-TEINAPI Tab& get_current_tab    ();
-TEINAPI Tab& get_tab_at_index   (size_t index);
-TEINAPI bool are_there_any_tabs ();
+TEINAPI bool AreThereAnyTabs ();
 
-TEINAPI void increment_tab ();
-TEINAPI void decrement_tab ();
+TEINAPI void IncrementTab ();
+TEINAPI void DecrementTab ();
 
-TEINAPI void set_main_window_subtitle_for_tab (const std::string& subtitle);
+TEINAPI void SetMainWindowSubtitleForTab (const std::string& subtitle);
 
-TEINAPI bool are_there_any_level_tabs ();
-TEINAPI bool are_there_any_map_tabs   ();
+TEINAPI bool AreThereAnyLevelTabs ();
+TEINAPI bool AreThereAnyMapTabs ();
 
-TEINAPI void create_new_level_tab_and_focus (int w = gDefaultLevelWidth, int h = gDefaultLevelHeight);
-TEINAPI void create_new_map_tab_and_focus   ();
+TEINAPI void CreateNewLevelTabAndFocus (int w = gDefaultLevelWidth, int h = gDefaultLevelHeight);
+TEINAPI void CreateNewMapTabAndFocus ();
 
-TEINAPI bool current_tab_is_level ();
-TEINAPI bool current_tab_is_map   ();
+TEINAPI bool CurrentTabIsLevel ();
+TEINAPI bool CurrentTabIsMap ();
 
-TEINAPI void close_tab         (size_t index);
-TEINAPI void close_current_tab ();
-TEINAPI void close_all_tabs    ();
+TEINAPI void CloseTab (size_t index);
+TEINAPI void CloseCurrentTab ();
+TEINAPI void CloseAllTabs ();
 
-TEINAPI size_t get_tab_index_with_this_file_name (std::string file_name);
+TEINAPI size_t GetTabIndexWithThisFileName (std::string fileName);
 
-TEINAPI void push_editor_camera_transform ();
-TEINAPI void pop_editor_camera_transform  ();
+TEINAPI void PushEditorCameraTransform ();
+TEINAPI void PopEditorCameraTransform ();
 
-TEINAPI int save_changes_prompt (Tab& tab);
+TEINAPI int SaveChangesPrompt (Tab& tab);
 
-TEINAPI void backup_tab (Tab& tab);
+TEINAPI void BackupTab (Tab& tab);
 
-TEINAPI bool is_current_tab_empty ();
+TEINAPI bool IsCurrentTabEmpty ();
 
-TEINAPI void editor_select_all ();
-TEINAPI void editor_paste      ();
+TEINAPI void EditorSelectAll ();
+TEINAPI void EditorPaste ();
 
-TEINAPI bool save_prompt_all_editor_tabs ();
+TEINAPI bool SavePromptAllEditorTabs ();
 
-TEINAPI void open_recently_closed_tab ();
+TEINAPI void OpenRecentlyClosedTab ();
 
-TEINAPI void save_restore_files ();
-
-/* -------------------------------------------------------------------------- */
-
-/*////////////////////////////////////////////////////////////////////////////*/
+TEINAPI void SaveRestoreFiles ();

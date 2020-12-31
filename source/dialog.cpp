@@ -10,15 +10,15 @@ namespace Internal
 
     TEINAPI void SetDialogCooldown ()
     {
-        editor.cooldown_timer = SDL_AddTimer(60, DialogCooldownCallback, NULL);
-        if (!editor.cooldown_timer) LogError(ERR_MIN, "Failed to setup dialog cooldown! (%s)", SDL_GetError());
+        gEditor.cooldownTimer = SDL_AddTimer(60, DialogCooldownCallback, NULL);
+        if (!gEditor.cooldownTimer) LogError(ERR_MIN, "Failed to setup dialog cooldown! (%s)", SDL_GetError());
     }
 }
 
 #if defined(PLATFORM_WIN32)
 TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
 {
-    editor.dialog_box = true; // Used to prevent dialog box clicks from carrying into the editor.
+    gEditor.dialogBox = true; // Used to prevent dialog box clicks from carrying into the editor.
 
     Defer { Internal::SetDialogCooldown(); };
 
@@ -122,7 +122,7 @@ TEINAPI std::string SaveDialog (DialogType type)
 {
     assert(type != DialogType::LVL_CSV);
 
-    editor.dialog_box = true; // Used to prevent dialog box clicks from carrying into the editor.
+    gEditor.dialogBox = true; // Used to prevent dialog box clicks from carrying into the editor.
 
     Defer { Internal::SetDialogCooldown(); };
 
@@ -192,7 +192,7 @@ TEINAPI std::string SaveDialog (DialogType type)
 #if defined(PLATFORM_WIN32)
 TEINAPI std::vector<std::string> PathDialog (bool multiselect)
 {
-    editor.dialog_box = true; // Used to prevent dialog box clicks from carrying into the editor.
+    gEditor.dialogBox = true; // Used to prevent dialog box clicks from carrying into the editor.
 
     Defer { Internal::SetDialogCooldown(); };
 

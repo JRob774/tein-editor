@@ -107,8 +107,8 @@
 #include "palette.hpp"
 #include "level_editor.hpp"
 #include "map_editor.hpp"
-
 #include "editor.hpp"
+
 #include "status_bar.hpp"
 #include "color_picker.hpp"
 #include "preferences_menu.hpp"

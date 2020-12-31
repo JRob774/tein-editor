@@ -15,7 +15,7 @@ TEINAPI void DoControlPanel ()
         gControlPanelBounds.x = GetViewport().w - gControlPanelBounds.w;
     }
 
-    if (current_tab_is_level())
+    if (CurrentTabIsLevel())
     {
         BeginPanel(gControlPanelBounds, UI_NONE);
         DoTilePanel(scrollbar);
@@ -26,5 +26,5 @@ TEINAPI void DoControlPanel ()
 
 TEINAPI float GetControlPanelWidth ()
 {
-    return ((current_tab_is_level()) ? gControlPanelBounds.w : 0);
+    return ((CurrentTabIsLevel()) ? gControlPanelBounds.w : 0);
 }
