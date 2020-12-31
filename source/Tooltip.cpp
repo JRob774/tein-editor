@@ -1,5 +1,5 @@
 static constexpr size_t gTooltipMaxLineLength = 96;
-static constexpr float  gTooltipAppearTime = .5f;
+static constexpr float gTooltipAppearTime = .5f;
 
 static std::string gTooltipName;
 static std::string gTooltipDesc;
@@ -13,7 +13,7 @@ namespace Internal
 {
     TEINAPI U32 TooltipCallback (U32 interval, void* userData)
     {
-        PushEditorEvent(EDITOR_EVENT_SHOW_TOOLTIP, NULL, NULL);
+        PushEditorEvent(EditorEvent::ShowTooltip, NULL, NULL);
         return 0;
     }
 
@@ -44,7 +44,7 @@ TEINAPI void SetCurrentTooltip (std::string name, std::string desc)
     gTooltipDesc = desc;
 
     gTooltipTimer = SDL_AddTimer(static_cast<U32>(gTooltipAppearTime*1000), Internal::TooltipCallback, NULL);
-    if (!gTooltipTimer) LogError(ERR_MIN, "Failed to setup tooltip timer! (%s)", SDL_GetError());
+    if (!gTooltipTimer) LogError(ErrorLevel::Min, "Failed to setup tooltip timer! (%s)", SDL_GetError());
 
     gTooltipSetThisUpdate = true;
 }
@@ -105,18 +105,18 @@ TEINAPI void DoTooltip ()
         if (tx+tw >= GetRenderTargetWidth()) tx = mouse.x - tw;
         if (ty+th >= GetRenderTargetHeight()) ty = mouse.y - th;
 
-        BeginPanel(tx,ty,tw,th, UI_NONE, Vec4(0,0,0,.8f));
+        BeginPanel(tx,ty,tw,th, UiFlag::None, Vec4(0,0,0,.8f));
 
         Vec2 cursor(xPad, yPad);
 
         SetPanelCursor(&cursor);
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
 
         // The set panel flags are just a hack to get the text drawing nicely in the tooltip box..
-        SetPanelFlags(UI_TOOLTIP);
-        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, tw, nh, gTooltipName);
-        SetPanelFlags(UI_TOOLTIP|UI_DARKEN);
-        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_TOP, tw, dh+yPad, desc);
+        SetPanelFlags(UiFlag::Tooltip);
+        DoLabel(UiAlign::Left,UiAlign::Center, tw, nh, gTooltipName);
+        SetPanelFlags(UiFlag::Tooltip|UiFlag::Darken);
+        DoLabel(UiAlign::Left,UiAlign::Top, tw, dh+yPad, desc);
 
         EndPanel();
     }
@@ -128,7 +128,7 @@ TEINAPI void HandleTooltipEvents ()
 
     if (gMainEvent.type == SDL_USEREVENT)
     {
-        if (gMainEvent.user.code == EDITOR_EVENT_SHOW_TOOLTIP)
+        if (gMainEvent.user.code == static_cast<U32>(EditorEvent::ShowTooltip))
         {
             gTooltipVisible = true;
         }

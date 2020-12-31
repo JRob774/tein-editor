@@ -5,7 +5,7 @@ namespace Internal
         std::string textureFile(gon["texture"].String());
         if (!LoadTextureResource(textureFile, atlas.texture))
         {
-            LogError(ERR_MIN, "Failed to load texture atlas image!");
+            LogError(ErrorLevel::Min, "Failed to load texture atlas image!");
             return false;
         }
 

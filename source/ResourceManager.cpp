@@ -16,7 +16,7 @@ TEINAPI bool InitResourceManager ()
     FILE* gpak = fopen(gpakFileName.c_str(), "rb");
     if (!gpak)
     {
-        LogError(ERR_MED, "Failed to load editor GPAK!");
+        LogError(ErrorLevel::Med, "Failed to load editor GPAK!");
         return true;
     }
     Defer { fclose(gpak); };
@@ -117,52 +117,52 @@ TEINAPI bool LoadEditorResources ()
 {
     if (!LoadTextureResource("textures/editor_ui/tools.png", gResourceIcons))
     {
-        LogError(ERR_MAX, "Failed to load editor icons!");
+        LogError(ErrorLevel::Max, "Failed to load editor icons!");
         return false;
     }
-    if (!LoadTextureResource("textures/editor_ui/checker_x14.png", gResourceChecker14, TEXTURE_WRAP_REPEAT))
+    if (!LoadTextureResource("textures/editor_ui/checker_x14.png", gResourceChecker14, TextureWrap::Repeat))
     {
-        LogError(ERR_MAX, "Failed to load the checker-x14 image!");
+        LogError(ErrorLevel::Max, "Failed to load the checker-x14 image!");
         return false;
     }
-    if (!LoadTextureResource("textures/editor_ui/checker_x16.png", gResourceChecker16, TEXTURE_WRAP_REPEAT))
+    if (!LoadTextureResource("textures/editor_ui/checker_x16.png", gResourceChecker16, TextureWrap::Repeat))
     {
-        LogError(ERR_MAX, "Failed to load the checker-x16 image!");
+        LogError(ErrorLevel::Max, "Failed to load the checker-x16 image!");
         return false;
     }
-    if (!LoadTextureResource("textures/editor_ui/checker_x20.png", gResourceChecker20, TEXTURE_WRAP_REPEAT))
+    if (!LoadTextureResource("textures/editor_ui/checker_x20.png", gResourceChecker20, TextureWrap::Repeat))
     {
-        LogError(ERR_MAX, "Failed to load the checker-x20 image!");
+        LogError(ErrorLevel::Max, "Failed to load the checker-x20 image!");
         return false;
     }
     if (!LoadFontResource("fonts/opensans-regular.ttf", gResourceFontRegularSans, { gSmallFontPointSize, gLargeFontPointSize }))
     {
-        LogError(ERR_MAX, "Failed to load OpenSans regular font!");
+        LogError(ErrorLevel::Max, "Failed to load OpenSans regular font!");
         return false;
     }
     if (!LoadFontResource("fonts/opensans-bold.ttf", gResourceFontBoldSans, { gSmallFontPointSize, gLargeFontPointSize }))
     {
-        LogError(ERR_MAX, "Failed to load OpenSans bold font!");
+        LogError(ErrorLevel::Max, "Failed to load OpenSans bold font!");
         return false;
     }
     if (!LoadFontResource("fonts/liberationmono-regular.ttf", gResourceFontRegularLibMono))
     {
-        LogError(ERR_MAX, "Failed to load LiberationMono regular font!");
+        LogError(ErrorLevel::Max, "Failed to load LiberationMono regular font!");
         return false;
     }
     if (!LoadFontResource("fonts/opendyslexic-regular.ttf", gResourceFontRegularDyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
     {
-        LogError(ERR_MAX, "Failed to load OpenDyslexic regular font!");
+        LogError(ErrorLevel::Max, "Failed to load OpenDyslexic regular font!");
         return false;
     }
     if (!LoadFontResource("fonts/opendyslexic-bold.ttf", gResourceFontBoldDyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
     {
-        LogError(ERR_MAX, "Failed to load OpenDyslexic bold font!");
+        LogError(ErrorLevel::Max, "Failed to load OpenDyslexic bold font!");
         return false;
     }
     if (!LoadFontResource("fonts/opendyslexic-mono.ttf", gResourceFontMonoDyslexic))
     {
-        LogError(ERR_MAX, "Failed to load OpenDyslexic mono font!");
+        LogError(ErrorLevel::Max, "Failed to load OpenDyslexic mono font!");
         return false;
     }
 

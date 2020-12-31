@@ -65,7 +65,7 @@ namespace Internal
 
     TEINAPI U32 MapCursorBlinkCallback (U32 interval, void* userData)
     {
-        PushEditorEvent(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
+        PushEditorEvent(EditorEvent::BlinkCursor, NULL, NULL);
         return interval;
     }
 
@@ -75,7 +75,7 @@ namespace Internal
         gMapEditor.cursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, MapCursorBlinkCallback, NULL);
         if (!gMapEditor.cursorBlinkTimer)
         {
-            LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+            LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
         }
     }
     TEINAPI void QuitMapEditorCursor ()
@@ -293,7 +293,7 @@ TEINAPI void InitMapEditor ()
 
 TEINAPI void DoMapEditor ()
 {
-    SetCursorType(Cursor::ARROW);
+    SetCursorType(Cursor::Arrow);
 
     Quad p1;
 
@@ -305,7 +305,7 @@ TEINAPI void DoMapEditor ()
     // To account for the control panel disappearing.
     p1.w += 1;
 
-    BeginPanel(p1.x, p1.y, p1.w, p1.h, UI_NONE, gEditorSettings.backgroundColor);
+    BeginPanel(p1.x, p1.y, p1.w, p1.h, UiFlag::None, gEditorSettings.backgroundColor);
 
     // We cache the mouse position so that systems such as paste which can
     // potentially happen outside of this section of code (where the needed
@@ -825,7 +825,7 @@ TEINAPI void HandleMapEditorEvents ()
                                 std::string text(tab.mapNodeInfo.active->lvl.substr(begin, end-begin));
                                 if (SDL_SetClipboardText(text.c_str()) < 0)
                                 {
-                                    LogError(ERR_MED, "Failed to set clipboard text! (%s)", SDL_GetError());
+                                    LogError(ErrorLevel::Med, "Failed to set clipboard text! (%s)", SDL_GetError());
                                 }
                             }
                         }
@@ -841,7 +841,7 @@ TEINAPI void HandleMapEditorEvents ()
                                 std::string text(tab.mapNodeInfo.active->lvl.substr(begin, end-begin));
                                 if (SDL_SetClipboardText(text.c_str()) < 0)
                                 {
-                                    LogError(ERR_MED, "Failed to set clipboard text! (%s)", SDL_GetError());
+                                    LogError(ErrorLevel::Med, "Failed to set clipboard text! (%s)", SDL_GetError());
                                 }
                                 else
                                 {
@@ -920,7 +920,7 @@ TEINAPI void HandleMapEditorEvents ()
         } break;
         case (SDL_USEREVENT):
         {
-            if (gMainEvent.user.code == EDITOR_EVENT_BLINK_CURSOR)
+            if (gMainEvent.user.code == static_cast<U32>(EditorEvent::BlinkCursor))
             {
                 gMapEditor.cursorVisible = !gMapEditor.cursorVisible;
             }
@@ -943,7 +943,7 @@ TEINAPI void HandleMapEditorEvents ()
             gMapEditor.cursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::MapCursorBlinkCallback, NULL);
             if (!gMapEditor.cursorBlinkTimer)
             {
-                LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+                LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }
         }
     }
@@ -1014,7 +1014,7 @@ TEINAPI bool SaveMapTab (Tab& tab)
     // just do a normal Save to that file. Otherwise, we perform a Save As.
     if (tab.name.empty())
     {
-        std::string fileName = SaveDialog(DialogType::CSV);
+        std::string fileName = SaveDialog(DialogType::Csv);
         if (fileName.empty()) return false;
         tab.name = fileName;
     }
@@ -1030,7 +1030,7 @@ TEINAPI bool SaveMapTab (Tab& tab)
 
 TEINAPI void SaveMapTabAs ()
 {
-    std::string fileName = SaveDialog(DialogType::CSV);
+    std::string fileName = SaveDialog(DialogType::Csv);
     if (fileName.empty()) return;
 
     Tab& tab = GetCurrentTab();
@@ -1096,7 +1096,7 @@ TEINAPI void BackupMapTab (const Tab& tab, const std::string& fileName)
     {
         if (!CreatePath(backupPath))
         {
-            LogError(ERR_MIN, "Failed to create backup for map \"%s\"!", mapName.c_str());
+            LogError(ErrorLevel::Min, "Failed to create backup for map \"%s\"!", mapName.c_str());
             return;
         }
     }
@@ -1150,7 +1150,7 @@ TEINAPI bool IsCurrentMapEmpty ()
     if (AreThereAnyMapTabs())
     {
         const Tab& tab = GetCurrentTab();
-        if (tab.type == TabType::MAP)
+        if (tab.type == TabType::Map)
         {
             return (tab.map.empty());
         }

@@ -14,7 +14,7 @@ struct Camera
 
 static constexpr size_t gInvalidTab = static_cast<size_t>(-1);
 
-enum class TabType { LEVEL, MAP };
+enum class TabType { Level, Map };
 
 struct Tab
 {
@@ -27,7 +27,7 @@ struct Tab
     Level level;
     ToolInfo toolInfo;
     LevelHistory levelHistory;
-    bool tileLayerActive[LEVEL_LAYER_TOTAL];
+    bool tileLayerActive[static_cast<int>(LevelLayer::Total)];
     std::vector<SelectBounds> oldSelectState; // We use this for the selection history undo/redo system.
     // MAP EDITOR
     Map map;
@@ -92,7 +92,7 @@ TEINAPI size_t GetTabIndexWithThisFileName (std::string fileName);
 TEINAPI void PushEditorCameraTransform ();
 TEINAPI void PopEditorCameraTransform ();
 
-TEINAPI int SaveChangesPrompt (Tab& tab);
+TEINAPI AlertResult SaveChangesPrompt (Tab& tab);
 
 TEINAPI void BackupTab (Tab& tab);
 

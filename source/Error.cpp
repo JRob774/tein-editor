@@ -9,7 +9,7 @@ namespace Internal
     #if defined(PLATFORM_WIN32)
     TEINAPI LONG WINAPI UnhandledExceptionFilter (struct _EXCEPTION_POINTERS* info)
     {
-        ShowAlert("Error", "Fatal exception occurred!\nCreating crash dump!", ALERT_TYPE_ERROR, ALERT_BUTTON_OK);
+        ShowAlert("Error", "Fatal exception occurred!\nCreating crash dump!", AlertType::Error, AlertButton::Ok);
 
         std::string fileName(MakePathAbsolute(gCrashDumpName));
         HANDLE file = CreateFileA(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -49,14 +49,14 @@ namespace Internal
 
         const char* errFormat = "[%s] Error in %s at line %d: ";
 
-        #if defined(BUILD_DEBUG)
+        #if defined(BuildDebug)
         va_start(args, format);
         fprintf(stderr, format, timeStr.c_str(), fileStr.c_str(), line);
         vfprintf(stderr, errFormat, args);
         fprintf(stderr, "\n");
         va_end(args);
         fflush(stderr);
-        #endif // BUILD_DEBUG
+        #endif // BuildDebug
 
         if (gErrorLog)
         {
@@ -68,14 +68,14 @@ namespace Internal
             fflush(gErrorLog);
         }
 
-        if (level == ERR_MIN) return;
+        if (level == ErrorLevel::Min) return;
 
         va_start(args, format);
         std::string msg = FormatStringV(format, args);
-        ShowAlert("Error!", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
+        ShowAlert("Error!", msg, AlertType::Error, AlertButton::Ok, "WINMAIN");
         va_end(args);
 
-        if (level == ERR_MED) return;
+        if (level == ErrorLevel::Med) return;
 
         gMainRunning = false;
 

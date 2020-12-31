@@ -4,7 +4,7 @@
 static void(*gErrorTerminateCallback)(void);
 static void(*gErrorMaximumCallback)(void);
 
-enum ErrorLevel { ERR_MIN, ERR_MED, ERR_MAX };
+enum class ErrorLevel { Min, Med, Max };
 
 TEINAPI bool InitErrorSystem ();
 TEINAPI void QuitErrorSystem ();

@@ -2,10 +2,10 @@
 // system on another thread. So the returned code tells us which error to log.
 enum class GPAKError
 {
-    NONE,   // Successfully packed/unpacked GPAK.
-    WRITE,  // Failed to open the GPAK for writing.
-    READ,   // Failed to open the GPAK for reading.
-    EMPTY,  // No files were found in paths to pack.
+    None,  // Successfully packed/unpacked GPAK.
+    Write, // Failed to open the GPAK for writing.
+    Read,  // Failed to open the GPAK for reading.
+    Empty  // No files were found in paths to pack.
 };
 
 struct GPAKEntry
@@ -16,16 +16,16 @@ struct GPAKEntry
 };
 
 TEINAPI void GPAKUnpack (std::string fileName, bool overwrite);
-TEINAPI void GPAKPack   (std::string fileName, std::vector<std::string> paths);
+TEINAPI void GPAKPack (std::string fileName, std::vector<std::string> paths);
 
 TEINAPI float GPAKUnpackProgress ();
-TEINAPI float GPAKPackProgress   ();
+TEINAPI float GPAKPackProgress ();
 
 TEINAPI bool IsGPAKUnpackComplete ();
-TEINAPI bool IsGPAKPackComplete   ();
+TEINAPI bool IsGPAKPackComplete ();
 
 TEINAPI void DoUnpack ();
-TEINAPI void DoPack   ();
+TEINAPI void DoPack ();
 
 TEINAPI void CancelUnpack ();
-TEINAPI void CancelPack   ();
+TEINAPI void CancelPack ();

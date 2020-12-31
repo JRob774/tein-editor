@@ -18,7 +18,7 @@ namespace Internal
             if (!compileSuccess)
             {
                 glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog);
-                LogError(ERR_MIN, "Failed to compile shader:\n%s", infoLog);
+                LogError(ErrorLevel::Min, "Failed to compile shader:\n%s", infoLog);
             }
         }
 
@@ -72,7 +72,7 @@ TEINAPI Shader LoadShaderFromSource (std::string source)
         if (!linkSuccess)
         {
             glGetProgramInfoLog(program, infoLogLength, NULL, infoLog);
-            LogError(ERR_MIN, "Failed to link shader:\n%s", infoLog);
+            LogError(ErrorLevel::Min, "Failed to link shader:\n%s", infoLog);
 
             glDeleteProgram(program);
             program = NULL;
@@ -96,14 +96,14 @@ TEINAPI Shader LoadShaderFromFile (std::string fileName)
     std::string source = ReadEntireFile(fileName);
     if (source.empty())
     {
-        LogError(ERR_MIN, "Failed to load shader '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Min, "Failed to load shader '%s'!", fileName.c_str());
         return NULL;
     }
 
     Shader shader = LoadShaderFromSource(source);
     if (!shader)
     {
-        LogError(ERR_MIN, "Failed to build shader '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Min, "Failed to build shader '%s'!", fileName.c_str());
     }
     return shader;
 }

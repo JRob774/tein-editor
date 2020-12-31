@@ -34,43 +34,43 @@ namespace Internal
 
         SetUiTexture(&gResourceIcons);
 
-        UiFlag brushFlags = UI_NONE;
-        UiFlag fillFlags = UI_NONE;
-        UiFlag selectFlags = UI_NONE;
-        UiFlag gridFlags = UI_NONE;
-        UiFlag boundsFlags = UI_NONE;
-        UiFlag layerFlags = UI_NONE;
-        UiFlag entityFlags = UI_NONE;
-        UiFlag guideFlags = UI_NONE;
-        UiFlag flipHFlags = UI_NONE;
-        UiFlag flipVFlags = UI_NONE;
-        UiFlag mirrorHFlags = UI_NONE;
-        UiFlag mirrorVFlags = UI_NONE;
-        UiFlag cutFlags = UI_LOCKED;
-        UiFlag copyFlags = UI_LOCKED;
-        UiFlag deselectFlags = UI_LOCKED;
-        UiFlag clearFlags = UI_LOCKED;
+        UiFlag brushFlags = UiFlag::None;
+        UiFlag fillFlags = UiFlag::None;
+        UiFlag selectFlags = UiFlag::None;
+        UiFlag gridFlags = UiFlag::None;
+        UiFlag boundsFlags = UiFlag::None;
+        UiFlag layerFlags = UiFlag::None;
+        UiFlag entityFlags = UiFlag::None;
+        UiFlag guideFlags = UiFlag::None;
+        UiFlag flipHFlags = UiFlag::None;
+        UiFlag flipVFlags = UiFlag::None;
+        UiFlag mirrorHFlags = UiFlag::None;
+        UiFlag mirrorVFlags = UiFlag::None;
+        UiFlag cutFlags = UiFlag::Locked;
+        UiFlag copyFlags = UiFlag::Locked;
+        UiFlag deselectFlags = UiFlag::Locked;
+        UiFlag clearFlags = UiFlag::Locked;
 
-        brushFlags = ((gLevelEditor.toolType == ToolType::BRUSH) ? UI_NONE : UI_INACTIVE);
-        fillFlags = ((gLevelEditor.toolType == ToolType::FILL) ? UI_NONE : UI_INACTIVE);
-        selectFlags = ((gLevelEditor.toolType == ToolType::SELECT) ? UI_NONE : UI_INACTIVE);
-        gridFlags = ((gEditor.gridVisible) ? UI_NONE : UI_INACTIVE);
-        boundsFlags = ((gLevelEditor.boundsVisible) ? UI_NONE : UI_INACTIVE);
-        layerFlags = ((gLevelEditor.layerTransparency) ? UI_NONE : UI_INACTIVE);
-        entityFlags = ((gLevelEditor.largeTiles) ? UI_NONE : UI_INACTIVE);
-        guideFlags = ((gLevelEditor.entityGuides) ? UI_NONE : UI_INACTIVE);
-        mirrorHFlags = ((gLevelEditor.mirrorH) ? UI_NONE : UI_INACTIVE);
-        mirrorVFlags = ((gLevelEditor.mirrorV) ? UI_NONE : UI_INACTIVE);
+        brushFlags = ((gLevelEditor.toolType == ToolType::Brush) ? UiFlag::None : UiFlag::Inactive);
+        fillFlags = ((gLevelEditor.toolType == ToolType::Fill) ? UiFlag::None : UiFlag::Inactive);
+        selectFlags = ((gLevelEditor.toolType == ToolType::Select) ? UiFlag::None : UiFlag::Inactive);
+        gridFlags = ((gEditor.gridVisible) ? UiFlag::None : UiFlag::Inactive);
+        boundsFlags = ((gLevelEditor.boundsVisible) ? UiFlag::None : UiFlag::Inactive);
+        layerFlags = ((gLevelEditor.layerTransparency) ? UiFlag::None : UiFlag::Inactive);
+        entityFlags = ((gLevelEditor.largeTiles) ? UiFlag::None : UiFlag::Inactive);
+        guideFlags = ((gLevelEditor.entityGuides) ? UiFlag::None : UiFlag::Inactive);
+        mirrorHFlags = ((gLevelEditor.mirrorH) ? UiFlag::None : UiFlag::Inactive);
+        mirrorVFlags = ((gLevelEditor.mirrorV) ? UiFlag::None : UiFlag::Inactive);
 
         if (AreAnySelectBoxesVisible())
         {
-            cutFlags = UI_NONE;
-            copyFlags = UI_NONE;
-            deselectFlags = UI_NONE;
-            clearFlags = UI_NONE;
+            cutFlags = UiFlag::None;
+            copyFlags = UiFlag::None;
+            deselectFlags = UiFlag::None;
+            clearFlags = UiFlag::None;
         }
 
-        guideFlags |= (gLevelEditor.largeTiles) ? UI_NONE : UI_LOCKED;
+        guideFlags |= (gLevelEditor.largeTiles) ? UiFlag::None : UiFlag::Locked;
 
         // If not all buttons will fit on the screen we will double the width of the
         // toolbar and then place the buttons side-to-side instead of straight down.
@@ -83,10 +83,10 @@ namespace Internal
         }
 
         // The toolbar is a vertical list of available tools.
-        BeginPanel(0, 0, gToolbarWidth, GetViewport().h, UI_NONE, gUiColorMedium);
+        BeginPanel(0, 0, gToolbarWidth, GetViewport().h, UiFlag::None, gUiColorMedium);
 
         SetPanelCursor(&cursor);
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
 
         DoImageButton(ToolbarSetToolToBrush, bw,bh, brushFlags, &gClipBrush, gToolbarInfoBrush, gKbToolBrush, "Brush");
         DoImageButton(ToolbarSetToolToFill, bw,bh, fillFlags, &gClipFill, gToolbarInfoFill, gKbToolFill, "Fill");
@@ -94,7 +94,7 @@ namespace Internal
         DoImageButton(ToolbarToggleGrid, bw,bh, gridFlags, &gClipGrid, gToolbarInfoGrid, gKbGridToggle, "Grid");
         DoImageButton(ToolbarToggleBounds, bw,bh, boundsFlags, &gClipBounds, gToolbarInfoBounds, gKbBoundsToggle, "Bounds");
         DoImageButton(ToolbarToggleLayerTransparency, bw,bh, layerFlags, &gClipLayers, gToolbarInfoLayers, gKbLayersToggle, "Layer Transparency");
-        DoImageButton(ToolbarResetCamera, bw,bh, UI_NONE, &gClipCamera, gToolbarInfoCamera, gKbCameraReset, "Reset Camera");
+        DoImageButton(ToolbarResetCamera, bw,bh, UiFlag::None, &gClipCamera, gToolbarInfoCamera, gKbCameraReset, "Reset Camera");
         DoImageButton(ToolbarToggleEntity, bw,bh, entityFlags, &gClipEntity, gToolbarInfoEntity, gKbToggleEntity, "Toggle Large Entities");
         DoImageButton(ToolbarToggleGuides, bw,bh, guideFlags, &gClipGuides, gToolbarInfoGuides, gKbToggleGuides, "Toggle Entity Guides");
 
@@ -105,15 +105,15 @@ namespace Internal
             cursor.x += bw + 1;
             cursor.y = gToolbarInnerPad;
 
-            SetPanelCursorDir(UI_DIR_RIGHT);
+            SetPanelCursorDir(UiDir::Right);
             DoSeparator((bh*ceilf(gTotalToolbarLevelButtons/2)));
-            SetPanelCursorDir(UI_DIR_DOWN);
+            SetPanelCursorDir(UiDir::Down);
 
             cursor.x -= 1;
             cursor.y = gToolbarInnerPad;
         }
 
-        DoImageButton(ToolbarResize, bw,bh, UI_NONE, &gClipResize, gToolbarInfoResize, gKbLevelResize, "Resize");
+        DoImageButton(ToolbarResize, bw,bh, UiFlag::None, &gClipResize, gToolbarInfoResize, gKbLevelResize, "Resize");
         DoImageButton(ToolbarFlipLevelH, bw,bh, flipHFlags, &gClipFlipH, gToolbarInfoFlipH, gKbFlipH, "Flip Horizontal");
         DoImageButton(ToolbarFlipLevelV, bw,bh, flipVFlags, &gClipFlipV, gToolbarInfoFlipV, gKbFlipV, "Flip Vertical");
         DoImageButton(ToolbarToggleMirrorH, bw,bh, mirrorHFlags, &gClipMirrorH, gToolbarInfoMirrorH, gKbMirrorHToggle, "Mirror Horizontal");
@@ -138,26 +138,26 @@ namespace Internal
 
         Tab& tab = GetCurrentTab();
 
-        UiFlag cutFlags = UI_LOCKED;
-        UiFlag copyFlags = UI_LOCKED;
-        UiFlag deselectFlags = UI_LOCKED;
-        UiFlag clearFlags = UI_LOCKED;
+        UiFlag cutFlags = UiFlag::Locked;
+        UiFlag copyFlags = UiFlag::Locked;
+        UiFlag deselectFlags = UiFlag::Locked;
+        UiFlag clearFlags = UiFlag::Locked;
 
         if (MapSelectBoxPresent())
         {
-            cutFlags = UI_NONE;
-            copyFlags = UI_NONE;
-            deselectFlags = UI_NONE;
-            clearFlags = UI_NONE;
+            cutFlags = UiFlag::None;
+            copyFlags = UiFlag::None;
+            deselectFlags = UiFlag::None;
+            clearFlags = UiFlag::None;
         }
 
         gToolbarWidth = gToolbarDefaultWidth;
-        BeginPanel(0, 0, gToolbarWidth, GetViewport().h, UI_NONE, gUiColorMedium);
+        BeginPanel(0, 0, gToolbarWidth, GetViewport().h, UiFlag::None, gUiColorMedium);
 
         SetPanelCursor(&cursor);
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
 
-        DoImageButton(ToolbarResetCamera, bw,bh, UI_NONE, &gClipCamera, gToolbarInfoCamera, gKbCameraReset, "Reset Camera");
+        DoImageButton(ToolbarResetCamera, bw,bh, UiFlag::None, &gClipCamera, gToolbarInfoCamera, gKbCameraReset, "Reset Camera");
         DoImageButton(ToolbarCut, bw,bh, cutFlags, &gClipCut, gToolbarInfoCut, gKbCut, "Cut");
         DoImageButton(ToolbarCopy, bw,bh, copyFlags, &gClipCopy, gToolbarInfoCopy, gKbCopy, "Copy");
         DoImageButton(ToolbarDeselect, bw,bh, deselectFlags, &gClipDeselect, gToolbarInfoDeselect, gKbDeselect, "Deselect");
@@ -182,60 +182,60 @@ TEINAPI void ToolbarSetToolToBrush ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (gLevelEditor.toolType == ToolType::SELECT && gLevelEditor.toolState == ToolState::PLACE)
+    if (gLevelEditor.toolType == ToolType::Select && gLevelEditor.toolState == ToolState::Place)
     {
         Tab& tab = GetCurrentTab();
         if (!tab.toolInfo.select.bounds.empty())
         {
-            NewLevelHistoryState(LevelHistoryAction::SELECT_STATE);
+            NewLevelHistoryState(LevelHistoryAction::SelectState);
         }
     }
 
-    if (gLevelEditor.toolType != ToolType::BRUSH && gLevelEditor.toolState != ToolState::IDLE)
+    if (gLevelEditor.toolType != ToolType::Brush && gLevelEditor.toolState != ToolState::Idle)
     {
-        NewLevelHistoryState(LevelHistoryAction::NORMAL);
+        NewLevelHistoryState(LevelHistoryAction::Normal);
     }
 
-    gLevelEditor.toolType = ToolType::BRUSH;
+    gLevelEditor.toolType = ToolType::Brush;
 }
 
 TEINAPI void ToolbarSetToolToFill ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (gLevelEditor.toolType == ToolType::SELECT && gLevelEditor.toolState == ToolState::PLACE)
+    if (gLevelEditor.toolType == ToolType::Select && gLevelEditor.toolState == ToolState::Place)
     {
         Tab& tab = GetCurrentTab();
         if (!tab.toolInfo.select.bounds.empty())
         {
-            NewLevelHistoryState(LevelHistoryAction::SELECT_STATE);
+            NewLevelHistoryState(LevelHistoryAction::SelectState);
         }
     }
 
-    if (gLevelEditor.toolType != ToolType::FILL && gLevelEditor.toolState != ToolState::IDLE)
+    if (gLevelEditor.toolType != ToolType::Fill && gLevelEditor.toolState != ToolState::Idle)
     {
-        NewLevelHistoryState(LevelHistoryAction::NORMAL);
+        NewLevelHistoryState(LevelHistoryAction::Normal);
     }
 
-    gLevelEditor.toolType = ToolType::FILL;
+    gLevelEditor.toolType = ToolType::Fill;
 }
 
 TEINAPI void ToolbarSetToolToSelect ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (gLevelEditor.toolType != ToolType::SELECT && gLevelEditor.toolState != ToolState::IDLE)
+    if (gLevelEditor.toolType != ToolType::Select && gLevelEditor.toolState != ToolState::Idle)
     {
-        NewLevelHistoryState(LevelHistoryAction::NORMAL);
+        NewLevelHistoryState(LevelHistoryAction::Normal);
     }
 
-    if (gLevelEditor.toolState == ToolState::PLACE)
+    if (gLevelEditor.toolState == ToolState::Place)
     {
         Tab& tab = GetCurrentTab();
         tab.toolInfo.select.start = true;
     }
 
-    gLevelEditor.toolType = ToolType::SELECT;
+    gLevelEditor.toolType = ToolType::Select;
 }
 
 TEINAPI void ToolbarToggleGrid ()
@@ -260,7 +260,7 @@ TEINAPI void ToolbarResetCamera ()
     Tab& tab = GetCurrentTab();
     tab.camera.zoom = 1;
 
-    if (tab.type == TabType::MAP)
+    if (tab.type == TabType::Map)
     {
         tab.camera.x = -GetMinMapBoundsX();
         tab.camera.y = -GetMinMapBoundsY();
@@ -296,8 +296,8 @@ TEINAPI void ToolbarCut ()
     Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (TabType::LEVEL): LevelEditorCut(); break;
-        case (TabType::MAP): MapEditorCut(); break;
+        case (TabType::Level): LevelEditorCut(); break;
+        case (TabType::Map): MapEditorCut(); break;
     }
 }
 
@@ -307,8 +307,8 @@ TEINAPI void ToolbarCopy ()
     Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (TabType::LEVEL): LevelEditorCopy(); break;
-        case (TabType::MAP): MapEditorCopy(); break;
+        case (TabType::Level): LevelEditorCopy(); break;
+        case (TabType::Map): MapEditorCopy(); break;
     }
 }
 
@@ -318,8 +318,8 @@ TEINAPI void ToolbarDeselect ()
     Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (TabType::LEVEL): LevelEditorDeselect(); break;
-        case (TabType::MAP): MapEditorDeselect(); break;
+        case (TabType::Level): LevelEditorDeselect(); break;
+        case (TabType::Map): MapEditorDeselect(); break;
     }
 }
 
@@ -329,8 +329,8 @@ TEINAPI void ToolbarClearSelect ()
     Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (TabType::LEVEL): LevelEditorClearSelect(); break;
-        case (TabType::MAP): MapEditorClearSelect(); break;
+        case (TabType::Level): LevelEditorClearSelect(); break;
+        case (TabType::Map): MapEditorClearSelect(); break;
     }
 }
 

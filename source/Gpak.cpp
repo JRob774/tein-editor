@@ -37,9 +37,9 @@ namespace Internal
     {
         switch (error)
         {
-            case(GPAKError::WRITE): LogError(ERR_MED, "Failed to write GPAK data!"); break;
-            case(GPAKError::READ): LogError(ERR_MED, "Failed to read GPAK data!"); break;
-            case(GPAKError::EMPTY): LogError(ERR_MED, "No files found to pack!"); break;
+            case(GPAKError::Write): LogError(ErrorLevel::Med, "Failed to write GPAK data!"); break;
+            case(GPAKError::Read): LogError(ErrorLevel::Med, "Failed to read GPAK data!"); break;
+            case(GPAKError::Empty): LogError(ErrorLevel::Med, "No files found to pack!"); break;
         }
     }
 
@@ -53,7 +53,7 @@ namespace Internal
         FILE* file = fopen(fileName.c_str(), "rb");
         if (!file)
         {
-            args->error.store(GPAKError::READ);
+            args->error.store(GPAKError::Read);
             return EXIT_FAILURE;
         }
         Defer { fclose(file); };
@@ -108,7 +108,7 @@ namespace Internal
 
             ++entriesUnpacked;
             args->progress.store(static_cast<float>(entriesUnpacked) / static_cast<float>(entryCount));
-            PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+            PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
             if (args->cancel.load()) // Cancel!
             {
@@ -117,7 +117,7 @@ namespace Internal
         }
 
         args->complete.store(true);
-        PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+        PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
         return EXIT_SUCCESS;
     }
@@ -136,7 +136,7 @@ namespace Internal
         FILE* file = fopen(fileName.c_str(), "wb");
         if (!file)
         {
-            args->error.store(GPAKError::WRITE);
+            args->error.store(GPAKError::Write);
             return EXIT_FAILURE;
         }
         Defer { fclose(file); };
@@ -161,7 +161,7 @@ namespace Internal
 
         if (files.empty())
         {
-            args->error.store(GPAKError::EMPTY);
+            args->error.store(GPAKError::Empty);
             return EXIT_FAILURE;
         }
 
@@ -187,7 +187,7 @@ namespace Internal
 
             ++entriesPacked;
             args->progress.store(((static_cast<float>(entriesPacked) / static_cast<float>(entryCount)) / 2));
-            PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+            PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
             if (args->cancel.load()) // Cancel!
             {
@@ -214,7 +214,7 @@ namespace Internal
 
             ++filesPacked;
             args->progress.store(.5f + ((static_cast<float>(filesPacked) / static_cast<float>(fileCount)) / 2));
-            PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+            PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
             if (args->cancel.load()) // Cancel!
             {
@@ -223,7 +223,7 @@ namespace Internal
         }
 
         args->complete.store(true);
-        PushEditorEvent(EDITOR_EVENT_GPAK_PROGRESS, NULL, NULL);
+        PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
         return EXIT_SUCCESS;
     }
@@ -231,17 +231,17 @@ namespace Internal
 
 TEINAPI void GPAKUnpack (std::string fileName, bool overwrite)
 {
-    gGPAKUnpackData.fileName  = fileName;
+    gGPAKUnpackData.fileName = fileName;
     gGPAKUnpackData.overwrite = overwrite;
-    gGPAKUnpackData.progress  = 0;
-    gGPAKUnpackData.complete  = false;
-    gGPAKUnpackData.cancel    = false;
-    gGPAKUnpackData.error     = GPAKError::NONE;
+    gGPAKUnpackData.progress = 0;
+    gGPAKUnpackData.complete = false;
+    gGPAKUnpackData.cancel = false;
+    gGPAKUnpackData.error = GPAKError::None;
 
     gGPAKUnpackThread = SDL_CreateThread(Internal::GPAKUnpackThreadMain, "UnpackGPAK", &gGPAKUnpackData);
     if (!gGPAKUnpackThread)
     {
-        LogError(ERR_MED, "Failed to perform GPAK unpack operation! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Med, "Failed to perform GPAK unpack operation! (%s)", SDL_GetError());
         return;
     }
     SDL_DetachThread(gGPAKUnpackThread);
@@ -252,16 +252,16 @@ TEINAPI void GPAKUnpack (std::string fileName, bool overwrite)
 TEINAPI void GPAKPack (std::string fileName, std::vector<std::string> paths)
 {
     gGPAKPackData.fileName = fileName;
-    gGPAKPackData.paths    = paths;
+    gGPAKPackData.paths = paths;
     gGPAKPackData.progress = 0;
     gGPAKPackData.complete = false;
-    gGPAKPackData.cancel   = false;
-    gGPAKPackData.error    = GPAKError::NONE;
+    gGPAKPackData.cancel = false;
+    gGPAKPackData.error = GPAKError::None;
 
     gGPAKPackThread = SDL_CreateThread(Internal::GPAKPackThreadMain, "PackGPAK", &gGPAKPackData);
     if (!gGPAKPackThread)
     {
-        LogError(ERR_MED, "Failed to perform GPAK pack operation! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Med, "Failed to perform GPAK pack operation! (%s)", SDL_GetError());
         return;
     }
     SDL_DetachThread(gGPAKPackThread);
@@ -300,7 +300,7 @@ TEINAPI void DoUnpack ()
 
     SetUiFont(&GetEditorRegularFont());
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -310,20 +310,20 @@ TEINAPI void DoUnpack ()
     p2.w = vw        - 2;
     p2.h = vh - p2.y - 1;
 
-    BeginPanel(p2, UI_NONE, gUiColorMedium);
+    BeginPanel(p2, UiFlag::None, gUiColorMedium);
 
     constexpr float XPad = 8;
     constexpr float YPad = 4;
 
     Vec2 cursor(XPad, YPad);
 
-    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursorDir(UiDir::Down);
     SetPanelCursor(&cursor);
 
     constexpr float LabelHeight = 24;
     constexpr float BarHeight = 20;
 
-    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LabelHeight, "Unpacking GPAK...");
+    DoLabel(UiAlign::Left,UiAlign::Center, LabelHeight, "Unpacking GPAK...");
 
     cursor.y += (YPad*2);
 
@@ -340,7 +340,7 @@ TEINAPI void DoUnpack ()
     SetDrawColor(gUiColorExDark);
     FillQuad(x1-1, y1-1, cursor.x+totalWidth+1, y2+1);
 
-    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    BeginDraw(BufferMode::TriangleStrip);
     PutVertex(x1, y2, gGPAKProgressBarMinColor); // BL
     PutVertex(x1, y1, gGPAKProgressBarMinColor); // TL
     PutVertex(x2, y2, gGPAKProgressBarMaxColor); // BR
@@ -370,7 +370,7 @@ TEINAPI void DoPack ()
 
     SetUiFont(&GetEditorRegularFont());
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     float vw = GetViewport().w;
     float vh = GetViewport().h;
@@ -380,20 +380,20 @@ TEINAPI void DoPack ()
     p2.w = vw        - 2;
     p2.h = vh - p2.y - 1;
 
-    BeginPanel(p2, UI_NONE, gUiColorMedium);
+    BeginPanel(p2, UiFlag::None, gUiColorMedium);
 
     constexpr float XPad = 8;
     constexpr float YPad = 4;
 
     Vec2 cursor(XPad, YPad);
 
-    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursorDir(UiDir::Down);
     SetPanelCursor(&cursor);
 
     constexpr float LabelHeight = 24;
     constexpr float BarHeight = 20;
 
-    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LabelHeight, "Packing GPAK...");
+    DoLabel(UiAlign::Left,UiAlign::Center, LabelHeight, "Packing GPAK...");
 
     cursor.y += (YPad*2);
 
@@ -410,7 +410,7 @@ TEINAPI void DoPack ()
     SetDrawColor(gUiColorExDark);
     FillQuad(x1-1, y1-1, cursor.x+totalWidth+1, y2+1);
 
-    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    BeginDraw(BufferMode::TriangleStrip);
     PutVertex(x1, y2, gGPAKProgressBarMinColor); // BL
     PutVertex(x1, y1, gGPAKProgressBarMinColor); // TL
     PutVertex(x2, y2, gGPAKProgressBarMaxColor); // BR

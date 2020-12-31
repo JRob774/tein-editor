@@ -86,18 +86,19 @@ TEINAPI inline bool operator!= (const KeyBinding& a, const KeyBinding& b);
 
 static std::map<std::string,KeyBinding> gKeyBindings;
 
-TEINAPI bool LoadEditorKeyBindings    ();
+TEINAPI bool LoadEditorKeyBindings ();
 TEINAPI void RestoreEditorKeyBindings ();
 
-TEINAPI void HandleKeyBindingEvents   ();
+TEINAPI void HandleKeyBindingEvents ();
 
 TEINAPI const KeyBinding& GetKeyBinding (std::string name);
 
 TEINAPI std::string GetKeyBindingMainString (const KeyBinding& kb);
 TEINAPI std::string GetKeyBindingMainString (std::string name);
-TEINAPI std::string GetKeyBindingAltString  (const KeyBinding& kb);
-TEINAPI std::string GetKeyBindingAltString  (std::string name);
 
-TEINAPI bool IsKeyBindingActive   (std::string name);
-TEINAPI bool IsKeyModStateActive  (int mod);
-TEINAPI bool IsKeyCodeActive      (int code);
+TEINAPI std::string GetKeyBindingAltString (const KeyBinding& kb);
+TEINAPI std::string GetKeyBindingAltString (std::string name);
+
+TEINAPI bool IsKeyBindingActive (std::string name);
+TEINAPI bool IsKeyModStateActive (int mod);
+TEINAPI bool IsKeyCodeActive (int code);

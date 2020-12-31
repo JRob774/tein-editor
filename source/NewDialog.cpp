@@ -11,7 +11,7 @@ static constexpr const char* gNewHeightLabel = "Level Height:  ";
 static int gCurrentNewWidth = static_cast<int>(gDefaultLevelWidth);
 static int gCurrentNewHeight = static_cast<int>(gDefaultLevelHeight);
 
-static TabType gCurrentTabType = TabType::LEVEL;
+static TabType gCurrentTabType = TabType::Level;
 
 namespace Internal
 {
@@ -19,13 +19,13 @@ namespace Internal
     {
         if (gCurrentNewWidth < gMinimumLevelWidth || gCurrentNewHeight < gMinimumLevelHeight)
         {
-            ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINNEW");
+            ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), AlertType::Warning, AlertButton::Ok, "WINNEW");
             return;
         }
         switch (gCurrentTabType)
         {
-            case (TabType::LEVEL): CreateNewLevelTabAndFocus(GetNewWidth(), GetNewHeight()); break;
-            case (TabType::MAP): CreateNewMapTabAndFocus(); break;
+            case (TabType::Level): CreateNewLevelTabAndFocus(GetNewWidth(), GetNewHeight()); break;
+            case (TabType::Map): CreateNewMapTabAndFocus(); break;
         }
         HideWindow("WINNEW");
     }
@@ -37,7 +37,7 @@ TEINAPI void OpenNew ()
     gCurrentNewHeight = static_cast<int>(gDefaultLevelHeight);
 
     // Default to level because people make more levels than they do maps.
-    gCurrentTabType = TabType::LEVEL;
+    gCurrentTabType = TabType::Level;
 
     ShowWindow("WINNEW");
 }
@@ -53,7 +53,7 @@ TEINAPI void DoNew ()
 
     SetUiFont(&GetEditorRegularFont());
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     Vec2 cursor;
 
@@ -67,16 +67,16 @@ TEINAPI void DoNew ()
 
     // Top tabs for switching type of file to create.
     cursor = Vec2(0,0);
-    BeginPanel(0, 0, vw, nvfh, UI_NONE, gUiColorMedium);
+    BeginPanel(0, 0, vw, nvfh, UiFlag::None, gUiColorMedium);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&cursor);
 
-    UiFlag levelFlags = ((gCurrentTabType == TabType::LEVEL) ? UI_HIGHLIGHT : UI_INACTIVE);
-    UiFlag mapFlags = ((gCurrentTabType == TabType::MAP) ? UI_HIGHLIGHT : UI_INACTIVE);
+    UiFlag levelFlags = ((gCurrentTabType == TabType::Level) ? UiFlag::Highlight : UiFlag::Inactive);
+    UiFlag mapFlags = ((gCurrentTabType == TabType::Map) ? UiFlag::Highlight : UiFlag::Inactive);
 
-    if (DoTextButton(NULL, bw,bh, levelFlags, "Level")) gCurrentTabType = TabType::LEVEL;
-    if (DoTextButton(NULL, bw,bh, mapFlags, "World Map")) gCurrentTabType = TabType::MAP;
+    if (DoTextButton(NULL, bw,bh, levelFlags, "Level")) gCurrentTabType = TabType::Level;
+    if (DoTextButton(NULL, bw,bh, mapFlags, "World Map")) gCurrentTabType = TabType::Map;
 
     // Just in case of weird rounding manually add the right separator.
     cursor.x = vw;
@@ -90,16 +90,16 @@ TEINAPI void DoNew ()
 
     // Bottom buttons for okaying or cancelling the resize.
     cursor = Vec2(0, gWindowBorder);
-    BeginPanel(0, vh-nvfh, vw, nvfh, UI_NONE, gUiColorMedium);
+    BeginPanel(0, vh-nvfh, vw, nvfh, UiFlag::None, gUiColorMedium);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&cursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (DoTextButton(NULL, bw,bh, UI_NONE, "Create")) Internal::OkayNew();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelNew();
+    if (DoTextButton(NULL, bw,bh, UiFlag::None, "Create")) Internal::OkayNew();
+    if (DoTextButton(NULL, bw2,bh, UiFlag::None, "Cancel")) CancelNew();
 
     // Add a separator to the left for symmetry.
     cursor.x = 1;
@@ -112,12 +112,12 @@ TEINAPI void DoNew ()
     p2.w = vw               - 2;
     p2.h = vh - p2.y - nvfh - 1;
 
-    UiFlag panelFlags = ((gCurrentTabType == TabType::LEVEL) ? UI_NONE : UI_LOCKED);
+    UiFlag panelFlags = ((gCurrentTabType == TabType::Level) ? UiFlag::None : UiFlag::Locked);
     BeginPanel(p2, panelFlags, gUiColorMedium);
 
     cursor = Vec2(gNewXPad, gNewYPad);
 
-    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursorDir(UiDir::Down);
     SetPanelCursor(&cursor);
 
     float labelWidthWidth = GetTextWidthScaled(GetEditorRegularFont(), gNewWidthLabel);
@@ -129,9 +129,9 @@ TEINAPI void DoNew ()
     std::string widthString(std::to_string(gCurrentNewWidth));
     std::string heightString(std::to_string(gCurrentNewHeight));
 
-    DoTextBoxLabeled(textBoxWidth, gNewTextBoxHeight, UI_NUMERIC, widthString, labelWidth, gNewWidthLabel, "0");
+    DoTextBoxLabeled(textBoxWidth, gNewTextBoxHeight, UiFlag::Numeric, widthString, labelWidth, gNewWidthLabel, "0");
     AdvancePanelCursor(gNewYPad);
-    DoTextBoxLabeled(textBoxWidth, gNewTextBoxHeight, UI_NUMERIC, heightString, labelWidth, gNewHeightLabel, "0");
+    DoTextBoxLabeled(textBoxWidth, gNewTextBoxHeight, UiFlag::Numeric, heightString, labelWidth, gNewHeightLabel, "0");
 
     if (atoi(widthString.c_str()) > gMaximumLevelWidth) widthString = std::to_string(gMaximumLevelWidth);
     if (atoi(heightString.c_str()) > gMaximumLevelHeight) heightString = std::to_string(gMaximumLevelHeight);

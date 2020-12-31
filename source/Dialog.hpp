@@ -1,4 +1,4 @@
-enum class DialogType { LVL, CSV, LVL_CSV, GPAK, EXE };
+enum class DialogType { Lvl, Csv, LvlCsv, Gpak, Exe };
 
 // Platform-agnostic open/save/path dialog operations.
 TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect = true);

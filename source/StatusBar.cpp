@@ -91,16 +91,16 @@ TEINAPI void DoStatusBar ()
     SetUiFont(&GetEditorRegularFont());
 
     // Status bar is a horizontal list of editor status information.
-    BeginPanel(x,y,w,h, UI_NONE, gUiColorMedium);
+    BeginPanel(x,y,w,h, UiFlag::None, gUiColorMedium);
 
     SetPanelCursor(&cursor);
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
 
-    DoLabel(UI_ALIGN_LEFT,  UI_ALIGN_CENTER, l1Width, h, message);
+    DoLabel(UiAlign::Left,  UiAlign::Center, l1Width, h, message);
     AdvancePanelCursor(gStatusBarInnerPad);
-    DoLabel(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, l2Width, h, mouseString);
+    DoLabel(UiAlign::Right, UiAlign::Center, l2Width, h, mouseString);
     AdvancePanelCursor(gStatusBarInnerPad);
-    DoLabel(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, l3Width, h, selectString);
+    DoLabel(UiAlign::Right, UiAlign::Center, l3Width, h, selectString);
 
     EndPanel();
 

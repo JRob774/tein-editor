@@ -91,30 +91,12 @@ struct Quad
     union { float h, y2; };
 };
 
-enum AlertButton
-{
-    ALERT_BUTTON_YES_NO_CANCEL,
-    ALERT_BUTTON_YES_NO,
-    ALERT_BUTTON_OK,
-    ALERT_BUTTON_OK_CANCEL
-};
-enum AlertType
-{
-    ALERT_TYPE_INFO,
-    ALERT_TYPE_WARNING,
-    ALERT_TYPE_ERROR
-};
-enum AlertResult
-{
-    ALERT_RESULT_INVALID,
-    ALERT_RESULT_CANCEL,
-    ALERT_RESULT_OK,
-    ALERT_RESULT_NO,
-    ALERT_RESULT_YES
-};
+enum class AlertButton { YesNoCancel, YesNo, Ok, OkCancel };
+enum class AlertType { Info, Warning, Error };
+enum class AlertResult { Invalid, Cancel, Ok, No, Yes };
 
 TEINAPI std::vector<U8> ReadBinaryFile (std::string fileName);
-TEINAPI std::string     ReadEntireFile (std::string fileName);
+TEINAPI std::string ReadEntireFile (std::string fileName);
 
 TEINAPI std::string GetExecutablePath ();
 
@@ -125,7 +107,7 @@ TEINAPI bool DoesFileExist (std::string fileName);
 TEINAPI bool DoesPathExist (std::string pathName);
 
 TEINAPI void ListPathContent (std::string pathName, std::vector<std::string>& content, bool recursive = false);
-TEINAPI void ListPathFiles   (std::string pathName, std::vector<std::string>& files,   bool recursive = false);
+TEINAPI void ListPathFiles (std::string pathName, std::vector<std::string>& files,   bool recursive = false);
 
 TEINAPI bool CreatePath (std::string pathName);
 
@@ -139,16 +121,16 @@ TEINAPI U64 LastFileWriteTime (std::string fileName);
 TEINAPI int CompareFileWriteTimes (U64 a, U64 b);
 
 TEINAPI std::string MakePathAbsolute (std::string pathName);
-TEINAPI std::string FixPathSlashes   (std::string pathName);
+TEINAPI std::string FixPathSlashes (std::string pathName);
 
-TEINAPI std::string StripFilePath       (std::string fileName);
-TEINAPI std::string StripFileExt        (std::string fileName);
-TEINAPI std::string StripFileName       (std::string fileName);
+TEINAPI std::string StripFilePath (std::string fileName);
+TEINAPI std::string StripFileExt (std::string fileName);
+TEINAPI std::string StripFileName (std::string fileName);
 TEINAPI std::string StripFilePathAndExt (std::string fileName);
 
 TEINAPI void TokenizeString (const std::string& str, const char* delims, std::vector<std::string>& tokens);
 
-TEINAPI std::string FormatString  (const char* format, ...);
+TEINAPI std::string FormatString (const char* format, ...);
 TEINAPI std::string FormatStringV (const char* format, va_list args);
 
 TEINAPI Vec2 GetMousePos ();
@@ -165,6 +147,6 @@ TEINAPI bool InsensitiveCompare (const std::string& a, const std::string& b);
 TEINAPI bool StringReplace (std::string& str, const std::string& from, const std::string& to);
 
 TEINAPI bool RunExecutable (std::string exe);
-TEINAPI void LoadWebpage   (std::string url);
+TEINAPI void LoadWebpage (std::string url);
 
 TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType type, AlertButton buttons, std::string window = "");

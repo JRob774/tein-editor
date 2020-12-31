@@ -1,4 +1,4 @@
-enum class ChannelType { INVALID, R, G, B, A };
+enum class ChannelType { Invalid, R, G, B, A };
 
 static constexpr float gColorPickerChannelWidth = 40;
 static constexpr float gColorPickerChannelHeight = 180;
@@ -55,7 +55,7 @@ namespace Internal
         SetDrawColor(gUiColorExDark);
         FillQuad(x1-1,y1-1,x2+1,y2+1);
 
-        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        BeginDraw(BufferMode::TriangleStrip);
         PutVertex(cursor.x   , cursor.y+ch, min); // BL
         PutVertex(cursor.x   , cursor.y   , max); // TL
         PutVertex(cursor.x+cw, cursor.y+ch, min); // BR
@@ -65,7 +65,7 @@ namespace Internal
         float percent = std::clamp(roundf(channel*100), 0.0f, 100.0f);
         std::string channelString(std::to_string(static_cast<int>(percent)));
         cursor.y += (ch + yPad);
-        DoTextBox(cw, gColorPickerTextBoxHeight, UI_NUMERIC, channelString, "0");
+        DoTextBox(cw, gColorPickerTextBoxHeight, UiFlag::Numeric, channelString, "0");
         if (atoi(channelString.c_str()) > 100) channelString = "100";
         float newChannel = static_cast<float>(atoi(channelString.c_str())) / 100;
         if (channel != newChannel) channel = newChannel;
@@ -145,7 +145,7 @@ namespace Internal
 
         max.a = 1;
 
-        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        BeginDraw(BufferMode::TriangleStrip);
         PutVertex(x     , y+size, min); // BL
         PutVertex(x     , y     , max); // TL
         PutVertex(x+size, y+size, min); // BR
@@ -168,7 +168,7 @@ namespace Internal
         float h = (GetPanelHeight()-gColorPickerYPad)-cursor.y-2;
 
         Vec2 cursor2(gColorPickerSwatchXPad, gColorPickerSwatchYPad);
-        BeginPanel(x,y,w,h, UI_NONE);
+        BeginPanel(x,y,w,h, UiFlag::None);
 
         for (auto& swatch: gColorPickerSwatches)
         {
@@ -199,16 +199,16 @@ namespace Internal
         cursor.x = xPad;
         cursor.y = (yPad*3.25f) + ch + gColorPickerTextBoxHeight;
 
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
         DoSeparator((cw*3)+(xPad*6));
         cursor.y -= 1;
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
 
         cursor.y += (yPad*1.25f);
 
         float percent = std::clamp(roundf(color.a*100), 0.0f, 100.0f);
         std::string alphaString(std::to_string(static_cast<int>(percent)));
-        DoTextBox(cw, gColorPickerTextBoxHeight, UI_NUMERIC, alphaString, "0");
+        DoTextBox(cw, gColorPickerTextBoxHeight, UiFlag::Numeric, alphaString, "0");
         if (atoi(alphaString.c_str()) > 100) alphaString = "100";
         float newAlpha = static_cast<float>(atoi(alphaString.c_str())) / 100;
         if (color.a != newAlpha) color.a = newAlpha;
@@ -239,7 +239,7 @@ namespace Internal
         min.a = 0;
         max.a = 1;
 
-        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        BeginDraw(BufferMode::TriangleStrip);
         PutVertex(x1, y2, min); // BL
         PutVertex(x1, y1, min); // TL
         PutVertex(x2, y2, max); // BR
@@ -314,7 +314,7 @@ TEINAPI void OpenColorPicker (Vec4* color)
 {
     RaiseWindow("WINCOLOR");
 
-    gColorPickerActiveChannel = ChannelType::INVALID;
+    gColorPickerActiveChannel = ChannelType::Invalid;
     gColorPickerMousePressed = false;
 
     assert(color);
@@ -338,7 +338,7 @@ TEINAPI void DoColorPicker ()
 
     SetUiFont(&GetEditorRegularFont());
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     float bb = gColorPickerBottomBorder;
 
@@ -350,17 +350,17 @@ TEINAPI void DoColorPicker ()
 
     // Bottom buttons for okaying or cancelling the color picker.
     Vec2 buttonCursor(0, gWindowBorder);
-    BeginPanel(0,vh-bb,vw,bb, UI_NONE, gUiColorMedium);
+    BeginPanel(0,vh-bb,vw,bb, UiFlag::None, gUiColorMedium);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&buttonCursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - (bw*2);
 
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Okay"  )) OkayColorPicker();
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Save"  )) Internal::SaveColorSwatch();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelColorPicker();
+    if (DoTextButton(NULL, bw ,bh, UiFlag::None, "Okay"  )) OkayColorPicker();
+    if (DoTextButton(NULL, bw ,bh, UiFlag::None, "Save"  )) Internal::SaveColorSwatch();
+    if (DoTextButton(NULL, bw2,bh, UiFlag::None, "Cancel")) CancelColorPicker();
 
     // Add a separator to the left for symmetry.
     buttonCursor.x = 1;
@@ -373,14 +373,14 @@ TEINAPI void DoColorPicker ()
     p2.w = vw - 2;
     p2.h = vh - p2.y - bb - 1;
 
-    BeginPanel(p2, UI_NONE, gUiColorMedium);
+    BeginPanel(p2, UiFlag::None, gUiColorMedium);
 
     assert(gCurrentColorPickerColor);
 
     Vec4& color = *gCurrentColorPickerColor; // So much shorter to type out...
     Vec2 cursor(gColorPickerXPad, gColorPickerYPad);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&cursor);
 
     // Draw the three R G B channel selectors/sliders.
@@ -441,7 +441,7 @@ TEINAPI void HandleColorPickerEvents ()
         {
             if (gMainEvent.button.button == SDL_BUTTON_LEFT)
             {
-                gColorPickerActiveChannel = ChannelType::INVALID;
+                gColorPickerActiveChannel = ChannelType::Invalid;
             }
         } break;
         case (SDL_KEYDOWN):

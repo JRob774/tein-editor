@@ -17,7 +17,7 @@ TEINAPI void DoControlPanel ()
 
     if (CurrentTabIsLevel())
     {
-        BeginPanel(gControlPanelBounds, UI_NONE);
+        BeginPanel(gControlPanelBounds, UiFlag::None);
         DoTilePanel(scrollbar);
         DoLayerPanel(scrollbar);
         EndPanel();

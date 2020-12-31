@@ -1,19 +1,12 @@
-static constexpr float gDefaultLevelWidth  = 54;
+static constexpr float gDefaultLevelWidth = 54;
 static constexpr float gDefaultLevelHeight = 32;
-static constexpr int   gMinimumLevelWidth  = 54;
-static constexpr int   gMinimumLevelHeight = 32;
-static constexpr int   gMaximumLevelWidth  = 2840;
-static constexpr int   gMaximumLevelHeight = 2840;
 
-enum LevelLayer: U32
-{
-    LEVEL_LAYER_TAG,
-    LEVEL_LAYER_OVERLAY,
-    LEVEL_LAYER_ACTIVE, // Combo of Basic and Entity.
-    LEVEL_LAYER_BACK1,
-    LEVEL_LAYER_BACK2,
-    LEVEL_LAYER_TOTAL
-};
+static constexpr int gMinimumLevelWidth = 54;
+static constexpr int gMinimumLevelHeight = 32;
+static constexpr int gMaximumLevelWidth = 2840;
+static constexpr int gMaximumLevelHeight = 2840;
+
+enum class LevelLayer: U32 { Tag, Overlay, Active, Back1, Back2, Total };
 
 typedef S32 TileID;
 
@@ -25,7 +18,7 @@ struct LevelHeader
     S32 layers;
 };
 
-typedef std::array<std::vector<TileID>, LEVEL_LAYER_TOTAL> LevelData;
+typedef std::array<std::vector<TileID>, static_cast<int>(LevelLayer::Total)> LevelData;
 
 struct Level
 {

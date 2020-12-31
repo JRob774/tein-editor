@@ -8,7 +8,7 @@
 #endif
 
 // We do this to disable assert in release.
-#if !defined(BUILD_DEBUG)
+#if !defined(BuildDebug)
 #define NDEBUG
 #endif
 
@@ -146,9 +146,9 @@
 #include "PreferencesMenu.cpp"
 #include "About.cpp"
 
-#if defined(BUILD_DEBUG)
+#if defined(BuildDebug)
 #include "utility/GenerateAtlas.hpp"
 #include "utility/PackTexture.hpp"
-#endif // BUILD_DEBUG
+#endif // BuildDebug
 
 #include "Application.cpp"

@@ -66,8 +66,6 @@ static constexpr const char* gKeyBindingsFallback =
 "load_prev_level { main [\"Ctrl\" \"Left\"] }\n"
 "load_next_level { main [\"Ctrl\" \"Right\"] }\n";
 
-typedef std::pair<std::string,KeyBinding> KBPair;
-
 static const std::map<std::string,int> gKeyModMap
 {
 { "None",  0          },
@@ -131,13 +129,13 @@ namespace Internal
         bool gonContains = gon.Contains(name);
         if (!gonContains && !gonFallback.Contains(name))
         {
-            LogError(ERR_MIN, "No key binding for '%s'!", name);
+            LogError(ErrorLevel::Min, "No key binding for '%s'!", name);
             return;
         }
 
         if (gKeyBindings.count(name))
         {
-            LogError(ERR_MED, "Duplicate key binding '%s'!", name);
+            LogError(ErrorLevel::Med, "Duplicate key binding '%s'!", name);
             return;
         }
 
@@ -163,7 +161,7 @@ namespace Internal
                     }
                     else
                     {
-                        LogError(ERR_MED, "Invalid key mod '%s'!", keyName.c_str());
+                        LogError(ErrorLevel::Med, "Invalid key mod '%s'!", keyName.c_str());
                         return;
                     }
                 }
@@ -192,7 +190,7 @@ namespace Internal
                     }
                     else
                     {
-                        LogError(ERR_MED, "Invalid key mod '%s'!", keyName.c_str());
+                        LogError(ErrorLevel::Med, "Invalid key mod '%s'!", keyName.c_str());
                         return;
                     }
                 }
@@ -202,7 +200,7 @@ namespace Internal
         // If neither are set then input was malformed or empty.
         if (!code && !mod)
         {
-            LogError(ERR_MED, "Invalid key binding '%s'!", name);
+            LogError(ErrorLevel::Med, "Invalid key binding '%s'!", name);
             return;
         }
 
@@ -306,13 +304,13 @@ TEINAPI bool LoadEditorKeyBindings ()
     }
     catch (const char* msg)
     {
-        LogError(ERR_MED, "%s", msg);
+        LogError(ErrorLevel::Med, "%s", msg);
 
         // If we already have key bind data then we just inform the user that the operation
         // failed. Otherwise, we just fallback to using the default application key binds.
         if (!gKeyBindings.empty())
         {
-            LogError(ERR_MED, "Failed to reload key bindings data!");
+            LogError(ErrorLevel::Med, "Failed to reload key bindings data!");
             return false;
         }
         else
@@ -395,7 +393,7 @@ TEINAPI bool IsKeyBindingActive (std::string name)
     // If the key binding doesn't exist then it can't be active.
     if (!gKeyBindings.count(name))
     {
-        LogError(ERR_MIN, "No key binding with name '%s'!", name.c_str());
+        LogError(ErrorLevel::Min, "No key binding with name '%s'!", name.c_str());
         return false;
     }
 

@@ -36,7 +36,7 @@ if %BuildMode%==Release (
 )
 if %BuildMode%==Debug (
     set OutputExecutable=%OutputExecutable%-Debug
-    set Defines=%Defines% -DBUILD_DEBUG
+    set Defines=%Defines% -DBuildDebug
     set InputResource=
     set LinkerFlags=%LinkerFlags% -subsystem:console
 )

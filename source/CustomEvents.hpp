@@ -1,13 +1,2 @@
-enum EditorEvent: U32
-{
-    EDITOR_EVENT_UI_REDRAW,
-    EDITOR_EVENT_BACKUP_TAB,
-    EDITOR_EVENT_HOTLOAD,
-    EDITOR_EVENT_COOLDOWN,
-    EDITOR_EVENT_BLINK_CURSOR,
-    EDITOR_EVENT_GPAK_PROGRESS,
-    EDITOR_EVENT_SHOW_TOOLTIP,
-    EDITOR_EVENT_SHOW_UPDATE
-};
-
+enum class EditorEvent: U32 { UiRedraw, BackupTab, Cooldown, BlinkCursor, GPAKProgress, ShowTooltip, ShowUpdate };
 TEINAPI void PushEditorEvent (EditorEvent id, void* data1, void* data2);

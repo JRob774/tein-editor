@@ -1,5 +1,5 @@
-enum class ToolState { IDLE, PLACE, ERASE };
-enum class ToolType { BRUSH, FILL, SELECT };
+enum class ToolState { Idle, Place, Erase };
+enum class ToolType { Brush, Fill, Select };
 
 struct Tab;
 
@@ -44,15 +44,7 @@ struct ToolInfo
     ToolSelect select;
 };
 
-enum class LevelHistoryAction
-{
-    NORMAL,
-    FLIP_LEVEL_H,
-    FLIP_LEVEL_V,
-    SELECT_STATE,
-    CLEAR,
-    RESIZE
-};
+enum class LevelHistoryAction { Normal, FlipLevelH, FlipLevelV, SelectState, Clear, Resize };
 
 struct LevelHistoryInfo
 {
@@ -73,7 +65,7 @@ struct LevelHistoryState
 
     // What layers were active at the time. Used by flips so only those
     // layers end up getting flipped during the undo and redo actions.
-    bool tileLayerActive[LEVEL_LAYER_TOTAL];
+    bool tileLayerActive[static_cast<int>(LevelLayer::Total)];
 
     // Used by the select box history to know the size and position.
     std::vector<SelectBounds> oldSelectState;
@@ -114,8 +106,8 @@ struct LevelClipboard
 
 struct LevelEditor
 {
-    ToolState toolState = ToolState::IDLE;
-    ToolType toolType = ToolType::BRUSH;
+    ToolState toolState = ToolState::Idle;
+    ToolType toolType = ToolType::Brush;
 
     std::vector<LevelClipboard> clipboard;
 

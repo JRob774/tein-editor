@@ -16,40 +16,25 @@ static constexpr U32 gUiCursorBlinkInterval = 700;
 // The function type that is called by various UI widgets when triggered.
 typedef void (*UiAction)(void);
 
-enum UiFlag: U32
+enum class UiFlag: U32
 {
-    UI_NONE       = 0x00000000,
-    UI_LOCKED     = 0x00000001,
-    UI_INACTIVE   = 0x00000002,
-    UI_HIGHLIGHT  = 0x00000004,
-    UI_DARKEN     = 0x00000008,
-    UI_TOOLTIP    = 0x00000010,
-    UI_SINGLE     = 0x00000020,
-    // Flags for what type of characters can be written into a text box.
-    UI_ALPHABETIC = 0x00000040,
-    UI_NUMERIC    = 0x00000080,
-    UI_ALPHANUM   = 0x00000100,
-    UI_FILEPATH   = 0x00000200
+    None       =     0,
+    Locked     = (1<<0),
+    Inactive   = (1<<1),
+    Highlight  = (1<<2),
+    Darken     = (1<<3),
+    Tooltip    = (1<<4),
+    Single     = (1<<5),
+    Alphabetic = (1<<6),
+    Numeric    = (1<<7),
+    Alphanum   = (1<<8),
+    FilePath   = (1<<9)
 };
 
 GenerateEnumBitflagOperators(UiFlag);
 
-enum UiAlign
-{
-    UI_ALIGN_CENTER,
-    UI_ALIGN_LEFT,
-    UI_ALIGN_RIGHT,
-    UI_ALIGN_TOP,
-    UI_ALIGN_BOTTOM
-};
-
-enum UiDir
-{
-    UI_DIR_UP,
-    UI_DIR_RIGHT,
-    UI_DIR_DOWN,
-    UI_DIR_LEFT
-};
+enum class UiAlign { Center, Left, Right, Top, Bottom };
+enum class UiDir { Up, Right, Down, Left };
 
 static bool gShouldPushUiRedrawEvent;
 
@@ -118,8 +103,8 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
 TEINAPI void  DoMarkdown        (float w, float h, std::string text);
 TEINAPI float GetMarkdownHeight (float w,          std::string text);
 
-TEINAPI void DoTextBox        (float w, float h, UiFlag flags, std::string& text,                                      std::string defaultText = "", UiAlign hAlign = UI_ALIGN_RIGHT);
-TEINAPI void DoTextBoxLabeled (float w, float h, UiFlag flags, std::string& text, float labelWidth, std::string label, std::string defaultText = "", UiAlign hAlign = UI_ALIGN_RIGHT);
+TEINAPI void DoTextBox        (float w, float h, UiFlag flags, std::string& text,                                      std::string defaultText = "", UiAlign hAlign = UiAlign::Right);
+TEINAPI void DoTextBoxLabeled (float w, float h, UiFlag flags, std::string& text, float labelWidth, std::string label, std::string defaultText = "", UiAlign hAlign = UiAlign::Right);
 
 TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb);
 TEINAPI void DoHotkeyRebindAlt  (float w, float h, UiFlag flags, KeyBinding& kb);

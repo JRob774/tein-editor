@@ -40,83 +40,83 @@ TEINAPI void DoHotbar ()
     SetUiTexture(&gResourceIcons);
     SetUiFont(&GetEditorRegularFont());
 
-    UiFlag saveFlags = UI_NONE;
-    UiFlag saveAsFlags = UI_NONE;
-    UiFlag undoFlags = UI_NONE;
-    UiFlag redoFlags = UI_NONE;
-    UiFlag zoomOutFlags = UI_NONE;
-    UiFlag zoomInFlags = UI_NONE;
-    UiFlag packFlags = UI_NONE;
-    UiFlag unpackFlags = UI_NONE;
+    UiFlag saveFlags = UiFlag::None;
+    UiFlag saveAsFlags = UiFlag::None;
+    UiFlag undoFlags = UiFlag::None;
+    UiFlag redoFlags = UiFlag::None;
+    UiFlag zoomOutFlags = UiFlag::None;
+    UiFlag zoomInFlags = UiFlag::None;
+    UiFlag packFlags = UiFlag::None;
+    UiFlag unpackFlags = UiFlag::None;
 
-    packFlags = ((IsGPAKPackComplete()) ? UI_NONE : UI_LOCKED);
-    unpackFlags = ((IsGPAKUnpackComplete()) ? UI_NONE : UI_LOCKED);
+    packFlags = ((IsGPAKPackComplete()) ? UiFlag::None : UiFlag::Locked);
+    unpackFlags = ((IsGPAKUnpackComplete()) ? UiFlag::None : UiFlag::Locked);
 
     if (AreThereAnyTabs())
     {
         const Tab& tab = GetCurrentTab();
 
         // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
-        if (tab.type == TabType::LEVEL)
+        if (tab.type == TabType::Level)
         {
             if (tab.levelHistory.currentPosition == tab.levelHistory.state.size()-1)
             {
-                redoFlags = UI_LOCKED;
+                redoFlags = UiFlag::Locked;
             }
             if (tab.levelHistory.currentPosition <= -1)
             {
-                undoFlags = UI_LOCKED;
+                undoFlags = UiFlag::Locked;
             }
             if (tab.levelHistory.state.empty())
             {
-                undoFlags = UI_LOCKED;
-                redoFlags = UI_LOCKED;
+                undoFlags = UiFlag::Locked;
+                redoFlags = UiFlag::Locked;
             }
         }
         else
         {
             if (tab.mapHistory.currentPosition == tab.mapHistory.state.size()-1)
             {
-                redoFlags = UI_LOCKED;
+                redoFlags = UiFlag::Locked;
             }
             if (tab.mapHistory.currentPosition <= 0)
             {
-                undoFlags = UI_LOCKED;
+                undoFlags = UiFlag::Locked;
             }
             if (tab.mapHistory.state.size() == 1)
             {
-                undoFlags = UI_LOCKED;
-                redoFlags = UI_LOCKED;
+                undoFlags = UiFlag::Locked;
+                redoFlags = UiFlag::Locked;
             }
         }
 
         // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
-        if (tab.type == TabType::LEVEL)
+        if (tab.type == TabType::Level)
         {
-            zoomOutFlags = ((tab.camera.zoom == gMinLevelEditorZoom) ? UI_LOCKED : UI_NONE);
-            zoomInFlags = ((tab.camera.zoom == gMaxLevelEditorZoom) ? UI_LOCKED : UI_NONE);
+            zoomOutFlags = ((tab.camera.zoom == gMinLevelEditorZoom) ? UiFlag::Locked : UiFlag::None);
+            zoomInFlags = ((tab.camera.zoom == gMaxLevelEditorZoom) ? UiFlag::Locked : UiFlag::None);
         }
         else
         {
-            zoomOutFlags = (tab.camera.zoom == gMinMapEditorZoom) ? UI_LOCKED : UI_NONE;
-            zoomInFlags = (tab.camera.zoom == gMaxMapEditorZoom) ? UI_LOCKED : UI_NONE;
+            zoomOutFlags = (tab.camera.zoom == gMinMapEditorZoom) ? UiFlag::Locked : UiFlag::None;
+            zoomInFlags = (tab.camera.zoom == gMaxMapEditorZoom) ? UiFlag::Locked : UiFlag::None;
         }
     }
     else
     {
-        saveFlags = UI_LOCKED;
-        saveAsFlags = UI_LOCKED;
-        undoFlags = UI_LOCKED;
-        redoFlags = UI_LOCKED;
-        zoomOutFlags = UI_LOCKED;
-        zoomInFlags = UI_LOCKED;
+        saveFlags = UiFlag::Locked;
+        saveAsFlags = UiFlag::Locked;
+        undoFlags = UiFlag::Locked;
+        redoFlags = UiFlag::Locked;
+        zoomOutFlags = UiFlag::Locked;
+        zoomInFlags = UiFlag::Locked;
     }
 
     // The hotbar is a horizontal list of available actions.
-    BeginPanel(0, 0, GetViewport().w, gHotbarHeight, UI_NONE, gUiColorMedium);
+    BeginPanel(0, 0, GetViewport().w, gHotbarHeight, UiFlag::None, gUiColorMedium);
 
     SetPanelCursor(&cursor);
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
 
     // We want these to be the same width as the toolbar (looks nice).
     float bw = gToolbarDefaultWidth+1;
@@ -142,8 +142,8 @@ TEINAPI void DoHotbar ()
     // Display text or icons depending on what we have room for.
     if (width < GetViewport().w)
     {
-        DoTextButton(HotbarNew, bh, UI_NONE, gHotbarNameNew, gHotbarInfoNew, gKbLevelNew);
-        DoTextButton(HotbarLoad, bh, UI_NONE, gHotbarNameLoad, gHotbarInfoLoad, gKbLevelOpen);
+        DoTextButton(HotbarNew, bh, UiFlag::None, gHotbarNameNew, gHotbarInfoNew, gKbLevelNew);
+        DoTextButton(HotbarLoad, bh, UiFlag::None, gHotbarNameLoad, gHotbarInfoLoad, gKbLevelOpen);
         DoTextButton(HotbarSave, bh, saveFlags, gHotbarNameSave, gHotbarInfoSave, gKbLevelSave);
         DoTextButton(HotbarSaveAs, bh, saveAsFlags, gHotbarNameSaveAs, gHotbarInfoSaveAs, gKbLevelSaveAs);
         DoTextButton(HotbarUndo, bh, undoFlags, gHotbarNameUndo, gHotbarInfoUndo, gKbUndo);
@@ -152,16 +152,16 @@ TEINAPI void DoHotbar ()
         DoTextButton(HotbarZoomIn, bh, zoomInFlags, gHotbarNameZoomIn, gHotbarInfoZoomIn, gKbCameraZoomIn);
         DoTextButton(HotbarGPAKPack, bh, packFlags, gHotbarNamePack, gHotbarInfoPack, gKbGpakPack);
         DoTextButton(HotbarGPAKUnpack, bh, unpackFlags, gHotbarNameUnpack, gHotbarInfoUnpack, gKbGpakUnpack);
-        DoTextButton(HotbarRunGame, bh, UI_NONE, gHotbarNameRunGame, gHotbarInfoRunGame, gKbRunGame);
-        DoTextButton(HotbarPreferences, bh, UI_NONE, gHotbarNamePreferences, gHotbarInfoPreferences, gKbPreferences);
-        DoTextButton(HotbarAbout, bh, UI_NONE, gHotbarNameAbout, gHotbarInfoAbout, gKbAbout);
-        DoTextButton(HotbarBugReport, bh, UI_NONE, gHotbarNameBugReport, gHotbarInfoBugReport, gKbBugReport);
-        DoTextButton(HotbarHelp, bh, UI_NONE, gHotbarNameHelp, gHotbarInfoHelp, gKbHelp);
+        DoTextButton(HotbarRunGame, bh, UiFlag::None, gHotbarNameRunGame, gHotbarInfoRunGame, gKbRunGame);
+        DoTextButton(HotbarPreferences, bh, UiFlag::None, gHotbarNamePreferences, gHotbarInfoPreferences, gKbPreferences);
+        DoTextButton(HotbarAbout, bh, UiFlag::None, gHotbarNameAbout, gHotbarInfoAbout, gKbAbout);
+        DoTextButton(HotbarBugReport, bh, UiFlag::None, gHotbarNameBugReport, gHotbarInfoBugReport, gKbBugReport);
+        DoTextButton(HotbarHelp, bh, UiFlag::None, gHotbarNameHelp, gHotbarInfoHelp, gKbHelp);
     }
     else
     {
-        DoImageButton(HotbarNew, bw,bh, UI_NONE, &gClipNew, gHotbarInfoNew, gKbLevelNew, gHotbarNameNew);
-        DoImageButton(HotbarLoad, bw,bh, UI_NONE, &gClipLoad, gHotbarInfoLoad, gKbLevelOpen, gHotbarNameLoad);
+        DoImageButton(HotbarNew, bw,bh, UiFlag::None, &gClipNew, gHotbarInfoNew, gKbLevelNew, gHotbarNameNew);
+        DoImageButton(HotbarLoad, bw,bh, UiFlag::None, &gClipLoad, gHotbarInfoLoad, gKbLevelOpen, gHotbarNameLoad);
         DoImageButton(HotbarSave, bw,bh, saveFlags, &gClipSave, gHotbarInfoSave, gKbLevelSave, gHotbarNameSave);
         DoImageButton(HotbarSaveAs, bw,bh, saveAsFlags, &gClipSaveAs, gHotbarInfoSaveAs, gKbLevelSaveAs, gHotbarNameSaveAs);
         DoImageButton(HotbarUndo, bw,bh, undoFlags, &gClipUndo, gHotbarInfoUndo, gKbUndo, gHotbarNameUndo);
@@ -170,11 +170,11 @@ TEINAPI void DoHotbar ()
         DoImageButton(HotbarZoomIn, bw,bh, zoomInFlags, &gClipZoomIn, gHotbarInfoZoomIn, gKbCameraZoomIn, gHotbarNameZoomIn);
         DoImageButton(HotbarGPAKPack, bw,bh, packFlags, &gClipPack, gHotbarInfoPack, gKbGpakPack, gHotbarNamePack);
         DoImageButton(HotbarGPAKUnpack, bw,bh, unpackFlags, &gClipUnpack, gHotbarInfoUnpack, gKbGpakUnpack, gHotbarNameUnpack);
-        DoImageButton(HotbarRunGame, bw,bh, UI_NONE, &gClipRun, gHotbarInfoRunGame, gKbRunGame, gHotbarNameRunGame);
-        DoImageButton(HotbarPreferences, bw,bh, UI_NONE, &gClipSettings, gHotbarInfoPreferences, gKbPreferences, gHotbarNamePreferences);
-        DoImageButton(HotbarAbout, bw,bh, UI_NONE, &gClipAbout, gHotbarInfoAbout, gKbAbout, gHotbarNameAbout);
-        DoImageButton(HotbarBugReport, bw,bh, UI_NONE, &gClipBug, gHotbarInfoBugReport, gKbBugReport, gHotbarNameBugReport);
-        DoImageButton(HotbarHelp, bw,bh, UI_NONE, &gClipHelp, gHotbarInfoHelp, gKbHelp, gHotbarNameHelp);
+        DoImageButton(HotbarRunGame, bw,bh, UiFlag::None, &gClipRun, gHotbarInfoRunGame, gKbRunGame, gHotbarNameRunGame);
+        DoImageButton(HotbarPreferences, bw,bh, UiFlag::None, &gClipSettings, gHotbarInfoPreferences, gKbPreferences, gHotbarNamePreferences);
+        DoImageButton(HotbarAbout, bw,bh, UiFlag::None, &gClipAbout, gHotbarInfoAbout, gKbAbout, gHotbarNameAbout);
+        DoImageButton(HotbarBugReport, bw,bh, UiFlag::None, &gClipBug, gHotbarInfoBugReport, gKbBugReport, gHotbarNameBugReport);
+        DoImageButton(HotbarHelp, bw,bh, UiFlag::None, &gClipHelp, gHotbarInfoHelp, gKbHelp, gHotbarNameHelp);
     }
 
     EndPanel();
@@ -187,7 +187,7 @@ TEINAPI void HotbarNew ()
 
 TEINAPI void HotbarLoad ()
 {
-    std::vector<std::string> fileNames = OpenDialog(DialogType::LVL_CSV);
+    std::vector<std::string> fileNames = OpenDialog(DialogType::LvlCsv);
     if (!fileNames.empty())
     {
         for (auto file: fileNames)
@@ -204,8 +204,8 @@ TEINAPI void HotbarSave ()
     if (!AreThereAnyTabs()) return;
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): LevelEditorSave(GetCurrentTab()); break;
-        case (TabType::MAP): SaveMapTab(GetCurrentTab()); break;
+        case (TabType::Level): LevelEditorSave(GetCurrentTab()); break;
+        case (TabType::Map): SaveMapTab(GetCurrentTab()); break;
     }
 }
 
@@ -214,8 +214,8 @@ TEINAPI void HotbarSaveAs ()
     if (!AreThereAnyTabs()) return;
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): LevelEditorSaveAs(); break;
-        case (TabType::MAP): SaveMapTabAs(); break;
+        case (TabType::Level): LevelEditorSaveAs(); break;
+        case (TabType::Map): SaveMapTabAs(); break;
     }
 }
 
@@ -224,8 +224,8 @@ TEINAPI void HotbarUndo ()
     if (!AreThereAnyTabs()) return;
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): LevelEditorUndo(); break;
-        case (TabType::MAP): MapEditorUndo(); break;
+        case (TabType::Level): LevelEditorUndo(); break;
+        case (TabType::Map): MapEditorUndo(); break;
     }
 }
 
@@ -234,8 +234,8 @@ TEINAPI void HotbarRedo ()
     if (!AreThereAnyTabs()) return;
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): LevelEditorRedo(); break;
-        case (TabType::MAP): MapEditorRedo(); break;
+        case (TabType::Level): LevelEditorRedo(); break;
+        case (TabType::Map): MapEditorRedo(); break;
     }
 }
 
@@ -244,8 +244,8 @@ TEINAPI void HotbarHistoryBegin ()
     if (!AreThereAnyTabs()) return;
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): LevelEditorHistoryBegin(); break;
-        case (TabType::MAP): MapEditorHistoryBegin(); break;
+        case (TabType::Level): LevelEditorHistoryBegin(); break;
+        case (TabType::Map): MapEditorHistoryBegin(); break;
     }
 }
 
@@ -254,8 +254,8 @@ TEINAPI void HotbarHistoryEnd ()
     if (!AreThereAnyTabs()) return;
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): LevelEditorHistoryEnd(); break;
-        case (TabType::MAP): MapEditorHistoryEnd(); break;
+        case (TabType::Level): LevelEditorHistoryEnd(); break;
+        case (TabType::Map): MapEditorHistoryEnd(); break;
     }
 }
 
@@ -263,7 +263,7 @@ TEINAPI void HotbarZoomOut ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    if (tab.type == TabType::LEVEL)
+    if (tab.type == TabType::Level)
     {
         if ((tab.camera.zoom /= 2) < gMinLevelEditorZoom)
         {
@@ -283,7 +283,7 @@ TEINAPI void HotbarZoomIn ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    if (tab.type == TabType::LEVEL)
+    if (tab.type == TabType::Level)
     {
         if ((tab.camera.zoom *= 2) > gMaxLevelEditorZoom)
         {
@@ -301,11 +301,11 @@ TEINAPI void HotbarZoomIn ()
 
 TEINAPI void HotbarGPAKUnpack ()
 {
-    std::vector<std::string> files = OpenDialog(DialogType::GPAK, false);
+    std::vector<std::string> files = OpenDialog(DialogType::Gpak, false);
     if (!files.empty())
     {
         bool shouldOverwrite = true;
-        if (ShowAlert("Overwrite", "Do you want to overwrite any existing files during unpack?", ALERT_TYPE_INFO, ALERT_BUTTON_YES_NO) == ALERT_RESULT_NO)
+        if (ShowAlert("Overwrite", "Do you want to overwrite any existing files during unpack?", AlertType::Info, AlertButton::YesNo) == AlertResult::No)
         {
             shouldOverwrite = false;
         }
@@ -319,7 +319,7 @@ TEINAPI void HotbarGPAKPack ()
     std::vector<std::string> paths = PathDialog();
     if (!paths.empty())
     {
-        std::string file = SaveDialog(DialogType::GPAK);
+        std::string file = SaveDialog(DialogType::Gpak);
         if (!file.empty())
         {
             GPAKPack(file, paths);
@@ -374,7 +374,7 @@ TEINAPI void HotbarRunGame ()
     }
     else if (!RunExecutable(executable))
     {
-        LogError(ERR_MED, "Failed to launch The End is Nigh executable!");
+        LogError(ErrorLevel::Med, "Failed to launch The End is Nigh executable!");
     }
 }
 

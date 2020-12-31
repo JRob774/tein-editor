@@ -33,7 +33,7 @@ namespace Internal
 
     TEINAPI U32 BackupCallback (U32 interval, void* userData)
     {
-        PushEditorEvent(EDITOR_EVENT_BACKUP_TAB, NULL, NULL);
+        PushEditorEvent(EditorEvent::BackupTab, NULL, NULL);
         // This tells SDL to setup the timer again to run with the new interval.
         // In this case we are just using the exact same interval as previously.
         return interval;
@@ -211,13 +211,13 @@ TEINAPI void InitEditor (int argc, char** argv)
     bool deniedRestore = false;
     if (!restoreFiles.empty())
     {
-        if (ShowAlert("Restore", "Would you like to attempt to restore tabs?", ALERT_TYPE_INFO, ALERT_BUTTON_YES_NO, "WINMAIN") == ALERT_RESULT_YES)
+        if (ShowAlert("Restore", "Would you like to attempt to restore tabs?", AlertType::Info, AlertButton::YesNo, "WINMAIN") == AlertResult::Yes)
         {
             for (auto& fileName: restoreFiles)
             {
                 if (!Internal::RestoreTab(fileName))
                 {
-                    LogError(ERR_MED, "Failed to restore '%s'!", fileName.c_str());
+                    LogError(ErrorLevel::Med, "Failed to restore '%s'!", fileName.c_str());
                     CloseCurrentTab();
                 }
                 else
@@ -245,7 +245,7 @@ TEINAPI void InitEditor (int argc, char** argv)
             if (!DoesFileExist(argv[i]))
             {
                 std::string msg(FormatString("Could not find file '%s'!", argv[i]));
-                ShowAlert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
+                ShowAlert("Error", msg, AlertType::Error, AlertButton::Ok, "WINMAIN");
             }
             else
             {
@@ -283,14 +283,14 @@ TEINAPI void DoEditor ()
 
     if (!AreThereAnyTabs())
     {
-        SetCursorType(Cursor::ARROW);
+        SetCursorType(Cursor::Arrow);
         return;
     }
 
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): DoLevelEditor(); break;
-        case (TabType::MAP): DoMapEditor(); break;
+        case (TabType::Level): DoLevelEditor(); break;
+        case (TabType::Map): DoMapEditor(); break;
     }
 }
 
@@ -323,12 +323,12 @@ TEINAPI void HandleEditorEvents ()
         {
             switch (gMainEvent.user.code)
             {
-                case (EDITOR_EVENT_BACKUP_TAB):
+                case (EditorEvent::BackupTab):
                 {
                     // Go and backup every single tab that is currently open.
                     for (auto& t: gEditor.tabs) BackupTab(t);
                 } break;
-                case (EDITOR_EVENT_COOLDOWN):
+                case (EditorEvent::Cooldown):
                 {
                     gEditor.dialogBox = false;
                 } break;
@@ -351,7 +351,7 @@ TEINAPI void HandleEditorEvents ()
             else if (gMainEvent.wheel.y < 0) tab->camera.zoom -= (gEditorZoomIncrement * tab->camera.zoom); // Zoom out.
 
             // Make sure the editor camera zoom stays within reasonable boundaries.
-            if (tab->type == TabType::LEVEL) tab->camera.zoom = std::clamp(tab->camera.zoom, gMinLevelEditorZoom, gMaxLevelEditorZoom);
+            if (tab->type == TabType::Level) tab->camera.zoom = std::clamp(tab->camera.zoom, gMinLevelEditorZoom, gMaxLevelEditorZoom);
             else tab->camera.zoom = std::clamp(tab->camera.zoom, gMinMapEditorZoom, gMaxMapEditorZoom);
         } break;
         case (SDL_MOUSEMOTION):
@@ -386,8 +386,8 @@ TEINAPI void HandleEditorEvents ()
 
     switch (GetCurrentTab().type)
     {
-        case (TabType::LEVEL): HandleLevelEditorEvents(); break;
-        case (TabType::MAP): HandleMapEditorEvents(); break;
+        case (TabType::Level): HandleLevelEditorEvents(); break;
+        case (TabType::Map): HandleMapEditorEvents(); break;
     }
 }
 
@@ -408,7 +408,7 @@ TEINAPI void UpdateBackupTimer ()
             gEditor.backupTimer = SDL_AddTimer(backupInterval, Internal::BackupCallback, NULL);
             if (!gEditor.backupTimer)
             {
-                LogError(ERR_MED, "Failed to setup backup timer system! (%s)", SDL_GetError());
+                LogError(ErrorLevel::Med, "Failed to setup backup timer system! (%s)", SDL_GetError());
             }
         }
     }
@@ -424,7 +424,7 @@ TEINAPI void SetCurrentTab (size_t index)
     // NOTE: Kind of a bit hacky to have these here...
     if (gEditor.currentTab != index)
     {
-        gLevelEditor.toolState = ToolState::IDLE;
+        gLevelEditor.toolState = ToolState::Idle;
         gMapEditor.pressed = false;
         gMapEditor.leftPressed = false;
     }
@@ -466,7 +466,7 @@ TEINAPI void IncrementTab ()
         MaybeScrollTabBar();
 
         // NOTE: Kind of a bit hacky to have these here...
-        gLevelEditor.toolState = ToolState::IDLE;
+        gLevelEditor.toolState = ToolState::Idle;
         gMapEditor.pressed = false;
         gMapEditor.leftPressed = false;
     }
@@ -484,7 +484,7 @@ TEINAPI void DecrementTab ()
         MaybeScrollTabBar();
 
         // NOTE: Kind of a bit hacky to have these here...
-        gLevelEditor.toolState = ToolState::IDLE;
+        gLevelEditor.toolState = ToolState::Idle;
         gMapEditor.pressed = false;
         gMapEditor.leftPressed = false;
     }
@@ -497,18 +497,18 @@ TEINAPI void SetMainWindowSubtitleForTab (const std::string& subtitle)
 
 TEINAPI bool AreThereAnyLevelTabs ()
 {
-    for (auto tab: gEditor.tabs) if (tab.type == TabType::LEVEL) return true;
+    for (auto tab: gEditor.tabs) if (tab.type == TabType::Level) return true;
     return false;
 }
 TEINAPI bool AreThereAnyMapTabs ()
 {
-    for (auto tab: gEditor.tabs) if (tab.type == TabType::MAP) return true;
+    for (auto tab: gEditor.tabs) if (tab.type == TabType::Map) return true;
     return false;
 }
 
 TEINAPI void CreateNewLevelTabAndFocus (int w, int h)
 {
-    Tab& tab = Internal::CreateNewTabAndFocus(TabType::LEVEL);
+    Tab& tab = Internal::CreateNewTabAndFocus(TabType::Level);
     // Level-specific initialization stuff.
     for (auto& active: tab.tileLayerActive) active = true;
     tab.levelHistory.currentPosition = -1;
@@ -517,7 +517,7 @@ TEINAPI void CreateNewLevelTabAndFocus (int w, int h)
 }
 TEINAPI void CreateNewMapTabAndFocus ()
 {
-    Tab& tab = Internal::CreateNewTabAndFocus(TabType::MAP);
+    Tab& tab = Internal::CreateNewTabAndFocus(TabType::Map);
     // Map-specific initialization stuff.
     tab.mapHistory.currentPosition = -1;
     NewMapHistoryState(tab.map);
@@ -531,19 +531,19 @@ TEINAPI void CreateNewMapTabAndFocus ()
 TEINAPI bool CurrentTabIsLevel ()
 {
     if (!AreThereAnyTabs()) return false;
-    return (GetCurrentTab().type == TabType::LEVEL);
+    return (GetCurrentTab().type == TabType::Level);
 }
 TEINAPI bool CurrentTabIsMap ()
 {
     if (!AreThereAnyTabs()) return false;
-    return (GetCurrentTab().type == TabType::MAP);
+    return (GetCurrentTab().type == TabType::Map);
 }
 
 TEINAPI void CloseTab (size_t index)
 {
     if (index >= gEditor.tabs.size()) return;
 
-    if (SaveChangesPrompt(gEditor.tabs.at(index)) != ALERT_RESULT_CANCEL)
+    if (SaveChangesPrompt(gEditor.tabs.at(index)) != AlertResult::Cancel)
     {
         if (gEditor.closedTabs.empty() || gEditor.closedTabs.back() != gEditor.tabs.at(index).name)
         {
@@ -554,7 +554,7 @@ TEINAPI void CloseTab (size_t index)
         // NOTE: Kind of a bit hacky to have these here...
         if (gEditor.currentTab == index)
         {
-            gLevelEditor.toolState = ToolState::IDLE;
+            gLevelEditor.toolState = ToolState::Idle;
             gMapEditor.pressed = false;
             gMapEditor.leftPressed = false;
         }
@@ -599,8 +599,8 @@ TEINAPI void PushEditorCameraTransform ()
 {
     const Tab& tab = GetCurrentTab();
 
-    PushMatrix(MatrixMode::PROJECTION);
-    PushMatrix(MatrixMode::MODELVIEW);
+    PushMatrix(MatrixMode::Projection);
+    PushMatrix(MatrixMode::ModelView);
 
     float hw = GetViewport().w / 2;
     float hh = GetViewport().h / 2;
@@ -619,27 +619,27 @@ TEINAPI void PushEditorCameraTransform ()
 }
 TEINAPI void PopEditorCameraTransform ()
 {
-    PopMatrix(MatrixMode::PROJECTION);
-    PopMatrix(MatrixMode::MODELVIEW);
+    PopMatrix(MatrixMode::Projection);
+    PopMatrix(MatrixMode::ModelView);
 }
 
-TEINAPI int SaveChangesPrompt (Tab& tab)
+TEINAPI AlertResult SaveChangesPrompt (Tab& tab)
 {
     // Prompts user to save changes before permanently losing a level/map.
     // If there are no unsaved changes then the prompt is not presented.
-    if (!tab.unsavedChanges) return ALERT_RESULT_INVALID;
+    if (!tab.unsavedChanges) return AlertResult::Invalid;
 
     std::string tabName((tab.name.empty()) ? "Untitled" : StripFilePath(tab.name));
     std::string msg(FormatString("'%s' has unsaved changes!\nWould you like to save?", tabName.c_str()));
-    int result = ShowAlert("Unsaved Changes", msg, ALERT_TYPE_WARNING, ALERT_BUTTON_YES_NO_CANCEL, "WINMAIN");
-    if (result == ALERT_RESULT_YES)
+    AlertResult result = ShowAlert("Unsaved Changes", msg, AlertType::Warning, AlertButton::YesNoCancel, "WINMAIN");
+    if (result == AlertResult::Yes)
     {
         // The save was cancelled or there was an error so we cancel the action
         // the user was going to perform in order to maintain the level/map data.
         switch (tab.type)
         {
-            case (TabType::LEVEL): if (!LevelEditorSave(tab)) return ALERT_RESULT_CANCEL; break;
-            case (TabType::MAP): if (!SaveMapTab(tab)) return ALERT_RESULT_CANCEL; break;
+            case (TabType::Level): if (!LevelEditorSave(tab)) return AlertResult::Cancel; break;
+            case (TabType::Map): if (!SaveMapTab(tab)) return AlertResult::Cancel; break;
         }
     }
 
@@ -651,8 +651,8 @@ TEINAPI void BackupTab (Tab& tab)
 {
     switch (tab.type)
     {
-        case (TabType::LEVEL): BackupLevelTab(tab.level, tab.name); break;
-        case (TabType::MAP): BackupMapTab(tab, tab.name); break;
+        case (TabType::Level): BackupLevelTab(tab.level, tab.name); break;
+        case (TabType::Map): BackupMapTab(tab, tab.name); break;
     }
 }
 
@@ -662,8 +662,8 @@ TEINAPI bool IsCurrentTabEmpty ()
     const Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (TabType::LEVEL): return IsCurrentLevelEmpty();
-        case (TabType::MAP): return IsCurrentMapEmpty();
+        case (TabType::Level): return IsCurrentLevelEmpty();
+        case (TabType::Map): return IsCurrentMapEmpty();
     }
     return false;
 }
@@ -674,8 +674,8 @@ TEINAPI void EditorSelectAll ()
     Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (TabType::LEVEL): LevelEditorSelectAll(); break;
-        case (TabType::MAP): MapEditorSelectAll(); break;
+        case (TabType::Level): LevelEditorSelectAll(); break;
+        case (TabType::Map): MapEditorSelectAll(); break;
     }
 }
 
@@ -685,8 +685,8 @@ TEINAPI void EditorPaste ()
     Tab& tab = GetCurrentTab();
     switch (tab.type)
     {
-        case (TabType::LEVEL): LevelEditorPaste(); break;
-        case (TabType::MAP): MapEditorPaste(); break;
+        case (TabType::Level): LevelEditorPaste(); break;
+        case (TabType::Map): MapEditorPaste(); break;
     }
 }
 
@@ -695,7 +695,7 @@ TEINAPI bool SavePromptAllEditorTabs ()
     // Go through all tabs and make sure that they get saved if the user wants.
     for (auto& t: gEditor.tabs)
     {
-        if (SaveChangesPrompt(t) == ALERT_RESULT_CANCEL)
+        if (SaveChangesPrompt(t) == AlertResult::Cancel)
         {
             gMainRunning = true;
             return false;
@@ -723,10 +723,10 @@ TEINAPI void SaveRestoreFiles ()
     for (size_t i=0; i<gEditor.tabs.size(); ++i)
     {
         std::string fileName;
-        if (gEditor.tabs.at(i).type == TabType::LEVEL) fileName = ".lvl.restore" + std::to_string(i);
-        else if (gEditor.tabs.at(i).type == TabType::MAP) fileName = ".csv.restore" + std::to_string(i);
+        if (gEditor.tabs.at(i).type == TabType::Level) fileName = ".lvl.restore" + std::to_string(i);
+        else if (gEditor.tabs.at(i).type == TabType::Map) fileName = ".csv.restore" + std::to_string(i);
         fileName = MakePathAbsolute(fileName);
-        if (gEditor.tabs.at(i).type == TabType::LEVEL) SaveRestoreLevel(gEditor.tabs.at(i), fileName);
-        else if (gEditor.tabs.at(i).type == TabType::MAP) SaveRestoreMap(gEditor.tabs.at(i), fileName);
+        if (gEditor.tabs.at(i).type == TabType::Level) SaveRestoreLevel(gEditor.tabs.at(i), fileName);
+        else if (gEditor.tabs.at(i).type == TabType::Map) SaveRestoreMap(gEditor.tabs.at(i), fileName);
     }
 }

@@ -68,7 +68,7 @@ static WindowID gUiTextBoxTabWindowID;
 static bool gUiMakeNextTextBoxActive;
 static bool gUiTabHandled;
 
-enum class UiTextEventType: U32 { TEXT, KEY };
+enum class UiTextEventType: U32 { Text, Key };
 
 struct UiTextEvent
 {
@@ -86,7 +86,7 @@ namespace Internal
 {
     TEINAPI U32 CursorBlinkCallback (U32 interval, void* userData)
     {
-        PushEditorEvent(EDITOR_EVENT_BLINK_CURSOR, NULL, NULL);
+        PushEditorEvent(EditorEvent::BlinkCursor, NULL, NULL);
         return interval;
     }
 
@@ -217,10 +217,10 @@ namespace Internal
 
         switch (dir)
         {
-            case (UI_DIR_UP   ): { x1+=1; x2+=(w-1); y1+=1; y2+= 1;    } break;
-            case (UI_DIR_RIGHT): { x1+=w; x2+= w;    y1+=1; y2+=(h-1); } break;
-            case (UI_DIR_DOWN ): { x1+=1; x2+=(w-1); y1+=h; y2+= h;    } break;
-            case (UI_DIR_LEFT ): { x1+=1; x2+= 1;    y1+=1; y2+=(h-1); } break;
+            case (UiDir::Up   ): { x1+=1; x2+=(w-1); y1+=1; y2+= 1;    } break;
+            case (UiDir::Right): { x1+=w; x2+= w;    y1+=1; y2+=(h-1); } break;
+            case (UiDir::Down ): { x1+=1; x2+=(w-1); y1+=h; y2+= h;    } break;
+            case (UiDir::Left ): { x1+=1; x2+= 1;    y1+=1; y2+=(h-1); } break;
         }
 
         SetDrawColor(color);
@@ -233,8 +233,8 @@ namespace Internal
         Vec2& cur = GetCursorRef(panel);
         switch (panel.cursorDir)
         {
-            case(UI_DIR_UP): cur.y -= h; break;
-            case(UI_DIR_LEFT): cur.x -= w; break;
+            case(UiDir::Up): cur.y -= h; break;
+            case(UiDir::Left): cur.x -= w; break;
         }
     }
     TEINAPI void AdvanceUiCursorEnd (Panel& panel, float w, float h)
@@ -243,8 +243,8 @@ namespace Internal
         Vec2& cur = GetCursorRef(panel);
         switch (panel.cursorDir)
         {
-            case(UI_DIR_RIGHT): cur.x += w; break;
-            case(UI_DIR_DOWN): cur.y += h; break;
+            case(UiDir::Right): cur.x += w; break;
+            case(UiDir::Down): cur.y += h; break;
         }
     }
 
@@ -253,15 +253,15 @@ namespace Internal
         // Determine how to place the text based on alignment.
         switch (horz)
         {
-            case (UI_ALIGN_LEFT  ): /* No need to do anything. */ break;
-            case (UI_ALIGN_RIGHT ): x += roundf( (w-tw));         break;
-            case (UI_ALIGN_CENTER): x += roundf(((w-tw)/2));      break;
+            case (UiAlign::Left  ): /* No need to do anything. */ break;
+            case (UiAlign::Right ): x += roundf( (w-tw));         break;
+            case (UiAlign::Center): x += roundf(((w-tw)/2));      break;
         }
         switch (vert)
         {
-            case (UI_ALIGN_TOP   ): y += gUiFont->lineGap.at(gUiFont->currentPointSize); break;
-            case (UI_ALIGN_BOTTOM): y += roundf(((h)  -(th/4)));                         break;
-            case (UI_ALIGN_CENTER): y += roundf(((h/2)+(th/4)));                         break;
+            case (UiAlign::Top   ): y += gUiFont->lineGap.at(gUiFont->currentPointSize); break;
+            case (UiAlign::Bottom): y += roundf(((h)  -(th/4)));                         break;
+            case (UiAlign::Center): y += roundf(((h/2)+(th/4)));                         break;
         }
     }
 
@@ -463,7 +463,7 @@ TEINAPI void HandleUiEvents ()
         } break;
         case (SDL_USEREVENT):
         {
-            if (gMainEvent.user.code == EDITOR_EVENT_BLINK_CURSOR)
+            if (gMainEvent.user.code == static_cast<U32>(EditorEvent::BlinkCursor))
             {
                 gUiCursorVisible = !gUiCursorVisible;
             }
@@ -478,13 +478,13 @@ TEINAPI void HandleUiEvents ()
         {
             case (SDL_TEXTINPUT):
             {
-                textEvent.type = UiTextEventType::TEXT;
+                textEvent.type = UiTextEventType::Text;
                 textEvent.text = gMainEvent.text.text;
                 gUiTextEvents.push_back(textEvent);
             } break;
             case (SDL_KEYDOWN):
             {
-                textEvent.type = UiTextEventType::KEY;
+                textEvent.type = UiTextEventType::Key;
                 textEvent.key = gMainEvent.key.keysym.sym;
                 gUiTextEvents.push_back(textEvent);
             } break;
@@ -639,7 +639,7 @@ TEINAPI void BeginPanel (float x, float y, float w, float h, UiFlag flags, Vec4 
     }
 
     panel.cursor = NULL;
-    panel.cursorDir = UI_DIR_RIGHT;
+    panel.cursorDir = UiDir::Right;
     panel.cursorAdvanceEnabled = true;
 
     SetViewport(panel.viewport);
@@ -662,8 +662,8 @@ TEINAPI bool BeginClickPanel (UiAction action, float w, float h, UiFlag flags, s
     Vec2 cursor = Internal::GetCursor(parent);
 
     // Cache the panel's flags so they are easily accessible.
-    bool locked = (flags & UI_LOCKED);
-    bool highlight = (flags & UI_HIGHLIGHT);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
+    bool highlight = static_cast<bool>(flags & UiFlag::Highlight);
 
     bool result = Internal::HandleWidget(relCursor.x, relCursor.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
@@ -783,9 +783,9 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
 
     flags |= gUiPanels.top().flags;
 
-    bool inactive = (flags & UI_INACTIVE);
-    bool locked = (flags & UI_LOCKED);
-    bool highlight = (flags & UI_HIGHLIGHT);
+    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
+    bool highlight = static_cast<bool>(flags & UiFlag::Highlight);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -830,12 +830,12 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
 
     UiDir dir = gUiPanels.top().cursorDir;
 
-    float w2 = (dir == UI_DIR_RIGHT || dir == UI_DIR_LEFT) ? ((w)-1) : (w);
-    float h2 = (dir == UI_DIR_UP    || dir == UI_DIR_DOWN) ? ((h)-1) : (h);
+    float w2 = (dir == UiDir::Right || dir == UiDir::Left) ? ((w)-1) : (w);
+    float h2 = (dir == UiDir::Up    || dir == UiDir::Down) ? ((h)-1) : (h);
 
     // Center the image within the button.
-    float x = roundf(cursor.x + (w2 / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
-    float y = roundf(cursor.y + (h2 / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
+    float x = roundf(cursor.x + (w2 / 2) + ((dir == UiDir::Left) ? 1 : 0));
+    float y = roundf(cursor.y + (h2 / 2) + ((dir == UiDir::Up)   ? 1 : 0));
 
     float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
@@ -880,10 +880,10 @@ TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std:
 
     flags |= gUiPanels.top().flags;
 
-    bool inactive = (flags & UI_INACTIVE);
-    bool locked = (flags & UI_LOCKED);
-    bool highlight = (flags & UI_HIGHLIGHT);
-    bool single = (flags & UI_SINGLE);
+    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
+    bool highlight = static_cast<bool>(flags & UiFlag::Highlight);
+    bool single = static_cast<bool>(flags & UiFlag::Single);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -986,10 +986,10 @@ TEINAPI void DoLabel (UiAlign horz, UiAlign vert, float w, float h, std::string 
 
     UiFlag flags = gUiPanels.top().flags;
 
-    bool inactive = (flags & UI_INACTIVE);
-    bool locked = (flags & UI_LOCKED);
-    bool tooltip = (flags & UI_TOOLTIP);
-    bool darken = (flags & UI_DARKEN);
+    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
+    bool tooltip = static_cast<bool>(flags & UiFlag::Tooltip);
+    bool darken = static_cast<bool>(flags & UiFlag::Darken);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -1130,7 +1130,7 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
     if (Internal::IsHot())
     {
         gUiHotHyperlink = gUiCurrentID;
-        SetCursorType(Cursor::POINTER);
+        SetCursorType(Cursor::Pointer);
     }
     else
     {
@@ -1148,14 +1148,14 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
             {
                 switch (gLevelEditor.toolType)
                 {
-                    case (ToolType::BRUSH): SetCursorType(Cursor::BRUSH); break;
-                    case (ToolType::FILL): SetCursorType(Cursor::FILL); break;
-                    case (ToolType::SELECT): SetCursorType(Cursor::SELECT); break;
+                    case (ToolType::Brush): SetCursorType(Cursor::Brush); break;
+                    case (ToolType::Fill): SetCursorType(Cursor::Fill); break;
+                    case (ToolType::Select): SetCursorType(Cursor::Select); break;
                 }
             }
             else
             {
-                SetCursorType(Cursor::ARROW);
+                SetCursorType(Cursor::Arrow);
             }
         }
     }
@@ -1211,8 +1211,8 @@ TEINAPI void DoMarkdown (float w, float h, std::string text)
 
     UiFlag flags = gUiPanels.top().flags;
 
-    bool inactive = (flags & UI_INACTIVE);
-    bool locked = (flags & UI_LOCKED);
+    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -1276,7 +1276,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
     assert(gUiFont);
 
     flags |= gUiPanels.top().flags;
-    bool locked = (flags & UI_LOCKED);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -1299,7 +1299,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
             gUiCursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::CursorBlinkCallback, NULL);
             if (!gUiCursorBlinkTimer)
             {
-                LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+                LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }
 
             gUiTextBoxCursor = text.length();
@@ -1330,7 +1330,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
     if (Internal::IsHot())
     {
         gUiHotTextBox = gUiCurrentID;
-        SetCursorType(Cursor::BEAM);
+        SetCursorType(Cursor::Beam);
     }
     else
     {
@@ -1349,14 +1349,14 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
             {
                 switch (gLevelEditor.toolType)
                 {
-                    case (ToolType::BRUSH): SetCursorType(Cursor::BRUSH); break;
-                    case (ToolType::FILL): SetCursorType(Cursor::FILL); break;
-                    case (ToolType::SELECT): SetCursorType(Cursor::SELECT); break;
+                    case (ToolType::Brush): SetCursorType(Cursor::Brush); break;
+                    case (ToolType::Fill): SetCursorType(Cursor::Fill); break;
+                    case (ToolType::Select): SetCursorType(Cursor::Select); break;
                 }
             }
             else
             {
-                SetCursorType(Cursor::ARROW);
+                SetCursorType(Cursor::Arrow);
             }
         }
     }
@@ -1413,15 +1413,15 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
             {
                 switch (textEvent.type)
                 {
-                    case (UiTextEventType::TEXT):
+                    case (UiTextEventType::Text):
                     {
                         bool invalidText = false;
                         for (auto c: textEvent.text)
                         {
-                            if ((flags & UI_ALPHANUM) && !isalnum(c)) invalidText = true;
-                            if ((flags & UI_ALPHABETIC) && !isalpha(c)) invalidText = true;
-                            if ((flags & UI_NUMERIC) && !isdigit(c)) invalidText = true;
-                            if ((flags & UI_FILEPATH) && !Internal::IsValidFilePath(c)) invalidText = true;
+                            if (static_cast<bool>(flags & UiFlag::Alphanum) && !isalnum(c)) invalidText = true;
+                            if (static_cast<bool>(flags & UiFlag::Alphabetic) && !isalpha(c)) invalidText = true;
+                            if (static_cast<bool>(flags & UiFlag::Numeric) && !isdigit(c)) invalidText = true;
+                            if (static_cast<bool>(flags & UiFlag::FilePath) && !Internal::IsValidFilePath(c)) invalidText = true;
                         }
                         if (invalidText)
                         {
@@ -1439,7 +1439,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
                             text.insert(pos, c);
                         }
                     } break;
-                    case (UiTextEventType::KEY):
+                    case (UiTextEventType::Key):
                     {
                         switch (textEvent.key)
                         {
@@ -1467,7 +1467,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
                             } break;
                             case (SDLK_UP):
                             {
-                                if (flags & UI_NUMERIC)
+                                if (static_cast<bool>(flags & UiFlag::Numeric))
                                 {
                                     if (atoi(text.c_str()) < INT_MAX)
                                     {
@@ -1478,7 +1478,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
                             } break;
                             case (SDLK_DOWN):
                             {
-                                if (flags & UI_NUMERIC)
+                                if (static_cast<bool>(flags & UiFlag::Numeric))
                                 {
                                     if (atoi(text.c_str()) > 0)
                                     {
@@ -1529,10 +1529,10 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
 
                                             for (auto c: t)
                                             {
-                                                if ((flags & UI_ALPHANUM) && !isalnum(c)) { addText = false; break; }
-                                                if ((flags & UI_ALPHABETIC) && !isalpha(c)) { addText = false; break; }
-                                                if ((flags & UI_NUMERIC) && !isdigit(c)) { addText = false; break; }
-                                                if ((flags & UI_FILEPATH) && !Internal::IsValidFilePath(c)) { addText = false; break; }
+                                                if (static_cast<bool>(flags & UiFlag::Alphanum) && !isalnum(c)) { addText = false; break; }
+                                                if (static_cast<bool>(flags & UiFlag::Alphabetic) && !isalpha(c)) { addText = false; break; }
+                                                if (static_cast<bool>(flags & UiFlag::Numeric) && !isdigit(c)) { addText = false; break; }
+                                                if (static_cast<bool>(flags & UiFlag::FilePath) && !Internal::IsValidFilePath(c)) { addText = false; break; }
                                             }
 
                                             if (addText)
@@ -1572,7 +1572,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
                 gUiCursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::CursorBlinkCallback, NULL);
                 if (!gUiCursorBlinkTimer)
                 {
-                    LogError(ERR_MIN, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
+                    LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
                 }
             }
         }
@@ -1594,7 +1594,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
 
     if (th == 0) th = bh;
 
-    Internal::AlignText(hAlign, UI_ALIGN_CENTER, tx,ty, tw,th, bw,bh);
+    Internal::AlignText(hAlign, UiAlign::Center, tx,ty, tw,th, bw,bh);
 
     float xOff = 0;
     float yOff = (IsUiLight()) ? -1.0f : 1.0f;
@@ -1602,7 +1602,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
     // Adjust text position/offsetrun based on the current cursor.
     if (gUiActiveTextBox == gUiCurrentID)
     {
-        if (hAlign == UI_ALIGN_LEFT)
+        if (hAlign == UiAlign::Left)
         {
             std::string sub(text.substr(0, gUiTextBoxCursor));
             float cursorX = tx+GetTextWidthScaled(font, sub);
@@ -1668,14 +1668,14 @@ TEINAPI void DoTextBoxLabeled (float w, float h, UiFlag flags, std::string& text
     Vec2 cursor = *gUiPanels.top().cursor;
     UiDir dir = gUiPanels.top().cursorDir;
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
-    DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw, h, label);
+    SetPanelCursorDir(UiDir::Right);
+    DoLabel(UiAlign::Left, UiAlign::Center, lw, h, label);
 
     SetPanelCursorDir(dir);
     DoTextBox(tw, h, flags, text, defaultText, hAlign);
 
     // Reset the X location of the cursor for the caller.
-    if (dir == UI_DIR_UP || dir == UI_DIR_DOWN)
+    if (dir == UiDir::Up || dir == UiDir::Down)
     {
         gUiPanels.top().cursor->x = cursor.x;
     }
@@ -1687,7 +1687,7 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
     assert(gUiFont);
 
     flags |= gUiPanels.top().flags;
-    bool locked = (flags & UI_LOCKED);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -1795,7 +1795,7 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
     float tw = GetTextWidthScaled(font, text);
     float th = GetTextHeightScaled(font, text);
 
-    Internal::AlignText(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx,ty, tw,th, bw,bh);
+    Internal::AlignText(UiAlign::Right, UiAlign::Center, tx,ty, tw,th, bw,bh);
 
     float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
@@ -1818,7 +1818,7 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
 
     // Cache the rebind's flags so they are easily accessible.
     flags |= gUiPanels.top().flags;
-    bool locked = (flags & UI_LOCKED);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -1928,7 +1928,7 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
     float tw = GetTextWidthScaled(font, text);
     float th = GetTextHeightScaled(font, text);
 
-    Internal::AlignText(UI_ALIGN_RIGHT, UI_ALIGN_CENTER, tx,ty, tw,th, bw,bh);
+    Internal::AlignText(UiAlign::Right, UiAlign::Center, tx,ty, tw,th, bw,bh);
 
     float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
@@ -1948,10 +1948,10 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
 
 TEINAPI void DoIcon (float w, float h, Texture& texture, const Quad* clip)
 {
-    UiID flags = gUiPanels.top().flags;
+    UiFlag flags = gUiPanels.top().flags;
 
-    bool inactive = (flags & UI_INACTIVE);
-    bool locked = (flags & UI_LOCKED);
+    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -1973,8 +1973,8 @@ TEINAPI void DoIcon (float w, float h, Texture& texture, const Quad* clip)
     UiDir dir = gUiPanels.top().cursorDir;
 
     // Center the image within the space.
-    float x = roundf(cursor.x + (w / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
-    float y = roundf(cursor.y + (h / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
+    float x = roundf(cursor.x + (w / 2) + ((dir == UiDir::Left) ? 1 : 0));
+    float y = roundf(cursor.y + (h / 2) + ((dir == UiDir::Up)   ? 1 : 0));
 
     float offset = (IsUiLight()) ? -1.0f : 1.0f;
 
@@ -1988,14 +1988,14 @@ TEINAPI void DoIcon (float w, float h, Texture& texture, const Quad* clip)
 
 TEINAPI void DoQuad (float w, float h, Vec4 color)
 {
-    UiID flags = gUiPanels.top().flags;
+    UiFlag flags = gUiPanels.top().flags;
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
     Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
-    bool inactive = (flags & UI_INACTIVE);
-    bool locked = (flags & UI_LOCKED);
+    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
 
     if (locked || inactive) color.a = .5f;
 
@@ -2007,8 +2007,8 @@ TEINAPI void DoQuad (float w, float h, Vec4 color)
 
 TEINAPI void DoSeparator (float size)
 {
-    float w = (gUiPanels.top().cursorDir == UI_DIR_RIGHT || gUiPanels.top().cursorDir == UI_DIR_LEFT) ? 0 : size;
-    float h = (gUiPanels.top().cursorDir == UI_DIR_UP    || gUiPanels.top().cursorDir == UI_DIR_DOWN) ? 0 : size;
+    float w = (gUiPanels.top().cursorDir == UiDir::Right || gUiPanels.top().cursorDir == UiDir::Left) ? 0 : size;
+    float h = (gUiPanels.top().cursorDir == UiDir::Up    || gUiPanels.top().cursorDir == UiDir::Down) ? 0 : size;
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), 1, 1);
     Internal::DrawSeparator(Internal::GetRelativeCursor(gUiPanels.top()), gUiPanels.top().cursorDir, w, h, gUiColorMedDark);
@@ -2168,13 +2168,13 @@ TEINAPI void BeginPanelGradient (float x, float y, float w, float h, UiFlag flag
     }
 
     panel.cursor = NULL;
-    panel.cursorDir = UI_DIR_RIGHT;
+    panel.cursorDir = UiDir::Right;
     panel.cursorAdvanceEnabled = true;
 
     SetViewport(panel.viewport);
     gUiPanels.push(panel);
 
-    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    BeginDraw(BufferMode::TriangleStrip);
     PutVertex(0,                panel.viewport.h, leftColor); // BL
     PutVertex(0,                0,                leftColor); // TL
     PutVertex(panel.viewport.w, panel.viewport.h, rightColor); // BR
@@ -2194,8 +2194,8 @@ TEINAPI bool BeginClickPanelGradient (UiAction action, float w, float h, UiFlag 
     Vec2 relCursor = Internal::GetRelativeCursor(parent);
     Vec2 cursor = Internal::GetCursor(parent);
 
-    bool locked = (flags & UI_LOCKED);
-    bool highlight = (flags & UI_HIGHLIGHT);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
+    bool highlight = static_cast<bool>(flags & UiFlag::Highlight);
 
     bool result = Internal::HandleWidget(relCursor.x, relCursor.y, w, h, locked);
     if (result && action) action(); // Make sure action is valid!
@@ -2221,7 +2221,7 @@ TEINAPI bool BeginClickPanelGradient (UiAction action, float w, float h, UiFlag 
     {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
-        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        BeginDraw(BufferMode::TriangleStrip);
         PutVertex(0,               GetViewport().h, Vec4(0,0,0,0)); // BL
         PutVertex(0,               0,               Vec4(0,0,0,0)); // TL
         PutVertex(GetViewport().w, GetViewport().h,         color); // BR
@@ -2253,9 +2253,9 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
 
     flags |= gUiPanels.top().flags;
 
-    bool inactive = (flags & UI_INACTIVE);
-    bool locked = (flags & UI_LOCKED);
-    bool highlight = (flags & UI_HIGHLIGHT);
+    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
+    bool locked = static_cast<bool>(flags & UiFlag::Locked);
+    bool highlight = static_cast<bool>(flags & UiFlag::Highlight);
 
     Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
 
@@ -2287,7 +2287,7 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
     }
 
     // Draw the button's background quad.
-    BeginDraw(BufferMode::TRIANGLE_STRIP);
+    BeginDraw(BufferMode::TriangleStrip);
     PutVertex(cursor.x,   cursor.y+h, bgLeft); // BL
     PutVertex(cursor.x,   cursor.y,   bgLeft); // TL
     PutVertex(cursor.x+w, cursor.y+h, bgRight); // BR
@@ -2305,7 +2305,7 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
     {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
-        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        BeginDraw(BufferMode::TriangleStrip);
         PutVertex(cursor.x,   cursor.y+h,         color); // BL
         PutVertex(cursor.x,   cursor.y,           color); // TL
         PutVertex(cursor.x+w, cursor.y+h, Vec4(0,0,0,0)); // BR
@@ -2318,12 +2318,12 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
 
     UiDir dir = gUiPanels.top().cursorDir;
 
-    float w2 = (dir == UI_DIR_RIGHT || dir == UI_DIR_LEFT) ? ((w)-1) : (w);
-    float h2 = (dir == UI_DIR_UP    || dir == UI_DIR_DOWN) ? ((h)-1) : (h);
+    float w2 = (dir == UiDir::Right || dir == UiDir::Left) ? ((w)-1) : (w);
+    float h2 = (dir == UiDir::Up    || dir == UiDir::Down) ? ((h)-1) : (h);
 
     // Center the image within the button.
-    float x = roundf(cursor.x + (w2 / 2) + ((dir == UI_DIR_LEFT) ? 1 : 0));
-    float y = roundf(cursor.y + (h2 / 2) + ((dir == UI_DIR_UP)   ? 1 : 0));
+    float x = roundf(cursor.x + (w2 / 2) + ((dir == UiDir::Left) ? 1 : 0));
+    float y = roundf(cursor.y + (h2 / 2) + ((dir == UiDir::Up)   ? 1 : 0));
 
     float offset = (IsUiLight()) ? -1.0f : 1.0f;
 

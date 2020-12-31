@@ -1,13 +1,13 @@
 // The order in which layer data is stored within the .lvl files is different
 // from the order it is actually represented in the editor so we use an array
 // to get the correct order in which to read & write the layers to the files.
-constexpr LevelLayer gLevelIOOrder [LEVEL_LAYER_TOTAL]
+constexpr LevelLayer gLevelIOOrder [static_cast<int>(LevelLayer::Total)]
 {
-    LEVEL_LAYER_BACK1,
-    LEVEL_LAYER_ACTIVE,
-    LEVEL_LAYER_TAG,
-    LEVEL_LAYER_OVERLAY,
-    LEVEL_LAYER_BACK2
+    LevelLayer::Back1,
+    LevelLayer::Active,
+    LevelLayer::Tag,
+    LevelLayer::Overlay,
+    LevelLayer::Back2
 };
 
 namespace Internal
@@ -27,16 +27,16 @@ namespace Internal
         if (level.header.version != 1)
         {
             std::string msg(FormatString("Invalid level file version '%d'!", level.header.version));
-            ShowAlert("Error", msg, ALERT_TYPE_ERROR, ALERT_BUTTON_OK, "WINMAIN");
+            ShowAlert("Error", msg, AlertType::Error, AlertButton::Ok, "WINMAIN");
             return false;
         }
 
         S32 lw = level.header.width;
         S32 lh = level.header.height;
 
-        for (int i=0; i<LEVEL_LAYER_TOTAL; ++i)
+        for (int i=0; i<static_cast<int>(LevelLayer::Total); ++i)
         {
-            auto& layer = level.data[gLevelIOOrder[i]];
+            auto& layer = level.data[static_cast<int>(gLevelIOOrder[i])];
             layer.assign(lw*lh, 0);
             for (auto& tile: layer)
             {
@@ -60,9 +60,9 @@ namespace Internal
         fwrite(&height,  sizeof(S32), 1, file);
         fwrite(&layers,  sizeof(S32), 1, file);
 
-        for (int i=0; i<LEVEL_LAYER_TOTAL; ++i)
+        for (int i=0; i<static_cast<int>(LevelLayer::Total); ++i)
         {
-            auto& layer = level.data[gLevelIOOrder[i]];
+            auto& layer = level.data[static_cast<int>(gLevelIOOrder[i])];
             for (auto& tile: layer)
             {
                 TileID id = SDL_SwapBE32(tile);
@@ -75,9 +75,9 @@ namespace Internal
 TEINAPI bool CreateBlankLevel (Level& level, int w, int h)
 {
     level.header.version = 1;
-    level.header.width   = w;
-    level.header.height  = h;
-    level.header.layers  = LEVEL_LAYER_TOTAL;
+    level.header.width = w;
+    level.header.height = h;
+    level.header.layers = static_cast<S32>(LevelLayer::Total);
 
     S32 lw = level.header.width;
     S32 lh = level.header.height;
@@ -95,7 +95,7 @@ TEINAPI bool LoadLevel (Level& level, std::string fileName)
     FILE* file = fopen(fileName.c_str(), "rb");
     if (!file)
     {
-        LogError(ERR_MED, "Failed to load level file '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Med, "Failed to load level file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -113,7 +113,7 @@ TEINAPI bool SaveLevel (const Level& level, std::string fileName)
     FILE* file = fopen(fileName.c_str(), "wb");
     if (!file)
     {
-        LogError(ERR_MED, "Failed to save level file '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Med, "Failed to save level file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -127,7 +127,7 @@ TEINAPI bool LoadRestoreLevel (Tab& tab, std::string fileName)
     FILE* file = fopen(fileName.c_str(), "rb");
     if (!file)
     {
-        LogError(ERR_MED, "Failed to load restore file '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Med, "Failed to load restore file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -154,7 +154,7 @@ TEINAPI bool SaveRestoreLevel (const Tab& tab, std::string fileName)
     FILE* file = fopen(fileName.c_str(), "wb");
     if (!file)
     {
-        LogError(ERR_MED, "Failed to save restore file '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Med, "Failed to save restore file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };

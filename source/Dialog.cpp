@@ -4,14 +4,14 @@ namespace Internal
 {
     TEINAPI U32 DialogCooldownCallback (U32 interval, void* userData)
     {
-        PushEditorEvent(EDITOR_EVENT_COOLDOWN, NULL, NULL);
+        PushEditorEvent(EditorEvent::Cooldown, NULL, NULL);
         return 0;
     }
 
     TEINAPI void SetDialogCooldown ()
     {
         gEditor.cooldownTimer = SDL_AddTimer(60, DialogCooldownCallback, NULL);
-        if (!gEditor.cooldownTimer) LogError(ERR_MIN, "Failed to setup dialog cooldown! (%s)", SDL_GetError());
+        if (!gEditor.cooldownTimer) LogError(ErrorLevel::Min, "Failed to setup dialog cooldown! (%s)", SDL_GetError());
     }
 }
 
@@ -28,31 +28,31 @@ TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
 
     switch (type)
     {
-        case (DialogType::LVL):
+        case (DialogType::Lvl):
         {
             filter = "All Files (*.*)\0*.*\0LVL Files (*.lvl)\0*.lvl\0";
             title = "Open";
             ext = "lvl";
         } break;
-        case (DialogType::CSV):
+        case (DialogType::Csv):
         {
             filter = "All Files (*.*)\0*.*\0CSV Files (*.csv)\0*.csv\0";
             title = "Open";
             ext = "csv";
         } break;
-        case (DialogType::LVL_CSV):
+        case (DialogType::LvlCsv):
         {
             filter = "All Files (*.*)\0*.*\0Supported Files (*.lvl; *.csv)\0*.lvl;*.csv\0CSV Files (*.csv)\0*.csv\0LVL Files (*.lvl)\0*.lvl\0";
             title = "Open";
             ext = "lvl";
         } break;
-        case (DialogType::GPAK):
+        case (DialogType::Gpak):
         {
             filter = "All Files (*.*)\0*.*\0GPAK Files (*.gpak)\0*.gpak\0";
             title = "Unpack";
             ext = "gpak";
         } break;
-        case (DialogType::EXE):
+        case (DialogType::Exe):
         {
             filter = "All Files (*.*)\0*.*\0EXE Files (*.exe)\0*.exe\0";
             title = "Open";
@@ -84,7 +84,7 @@ TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
         DWORD error = CommDlgExtendedError();
         if (error) // Zero means the user cancelled -- not an actual error!
         {
-            LogError(ERR_MED, "Failed to open file! (Error: 0x%X)", error);
+            LogError(ErrorLevel::Med, "Failed to open file! (Error: 0x%X)", error);
         }
     }
     else
@@ -120,7 +120,7 @@ TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
 #if defined(PLATFORM_WIN32)
 TEINAPI std::string SaveDialog (DialogType type)
 {
-    assert(type != DialogType::LVL_CSV);
+    assert(type != DialogType::LvlCsv);
 
     gEditor.dialogBox = true; // Used to prevent dialog box clicks from carrying into the editor.
 
@@ -132,25 +132,25 @@ TEINAPI std::string SaveDialog (DialogType type)
 
     switch (type)
     {
-        case (DialogType::LVL):
+        case (DialogType::Lvl):
         {
             filter = "All Files (*.*)\0*.*\0LVL Files (*.lvl)\0*.lvl\0";
             title = "Save As";
             ext = "lvl";
         } break;
-        case (DialogType::CSV):
+        case (DialogType::Csv):
         {
             filter = "All Files (*.*)\0*.*\0CSV Files (*.csv)\0*.csv\0";
             title = "Save As";
             ext = "csv";
         } break;
-        case (DialogType::GPAK):
+        case (DialogType::Gpak):
         {
             filter = "All Files (*.*)\0*.*\0GPAK Files (*.gpak)\0*.gpak\0";
             title = "Pack";
             ext = "gpak";
         } break;
-        case (DialogType::EXE):
+        case (DialogType::Exe):
         {
             filter = "All Files (*.*)\0*.*\0EXE Files (*.exe)\0*.exe\0";
             title = "Save As";
@@ -177,7 +177,7 @@ TEINAPI std::string SaveDialog (DialogType type)
         DWORD error = CommDlgExtendedError();
         if (error) // Zero means the user cancelled -- not an actual error!
         {
-            LogError(ERR_MED, "Failed to save file! (Error: 0x%X)", error);
+            LogError(ErrorLevel::Med, "Failed to save file! (Error: 0x%X)", error);
         }
     }
     else
@@ -201,7 +201,7 @@ TEINAPI std::vector<std::string> PathDialog (bool multiselect)
     IFileOpenDialog* fileDialog = NULL;
     if (!SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fileDialog))))
     {
-        LogError(ERR_MED, "Failed to create the folder dialog!");
+        LogError(ErrorLevel::Med, "Failed to create the folder dialog!");
         return paths;
     }
     Defer { fileDialog->Release(); };
@@ -209,7 +209,7 @@ TEINAPI std::vector<std::string> PathDialog (bool multiselect)
     DWORD options;
     if (!SUCCEEDED(fileDialog->GetOptions(&options)))
     {
-        LogError(ERR_MED, "Failed to get folder dialog options!");
+        LogError(ErrorLevel::Med, "Failed to get folder dialog options!");
         return paths;
     }
 
@@ -226,7 +226,7 @@ TEINAPI std::vector<std::string> PathDialog (bool multiselect)
     IShellItemArray* shellItemArray = NULL;
     if (!SUCCEEDED(fileDialog->GetResults(&shellItemArray)))
     {
-        LogError(ERR_MED, "Failed to create shell item array!");
+        LogError(ErrorLevel::Med, "Failed to create shell item array!");
         return paths;
     }
     Defer { shellItemArray->Release(); };

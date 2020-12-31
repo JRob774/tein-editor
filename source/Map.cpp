@@ -160,7 +160,7 @@ TEINAPI bool LoadMap (Tab& tab, std::string fileName)
     // then it should be handled by a higher-level than this internal system.
     if (!DoesFileExist(fileName))
     {
-        LogError(ERR_MED, "CSV file '%s' does not exist!", fileName.c_str());
+        LogError(ErrorLevel::Med, "CSV file '%s' does not exist!", fileName.c_str());
         return false;
     }
     return Internal::LoadMap(tab, std::ifstream(fileName));
@@ -173,7 +173,7 @@ TEINAPI bool SaveMap (const Tab& tab, std::string fileName)
     FILE* file = fopen(fileName.c_str(), "wb");
     if (!file)
     {
-        LogError(ERR_MED, "Failed to save level file '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Med, "Failed to save level file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };
@@ -203,7 +203,7 @@ TEINAPI bool SaveRestoreMap (const Tab& tab, std::string fileName)
     FILE* file = fopen(fileName.c_str(), "wb");
     if (!file)
     {
-        LogError(ERR_MED, "Failed to save restore file '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Med, "Failed to save restore file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };

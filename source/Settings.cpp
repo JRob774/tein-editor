@@ -108,13 +108,13 @@ TEINAPI bool LoadEditorSettings ()
     }
     catch (const char* msg)
     {
-        LogError(ERR_MED, "%s", msg);
+        LogError(ErrorLevel::Med, "%s", msg);
 
         // If we already have settings data then we just inform the user that the operation
         // failed. Otherwise, we just fallback to using the default application settings.
         if (gSettingsLoaded)
         {
-            LogError(ERR_MED, "Failed to reload settings data!");
+            LogError(ErrorLevel::Med, "Failed to reload settings data!");
             return false;
         }
         else

@@ -18,7 +18,7 @@ TEINAPI void DoPath ()
 
     SetUiFont(&GetEditorRegularFont());
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     float bb = gPathDialogBottomBorder;
 
@@ -30,16 +30,16 @@ TEINAPI void DoPath ()
 
     // Bottom buttons for okaying or cancelling the path dialog.
     Vec2 buttonCursor(0, gWindowBorder);
-    BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
+    BeginPanel(0, vh-bb, vw, bb, UiFlag::None, gUiColorMedium);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&buttonCursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (DoTextButton(NULL, bw,bh, UI_NONE, "Okay")) OkayPath();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelPath();
+    if (DoTextButton(NULL, bw,bh, UiFlag::None, "Okay")) OkayPath();
+    if (DoTextButton(NULL, bw2,bh, UiFlag::None, "Cancel")) CancelPath();
 
     // Add a separator to the left for symmetry.
     buttonCursor.x = 1;
@@ -52,30 +52,30 @@ TEINAPI void DoPath ()
     p2.w = vw - 2;
     p2.h = vh - p2.y - bb - 1;
 
-    BeginPanel(p2, UI_NONE, gUiColorMedium);
+    BeginPanel(p2, UiFlag::None, gUiColorMedium);
 
     constexpr float XPad = 8;
     constexpr float YPad = 4;
 
     Vec2 cursor(XPad, YPad);
 
-    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursorDir(UiDir::Down);
     SetPanelCursor(&cursor);
 
     constexpr float ButtonWidth = 80;
     constexpr float LabelHeight = 24;
 
     cursor.x += 2;
-    DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, LabelHeight, "Please locate 'The End is Nigh' executable:");
+    DoLabel(UiAlign::Left,UiAlign::Center, LabelHeight, "Please locate 'The End is Nigh' executable:");
     cursor.x -= 2;
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
 
     float tw = GetViewport().w - ButtonWidth - (XPad*2);
     float th = 24;
 
     cursor.y += 2;
-    DoTextBox(tw,th, UI_FILEPATH, gTempGamePath, "", UI_ALIGN_LEFT);
+    DoTextBox(tw,th, UiFlag::FilePath, gTempGamePath, "", UiAlign::Left);
     cursor.y += 1;
 
     float buttonHeight = th-2;
@@ -89,9 +89,9 @@ TEINAPI void DoPath ()
     SetDrawColor(gUiColorExDark);
     FillQuad(x1,y1,x2,y2);
 
-    if (DoTextButton(NULL, ButtonWidth,buttonHeight, UI_SINGLE, "Search"))
+    if (DoTextButton(NULL, ButtonWidth,buttonHeight, UiFlag::Single, "Search"))
     {
-        auto result = OpenDialog(DialogType::EXE, false);
+        auto result = OpenDialog(DialogType::Exe, false);
         if (!result.empty()) gTempGamePath = result.at(0);
     }
 
@@ -109,7 +109,7 @@ TEINAPI void OkayPath ()
 
     if (!RunExecutable(gEditorSettings.gamePath))
     {
-        LogError(ERR_MED, "Failed to launch The End is Nigh executable!");
+        LogError(ErrorLevel::Med, "Failed to launch The End is Nigh executable!");
     }
 }
 

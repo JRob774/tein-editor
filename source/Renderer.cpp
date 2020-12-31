@@ -76,13 +76,13 @@ TEINAPI bool InitRenderer ()
     gGLContext = SDL_GL_CreateContext(GetWindowFromName("WINMAIN").window);
     if (!gGLContext)
     {
-        LogError(ERR_MIN, "Failed to create GL context! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Min, "Failed to create GL context! (%s)", SDL_GetError());
         return false;
     }
 
     if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
     {
-        LogError(ERR_MIN, "Failed to load OpenGL procedures!");
+        LogError(ErrorLevel::Min, "Failed to load OpenGL procedures!");
         return false;
     }
 
@@ -99,14 +99,14 @@ TEINAPI bool InitRenderer ()
     gUntexturedShader = LoadShaderResource("shaders/untextured.shader");
     if (!gUntexturedShader)
     {
-        LogError(ERR_MAX, "Failed to load the untextured shader!");
+        LogError(ErrorLevel::Max, "Failed to load the untextured shader!");
         return false;
     }
 
     gTexturedShader = LoadShaderResource("shaders/textured.shader");
     if (!gTexturedShader)
     {
-        LogError(ERR_MAX, "Failed to load the textured shader!");
+        LogError(ErrorLevel::Max, "Failed to load the textured shader!");
         return false;
     }
 
@@ -115,7 +115,7 @@ TEINAPI bool InitRenderer ()
     gTextShader = LoadShaderResource("shaders/text.shader");
     if (!gTextShader)
     {
-        LogError(ERR_MED, "Failed to load the text shader!");
+        LogError(ErrorLevel::Med, "Failed to load the text shader!");
     }
 
     // By default we render to the main window.
@@ -130,7 +130,7 @@ TEINAPI bool InitRenderer ()
     CreateVertexBuffer(gTileBuffer);
     CreateVertexBuffer(gTextBuffer);
 
-    gImmediateBufferDrawMode = BufferMode::TRIANGLE_STRIP;
+    gImmediateBufferDrawMode = BufferMode::TriangleStrip;
 
     return true;
 }
@@ -237,7 +237,7 @@ TEINAPI void SetRenderTarget (Window* window)
     if (SDL_GL_MakeCurrent(gRenderTarget->window, gGLContext) < 0)
     {
         gRenderTarget = NULL;
-        LogError(ERR_MED, "Failed to set render target! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Med, "Failed to set render target! (%s)", SDL_GetError());
     }
 }
 
@@ -396,7 +396,7 @@ TEINAPI void DrawLine (float x1, float y1, float x2, float y2)
     PutBufferVertex(gDrawBuffer, { Vec2(x1,y1), Vec2(0,0), gRendererDrawColor });
     PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(0,0), gRendererDrawColor });
 
-    DrawVertexBuffer(gDrawBuffer, BufferMode::LINES);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::Lines);
     ClearVertexBuffer(gDrawBuffer);
 }
 
@@ -415,7 +415,7 @@ TEINAPI void DrawQuad (float x1, float y1, float x2, float y2)
     PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(0,0), gRendererDrawColor });
     PutBufferVertex(gDrawBuffer, { Vec2(x1,y2), Vec2(0,0), gRendererDrawColor });
 
-    DrawVertexBuffer(gDrawBuffer, BufferMode::LINE_LOOP);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::LineLoop);
     ClearVertexBuffer(gDrawBuffer);
 }
 
@@ -428,7 +428,7 @@ TEINAPI void FillQuad (float x1, float y1, float x2, float y2)
     PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(0,0), gRendererDrawColor });
     PutBufferVertex(gDrawBuffer, { Vec2(x2,y1), Vec2(0,0), gRendererDrawColor });
 
-    DrawVertexBuffer(gDrawBuffer, BufferMode::TRIANGLE_STRIP);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::TriangleStrip);
     ClearVertexBuffer(gDrawBuffer);
 }
 
@@ -476,7 +476,7 @@ TEINAPI void DrawTexture (const Texture& tex, float x, float y, const Quad* clip
     PutBufferVertex(gDrawBuffer, { Vec2(x2,y2), Vec2(cx2,cy2), tex.color });
     PutBufferVertex(gDrawBuffer, { Vec2(x2,y1), Vec2(cx2,cy1), tex.color });
 
-    DrawVertexBuffer(gDrawBuffer, BufferMode::TRIANGLE_STRIP);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::TriangleStrip);
     ClearVertexBuffer(gDrawBuffer);
 }
 
@@ -550,7 +550,7 @@ TEINAPI void DrawText (const Font& fnt, float x, float y, std::string text)
         }
     }
 
-    DrawVertexBuffer(gDrawBuffer, BufferMode::TRIANGLES);
+    DrawVertexBuffer(gDrawBuffer, BufferMode::Triangles);
     ClearVertexBuffer(gDrawBuffer);
 }
 
@@ -706,7 +706,7 @@ TEINAPI void FlushBatchedTiles ()
     glBindTexture(GL_TEXTURE_2D, gTileTexture->handle);
     glEnable(GL_TEXTURE_2D);
     glUseProgram(gTexturedShader);
-    DrawVertexBuffer(gTileBuffer, BufferMode::TRIANGLES);
+    DrawVertexBuffer(gTileBuffer, BufferMode::Triangles);
     ClearVertexBuffer(gTileBuffer);
     glDisable(GL_TEXTURE_2D);
 }
@@ -716,7 +716,7 @@ TEINAPI void FlushBatchedText ()
     glBindTexture(GL_TEXTURE_2D, gTextFont->cache.at(gTextFont->currentPointSize).handle);
     glEnable(GL_TEXTURE_2D);
     glUseProgram(gTextShader);
-    DrawVertexBuffer(gTextBuffer, BufferMode::TRIANGLES);
+    DrawVertexBuffer(gTextBuffer, BufferMode::Triangles);
     ClearVertexBuffer(gTextBuffer);
     glDisable(GL_TEXTURE_2D);
 }

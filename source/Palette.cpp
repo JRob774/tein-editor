@@ -78,7 +78,7 @@ TEINAPI void InitPaletteLookup ()
     U8* palette = stbi_load_from_memory(&paletteData[0], static_cast<int>(paletteData.size()), &w,&h,&bpp,Bpp);
     if (!palette)
     {
-        LogError(ERR_MIN, "Failed to load palette data for the map editor!");
+        LogError(ErrorLevel::Min, "Failed to load palette data for the map editor!");
         return;
     }
     Defer { stbi_image_free(palette); };

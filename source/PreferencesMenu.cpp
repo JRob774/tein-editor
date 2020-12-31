@@ -92,9 +92,9 @@ static constexpr float gPreferencesTextBoxInset = 2;
 static constexpr float gPreferencesScrollbarWidth = 12;
 static constexpr float gPreferencesColorHeight = 18;
 
-enum class PreferencesTab { SETTINGS, HOTKEYS };
+enum class PreferencesTab { Settings, Hotkeys };
 
-static PreferencesTab gPreferencesTab = PreferencesTab::SETTINGS;
+static PreferencesTab gPreferencesTab = PreferencesTab::Settings;
 
 static float gPreferencesScrollOffset = 0;
 static bool gPreferencesMousePressed = false;
@@ -118,7 +118,7 @@ namespace Internal
 
     TEINAPI void DoSettingsLabel (float w, const char* key)
     {
-        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,gPreferencesSectionHeight, gPreferencesSettingsNames.at(key));
+        DoLabel(UiAlign::Left,UiAlign::Center, w,gPreferencesSectionHeight, gPreferencesSettingsNames.at(key));
         AdvancePanelCursor(gPreferencesInnerXPad/2);
         DoSeparator(gPreferencesSectionHeight);
         AdvancePanelCursor(gPreferencesInnerXPad/2);
@@ -126,7 +126,7 @@ namespace Internal
 
     TEINAPI void DoHalfSettingsLabel (float w, const char* key)
     {
-        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,gPreferencesSectionHeight, gPreferencesSettingsNames.at(key));
+        DoLabel(UiAlign::Left,UiAlign::Center, w,gPreferencesSectionHeight, gPreferencesSettingsNames.at(key));
         AdvancePanelCursor(gPreferencesInnerXPad/2);
     }
 
@@ -140,7 +140,7 @@ namespace Internal
 
     TEINAPI void DoHotkeysLabel (float w, const char* key)
     {
-        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w,gPreferencesSectionHeight, gPreferencesHotkeysNames.at(key));
+        DoLabel(UiAlign::Left,UiAlign::Center, w,gPreferencesSectionHeight, gPreferencesHotkeysNames.at(key));
         AdvancePanelCursor(gPreferencesInnerXPad/2);
         DoSeparator(gPreferencesSectionHeight);
         AdvancePanelCursor(gPreferencesInnerXPad/2);
@@ -151,24 +151,24 @@ namespace Internal
         float w = GetViewport().w;
         float h = gPreferencesSectionHeight;
 
-        DoLabel(UI_ALIGN_CENTER,UI_ALIGN_CENTER, w,h, title);
+        DoLabel(UiAlign::Center,UiAlign::Center, w,h, title);
         NextSection(cursor);
 
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
 
         AdvancePanelCursor(gPreferencesInnerYPad);
         DoSeparator(w);
         AdvancePanelCursor(gPreferencesInnerYPad);
 
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
         cursor.x = 0;
     }
 
     TEINAPI void EndSettingsArea ()
     {
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
         AdvancePanelCursor(gPreferencesInnerYPad);
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
     }
 
     TEINAPI void DoSettingsColorSwatch (Vec2& cursor, float sw, float sh, Vec4& color)
@@ -202,7 +202,7 @@ namespace Internal
 
         max.a = 1;
 
-        BeginDraw(BufferMode::TRIANGLE_STRIP);
+        BeginDraw(BufferMode::TriangleStrip);
         PutVertex(x1, y2, min); // BL
         PutVertex(x1, y1, min); // TL
         PutVertex(x2, y2, max); // BR
@@ -243,15 +243,15 @@ namespace Internal
         cursor.x = gPreferencesInnerXPad;
         cursor.y += gPreferencesInnerYPad;
 
-        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, lw1,gPreferencesSectionHeight, "Hotkey Action");
+        DoLabel(UiAlign::Left,UiAlign::Center, lw1,gPreferencesSectionHeight, "Hotkey Action");
 
         AdvancePanelCursor(gPreferencesInnerXPad/2);
         AdvancePanelCursor(1);
         AdvancePanelCursor(gPreferencesInnerXPad/2);
 
-        DoLabel(UI_ALIGN_RIGHT,UI_ALIGN_CENTER, lw2,gPreferencesSectionHeight, "Main Binding");
+        DoLabel(UiAlign::Right,UiAlign::Center, lw2,gPreferencesSectionHeight, "Main Binding");
         cursor.x += roundf(gPreferencesInnerXPad/3);
-        DoLabel(UI_ALIGN_RIGHT,UI_ALIGN_CENTER, lw2,gPreferencesSectionHeight, "Alternate Binding");
+        DoLabel(UiAlign::Right,UiAlign::Center, lw2,gPreferencesSectionHeight, "Alternate Binding");
 
         cursor.x = 0;
 
@@ -279,9 +279,9 @@ namespace Internal
         // It says text box inset but we're using for the hotkey rebind as well...
         float th = sh-(gPreferencesTextBoxInset*2);
         cursor.y += gPreferencesTextBoxInset;
-        DoHotkeyRebindMain(tw,th, UI_NONE, gKeyBindings.at(key));
+        DoHotkeyRebindMain(tw,th, UiFlag::None, gKeyBindings.at(key));
         cursor.x += roundf(gPreferencesInnerXPad/3);
-        DoHotkeyRebindAlt(tw,th, UI_NONE, gKeyBindings.at(key));
+        DoHotkeyRebindAlt(tw,th, UiFlag::None, gKeyBindings.at(key));
         cursor.y -= gPreferencesTextBoxInset;
 
         NextSection(cursor);
@@ -296,7 +296,7 @@ namespace Internal
         FILE* file = fopen(fileName.c_str(), "w");
         if (!file)
         {
-            LogError(ERR_MED, "Failed to save settings data!");
+            LogError(ErrorLevel::Med, "Failed to save settings data!");
             return;
         }
         Defer { fclose(file); };
@@ -392,8 +392,8 @@ namespace Internal
         float xPad = gPreferencesInnerXPad;
         float yPad = gPreferencesInnerYPad;
 
-        BeginPanel(0, 0, vw, vh, UI_NONE, gUiColorMedium);
-        BeginPanel(xPad, yPad, vw-(xPad*2), vh-(yPad*2), UI_NONE);
+        BeginPanel(0, 0, vw, vh, UiFlag::None, gUiColorMedium);
+        BeginPanel(xPad, yPad, vw-(xPad*2), vh-(yPad*2), UiFlag::None);
 
         // We redefine as these will now be different.
         vw = GetViewport().w;
@@ -407,14 +407,14 @@ namespace Internal
 
         Vec2 cursor(0,0);
 
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
         SetPanelCursor(&cursor);
 
         BeginSettingsArea("User Interface", cursor);
 
         DoSettingsLabel(sw, gSettingUITheme);
-        UiFlag darkFlags = (IsUiLight()) ? UI_INACTIVE : UI_NONE;
-        UiFlag lightFlags = (IsUiLight()) ? UI_NONE : UI_INACTIVE;
+        UiFlag darkFlags = (IsUiLight()) ? UiFlag::Inactive : UiFlag::None;
+        UiFlag lightFlags = (IsUiLight()) ? UiFlag::None : UiFlag::Inactive;
         if (DoTextButton(NULL, bw,sh, darkFlags, "Dark"))
         {
             gEditorSettings.uiTheme = "dark";
@@ -428,8 +428,8 @@ namespace Internal
         NextSection(cursor);
 
         DoSettingsLabel(sw, gSettingFontFace);
-        UiFlag sansFlags = (IsEditorFontOpenSans()) ? UI_NONE : UI_INACTIVE;
-        UiFlag dylsexicFlags = (IsEditorFontOpenSans()) ? UI_INACTIVE : UI_NONE;
+        UiFlag sansFlags = (IsEditorFontOpenSans()) ? UiFlag::None : UiFlag::Inactive;
+        UiFlag dylsexicFlags = (IsEditorFontOpenSans()) ? UiFlag::Inactive : UiFlag::None;
         SetUiFont(&gResourceFontRegularSans);
         if (DoTextButton(NULL, bw,sh, sansFlags, "OpenSans"))
         {
@@ -448,8 +448,8 @@ namespace Internal
         SetUiFont(&GetEditorRegularFont());
 
         DoSettingsLabel(sw, gSettingTileGraphics);
-        UiFlag tileGraphicsNewFlags = (gEditorSettings.tileGraphics == "new") ? UI_NONE : UI_INACTIVE;
-        UiFlag tileGraphicsOldFlags = (gEditorSettings.tileGraphics == "new") ? UI_INACTIVE : UI_NONE;
+        UiFlag tileGraphicsNewFlags = (gEditorSettings.tileGraphics == "new") ? UiFlag::None : UiFlag::Inactive;
+        UiFlag tileGraphicsOldFlags = (gEditorSettings.tileGraphics == "new") ? UiFlag::Inactive : UiFlag::None;
         if (DoTextButton(NULL, bw,sh, tileGraphicsNewFlags, "New"))
         {
             if (gEditorSettings.tileGraphics != "new")
@@ -469,8 +469,8 @@ namespace Internal
         NextSection(cursor);
 
         DoSettingsLabel(sw, gSettingCustomCursors);
-        UiFlag cursorEnabledFlags = (CustomCursorsEnabled()) ? UI_NONE : UI_INACTIVE;
-        UiFlag cursorDisabledFlags = (CustomCursorsEnabled()) ? UI_INACTIVE : UI_NONE;
+        UiFlag cursorEnabledFlags = (CustomCursorsEnabled()) ? UiFlag::None : UiFlag::Inactive;
+        UiFlag cursorDisabledFlags = (CustomCursorsEnabled()) ? UiFlag::Inactive : UiFlag::None;
         if (DoTextButton(NULL, bw,sh, cursorEnabledFlags, "Enabled"))
         {
             gEditorSettings.customCursors = true;
@@ -483,8 +483,8 @@ namespace Internal
         }
         NextSection(cursor);
 
-        UiFlag tooltipsEnabledFlags = (gEditorSettings.showTooltips) ? UI_NONE : UI_INACTIVE;
-        UiFlag tooltipsDisabledFlags = (gEditorSettings.showTooltips) ? UI_INACTIVE : UI_NONE;
+        UiFlag tooltipsEnabledFlags = (gEditorSettings.showTooltips) ? UiFlag::None : UiFlag::Inactive;
+        UiFlag tooltipsDisabledFlags = (gEditorSettings.showTooltips) ? UiFlag::Inactive : UiFlag::None;
         DoSettingsLabel(sw, gSettingShowTooltips);
         if (DoTextButton(NULL, bw,sh, tooltipsEnabledFlags, "Enabled"))
         {
@@ -501,8 +501,8 @@ namespace Internal
         BeginSettingsArea("Level Backups", cursor);
 
         DoSettingsLabel(sw, gSettingAutoBackup);
-        UiFlag backupEnabledFlags = (gEditorSettings.autoBackup) ? UI_NONE : UI_INACTIVE;
-        UiFlag backupDisabledFlags = (gEditorSettings.autoBackup) ? UI_INACTIVE : UI_NONE;
+        UiFlag backupEnabledFlags = (gEditorSettings.autoBackup) ? UiFlag::None : UiFlag::Inactive;
+        UiFlag backupDisabledFlags = (gEditorSettings.autoBackup) ? UiFlag::Inactive : UiFlag::None;
         if (DoTextButton(NULL, bw,sh, backupEnabledFlags, "Enabled"))
         {
             gEditorSettings.autoBackup = true;
@@ -516,8 +516,8 @@ namespace Internal
         NextSection(cursor);
 
         DoSettingsLabel(sw, gSettingUnlimitedBackups);
-        UiFlag unlimitedEnabledFlags = (gEditorSettings.unlimitedBackups) ? UI_NONE : UI_INACTIVE;
-        UiFlag unlimitedDisabledFlags = (gEditorSettings.unlimitedBackups) ? UI_INACTIVE : UI_NONE;
+        UiFlag unlimitedEnabledFlags = (gEditorSettings.unlimitedBackups) ? UiFlag::None : UiFlag::Inactive;
+        UiFlag unlimitedDisabledFlags = (gEditorSettings.unlimitedBackups) ? UiFlag::Inactive : UiFlag::None;
         if (DoTextButton(NULL, bw,sh, unlimitedEnabledFlags, "Enabled"))
         {
             gEditorSettings.unlimitedBackups = true;
@@ -529,12 +529,12 @@ namespace Internal
         NextSection(cursor);
 
         DoSettingsLabel(sw, gSettingBackupInterval);
-        if (!gEditorSettings.autoBackup) SetPanelFlags(UI_LOCKED);
+        if (!gEditorSettings.autoBackup) SetPanelFlags(UiFlag::Locked);
         cursor.y += gPreferencesTextBoxInset;
         std::string backupIntervalString(std::to_string(gEditorSettings.backupInterval));
-        DoTextBox(vw-cursor.x,th, UI_NUMERIC, backupIntervalString, "0");
+        DoTextBox(vw-cursor.x,th, UiFlag::Numeric, backupIntervalString, "0");
         cursor.y -= gPreferencesTextBoxInset;
-        if (!gEditorSettings.autoBackup) SetPanelFlags(UI_NONE);
+        if (!gEditorSettings.autoBackup) SetPanelFlags(UiFlag::None);
         if (atoll(backupIntervalString.c_str()) > INT_MAX)
         {
             backupIntervalString = std::to_string(INT_MAX);
@@ -548,12 +548,12 @@ namespace Internal
         NextSection(cursor);
 
         DoSettingsLabel(sw, gSettingBackupCount);
-        if (gEditorSettings.unlimitedBackups) SetPanelFlags(UI_LOCKED);
+        if (gEditorSettings.unlimitedBackups) SetPanelFlags(UiFlag::Locked);
         cursor.y += gPreferencesTextBoxInset;
         std::string backupCountString(std::to_string(gEditorSettings.backupCount));
-        DoTextBox(vw-cursor.x,th, UI_NUMERIC, backupCountString, "0");
+        DoTextBox(vw-cursor.x,th, UiFlag::Numeric, backupCountString, "0");
         cursor.y -= gPreferencesTextBoxInset;
-        if (gEditorSettings.unlimitedBackups) SetPanelFlags(UI_NONE);
+        if (gEditorSettings.unlimitedBackups) SetPanelFlags(UiFlag::None);
         if (atoll(backupCountString.c_str()) > INT_MAX)
         {
             backupCountString = std::to_string(INT_MAX);
@@ -586,11 +586,11 @@ namespace Internal
         float vw = GetViewport().w;
         float vh = GetViewport().h;
 
-        BeginPanel(0,0,vw,vh, UI_NONE);
+        BeginPanel(0,0,vw,vh, UiFlag::None);
 
         Vec2 cursor(0,0);
 
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
         SetPanelCursor(&cursor);
 
         float contentHeight = (gPreferencesHotkeysNames.size() * (gPreferencesSectionHeight+1)) + (gPreferencesSectionHeight+(gPreferencesInnerYPad*2));
@@ -684,7 +684,7 @@ TEINAPI void DoPreferencesMenu ()
 
     SetUiFont(&GetEditorRegularFont());
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     Vec2 cursor;
 
@@ -701,16 +701,16 @@ TEINAPI void DoPreferencesMenu ()
 
     // Top tabs for switching from the settings and key bindings menu.
     cursor = Vec2(0,0);
-    BeginPanel(0, 0, vw, pvfh, UI_NONE, gUiColorMedium);
+    BeginPanel(0, 0, vw, pvfh, UiFlag::None, gUiColorMedium);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&cursor);
 
-    UiFlag settingsFlags = (gPreferencesTab == PreferencesTab::SETTINGS) ? UI_HIGHLIGHT : UI_INACTIVE;
-    UiFlag hotkeysFlags = (gPreferencesTab == PreferencesTab::HOTKEYS)  ? UI_HIGHLIGHT : UI_INACTIVE;
+    UiFlag settingsFlags = (gPreferencesTab == PreferencesTab::Settings) ? UiFlag::Highlight : UiFlag::Inactive;
+    UiFlag hotkeysFlags = (gPreferencesTab == PreferencesTab::Hotkeys) ? UiFlag::Highlight : UiFlag::Inactive;
 
-    if (DoTextButton(NULL, tw,th, settingsFlags, "Settings")) gPreferencesTab = PreferencesTab::SETTINGS;
-    if (DoTextButton(NULL, tw,th, hotkeysFlags, "Hotkeys")) gPreferencesTab = PreferencesTab::HOTKEYS;
+    if (DoTextButton(NULL, tw,th, settingsFlags, "Settings")) gPreferencesTab = PreferencesTab::Settings;
+    if (DoTextButton(NULL, tw,th, hotkeysFlags, "Hotkeys")) gPreferencesTab = PreferencesTab::Hotkeys;
 
     // Just in case of weird rounding manually add the right separator.
     cursor.x = vw;
@@ -724,24 +724,24 @@ TEINAPI void DoPreferencesMenu ()
 
     // Bottom buttons for saving and exiting or cancelling changes.
     cursor = Vec2(0, gWindowBorder);
-    BeginPanel(0, vh-pvfh, vw, pvfh, UI_NONE, gUiColorMedium);
+    BeginPanel(0, vh-pvfh, vw, pvfh, UiFlag::None, gUiColorMedium);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&cursor);
 
     std::string restoreMessage;
     switch (gPreferencesTab)
     {
-        case (PreferencesTab::SETTINGS): restoreMessage = "Restore Settings"; break;
-        case (PreferencesTab::HOTKEYS): restoreMessage = "Restore Hotkeys";  break;
+        case (PreferencesTab::Settings): restoreMessage = "Restore Settings"; break;
+        case (PreferencesTab::Hotkeys): restoreMessage = "Restore Hotkeys";  break;
     }
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - (bw*2);
 
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, "Save and Exit"  )) SavePreferences();
-    if (DoTextButton(NULL, bw ,bh, UI_NONE, restoreMessage   )) RestorePreferences();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel and Exit")) CancelPreferences();
+    if (DoTextButton(NULL, bw ,bh, UiFlag::None, "Save and Exit"  )) SavePreferences();
+    if (DoTextButton(NULL, bw ,bh, UiFlag::None, restoreMessage   )) RestorePreferences();
+    if (DoTextButton(NULL, bw2,bh, UiFlag::None, "Cancel and Exit")) CancelPreferences();
 
     // Add a separator to the left for symmetry.
     cursor.x = 1;
@@ -754,11 +754,11 @@ TEINAPI void DoPreferencesMenu ()
     p2.w = GetViewport().w - 2;
     p2.h = GetViewport().h - p2.y - pvfh - 1;
 
-    BeginPanel(p2, UI_NONE);
+    BeginPanel(p2, UiFlag::None);
     switch (gPreferencesTab)
     {
-        case (PreferencesTab::SETTINGS): Internal::DoPreferencesSettings(); break;
-        case (PreferencesTab::HOTKEYS): Internal::DoPreferencesHotkeys(); break;
+        case (PreferencesTab::Settings): Internal::DoPreferencesSettings(); break;
+        case (PreferencesTab::Hotkeys): Internal::DoPreferencesHotkeys(); break;
     }
     EndPanel();
 
@@ -799,8 +799,8 @@ TEINAPI void RestorePreferences ()
 {
     switch (gPreferencesTab)
     {
-        case (PreferencesTab::SETTINGS): RestoreEditorSettings(); break;
-        case (PreferencesTab::HOTKEYS): RestoreEditorKeyBindings(); break;
+        case (PreferencesTab::Settings): RestoreEditorSettings(); break;
+        case (PreferencesTab::Hotkeys): RestoreEditorKeyBindings(); break;
     }
 }
 
@@ -811,7 +811,7 @@ TEINAPI void CancelPreferences ()
     {
         // Make sure the user is certain about what they are doing and cancel the
         // action if they decide that they do not actually want to discard changes.
-        if (ShowAlert("Discard Changes", "Are you sure you want do discard changes?", ALERT_TYPE_WARNING, ALERT_BUTTON_YES_NO, "WINPREFERENCES") == ALERT_RESULT_NO)
+        if (ShowAlert("Discard Changes", "Are you sure you want do discard changes?", AlertType::Warning, AlertButton::YesNo, "WINPREFERENCES") == AlertResult::No)
         {
             return;
         }

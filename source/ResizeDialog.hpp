@@ -1,4 +1,4 @@
-enum class ResizeDir { N, E, S, W, NE, SE, SW, NW, CENTER };
+enum class ResizeDir { N, E, S, W, NE, SE, SW, NW, Center };
 
 TEINAPI void OpenResize (int levelWidth = -1, int levelHeight = -1);
 TEINAPI void DoResize ();

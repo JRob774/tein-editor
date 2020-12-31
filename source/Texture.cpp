@@ -7,7 +7,7 @@ TEINAPI bool LoadTextureFromData (Texture& tex, const std::vector<U8>& fileData,
     U8* rawData = stbi_load_from_memory(buffer, size, &w,&h,&bpp,0);
     if (!rawData)
     {
-        LogError(ERR_MIN, "Failed to load texture from data!");
+        LogError(ErrorLevel::Min, "Failed to load texture from data!");
         return false;
     }
     Defer { stbi_image_free(rawData); };
@@ -24,7 +24,7 @@ TEINAPI bool LoadTextureFromFile (Texture& tex, std::string fileName, TextureWra
     U8* rawData = stbi_load(fileName.c_str(), &w,&h,&bpp,0);
     if (!rawData)
     {
-        LogError(ERR_MIN, "Failed to load texture '%s'!", fileName.c_str());
+        LogError(ErrorLevel::Min, "Failed to load texture '%s'!", fileName.c_str());
         return false;
     }
     Defer { stbi_image_free(rawData); };
@@ -45,13 +45,13 @@ TEINAPI bool CreateTexture (Texture& tex, int w, int h, int bpp, void* data, Tex
     int maxTextureSize = static_cast<int>(GetMaxTextureSize());
     if (w > maxTextureSize || h > maxTextureSize)
     {
-        LogError(ERR_MIN, "Texture size %dx%d too large for GPU!", w,h);
+        LogError(ErrorLevel::Min, "Texture size %dx%d too large for GPU!", w,h);
         return false;
     }
 
     if (!data)
     {
-        LogError(ERR_MIN, "No texture data passed for creation!");
+        LogError(ErrorLevel::Min, "No texture data passed for creation!");
         return false;
     }
 
@@ -78,8 +78,8 @@ TEINAPI bool CreateTexture (Texture& tex, int w, int h, int bpp, void* data, Tex
     GLenum filter = GL_LINEAR;
     #endif // RENDERER_USE_MIPMAPS
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,       wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,       wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(wrap));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(wrap));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 

@@ -1,4 +1,4 @@
-enum class MatrixMode: GLenum { PROJECTION = GL_PROJECTION, MODELVIEW = GL_MODELVIEW };
+enum class MatrixMode: GLenum { Projection = GL_PROJECTION, ModelView = GL_MODELVIEW };
 
 struct Texture;
 struct Font;

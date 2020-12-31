@@ -48,32 +48,32 @@ TEINAPI void InitApplication (int argc, char** argv)
 
     BeginDebugSection("Editor:");
     LogDebug("Version %d.%d.%d", gAppVerMajor,gAppVerMinor,gAppVerPatch);
-    #if defined(BUILD_DEBUG)
+    #if defined(BuildDebug)
     LogDebug("Build: Debug");
     #else
     LogDebug("Build: Release");
-    #endif // BUILD_DEBUG
+    #endif // BuildDebug
     EndDebugSection();
 
     BeginDebugSection("Initialization:");
 
     if (!InitErrorSystem())
     {
-        LogError(ERR_MAX, "Failed to setup the error system!");
+        LogError(ErrorLevel::Max, "Failed to setup the error system!");
         return;
     }
 
     U32 sdlFLags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
     if (SDL_Init(sdlFLags) != 0)
     {
-        LogError(ERR_MAX, "Failed to initialize SDL! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Max, "Failed to initialize SDL! (%s)", SDL_GetError());
         return;
     }
     else LogDebug("Initialized SDL2 Library");
 
     if (FT_Init_FreeType(&gFreetype) != 0)
     {
-        LogError(ERR_MAX, "Failed to initialize FreeType!");
+        LogError(ErrorLevel::Max, "Failed to initialize FreeType!");
         return;
     }
     else LogDebug("Initialized FreeType2 Library");
@@ -82,28 +82,28 @@ TEINAPI void InitApplication (int argc, char** argv)
 
     if (!InitResourceManager())
     {
-        LogError(ERR_MAX, "Failed to setup the resource manager!");
+        LogError(ErrorLevel::Max, "Failed to setup the resource manager!");
         return;
     }
     if (!InitUiSystem())
     {
-        LogError(ERR_MAX, "Failed to setup the UI system!");
+        LogError(ErrorLevel::Max, "Failed to setup the UI system!");
         return;
     }
     if (!InitWindow())
     {
-        LogError(ERR_MAX, "Failed to setup the window system!");
+        LogError(ErrorLevel::Max, "Failed to setup the window system!");
         return;
     }
 
-    if (!RegisterWindow("WINPREFERENCES", "Preferences", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create preferences window!"); return; }
-    if (!RegisterWindow("WINCOLOR", "Color Picker", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create color picker window!"); return; }
-    if (!RegisterWindow("WINNEW", "New", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create new window!"); return; }
-    if (!RegisterWindow("WINRESIZE", "Resize", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create resize window!"); return; }
-    if (!RegisterWindow("WINABOUT", "About", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create about window!"); return; }
-    if (!RegisterWindow("WINUNPACK", "Unpack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!"); return; }
-    if (!RegisterWindow("WINPACK", "Pack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create GPAK unpack window!"); return; }
-    if (!RegisterWindow("WINPATH", "Locate Game", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ERR_MAX, "Failed to create path window!"); return; }
+    if (!RegisterWindow("WINPREFERENCES", "Preferences", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 570,480, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create preferences window!"); return; }
+    if (!RegisterWindow("WINCOLOR", "Color Picker", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 250,302, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create color picker window!"); return; }
+    if (!RegisterWindow("WINNEW", "New", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,126, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create new window!"); return; }
+    if (!RegisterWindow("WINRESIZE", "Resize", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 230,200, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create resize window!"); return; }
+    if (!RegisterWindow("WINABOUT", "About", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,96, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create about window!"); return; }
+    if (!RegisterWindow("WINUNPACK", "Unpack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create GPAK unpack window!"); return; }
+    if (!RegisterWindow("WINPACK", "Pack", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 360,80, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create GPAK unpack window!"); return; }
+    if (!RegisterWindow("WINPATH", "Locate Game", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 440,100, 0,0, SDL_WINDOW_SKIP_TASKBAR)) { LogError(ErrorLevel::Max, "Failed to create path window!"); return; }
 
     GetWindowFromName("WINPREFERENCES").closeCallback = [](){ CancelPreferences(); };
     GetWindowFromName("WINCOLOR").closeCallback = [](){ CancelColorPicker(); };
@@ -126,25 +126,25 @@ TEINAPI void InitApplication (int argc, char** argv)
 
     if (!InitRenderer())
     {
-        LogError(ERR_MAX, "Failed to setup the renderer!");
+        LogError(ErrorLevel::Max, "Failed to setup the renderer!");
         return;
     }
     if (!LoadEditorSettings ())
     {
-        LogError(ERR_MED, "Failed to load editor settings!");
+        LogError(ErrorLevel::Med, "Failed to load editor settings!");
     }
     if (!LoadEditorKeyBindings())
     {
-        LogError(ERR_MED, "Failed to load editor key bindings!");
+        LogError(ErrorLevel::Med, "Failed to load editor key bindings!");
     }
     if (!LoadEditorResources())
     {
-        LogError(ERR_MAX, "Failed to load editor resources!");
+        LogError(ErrorLevel::Max, "Failed to load editor resources!");
         return;
     }
     if (!InitTilePanel())
     {
-        LogError(ERR_MAX, "Failed to setup the tile panel!");
+        LogError(ErrorLevel::Max, "Failed to setup the tile panel!");
         return;
     }
 
@@ -208,7 +208,7 @@ TEINAPI void DoApplication ()
     p1.w = GetViewport().w - (gWindowBorder * 2);
     p1.h = GetViewport().h - (gWindowBorder * 2);
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     DoHotbar();
 
@@ -217,7 +217,7 @@ TEINAPI void DoApplication ()
     p2.w = GetViewport().w - 2;
     p2.h = GetViewport().h - p2.y - 1;
 
-    BeginPanel(p2, UI_NONE);
+    BeginPanel(p2, UiFlag::None);
 
     DoControlPanel();
     DoToolbar();
@@ -307,7 +307,7 @@ TEINAPI void DoApplication ()
     // IMPORTANT: Otherwise the UI will not redraw very well!
     if (gShouldPushUiRedrawEvent)
     {
-        PushEditorEvent(EDITOR_EVENT_UI_REDRAW, NULL, NULL);
+        PushEditorEvent(EditorEvent::UiRedraw, NULL, NULL);
         gShouldPushUiRedrawEvent = false;
     }
 }
@@ -317,7 +317,7 @@ TEINAPI bool HandleApplicationEvents ()
     // We wait for events so we don't waste CPU and GPU power.
     if (!SDL_WaitEvent(&gMainEvent))
     {
-        LogError(ERR_MED, "Error waiting for events! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Med, "Error waiting for events! (%s)", SDL_GetError());
         return false;
     }
 
@@ -329,10 +329,10 @@ TEINAPI bool HandleApplicationEvents ()
     {
         if (gMainEvent.type == SDL_QUIT) gMainRunning = false;
 
-        #if defined(BUILD_DEBUG)
+        #if defined(BuildDebug)
         generate_texture_atlases();
         pack_textures();
-        #endif // BUILD_DEBUG
+        #endif // BuildDebug
 
         HandleWindowEvents();
         HandleKeyBindingEvents();

@@ -19,7 +19,7 @@ namespace Internal
         SDL_Surface* surface = LoadSurfaceResource(fileName);
         if (!surface)
         {
-            LogError(ERR_MIN, "Failed to load cursor file '%s'!", fileName);
+            LogError(ErrorLevel::Min, "Failed to load cursor file '%s'!", fileName);
             return false;
         }
         Defer { SDL_FreeSurface(surface); };
@@ -34,14 +34,14 @@ namespace Internal
         U32 colorKey = SDL_MapRGB(surface->format, 0xFF,0x00,0xFF);
         if (SDL_SetColorKey(surface, SDL_TRUE, colorKey) < 0)
         {
-            LogError(ERR_MIN, "Failed to color key cursor '%s'!", fileName);
+            LogError(ErrorLevel::Min, "Failed to color key cursor '%s'!", fileName);
             return false;
         }
 
         gCursors[static_cast<int>(cursor)] = SDL_CreateColorCursor(surface, x, y);
         if (!gCursors[static_cast<int>(cursor)])
         {
-            LogError(ERR_MIN, "Failed to create cursor '%s'!", fileName);
+            LogError(ErrorLevel::Min, "Failed to create cursor '%s'!", fileName);
             return false;
         }
 
@@ -63,12 +63,12 @@ TEINAPI bool LoadEditorCursors ()
     gCursorsEnabled = false;
     gCursorsLoaded = false;
 
-    if (!Internal::LoadCursor(Cursor::ARROW,   gCursorFileArrow  ,  6,  3)) return false;
-    if (!Internal::LoadCursor(Cursor::BEAM,     CursorFileBeam   , 11, 12)) return false;
-    if (!Internal::LoadCursor(Cursor::POINTER, gCursorFilePointer,  8,  1)) return false;
-    if (!Internal::LoadCursor(Cursor::BRUSH,   gCursorFileBrush  ,  3, 20)) return false;
-    if (!Internal::LoadCursor(Cursor::FILL,    gCursorFileFill   , 19, 16)) return false;
-    if (!Internal::LoadCursor(Cursor::SELECT,  gCursorFileSelect , 11, 12)) return false;
+    if (!Internal::LoadCursor(Cursor::Arrow,   gCursorFileArrow  ,  6,  3)) return false;
+    if (!Internal::LoadCursor(Cursor::Beam,     CursorFileBeam   , 11, 12)) return false;
+    if (!Internal::LoadCursor(Cursor::Pointer, gCursorFilePointer,  8,  1)) return false;
+    if (!Internal::LoadCursor(Cursor::Brush,   gCursorFileBrush  ,  3, 20)) return false;
+    if (!Internal::LoadCursor(Cursor::Fill,    gCursorFileFill   , 19, 16)) return false;
+    if (!Internal::LoadCursor(Cursor::Select,  gCursorFileSelect , 11, 12)) return false;
 
     gCursorsEnabled = gEditorSettings.customCursors;
     gCursorsLoaded = true;
@@ -77,14 +77,14 @@ TEINAPI bool LoadEditorCursors ()
     if (!gCursorsEnabled)
     {
         SDL_SetCursor(SDL_GetDefaultCursor());
-        gCurrentCursor = Cursor::ARROW;
+        gCurrentCursor = Cursor::Arrow;
     }
     else
     {
         if (gCursorsLoaded)
         {
-            SDL_SetCursor(gCursors[static_cast<int>(Cursor::ARROW)]);
-            gCurrentCursor = Cursor::ARROW;
+            SDL_SetCursor(gCursors[static_cast<int>(Cursor::Arrow)]);
+            gCurrentCursor = Cursor::Arrow;
         }
     }
 
@@ -117,7 +117,7 @@ TEINAPI void SetCursorType (Cursor cursor)
 }
 TEINAPI Cursor GetCursorType ()
 {
-    return ((gCursorsEnabled && gCursorsLoaded) ? gCurrentCursor : Cursor::ARROW);
+    return ((gCursorsEnabled && gCursorsLoaded) ? gCurrentCursor : Cursor::Arrow);
 }
 
 TEINAPI bool CustomCursorsEnabled ()

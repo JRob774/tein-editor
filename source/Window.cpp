@@ -189,15 +189,15 @@ TEINAPI bool InitWindow ()
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 
-    #if defined(BUILD_DEBUG)
+    #if defined(BuildDebug)
     std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #else
     std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
-    #endif // BUILD_DEBUG
+    #endif // BuildDebug
 
     if (!RegisterWindow("WINMAIN", mainTitle, gMainWindowX,gMainWindowY,gMainWindowBaseW,gMainWindowBaseH,gMainWindowMinW,gMainWindowMinH,gMainWindowFlags))
     {
-        LogError(ERR_MAX, "Failed to create the main application window!");
+        LogError(ErrorLevel::Max, "Failed to create the main application window!");
         return false;
     }
 
@@ -301,11 +301,11 @@ TEINAPI void HandleWindowEvents ()
 
 TEINAPI void SetMainWindowSubtitle (std::string subtitle)
 {
-    #if defined(BUILD_DEBUG)
+    #if defined(BuildDebug)
     std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #else
     std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
-    #endif // BUILD_DEBUG
+    #endif // BuildDebug
 
     if (!subtitle.empty())
     {
@@ -362,7 +362,7 @@ TEINAPI bool RegisterWindow (std::string name, std::string title, int x, int y, 
 {
     if (gWindows.find(name) != gWindows.end())
     {
-        LogError(ERR_MAX, "Window with name \"%s\" already exists!", name.c_str());
+        LogError(ErrorLevel::Max, "Window with name \"%s\" already exists!", name.c_str());
         return false;
     }
 
@@ -374,14 +374,14 @@ TEINAPI bool RegisterWindow (std::string name, std::string title, int x, int y, 
     window.window = SDL_CreateWindow(title.c_str(), x, y, w, h, flags);
     if (!window.window)
     {
-        LogError(ERR_MIN, "Failed to create window! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Min, "Failed to create window! (%s)", SDL_GetError());
         return false;
     }
 
     window.id = SDL_GetWindowID(window.window);
     if (!window.id)
     {
-        LogError(ERR_MIN, "Failed to get window ID! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Min, "Failed to get window ID! (%s)", SDL_GetError());
         return false;
     }
 

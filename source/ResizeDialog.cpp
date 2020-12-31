@@ -11,7 +11,7 @@ static constexpr const char* gResizeHeightLabel = "Level Height:  ";
 static int gCurrentResizeWidth = static_cast<int>(gDefaultLevelWidth);
 static int gCurrentResizeHeight = static_cast<int>(gDefaultLevelHeight);
 
-static ResizeDir gResizeDialogDir = ResizeDir::CENTER;
+static ResizeDir gResizeDialogDir = ResizeDir::Center;
 
 static const Quad* gNWClip     = &gClipResizeNW;
 static const Quad* gNClip      = &gClipResizeN;
@@ -77,7 +77,7 @@ namespace Internal
                 gSClip      = &gClipResizeSE;
                 gSEClip     = &gClipNone;
             } break;
-            case (ResizeDir::CENTER):
+            case (ResizeDir::Center):
             {
                 gNWClip     = &gClipResizeNW;
                 gNClip      = &gClipResizeN;
@@ -149,7 +149,7 @@ namespace Internal
         DoSeparator(w);
         AdvancePanelCursor(gResizeYPad*1.5f);
 
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
 
         float bw = 25;
         float bh = 25;
@@ -169,23 +169,23 @@ namespace Internal
 
         ResizeDir oldDir = gResizeDialogDir;
 
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gNWClip)) gResizeDialogDir = ResizeDir::NW;
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gNClip)) gResizeDialogDir = ResizeDir::N;
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gNEClip)) gResizeDialogDir = ResizeDir::NE;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gNWClip)) gResizeDialogDir = ResizeDir::NW;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gNClip)) gResizeDialogDir = ResizeDir::N;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gNEClip)) gResizeDialogDir = ResizeDir::NE;
 
         cursor.x = x;
         cursor.y += bh;
 
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gWClip)) gResizeDialogDir = ResizeDir::W;
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gCenterClip)) gResizeDialogDir = ResizeDir::CENTER;
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gEClip)) gResizeDialogDir = ResizeDir::E;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gWClip)) gResizeDialogDir = ResizeDir::W;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gCenterClip)) gResizeDialogDir = ResizeDir::Center;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gEClip)) gResizeDialogDir = ResizeDir::E;
 
         cursor.x = x;
         cursor.y += bh;
 
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gSWClip)) gResizeDialogDir = ResizeDir::SW;
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gSClip)) gResizeDialogDir = ResizeDir::S;
-        if (DoImageButton(NULL, bw,bh, UI_NONE, gSEClip)) gResizeDialogDir = ResizeDir::SE;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gSWClip)) gResizeDialogDir = ResizeDir::SW;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gSClip)) gResizeDialogDir = ResizeDir::S;
+        if (DoImageButton(NULL, bw,bh, UiFlag::None, gSEClip)) gResizeDialogDir = ResizeDir::SE;
 
         if (oldDir != gResizeDialogDir)
         {
@@ -197,7 +197,7 @@ namespace Internal
     {
         if (gCurrentResizeWidth < gMinimumLevelWidth || gCurrentResizeHeight < gMinimumLevelHeight)
         {
-            ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), ALERT_TYPE_WARNING, ALERT_BUTTON_OK, "WINRESIZE");
+            ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), AlertType::Warning, AlertButton::Ok, "WINRESIZE");
             return;
         }
 
@@ -213,7 +213,7 @@ TEINAPI void OpenResize (int levelWidth, int levelHeight)
     if (levelWidth > 0) gCurrentResizeWidth = levelWidth;
     if (levelHeight > 0) gCurrentResizeHeight = levelHeight;
 
-    gResizeDialogDir = ResizeDir::CENTER;
+    gResizeDialogDir = ResizeDir::Center;
     Internal::CalculateDirClips();
 
     ShowWindow("WINRESIZE");
@@ -230,7 +230,7 @@ TEINAPI void DoResize ()
 
     SetUiFont(&GetEditorRegularFont());
 
-    BeginPanel(p1, UI_NONE, gUiColorExDark);
+    BeginPanel(p1, UiFlag::None, gUiColorExDark);
 
     float bb = gResizeBottomBorder;
 
@@ -242,16 +242,16 @@ TEINAPI void DoResize ()
 
     // Bottom buttons for okaying or cancelling the resize.
     Vec2 buttonCursor(0, gWindowBorder);
-    BeginPanel(0, vh-bb, vw, bb, UI_NONE, gUiColorMedium);
+    BeginPanel(0, vh-bb, vw, bb, UiFlag::None, gUiColorMedium);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&buttonCursor);
 
     // Just to make sure that we always reach the end of the panel space.
     float bw2 = vw - bw;
 
-    if (DoTextButton(NULL, bw,bh, UI_NONE, "Resize")) Internal::OkayResize();
-    if (DoTextButton(NULL, bw2,bh, UI_NONE, "Cancel")) CancelResize();
+    if (DoTextButton(NULL, bw,bh, UiFlag::None, "Resize")) Internal::OkayResize();
+    if (DoTextButton(NULL, bw2,bh, UiFlag::None, "Cancel")) CancelResize();
 
     // Add a separator to the left for symmetry.
     buttonCursor.x = 1;
@@ -264,11 +264,11 @@ TEINAPI void DoResize ()
     p2.w = vw - 2;
     p2.h = vh - p2.y - bb - 1;
 
-    BeginPanel(p2, UI_NONE, gUiColorMedium);
+    BeginPanel(p2, UiFlag::None, gUiColorMedium);
 
     Vec2 cursor(gResizeXPad, gResizeYPad);
 
-    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursorDir(UiDir::Down);
     SetPanelCursor(&cursor);
 
     float labelWidthWidth = GetTextWidthScaled(GetEditorRegularFont(), gResizeWidthLabel);
@@ -280,9 +280,9 @@ TEINAPI void DoResize ()
     std::string widthString(std::to_string(gCurrentResizeWidth));
     std::string heightString(std::to_string(gCurrentResizeHeight));
 
-    DoTextBoxLabeled(textBoxWidth, gResizeTextBoxHeight, UI_NUMERIC, widthString, labelWidth, gResizeWidthLabel, "0");
+    DoTextBoxLabeled(textBoxWidth, gResizeTextBoxHeight, UiFlag::Numeric, widthString, labelWidth, gResizeWidthLabel, "0");
     AdvancePanelCursor(gResizeYPad);
-    DoTextBoxLabeled(textBoxWidth, gResizeTextBoxHeight, UI_NUMERIC, heightString, labelWidth, gResizeHeightLabel, "0");
+    DoTextBoxLabeled(textBoxWidth, gResizeTextBoxHeight, UiFlag::Numeric, heightString, labelWidth, gResizeHeightLabel, "0");
 
     if (atoi(widthString.c_str()) > gMaximumLevelWidth) widthString = std::to_string(gMaximumLevelWidth);
     if (atoi(heightString.c_str()) > gMaximumLevelHeight) heightString = std::to_string(gMaximumLevelHeight);

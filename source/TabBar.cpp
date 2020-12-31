@@ -33,10 +33,10 @@ namespace Internal
         // level's name gets cut off by the width of the final level tab.
         if (tab.unsavedChanges) name.insert(0, "* ");
 
-        UiFlag flags = ((current) ? UI_HIGHLIGHT : UI_INACTIVE);
+        UiFlag flags = ((current) ? UiFlag::Highlight : UiFlag::Inactive);
         BeginPanel(GetPanelCursor().x,0,tw,th, flags, gUiColorMedium);
 
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
         SetPanelCursor(&cursor1);
 
         // We display the level tab's full file name in the status bar on hover.
@@ -46,10 +46,10 @@ namespace Internal
             SetCurrentTab(index);
         }
 
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
         SetPanelCursor(&cursor2);
 
-        DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, lw,th, name);
+        DoLabel(UiAlign::Left, UiAlign::Center, lw,th, name);
 
         EndPanel();
 
@@ -133,11 +133,11 @@ TEINAPI void DoTabBar ()
     // THE LEFT ARROW BUTTON
     if (AreThereAnyTabs())
     {
-        BeginPanel(x,y,bw,bh, UI_NONE);
+        BeginPanel(x,y,bw,bh, UiFlag::None);
         Vec2 tempCursor(0,0);
         SetPanelCursor(&tempCursor);
         bool leftArrowActive = (gStartingTabOffset != 0);
-        UiFlag flags = ((leftArrowActive) ? UI_NONE : UI_LOCKED);
+        UiFlag flags = ((leftArrowActive) ? UiFlag::None : UiFlag::Locked);
         if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowLeft))
         {
             --gStartingTabOffset;
@@ -149,9 +149,9 @@ TEINAPI void DoTabBar ()
     Vec2 cursor(0,0);
 
     Vec4 color = ((AreThereAnyTabs()) ? gUiColorMedDark : gUiColorExDark);
-    BeginPanel(x+bw+1,y,pw,ph, UI_NONE, color);
+    BeginPanel(x+bw+1,y,pw,ph, UiFlag::None, color);
 
-    SetPanelCursorDir(UI_DIR_RIGHT);
+    SetPanelCursorDir(UiDir::Right);
     SetPanelCursor(&cursor);
 
     // Check to see if the mouse is in the panel, if it is then the mouse scroll wheel will scroll through tabs.
@@ -174,11 +174,11 @@ TEINAPI void DoTabBar ()
     // THE RIGHT ARROW BUTTON
     if (AreThereAnyTabs())
     {
-        BeginPanel(x+bw+2+pw,0,bw,bh, UI_NONE);
+        BeginPanel(x+bw+2+pw,0,bw,bh, UiFlag::None);
         Vec2 tempCursor(0,0);
         SetPanelCursor(&tempCursor);
         bool rightArrowActive = (gStartingTabOffset+gMaxNumberOfTabs < gEditor.tabs.size());
-        UiFlag flags = ((rightArrowActive) ? UI_NONE : UI_LOCKED);
+        UiFlag flags = ((rightArrowActive) ? UiFlag::None : UiFlag::Locked);
         if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowRight))
         {
             ++gStartingTabOffset;
@@ -204,7 +204,7 @@ TEINAPI void MoveTabLeft ()
     if (AreThereAnyTabs())
     {
         Tab& tab = GetCurrentTab();
-        if (tab.type != TabType::MAP || !tab.mapNodeInfo.active)
+        if (tab.type != TabType::Map || !tab.mapNodeInfo.active)
         {
             if (gEditor.currentTab > 0)
             {
@@ -221,7 +221,7 @@ TEINAPI void MoveTabRight ()
     if (AreThereAnyTabs())
     {
         Tab& tab = GetCurrentTab();
-        if (tab.type != TabType::MAP || !tab.mapNodeInfo.active)
+        if (tab.type != TabType::Map || !tab.mapNodeInfo.active)
         {
             if (gEditor.currentTab < gEditor.tabs.size()-1)
             {

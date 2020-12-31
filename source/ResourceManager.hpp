@@ -75,7 +75,7 @@ static TextureAtlas gResourceSmall;
 TEINAPI bool InitResourceManager ();
 TEINAPI void GetResourceLocation ();
 
-TEINAPI bool            LoadTextureResource (std::string fileName, Texture& texture, TextureWrap wrap = TEXTURE_WRAP_CLAMP_TO_EDGE);
+TEINAPI bool            LoadTextureResource (std::string fileName, Texture& texture, TextureWrap wrap = TextureWrap::ClampToEdge);
 TEINAPI bool            LoadAtlasResource   (std::string fileName, TextureAtlas& atlas);
 TEINAPI bool            LoadFontResource    (std::string fileName, Font& font, std::vector<int> pointSizes = { gSmallFontPointSize }, float cacheSize = gDefaultFontGlyphCacheSize);
 TEINAPI Shader          LoadShaderResource  (std::string fileName);

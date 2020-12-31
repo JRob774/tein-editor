@@ -41,7 +41,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     U8** raw_data = Malloc(U8*, surface_count);
     if (!surfaces || !raw_data)
     {
-        LogError(ERR_MIN, "Failed to allocate texture atlas surfaces!");
+        LogError(ErrorLevel::Min, "Failed to allocate texture atlas surfaces!");
         return;
     }
 
@@ -67,7 +67,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         raw_data[i] = stbi_load(file_name, &iw, &ih, &bpp, BYTES_PER_PIXEL);
         if (!raw_data[i])
         {
-            LogError(ERR_MIN, "Failed to load atlas image file '%s'!", file_name);
+            LogError(ErrorLevel::Min, "Failed to load atlas image file '%s'!", file_name);
             return;
         }
 
@@ -75,7 +75,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         surfaces[i] = SDL_CreateRGBSurfaceWithFormatFrom(raw_data[i], iw, ih, BITS_PER_PIXEL, pitch, SURFACE_FORMAT);
         if (!surfaces[i])
         {
-            LogError(ERR_MIN, "Failed to create atlas surface '%s'!", file_name);
+            LogError(ErrorLevel::Min, "Failed to create atlas surface '%s'!", file_name);
             return;
         }
 
@@ -93,7 +93,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     stbrp_node* nodes = Malloc(stbrp_node, node_count);
     if (!nodes)
     {
-        LogError(ERR_MIN, "Failed to allocate atlas packing nodes!");
+        LogError(ErrorLevel::Min, "Failed to allocate atlas packing nodes!");
         return;
     }
     Defer { Free(nodes); };
@@ -102,7 +102,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     stbrp_rect* rects = Malloc(stbrp_rect, rect_count);
     if (!rects)
     {
-        LogError(ERR_MIN, "Failed to allocate atlas packing rects!");
+        LogError(ErrorLevel::Min, "Failed to allocate atlas packing rects!");
         return;
     }
     Defer { Free(rects); };
@@ -120,14 +120,14 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     stbrp_init_target(&context, atlas_w,atlas_h, nodes, node_count);
     if (!stbrp_pack_rects(&context, rects, rect_count))
     {
-        LogError(ERR_MIN, "Failed to pack texture atlas images!");
+        LogError(ErrorLevel::Min, "Failed to pack texture atlas images!");
         return;
     }
 
     SDL_Surface* atlas_surface = SDL_CreateRGBSurfaceWithFormat(0, atlas_w,atlas_h, BITS_PER_PIXEL, SURFACE_FORMAT);
     if (!atlas_surface)
     {
-        LogError(ERR_MIN, "Failed to create final atlas surface! (%s)", SDL_GetError());
+        LogError(ErrorLevel::Min, "Failed to create final atlas surface! (%s)", SDL_GetError());
         return;
     }
     Defer { SDL_FreeSurface(atlas_surface); atlas_surface = NULL; };
@@ -136,7 +136,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
     FILE* file = fopen(output_txt_name.c_str(), "w");
     if (!file)
     {
-        LogError(ERR_MIN, "Failed to create atlas lookup GON!");
+        LogError(ErrorLevel::Min, "Failed to create atlas lookup GON!");
         return;
     }
     Defer { fclose(file); };
@@ -157,7 +157,7 @@ TEINAPI void internal__generate_texture_atlas (std::string output_name, std::str
         };
         if (SDL_BlitSurface(surfaces[i], NULL, atlas_surface, &rect) != 0)
         {
-            LogError(ERR_MIN, "Failed to blit texture to the atlas! (%s)", SDL_GetError());
+            LogError(ErrorLevel::Min, "Failed to blit texture to the atlas! (%s)", SDL_GetError());
             return;
         }
 

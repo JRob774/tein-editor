@@ -1,6 +1,6 @@
 static constexpr const char* gTileLayerInfo  = "Toggle this tile layer's visibility (invisible layers can't be interacted with).";
 
-static const Vec4 gLayerColors[LEVEL_LAYER_TOTAL]
+static const Vec4 gLayerColors[static_cast<int>(LevelLayer::Total)]
 {
 { .75f, .38f, .38f, 1 }, // Tag
 { .44f, .51f, .72f, 1 }, // Overlay
@@ -22,7 +22,7 @@ namespace Internal
 {
     TEINAPI bool DoLayerButton (UiFlag flags, int layer, std::string name, std::string info)
     {
-        const Quad& clip = ((flags & UI_INACTIVE) ? gClipCross : gClipEye);
+        const Quad& clip = ((static_cast<bool>(flags & UiFlag::Inactive)) ? gClipCross : gClipEye);
 
         constexpr float Pad = 5;
         Vec2 cursor(Pad, 0);
@@ -31,21 +31,21 @@ namespace Internal
         float bh = gLayerPanelButtonHeight;
 
         // If not inactive then we need to determine if this is the active layer.
-        if (!(flags & UI_INACTIVE))
+        if (!static_cast<bool>(flags & UiFlag::Inactive))
         {
             // If the tool is the select tool then technically all of the layers
             // are active (except for disabled ones). So it makes sense to just
             // highlight ever single layer when using this particular tool.
-            if (gLevelEditor.toolType == ToolType::SELECT)
+            if (gLevelEditor.toolType == ToolType::Select)
             {
-                flags |= UI_HIGHLIGHT;
+                flags |= UiFlag::Highlight;
             }
             else
             {
                 TileCategory category = GetSelectedCategory();
                 if (CategoryToLayer(category) == static_cast<LevelLayer>(layer))
                 {
-                    flags |= UI_HIGHLIGHT;
+                    flags |= UiFlag::Highlight;
                 }
             }
         }
@@ -53,7 +53,7 @@ namespace Internal
         bool result = BeginClickPanel(NULL, bw,bh, flags, info);
 
         SetPanelCursor(&cursor);
-        SetPanelCursorDir(UI_DIR_RIGHT);
+        SetPanelCursorDir(UiDir::Right);
 
         float w = 10;
         float h = (gLayerPanelButtonHeight-4)-1; // -1 due to separator!
@@ -64,7 +64,7 @@ namespace Internal
         AdvancePanelCursor(Pad);
         DoIcon(24, GetPanelHeight(), gResourceIcons, &clip);
         AdvancePanelCursor(Pad);
-        DoLabel(UI_ALIGN_LEFT, UI_ALIGN_CENTER, GetPanelHeight(), name);
+        DoLabel(UiAlign::Left, UiAlign::Center, GetPanelHeight(), name);
 
         EndPanel();
         return result;
@@ -75,7 +75,7 @@ namespace Internal
         if (CurrentTabIsLevel())
         {
             Tab& tab = GetCurrentTab();
-            tab.tileLayerActive[layer] = !tab.tileLayerActive[layer];
+            tab.tileLayerActive[static_cast<int>(layer)] = !tab.tileLayerActive[static_cast<int>(layer)];
             SelectNextActiveGroup();
         }
     }
@@ -103,7 +103,7 @@ TEINAPI void InitLayerPanel ()
 {
     gLayerPanelScrollOffset = 0;
     gLayerPanelBounds = {};
-    gLayerPanelContentHeight = (gLayerPanelButtonHeight * LEVEL_LAYER_TOTAL) - 1; // -1 because we don't care about the last separator!
+    gLayerPanelContentHeight = (gLayerPanelButtonHeight * static_cast<int>(LevelLayer::Total)) - 1; // -1 because we don't care about the last separator!
     gLayerPanelHeight = 0;
 }
 
@@ -123,18 +123,18 @@ TEINAPI void DoLayerPanel (bool scrollbar)
 
     constexpr float Pad = gLayerPanelInnerPad;
 
-    BeginPanel(gLayerPanelBounds, UI_NONE, gUiColorMedium);
-    BeginPanel(Pad, Pad, gControlPanelWidth-(Pad*2), gLayerPanelBounds.h-(Pad*2), UI_NONE, gUiColorMedDark);
+    BeginPanel(gLayerPanelBounds, UiFlag::None, gUiColorMedium);
+    BeginPanel(Pad, Pad, gControlPanelWidth-(Pad*2), gLayerPanelBounds.h-(Pad*2), UiFlag::None, gUiColorMedDark);
 
     // NOTE: We do this to add a 1px border around the actual layer buttons in
     // the case that the panel is too small and needs a scrollbar it looks
     // nicer. Its a bit hacky and at some point we should probs have a feature
     // to add a padding border around a panel but for now we just do this...
-    BeginPanel(1, 1, GetPanelWidth()-2, GetPanelHeight()-2, UI_NONE, gUiColorMedDark);
+    BeginPanel(1, 1, GetPanelWidth()-2, GetPanelHeight()-2, UiFlag::None, gUiColorMedDark);
     gLayerPanelHeight = GetPanelHeight();
 
     SetPanelCursor(&cursor);
-    SetPanelCursorDir(UI_DIR_DOWN);
+    SetPanelCursorDir(UiDir::Down);
 
     if (scrollbar)
     {
@@ -149,20 +149,20 @@ TEINAPI void DoLayerPanel (bool scrollbar)
     bool allLayersWereInactive = AreAllLayersInactive();
     Tab& tab = GetCurrentTab();
 
-    for (int i=LEVEL_LAYER_TAG; i<LEVEL_LAYER_TOTAL; ++i)
+    for (int i=static_cast<int>(LevelLayer::Tag); i<static_cast<int>(LevelLayer::Total); ++i)
     {
         const char* layerName = NULL;
         switch (i)
         {
-            case (LEVEL_LAYER_TAG    ): layerName = "Tag";     break;
-            case (LEVEL_LAYER_OVERLAY): layerName = "Overlay"; break;
-            case (LEVEL_LAYER_ACTIVE ): layerName = "Active";  break;
-            case (LEVEL_LAYER_BACK1  ): layerName = "Back 1";  break;
-            case (LEVEL_LAYER_BACK2  ): layerName = "Back 2";  break;
+            case (LevelLayer::Tag): layerName = "Tag"; break;
+            case (LevelLayer::Overlay): layerName = "Overlay"; break;
+            case (LevelLayer::Active): layerName = "Active"; break;
+            case (LevelLayer::Back1): layerName = "Back 1"; break;
+            case (LevelLayer::Back2): layerName = "Back 2"; break;
         }
 
-        UiFlag tileFlag = ((tab.tileLayerActive[i]) ? UI_NONE : UI_INACTIVE);
-        if (Internal::DoLayerButton(tileFlag, static_cast<LevelLayer>(i), layerName, gTileLayerInfo))
+        UiFlag tileFlag = ((tab.tileLayerActive[i]) ? UiFlag::None : UiFlag::Inactive);
+        if (Internal::DoLayerButton(tileFlag, i, layerName, gTileLayerInfo))
         {
             Internal::ToggleLayer(static_cast<LevelLayer>(i));
         }
@@ -198,21 +198,21 @@ TEINAPI bool IsLayerPanelPresent ()
 
 TEINAPI void ToggleLayerActive ()
 {
-    Internal::ToggleLayerAction(LEVEL_LAYER_ACTIVE);
+    Internal::ToggleLayerAction(LevelLayer::Active);
 }
 TEINAPI void ToggleLayerTag ()
 {
-    Internal::ToggleLayerAction(LEVEL_LAYER_TAG);
+    Internal::ToggleLayerAction(LevelLayer::Tag);
 }
 TEINAPI void ToggleLayerOverlay ()
 {
-    Internal::ToggleLayerAction(LEVEL_LAYER_OVERLAY);
+    Internal::ToggleLayerAction(LevelLayer::Overlay);
 }
 TEINAPI void ToggleLayerBack1 ()
 {
-    Internal::ToggleLayerAction(LEVEL_LAYER_BACK1);
+    Internal::ToggleLayerAction(LevelLayer::Back1);
 }
 TEINAPI void ToggleLayerBack2 ()
 {
-    Internal::ToggleLayerAction(LEVEL_LAYER_BACK2);
+    Internal::ToggleLayerAction(LevelLayer::Back2);
 }

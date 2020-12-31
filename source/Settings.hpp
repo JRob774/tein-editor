@@ -5,22 +5,22 @@ static constexpr const char* gSettingsFileName = "settings_editor.txt";
 // then we only have to update them here rather than everywhere they are
 // referenced throughout the program's source code -- would be annoying!
 
-static constexpr const char* gSettingGamePath         = "game_path";
-static constexpr const char* gSettingUITheme          = "user_interface_theme";
-static constexpr const char* gSettingFontFace         = "font_face";
-static constexpr const char* gSettingTileGraphics     = "tile_graphics";
-static constexpr const char* gSettingCustomCursors    = "custom_cursors";
-static constexpr const char* gSettingShowTooltips     = "show_tooltips";
+static constexpr const char* gSettingGamePath = "game_path";
+static constexpr const char* gSettingUITheme = "user_interface_theme";
+static constexpr const char* gSettingFontFace = "font_face";
+static constexpr const char* gSettingTileGraphics = "tile_graphics";
+static constexpr const char* gSettingCustomCursors = "custom_cursors";
+static constexpr const char* gSettingShowTooltips = "show_tooltips";
 static constexpr const char* gSettingUnlimitedBackups = "unlimited_backups";
-static constexpr const char* gSettingBackupCount      = "backup_count";
-static constexpr const char* gSettingAutoBackup       = "auto_backup";
-static constexpr const char* gSettingBackupInterval   = "auto_backup_interval";
-static constexpr const char* gSettingBackgroundColor  = "background_color";
-static constexpr const char* gSettingSelectColor      = "select_color";
+static constexpr const char* gSettingBackupCount = "backup_count";
+static constexpr const char* gSettingAutoBackup = "auto_backup";
+static constexpr const char* gSettingBackupInterval = "auto_backup_interval";
+static constexpr const char* gSettingBackgroundColor = "background_color";
+static constexpr const char* gSettingSelectColor = "select_color";
 static constexpr const char* gSettingOutOfBoundsColor = "out_of_bounds_color";
-static constexpr const char* gSettingCursorColor      = "cursor_color";
-static constexpr const char* gSettingMirrorLineColor  = "mirror_line_color";
-static constexpr const char* gSettingTileGridColor    = "tile_grid_color";
+static constexpr const char* gSettingCursorColor = "cursor_color";
+static constexpr const char* gSettingMirrorLineColor = "mirror_line_color";
+static constexpr const char* gSettingTileGridColor = "tile_grid_color";
 
 struct Settings
 {

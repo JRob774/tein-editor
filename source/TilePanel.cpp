@@ -44,7 +44,7 @@ namespace Internal
     {
         if (!CurrentTabIsLevel()) return false;
         const Tab& tab = GetCurrentTab();
-        return tab.tileLayerActive[CategoryToLayer(category)];
+        return tab.tileLayerActive[static_cast<int>(CategoryToLayer(category))];
     }
 
     TEINAPI float DoTilePanelCategory (Vec2& cursor, TileCategory categoryIndex, std::vector<TileGroup>& category)
@@ -65,10 +65,10 @@ namespace Internal
         bool isActive = IsCategoryActive(categoryIndex);
 
         Vec2 labelCursor(0,0);
-        BeginPanel(x,y,w,h, (isActive) ? UI_NONE : UI_INACTIVE);
+        BeginPanel(x,y,w,h, (isActive) ? UiFlag::None : UiFlag::Inactive);
 
         SetPanelCursor(&labelCursor);
-        SetPanelCursorDir(UI_DIR_DOWN);
+        SetPanelCursorDir(UiDir::Down);
 
         const char* labelName = NULL;
         switch (categoryIndex)
@@ -81,7 +81,7 @@ namespace Internal
             case (TILE_CATEGORY_BACK2  ): labelName = "Back 2";  break;
         }
 
-        DoLabel(UI_ALIGN_LEFT,UI_ALIGN_CENTER, w, gTilePanelLabelHeight, labelName);
+        DoLabel(UiAlign::Left,UiAlign::Center, w, gTilePanelLabelHeight, labelName);
         EndPanel();
 
         cursor.y += gTilePanelLabelHeight;
@@ -93,7 +93,7 @@ namespace Internal
         h = (rows * gTilePanelItemSize) + categoryPad + totalItemPad;
 
         Vec2 cur(gTilePanelInnerPad, gTilePanelInnerPad);
-        BeginPanel(x,y,w,h, UI_NONE, gUiColorMedDark);
+        BeginPanel(x,y,w,h, UiFlag::None, gUiColorMedDark);
 
         SetDrawColor(gUiColorExDark); // The outline/border for the category.
         DrawQuad(0, GetPanelOffset().y, w, GetPanelOffset().y+h);
@@ -216,11 +216,11 @@ namespace Internal
         if (oldSelectedGroup != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
         {
             // When the selected gets changed then we make a new state.
-            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
             {
-                if (gLevelEditor.toolState != ToolState::IDLE)
+                if (gLevelEditor.toolState != ToolState::Idle)
                 {
-                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
         }
@@ -283,7 +283,7 @@ TEINAPI bool InitTilePanel ()
     }
     catch (const char* msg)
     {
-        LogError(ERR_MED, "%s", msg);
+        LogError(ErrorLevel::Med, "%s", msg);
         return false;
     }
 
@@ -310,7 +310,7 @@ TEINAPI void DoTilePanel (bool scrollbar)
         gTilePanel.bounds.h = roundf(gTilePanel.bounds.h - GetLayerPanelHeight());
     }
 
-    BeginPanel(gTilePanel.bounds, UI_NONE, gUiColorMedium);
+    BeginPanel(gTilePanel.bounds, UiFlag::None, gUiColorMedium);
 
     if (scrollbar)
     {
@@ -423,14 +423,14 @@ TEINAPI LevelLayer CategoryToLayer (TileCategory category)
 {
     switch (category)
     {
-        case (TILE_CATEGORY_BASIC  ): return LEVEL_LAYER_ACTIVE;  break;
-        case (TILE_CATEGORY_TAG    ): return LEVEL_LAYER_TAG;     break;
-        case (TILE_CATEGORY_OVERLAY): return LEVEL_LAYER_OVERLAY; break;
-        case (TILE_CATEGORY_ENTITY ): return LEVEL_LAYER_ACTIVE;  break;
-        case (TILE_CATEGORY_BACK1  ): return LEVEL_LAYER_BACK1;   break;
-        case (TILE_CATEGORY_BACK2  ): return LEVEL_LAYER_BACK2;   break;
+        case (TILE_CATEGORY_BASIC): return LevelLayer::Active; break;
+        case (TILE_CATEGORY_TAG): return LevelLayer::Tag; break;
+        case (TILE_CATEGORY_OVERLAY): return LevelLayer::Overlay; break;
+        case (TILE_CATEGORY_ENTITY): return LevelLayer::Active; break;
+        case (TILE_CATEGORY_BACK1): return LevelLayer::Back1; break;
+        case (TILE_CATEGORY_BACK2): return LevelLayer::Back2; break;
     }
-    return LEVEL_LAYER_ACTIVE;
+    return LevelLayer::Active;
 }
 
 TEINAPI void SelectNextActiveGroup ()
@@ -485,11 +485,11 @@ TEINAPI void IncrementSelectedTile ()
         // Feels correct that a new history state should be made.
         if (oldSelectedIndex != group.selectedIndex)
         {
-            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
             {
-                if (gLevelEditor.toolState != ToolState::IDLE)
+                if (gLevelEditor.toolState != ToolState::Idle)
                 {
-                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
         }
@@ -510,11 +510,11 @@ TEINAPI void DecrementSelectedTile ()
         // Feels correct that a new history state should be made.
         if (oldSelectedIndex != group.selectedIndex)
         {
-            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
             {
-                if (gLevelEditor.toolState != ToolState::IDLE)
+                if (gLevelEditor.toolState != ToolState::Idle)
                 {
-                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
         }
@@ -536,11 +536,11 @@ TEINAPI void IncrementSelectedGroup ()
         // Feels correct that a new history state should be made.
         if (oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
             {
-                if (gLevelEditor.toolState != ToolState::IDLE)
+                if (gLevelEditor.toolState != ToolState::Idle)
                 {
-                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
         }
@@ -561,11 +561,11 @@ TEINAPI void DecrementSelectedGroup ()
         // Feels correct that a new history state should be made.
         if (oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
             {
-                if (gLevelEditor.toolState != ToolState::IDLE)
+                if (gLevelEditor.toolState != ToolState::Idle)
                 {
-                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
         }
@@ -590,11 +590,11 @@ TEINAPI void IncrementSelectedCategory ()
         // Feels correct that a new history state should be made.
         if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
             {
-                if (gLevelEditor.toolState != ToolState::IDLE)
+                if (gLevelEditor.toolState != ToolState::Idle)
                 {
-                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
         }
@@ -618,11 +618,11 @@ TEINAPI void DecrementSelectedCategory ()
         // Feels correct that a new history state should be made.
         if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
         {
-            if (gLevelEditor.toolType == ToolType::BRUSH || gLevelEditor.toolType == ToolType::FILL)
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
             {
-                if (gLevelEditor.toolState != ToolState::IDLE)
+                if (gLevelEditor.toolState != ToolState::Idle)
                 {
-                    NewLevelHistoryState(LevelHistoryAction::NORMAL);
+                    NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
         }
