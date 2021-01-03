@@ -248,8 +248,14 @@ namespace Internal
         // tiles/spawns that do not fit in the bounds we are to be filling within.
         if (AreAnySelectBoxesVisible())
         {
-            if (tab.toolInfo.fill.insideSelect) if (!InsideSelectBounds(x,y)) return;
-            else if (InsideSelectBounds(x,y)) return;
+            if (tab.toolInfo.fill.insideSelect)
+            {
+                if (!InsideSelectBounds(x,y)) return;
+            }
+            else
+            {
+                if (InsideSelectBounds(x,y)) return;
+            }
         }
 
         // If we have already visited this space then we don't need to again.
@@ -320,8 +326,14 @@ namespace Internal
                 // tiles/spawns that do not fit in the bounds we are to be replacing within.
                 if (AreAnySelectBoxesVisible())
                 {
-                    if (tab.toolInfo.fill.insideSelect) if (!InsideSelectBounds(x,y)) continue;
-                    else if (InsideSelectBounds(x,y)) continue;
+                    if (tab.toolInfo.fill.insideSelect)
+                    {
+                        if (!InsideSelectBounds(x,y)) continue;
+                    }
+                    else
+                    {
+                        if (InsideSelectBounds(x,y)) continue;
+                    }
                 }
 
                 if (layer[y*tab.level.header.width+x] == tab.toolInfo.fill.findID)

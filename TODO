@@ -6,8 +6,6 @@ Features:
 - Change the scale and spacing of the tile icons for readability
 
 Bug Fixes:
-- Fill tool is broken.
-- Redoing and history end is broken -- something to do with having a select box present!!!
 - Need to test everything!!
 - Tooltip word wrapping is broken!
 
