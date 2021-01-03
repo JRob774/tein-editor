@@ -775,6 +775,46 @@ namespace Internal
         if (both)                 DrawClipboard         (UiDir::Left,  UiDir::Down);
     }
 
+    TEINAPI void DumpLevelHistory ()
+    {
+        const Tab& tab = GetCurrentTab();
+
+        BeginDebugSection("History Stack Dump:");
+        for (int i=0; i<static_cast<int>(tab.levelHistory.state.size()); ++i) {
+            const LevelHistoryState& s = tab.levelHistory.state.at(i);
+            std::string historyState = (tab.levelHistory.currentPosition==i) ? ">" : " ";
+
+            switch (s.action) {
+                case (LevelHistoryAction::Normal     ): historyState += "| NORMAL | "; break;
+                case (LevelHistoryAction::FlipLevelH ): historyState += "| FLIP H | "; break;
+                case (LevelHistoryAction::FlipLevelV ): historyState += "| FLIP V | "; break;
+                case (LevelHistoryAction::SelectState): historyState += "| SELECT | "; break;
+                case (LevelHistoryAction::Clear      ): historyState += "| CLEAR  | "; break;
+                case (LevelHistoryAction::Resize     ): historyState += "| RESIZE | "; break;
+            }
+
+            historyState += FormatString("%5zd | ", s.info.size());
+
+            if (s.action == LevelHistoryAction::FlipLevelH || s.action == LevelHistoryAction::FlipLevelV) {
+                for (const auto& tileLayer: s.tileLayerActive) {
+                    historyState += (tileLayer) ? "X" : ".";
+                }
+            }
+            else
+            {
+                historyState += ". ";
+                for (const auto& tileLayer: tab.tileLayerActive)
+                {
+                    historyState += ".";
+                }
+            }
+
+            historyState += " |";
+            LogDebug("%s", historyState.c_str());
+        }
+        EndDebugSection();
+    }
+
     TEINAPI void Resize (ResizeDir dir, int newWidth, int newHeight)
     {
         Tab& tab = GetCurrentTab();
@@ -1355,6 +1395,15 @@ TEINAPI void HandleLevelEditorEvents ()
             }
         } break;
     }
+
+    // We can dump the history on command in debug mode.
+    #if defined(BuildDebug)
+    if (gMainEvent.type == SDL_KEYDOWN) {
+        if (gMainEvent.key.keysym.sym == SDLK_F12) {
+            Internal::DumpLevelHistory();
+        }
+    }
+    #endif // BuildDebug
 }
 
 TEINAPI bool MouseInsideLevelEditorViewport ()
