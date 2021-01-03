@@ -257,57 +257,6 @@ namespace Internal
     {
         return ((GetRenderTarget()->focus) ? gUiMouseRightDown : false);
     }
-
-    TEINAPI std::string DoMarkdownFormatting (std::vector<std::string>& lines, float w)
-    {
-        Font& font = GetEditorRegularFont();
-
-        std::string text;
-        for (auto& line: lines) {
-            if (line.at(0) == '*') { // Looks nicer.
-                line.at(0) = '>';
-            }
-
-            if (GetTextWidthScaled(font, line) >= w) { // Word-wrap.
-                float xOff = 0.0f;
-
-                int i = 0;
-                int p = 0;
-
-                for (int j=0; j<static_cast<int>(line.length()); ++j) {
-                    xOff += GetGlyphAdvance(font, line.at(j), i,p);
-
-                    if (line.at(j) == '\n') {
-                        xOff = 0.0f;
-                    }
-
-                    if (xOff >= w) {
-                        for (int k=j; k>=0; --k) {
-                            if (line.at(k) == '\n' || k == 0) {
-                                line.at(k) = '\n';
-                                xOff = 0.0f;
-                                j = k;
-                                break;
-                            }
-                            if (line.at(k) == ' ') {
-                                line.insert(k, "\n");
-                                xOff = 0.0f;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            text += line + "\n";
-        }
-
-        if (text.back() == '\n') {
-            text.pop_back();
-        }
-
-        return text;
-    }
 }
 
 TEINAPI bool InitUiSystem ()
@@ -1108,68 +1057,6 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
     Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
     ++gUiCurrentID;
-}
-
-TEINAPI void DoMarkdown (float w, float h, std::string text)
-{
-    Font& font = GetEditorRegularFont();
-
-    UiFlag flags = gUiPanels.top().flags;
-
-    bool inactive = static_cast<bool>(flags & UiFlag::Inactive);
-    bool locked = static_cast<bool>(flags & UiFlag::Locked);
-
-    Internal::AdvanceUiCursorStart(gUiPanels.top(), w, h);
-
-    Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
-
-    // We scissor the contents to avoid text overspill.
-    BeginScissor(cursor.x, cursor.y, w, h);
-    Defer { EndScissor(); };
-
-    std::vector<std::string> lines;
-    TokenizeString(text, "\r\n", lines);
-
-    float x = cursor.x;
-    float y = cursor.y + font.lineGap[font.currentPointSize];
-
-    float offset = (IsUiLight()) ? -1.0f : 1.0f;
-
-    Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
-    Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
-
-    if (locked || inactive) {
-        shadow.a = .5f;
-        front.a = .5f;
-    }
-
-    Internal::DoMarkdownFormatting(lines, w);
-
-    for (auto& line: lines) {
-        std::vector<std::string> subLines;
-        TokenizeString(line, "\r\n", subLines);
-
-        for (size_t i=0; i<subLines.size(); ++i) {
-            x = cursor.x;
-            if (i != 0) x += GetTextWidthScaled(font, ">");
-            font.color = shadow;
-            DrawText(font, x, y-offset, subLines.at(i));
-            font.color = front;
-            DrawText(font, x, y, subLines.at(i));
-            y += font.lineGap[font.currentPointSize];
-        }
-    }
-
-    Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
-}
-
-TEINAPI float GetMarkdownHeight (float w, std::string text)
-{
-    Font& font = GetEditorRegularFont();
-    std::vector<std::string> lines;
-    TokenizeString(text, "\r\n", lines);
-    std::string markdownText = Internal::DoMarkdownFormatting(lines, w);
-    return GetTextHeightScaled(font, markdownText);
 }
 
 TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::string defaultText, UiAlign hAlign)

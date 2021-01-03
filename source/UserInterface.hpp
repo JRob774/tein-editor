@@ -99,10 +99,6 @@ TEINAPI void DoLabel (UiAlign horz, UiAlign vert,          float h, std::string 
 
 TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std::string text, std::string link, std::string href, Vec4 bgColor = Vec4(0,0,0,0));
 
-// Doesn't care about the current UI font and uses the current editor font instead!
-TEINAPI void  DoMarkdown        (float w, float h, std::string text);
-TEINAPI float GetMarkdownHeight (float w,          std::string text);
-
 TEINAPI void DoTextBox        (float w, float h, UiFlag flags, std::string& text,                                      std::string defaultText = "", UiAlign hAlign = UiAlign::Right);
 TEINAPI void DoTextBoxLabeled (float w, float h, UiFlag flags, std::string& text, float labelWidth, std::string label, std::string defaultText = "", UiAlign hAlign = UiAlign::Right);
 
