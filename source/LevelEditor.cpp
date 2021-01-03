@@ -1640,6 +1640,9 @@ TEINAPI void FlipLevelH ()
     // If the active layers in flip bounds are empty there is no point.
     if (Internal::AreActiveLayersInBoundsEmpty(0,0,lw,lh)) return;
 
+    // We deselect as this feels correct.
+    Internal::Deselect();
+
     NewLevelHistoryState(LevelHistoryAction::FlipLevelH);
     Internal::FlipLevelH(tab.tileLayerActive);
 }
@@ -1655,6 +1658,9 @@ TEINAPI void FlipLevelV ()
 
     // If the active layers in flip bounds are empty there is no point.
     if (Internal::AreActiveLayersInBoundsEmpty(0,0,lw,lh)) return;
+
+    // We deselect as this feels correct.
+    Internal::Deselect();
 
     NewLevelHistoryState(LevelHistoryAction::FlipLevelV);
     Internal::FlipLevelV(tab.tileLayerActive);
