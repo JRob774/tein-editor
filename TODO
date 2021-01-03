@@ -7,7 +7,6 @@ Features:
 
 Bug Fixes:
 - Need to test everything!!
-- Tooltip word wrapping is broken!
 
 Removals:
 - Remove the update notification system (lots of extra code for something not really necessary or stable).

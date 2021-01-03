@@ -68,7 +68,7 @@ TEINAPI void DoTooltip ()
             size_t offset = 0;
             for (size_t pos=0; pos!=std::string::npos; pos=desc.find(' ', pos))
             {
-                if (lineCount <= (pos-offset))
+                if (maxWidth <= (pos-offset))
                 {
                     desc.at(pos) = '\n';
                     offset = pos;
