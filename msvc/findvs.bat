@@ -1,5 +1,3 @@
-:: Visual Studio Command Line Tools Locator Script
-
 @echo off
 
 set VSWhere="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"

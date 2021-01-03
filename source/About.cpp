@@ -13,11 +13,11 @@ TEINAPI void DoAbout ()
     SetPanelCursorDir(UiDir::Down);
     SetPanelCursor(&cursor);
 
-    #if defined(BuildDebug)
+    #if defined(BUILD_DEBUG)
     const char* build = "Debug";
     #else
     const char* build = "Release";
-    #endif // BuildDebug
+    #endif // BUILD_DEBUG
 
     float lw = GetViewport().w - (XPad*2);
     float lh = 18;

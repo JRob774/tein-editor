@@ -71,7 +71,7 @@ namespace Internal
         return false;
     }
 
-    #if defined(PLATFORM_WIN32)
+    #if defined(PLATFORM_WINDOWS)
     TEINAPI void LoadSessionTabs ()
     {
         // LOAD THE PREVIOUS SESSION TABS
@@ -128,9 +128,9 @@ namespace Internal
             gTabToStartFromSessionLoad = GetTabIndexWithThisFileName(buffer);
         }
     }
-    #endif // PLATFORM_WIN32
+    #endif // PLATFORM_WINDOWS
 
-    #if defined(PLATFORM_WIN32)
+    #if defined(PLATFORM_WINDOWS)
     TEINAPI void SaveSessionTabs ()
     {
         // Clear the old session tabs so that we have a fresh start for saving.
@@ -173,7 +173,7 @@ namespace Internal
             }
         }
     }
-    #endif // PLATFORM_WIN32
+    #endif // PLATFORM_WINDOWS
 }
 
 TEINAPI void InitEditor (int argc, char** argv)

@@ -1,5 +1,3 @@
-#define PLATFORM_WIN32 1
-
 // We do not intend on using the secure CRT.
 #if defined(_MSC_VER)
 #ifndef _CRT_SECURE_NO_WARNINGS
@@ -8,16 +6,16 @@
 #endif
 
 // We do this to disable assert in release.
-#if !defined(BuildDebug)
+#if !defined(BUILD_DEBUG)
 #define NDEBUG
 #endif
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <windows.h>
 #include <dbghelp.h>
 #include <shlwapi.h>
 #include <shobjidl_core.h>
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
 #include <cstdlib>
 #include <cstdint>
@@ -146,9 +144,9 @@
 #include "PreferencesMenu.cpp"
 #include "About.cpp"
 
-#if defined(BuildDebug)
+#if defined(BUILD_DEBUG)
 #include "utility/GenerateAtlas.hpp"
 #include "utility/PackTexture.hpp"
-#endif // BuildDebug
+#endif // BUILD_DEBUG
 
 #include "Application.cpp"

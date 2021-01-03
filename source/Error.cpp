@@ -6,7 +6,7 @@ static FILE* gErrorLog;
 namespace Internal
 {
     // Unhandled exception dump taken from here <https://stackoverflow.com/a/700108>
-    #if defined(PLATFORM_WIN32)
+    #if defined(PLATFORM_WINDOWS)
     TEINAPI LONG WINAPI UnhandledExceptionFilter (struct _EXCEPTION_POINTERS* info)
     {
         ShowAlert("Error", "Fatal exception occurred!\nCreating crash dump!", AlertType::Error, AlertButton::Ok);
@@ -29,7 +29,7 @@ namespace Internal
 
         return EXCEPTION_EXECUTE_HANDLER;
     }
-    #endif // PLATFORM_WIN32
+    #endif // PLATFORM_WINDOWS
 
     TEINAPI void LogErrorMessage (const char* file, int line, ErrorLevel level, const char* format, ...)
     {
@@ -47,14 +47,14 @@ namespace Internal
 
         const char* errFormat = "[%s] Error in %s at line %d: ";
 
-        #if defined(BuildDebug)
+        #if defined(BUILD_DEBUG)
         va_start(args, format);
         fprintf(stderr, format, timeStr.c_str(), fileStr.c_str(), line);
         vfprintf(stderr, errFormat, args);
         fprintf(stderr, "\n");
         va_end(args);
         fflush(stderr);
-        #endif // BuildDebug
+        #endif // BUILD_DEBUG
 
         if (gErrorLog) {
             va_start(args, format);
@@ -80,13 +80,13 @@ namespace Internal
     }
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI bool InitErrorSystem ()
 {
     SetUnhandledExceptionFilter(&Internal::UnhandledExceptionFilter);
     return true;
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
 TEINAPI void QuitErrorSystem ()
 {

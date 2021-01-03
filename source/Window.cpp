@@ -62,7 +62,7 @@ namespace Internal
         return 0;
     }
 
-    #if defined(PLATFORM_WIN32)
+    #if defined(PLATFORM_WINDOWS)
     TEINAPI void LoadWindowState ()
     {
         HKEY key;
@@ -109,9 +109,9 @@ namespace Internal
             SDL_MaximizeWindow(win);
         }
     }
-    #endif // PLATFORM_WIN32
+    #endif // PLATFORM_WINDOWS
 
-    #if defined(PLATFORM_WIN32)
+    #if defined(PLATFORM_WINDOWS)
     TEINAPI void SaveWindowState ()
     {
         DWORD disp;
@@ -152,7 +152,7 @@ namespace Internal
         RegSetValueExA(key, "dwMaximized"   , 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwMaximized   ), sizeof(dwMaximized   ));
         RegSetValueExA(key, "dwDisplayIndex", 0, REG_DWORD, reinterpret_cast<BYTE*>(&dwDisplayIndex), sizeof(dwDisplayIndex));
     }
-    #endif // PLATFORM_WIN32
+    #endif // PLATFORM_WINDOWS
 }
 
 //
@@ -177,11 +177,11 @@ TEINAPI bool InitWindow ()
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 
-    #if defined(BuildDebug)
+    #if defined(BUILD_DEBUG)
     std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #else
     std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
-    #endif // BuildDebug
+    #endif // BUILD_DEBUG
 
     if (!RegisterWindow("WINMAIN", mainTitle, gMainWindowX,gMainWindowY,gMainWindowBaseW,gMainWindowBaseH,gMainWindowMinW,gMainWindowMinH,gMainWindowFlags)) {
         LogError(ErrorLevel::Max, "Failed to create the main application window!");
@@ -269,11 +269,11 @@ TEINAPI void HandleWindowEvents ()
 
 TEINAPI void SetMainWindowSubtitle (std::string subtitle)
 {
-    #if defined(BuildDebug)
+    #if defined(BUILD_DEBUG)
     std::string mainTitle(FormatString("[DEBUG] %s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #else
     std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
-    #endif // BuildDebug
+    #endif // BUILD_DEBUG
 
     if (!subtitle.empty()) {
         mainTitle += " | ";
@@ -416,11 +416,11 @@ TEINAPI void SetWindowSize (std::string name, int w, int h)
     SDL_SetWindowSize(gWindows.at(name).window, w, h);
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI void SetWindowChild (std::string name)
 {
     HWND hwnd = Internal::Win32GetWindowHandle(GetWindowFromName(name).window);
     LONG old = GetWindowLongA(hwnd, GWL_EXSTYLE);
     SetWindowLongA(hwnd, GWL_EXSTYLE, old|WS_EX_TOOLWINDOW);
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS

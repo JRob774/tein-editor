@@ -1,5 +1,3 @@
-:: Timed Compilation Script (Taken From: https://stackoverflow.com/a/6209392)
-
 @echo off
 setlocal
 

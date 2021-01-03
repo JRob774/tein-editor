@@ -6,7 +6,7 @@ TEINAPI void EndDebugSection ();
 
 TEINAPI void QuitDebugSystem ();
 
-// These functions will do nothing if not in BuildDebug mode.
+// These functions will do nothing if not in BUILD_DEBUG mode.
 TEINAPI void BeginDebugTimer (const char* name);
 TEINAPI void EndDebugTimer ();
 TEINAPI void ClearDebugTimerResult ();

@@ -43,11 +43,11 @@ TEINAPI void InitApplication (int argc, char** argv)
 
     BeginDebugSection("Editor:");
     LogDebug("Version %d.%d.%d", gAppVerMajor,gAppVerMinor,gAppVerPatch);
-    #if defined(BuildDebug)
+    #if defined(BUILD_DEBUG)
     LogDebug("Build: Debug");
     #else
     LogDebug("Build: Release");
-    #endif // BuildDebug
+    #endif // BUILD_DEBUG
     EndDebugSection();
 
     BeginDebugSection("Initialization:");
@@ -304,10 +304,10 @@ TEINAPI bool HandleApplicationEvents ()
     do {
         if (gMainEvent.type == SDL_QUIT) gMainRunning = false;
 
-        #if defined(BuildDebug)
+        #if defined(BUILD_DEBUG)
         generate_texture_atlases();
         pack_textures();
-        #endif // BuildDebug
+        #endif // BUILD_DEBUG
 
         HandleWindowEvents();
         HandleKeyBindingEvents();

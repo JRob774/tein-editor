@@ -15,7 +15,7 @@ namespace Internal
     }
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
 {
     gEditor.dialogBox = true; // Used to prevent dialog box clicks from carrying into the editor.
@@ -97,9 +97,9 @@ TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
 
     return files;
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI std::string SaveDialog (DialogType type)
 {
     assert(type != DialogType::LvlCsv);
@@ -160,9 +160,9 @@ TEINAPI std::string SaveDialog (DialogType type)
 
     return file;
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI std::vector<std::string> PathDialog (bool multiselect)
 {
     gEditor.dialogBox = true; // Used to prevent dialog box clicks from carrying into the editor.
@@ -224,4 +224,4 @@ TEINAPI std::vector<std::string> PathDialog (bool multiselect)
 
     return paths;
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS

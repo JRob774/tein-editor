@@ -28,14 +28,14 @@ namespace Internal
 
         va_list args;
 
-        #if defined(BuildDebug)
+        #if defined(BUILD_DEBUG)
         va_start(args, format);
         for (int i=0; i<gCurrentDebugSection; ++i) fprintf(stdout, "  ");
         vfprintf(stdout, format, args);
         fprintf(stdout, "\n");
         va_end(args);
         fflush(stdout);
-        #endif // BuildDebug
+        #endif // BUILD_DEBUG
 
         if (gDebugLog) {
             va_start(args, format);
@@ -69,7 +69,7 @@ TEINAPI void QuitDebugSystem ()
     }
 }
 
-#if defined(BuildDebug)
+#if defined(BUILD_DEBUG)
 
 TEINAPI void BeginDebugTimer (const char* name)
 {
@@ -125,4 +125,4 @@ TEINAPI void DumpDebugTimerResult  ()
     // Nothing...
 }
 
-#endif // BuildDebug
+#endif // BUILD_DEBUG

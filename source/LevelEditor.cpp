@@ -1284,13 +1284,13 @@ TEINAPI void HandleLevelEditorEvents ()
     }
 
     // We can dump the history on command in debug mode.
-    #if defined(BuildDebug)
+    #if defined(BUILD_DEBUG)
     if (gMainEvent.type == SDL_KEYDOWN) {
         if (gMainEvent.key.keysym.sym == SDLK_F12) {
             Internal::DumpLevelHistory();
         }
     }
-    #endif // BuildDebug
+    #endif // BUILD_DEBUG
 }
 
 TEINAPI bool MouseInsideLevelEditorViewport ()

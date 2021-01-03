@@ -1,6 +1,6 @@
 namespace Internal
 {
-    #if defined(PLATFORM_WIN32)
+    #if defined(PLATFORM_WINDOWS)
     TEINAPI HWND Win32GetWindowHandle (SDL_Window* window)
     {
         SDL_SysWMinfo win_info = {};
@@ -11,7 +11,7 @@ namespace Internal
         }
         return hwnd;
     }
-    #endif // PLATFORM_WIN32
+    #endif // PLATFORM_WINDOWS
 }
 
 TEINAPI std::vector<U8> ReadBinaryFile (std::string fileName)
@@ -31,7 +31,7 @@ TEINAPI std::string ReadEntireFile (std::string fileName)
     return stream.str();
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI std::string GetExecutablePath ()
 {
     constexpr size_t ExecutableBufferSize = MAX_PATH+1;
@@ -46,7 +46,7 @@ TEINAPI std::string GetExecutablePath ()
 
     return path.substr(0, lastSlash);
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
 TEINAPI size_t GetSizeOfFile (std::string fileName)
 {
@@ -65,23 +65,23 @@ TEINAPI size_t GetSizeOfFile (FILE* file)
     return size;
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI bool DoesFileExist (std::string fileName)
 {
     DWORD attribs = GetFileAttributesA(fileName.c_str());
     return ((attribs != INVALID_FILE_ATTRIBUTES) && !(attribs & FILE_ATTRIBUTE_DIRECTORY));
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI bool DoesPathExist (std::string pathName)
 {
     DWORD attribs = GetFileAttributesA(pathName.c_str());
     return ((attribs != INVALID_FILE_ATTRIBUTES) && (attribs & FILE_ATTRIBUTE_DIRECTORY));
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI void ListPathContent (std::string pathName, std::vector<std::string>& content, bool recursive)
 {
     // Clean the path in case there are trailing slashes.
@@ -109,9 +109,9 @@ TEINAPI void ListPathContent (std::string pathName, std::vector<std::string>& co
         } while (FindNextFile(findFile, &findData));
     }
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI void ListPathFiles (std::string pathName, std::vector<std::string>& files, bool recursive)
 {
     // Clean the path in case there are trailing slashes.
@@ -138,9 +138,9 @@ TEINAPI void ListPathFiles (std::string pathName, std::vector<std::string>& file
         } while (FindNextFile(findFile, &findData));
     }
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI bool CreatePath (std::string pathName)
 {
     std::vector<std::string> paths;
@@ -161,14 +161,14 @@ TEINAPI bool CreatePath (std::string pathName)
 
     return false;
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI bool IsPathAbsolute (std::string pathName)
 {
     return !PathIsRelativeA(pathName.c_str());
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
 // Aliases of the previous functions because the naming makes better sense in context.
 
@@ -182,7 +182,7 @@ TEINAPI bool IsPath (std::string pathName)
     return DoesPathExist(pathName);
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI U64 LastFileWriteTime (std::string fileName)
 {
     WIN32_FILE_ATTRIBUTE_DATA attributes;
@@ -195,7 +195,7 @@ TEINAPI U64 LastFileWriteTime (std::string fileName)
 }
 #endif // PLATFORM_wIN32
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI int CompareFileWriteTimes (U64 a, U64 b)
 {
     ULARGE_INTEGER a2, b2;
@@ -211,7 +211,7 @@ TEINAPI int CompareFileWriteTimes (U64 a, U64 b)
 
     return CompareFileTime(&a3, &b3);
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
 TEINAPI std::string MakePathAbsolute (std::string pathName)
 {
@@ -325,12 +325,12 @@ TEINAPI std::string FormatTime (const char* format)
     return std::string(buffer);
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI unsigned int GetThreadID ()
 {
     return GetCurrentThreadId();
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
 TEINAPI bool PointInBoundsXYXY (Vec2 p, Quad q)
 {
@@ -359,7 +359,7 @@ TEINAPI bool StringReplace (std::string& str, const std::string& from, const std
     return true;
 }
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI bool RunExecutable (std::string exe)
 {
     PROCESS_INFORMATION processInfo = {};
@@ -377,16 +377,16 @@ TEINAPI bool RunExecutable (std::string exe)
 
     return true;
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI void LoadWebpage (std::string url)
 {
     ShellExecuteA(NULL, NULL, url.c_str(), NULL, NULL, SW_SHOW);
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLATFORM_WINDOWS)
 TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType type, AlertButton buttons, std::string window)
 {
     // Convert the type and button parameters into values that can be used by MessageBoxA.
@@ -418,4 +418,4 @@ TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType typ
 
     return result;
 }
-#endif // PLATFORM_WIN32
+#endif // PLATFORM_WINDOWS
