@@ -1873,12 +1873,10 @@ TEINAPI void LevelEditorUndo ()
 
 TEINAPI void LevelEditorRedo ()
 {
-    printf("LevelEditorRedo\n");
-
     Tab& tab = GetCurrentTab();
 
     // There is no history or we are already at the end.
-    if (tab.levelHistory.currentPosition >= tab.levelHistory.state.size()-1) return;
+    if (tab.levelHistory.currentPosition >= static_cast<int>(tab.levelHistory.state.size())-1) return;
 
     ++tab.levelHistory.currentPosition;
 
