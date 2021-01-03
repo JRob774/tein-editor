@@ -71,8 +71,7 @@ namespace Internal
         SetPanelCursorDir(UiDir::Down);
 
         const char* labelName = NULL;
-        switch (categoryIndex)
-        {
+        switch (categoryIndex) {
             case (TILE_CATEGORY_BASIC  ): labelName = "Basic";   break;
             case (TILE_CATEGORY_TAG    ): labelName = "Tag";     break;
             case (TILE_CATEGORY_OVERLAY): labelName = "Overlay"; break;
@@ -103,42 +102,35 @@ namespace Internal
         SetTileBatchTexture(atlas.texture);
         SetTileBatchColor((isActive) ? Vec4(1,1,1,1) : Vec4(1,1,1,gTilePanelInactiveAlpha));
 
-        for (size_t i=0; i<category.size(); ++i)
-        {
+        for (size_t i=0; i<category.size(); ++i) {
             Vec2 tileCursor = cur;
             tileCursor.y += GetPanelOffset().y;
 
             const TileGroup& tileGroup = category[i];
             Quad tileGroupBounds = { tileCursor.x, tileCursor.y, gTilePanelItemSize, gTilePanelItemSize };
 
-            if (isActive)
-            {
+            if (isActive) {
                 bool inBounds = MouseInUiBoundsXYWH(tileGroupBounds);
-                if (inBounds)
-                {
+                if (inBounds) {
                     PushStatusBarMessage("Tile Group: %s", tileGroup.name.c_str());
                     SetCurrentTooltip(tileGroup.name, tileGroup.desc);
                 }
-                if (gTilePanel.mouseDown && !IsThereAHitUiElement())
-                {
-                    if (inBounds)
-                    {
+                if (gTilePanel.mouseDown && !IsThereAHitUiElement()) {
+                    if (inBounds) {
                         gTilePanel.selectedCategory = categoryIndex;
                         gTilePanel.selectedGroup = static_cast<int>(i);
                     }
                 }
             }
 
-            if (CurrentTabIsLevel() && !AreAllLayersInactive())
-            {
+            if (CurrentTabIsLevel() && !AreAllLayersInactive()) {
                 float qx = tileCursor.x - 1;
                 float qy = tileCursor.y - 1;
                 float qw = gTilePanelItemSize + 2;
                 float qh = gTilePanelItemSize + 2;
 
                 // If we are the currently selected group then we draw the highlight.
-                if ((categoryIndex == gTilePanel.selectedCategory) && (i == gTilePanel.selectedGroup))
-                {
+                if ((categoryIndex == gTilePanel.selectedCategory) && (i == gTilePanel.selectedGroup)) {
                     SetDrawColor(gUiColorLight);
                     FillQuad(qx,qy,qx+qw,qy+qh);
                 }
@@ -158,8 +150,7 @@ namespace Internal
             // Advance the cursor for the next entity's placement.
             float advance = gTilePanelItemSize + gTilePanelItemPad;
             cur.x += advance;
-            if (cur.x + gTilePanelItemSize > w)
-            {
+            if (cur.x + gTilePanelItemSize > w) {
                 cur.x = gTilePanelInnerPad;
                 cur.y += advance;
             }
@@ -179,8 +170,7 @@ namespace Internal
 
     TEINAPI void LoadFlipData (const GonObject& data, std::vector<TileFlipMap>& flip)
     {
-        for (int i=0; i<static_cast<int>(data.children_array.size()); ++i)
-        {
+        for (int i=0; i<static_cast<int>(data.children_array.size()); ++i) {
             flip.push_back({ data[i][0].Int(), data[i][1].Int() });
         }
     }
@@ -188,8 +178,7 @@ namespace Internal
     TEINAPI float CalculateTilePanelHeight ()
     {
         float height = gTilePanelInnerPad;
-        for (auto [category,groups]: gTilePanel.category)
-        {
+        for (auto [category,groups]: gTilePanel.category) {
             float items = static_cast<float>(groups.size());
             float rows = ceilf(items / gTilePanelColumns);
             float totalItemPad = (rows-1) * gTilePanelItemPad;
@@ -208,18 +197,14 @@ namespace Internal
         gTilePanel.selectedGroup = 0;
 
         // Make sure we are actually jumping to an active category.
-        if (!IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory)))
-        {
+        if (!IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory))) {
             SelectNextActiveGroup();
         }
 
-        if (oldSelectedGroup != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
-        {
+        if (oldSelectedGroup != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup) {
             // When the selected gets changed then we make a new state.
-            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
-            {
-                if (gLevelEditor.toolState != ToolState::Idle)
-                {
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill) {
+                if (gLevelEditor.toolState != ToolState::Idle) {
                     NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
@@ -228,12 +213,9 @@ namespace Internal
 
     TEINAPI void JumpToCategory (TileCategory category)
     {
-        if (CurrentTabIsLevel())
-        {
-            if (!AreAllLayersInactive())
-            {
-                if (IsWindowFocused("WINMAIN"))
-                {
+        if (CurrentTabIsLevel()) {
+            if (!AreAllLayersInactive()) {
+                if (IsWindowFocused("WINMAIN")) {
                     SetCategoryAsActive(category);
                 }
             }
@@ -248,25 +230,20 @@ TEINAPI bool InitTilePanel ()
 
     gTilePanel.category.clear();
 
-    try
-    {
+    try {
         // Load all of the tile groups and sort them into their categories.
         GonObject tileGonData = GonObject::LoadFromBuffer(LoadStringResource(gTileDataFile))["tiles"];
 
-        for (auto [name,index]: tileGonData.children_map)
-        {
+        for (auto [name,index]: tileGonData.children_map) {
             const GonObject& categoryData = tileGonData.children_array[index];
-            if (std::stoi(name) < TILE_CATEGORY_TOTAL)
-            {
+            if (std::stoi(name) < TILE_CATEGORY_TOTAL) {
                 TileCategory categoryID = static_cast<TileCategory>(std::stoi(name));
-                for (auto& tileGroupGonData: categoryData.children_array)
-                {
+                for (auto& tileGroupGonData: categoryData.children_array) {
                     TileGroup group;
                     group.selectedIndex = 0;
                     group.name = tileGroupGonData["name"].String();
                     group.desc = tileGroupGonData["tooltip"].String();
-                    for (int i=0; i<tileGroupGonData["id"].size(); ++i)
-                    {
+                    for (int i=0; i<tileGroupGonData["id"].size(); ++i) {
                         TileID tileID = tileGroupGonData["id"][i].Int();
                         group.tile.push_back(tileID);
                     }
@@ -280,9 +257,7 @@ TEINAPI bool InitTilePanel ()
 
         Internal::LoadFlipData(flipGonData["horz"], gTilePanel.flipMapHorz);
         Internal::LoadFlipData(flipGonData["vert"], gTilePanel.flipMapVert);
-    }
-    catch (const char* msg)
-    {
+    } catch (const char* msg) {
         LogError(ErrorLevel::Med, "%s", msg);
         return false;
     }
@@ -305,25 +280,21 @@ TEINAPI void DoTilePanel (bool scrollbar)
 
     Vec2 cursor(gTilePanelInnerPad, 0);
     gTilePanel.bounds = { 0,0,GetPanelWidth(),GetPanelHeight() };
-    if (IsLayerPanelPresent())
-    {
+    if (IsLayerPanelPresent()) {
         gTilePanel.bounds.h = roundf(gTilePanel.bounds.h - GetLayerPanelHeight());
     }
 
     BeginPanel(gTilePanel.bounds, UiFlag::None, gUiColorMedium);
 
-    if (scrollbar)
-    {
+    if (scrollbar) {
         float x = gControlPanelWidth;
         float y = gControlPanelInnerPad;
         float w = gControlPanelScrollbarWidth - gControlPanelInnerPad;
         float h = GetViewport().h - (gControlPanelInnerPad * 2);
-
         DoScrollbar(x,y,w,h, gTilePanel.contentHeight, gTilePanel.scrollOffset);
     }
 
-    for (auto [categoryIndex,category]: gTilePanel.category)
-    {
+    for (auto [categoryIndex,category]: gTilePanel.category) {
         Internal::DoTilePanelCategory(cursor, categoryIndex, category);
     }
 
@@ -337,38 +308,25 @@ TEINAPI bool TilePanelNeedsScrollbar ()
 
 TEINAPI void HandleTilePanelEvents ()
 {
-    if (CurrentTabIsLevel())
-    {
-        if (!AreAllLayersInactive())
-        {
-            if (IsWindowFocused("WINMAIN"))
-            {
-                switch (gMainEvent.type)
-                {
+    if (CurrentTabIsLevel()) {
+        if (!AreAllLayersInactive()) {
+            if (IsWindowFocused("WINMAIN")) {
+                switch (gMainEvent.type) {
                     case (SDL_MOUSEBUTTONDOWN):
-                    case (SDL_MOUSEBUTTONUP):
-                    {
-                        if (gMainEvent.button.button == SDL_BUTTON_LEFT)
-                        {
+                    case (SDL_MOUSEBUTTONUP): {
+                        if (gMainEvent.button.button == SDL_BUTTON_LEFT) {
                             gTilePanel.mouseDown = (gMainEvent.button.state == SDL_PRESSED);
                         }
                     } break;
-                    case (SDL_MOUSEWHEEL):
-                    {
-                        if (!MouseIsOverTabBar())
-                        {
-                            if (IsKeyModStateActive(0))
-                            {
+                    case (SDL_MOUSEWHEEL): {
+                        if (!MouseIsOverTabBar()) {
+                            if (IsKeyModStateActive(0)) {
                                 if (gMainEvent.wheel.y > 0) IncrementSelectedTile();
                                 else if (gMainEvent.wheel.y < 0) DecrementSelectedTile();
-                            }
-                            else if (IsKeyModStateActive(KMOD_ALT))
-                            {
+                            } else if (IsKeyModStateActive(KMOD_ALT)) {
                                 if (gMainEvent.wheel.y > 0) IncrementSelectedGroup();
                                 else if (gMainEvent.wheel.y < 0) DecrementSelectedGroup();
-                            }
-                            else if (IsKeyModStateActive(KMOD_ALT|KMOD_SHIFT))
-                            {
+                            } else if (IsKeyModStateActive(KMOD_ALT|KMOD_SHIFT)) {
                                 if (gMainEvent.wheel.y > 0) IncrementSelectedCategory();
                                 else if (gMainEvent.wheel.y < 0) DecrementSelectedCategory();
                             }
@@ -390,13 +348,10 @@ TEINAPI void ReloadTileGraphics ()
     FreeTextureAtlas(gResourceLarge);
     FreeTextureAtlas(gResourceSmall);
 
-    if (gEditorSettings.tileGraphics == "new")
-    {
+    if (gEditorSettings.tileGraphics == "new") {
         LoadAtlasResource("textures/editor_icons/new_large.txt", gResourceLarge);
         LoadAtlasResource("textures/editor_icons/new_small.txt", gResourceSmall);
-    }
-    else
-    {
+    } else {
         LoadAtlasResource("textures/editor_icons/old_large.txt", gResourceLarge);
         LoadAtlasResource("textures/editor_icons/old_small.txt", gResourceSmall);
     }
@@ -421,8 +376,7 @@ TEINAPI LevelLayer GetSelectedLayer ()
 
 TEINAPI LevelLayer CategoryToLayer (TileCategory category)
 {
-    switch (category)
-    {
+    switch (category) {
         case (TILE_CATEGORY_BASIC): return LevelLayer::Active; break;
         case (TILE_CATEGORY_TAG): return LevelLayer::Tag; break;
         case (TILE_CATEGORY_OVERLAY): return LevelLayer::Overlay; break;
@@ -435,13 +389,10 @@ TEINAPI LevelLayer CategoryToLayer (TileCategory category)
 
 TEINAPI void SelectNextActiveGroup ()
 {
-    if (!AreAllLayersInactive())
-    {
-        while (!Internal::IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory)))
-        {
+    if (!AreAllLayersInactive()) {
+        while (!Internal::IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory))) {
             ++gTilePanel.selectedCategory;
-            if (gTilePanel.selectedCategory > TILE_CATEGORY_BACK2)
-            {
+            if (gTilePanel.selectedCategory > TILE_CATEGORY_BACK2) {
                 gTilePanel.selectedCategory = TILE_CATEGORY_BASIC;
             }
             gTilePanel.selectedGroup = 0;
@@ -450,13 +401,10 @@ TEINAPI void SelectNextActiveGroup ()
 }
 TEINAPI void SelectPrevActiveGroup ()
 {
-    if (!AreAllLayersInactive())
-    {
-        while (!Internal::IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory)))
-        {
+    if (!AreAllLayersInactive()) {
+        while (!Internal::IsCategoryActive(static_cast<TileCategory>(gTilePanel.selectedCategory))) {
             --gTilePanel.selectedCategory;
-            if (gTilePanel.selectedCategory < TILE_CATEGORY_BASIC)
-            {
+            if (gTilePanel.selectedCategory < TILE_CATEGORY_BASIC) {
                 gTilePanel.selectedCategory = TILE_CATEGORY_BACK2;
             }
             gTilePanel.selectedGroup = 0;
@@ -474,21 +422,16 @@ TEINAPI void IncrementSelectedTile ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (!AreAllLayersInactive())
-    {
+    if (!AreAllLayersInactive()) {
         auto& group = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)][gTilePanel.selectedGroup];
         int oldSelectedIndex = group.selectedIndex;
-        if ((++group.selectedIndex) > group.tile.size()-1)
-        {
+        if ((++group.selectedIndex) > group.tile.size()-1) {
             group.selectedIndex = 0;
         }
         // Feels correct that a new history state should be made.
-        if (oldSelectedIndex != group.selectedIndex)
-        {
-            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
-            {
-                if (gLevelEditor.toolState != ToolState::Idle)
-                {
+        if (oldSelectedIndex != group.selectedIndex) {
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill) {
+                if (gLevelEditor.toolState != ToolState::Idle) {
                     NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
@@ -499,21 +442,16 @@ TEINAPI void DecrementSelectedTile ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (!AreAllLayersInactive())
-    {
+    if (!AreAllLayersInactive()) {
         auto& group = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)][gTilePanel.selectedGroup];
         int oldSelectedIndex = group.selectedIndex;
-        if ((--group.selectedIndex) < 0)
-        {
+        if ((--group.selectedIndex) < 0) {
             group.selectedIndex = static_cast<int>(group.tile.size()-1);
         }
         // Feels correct that a new history state should be made.
-        if (oldSelectedIndex != group.selectedIndex)
-        {
-            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
-            {
-                if (gLevelEditor.toolState != ToolState::Idle)
-                {
+        if (oldSelectedIndex != group.selectedIndex) {
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill) {
+                if (gLevelEditor.toolState != ToolState::Idle) {
                     NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
@@ -525,21 +463,16 @@ TEINAPI void IncrementSelectedGroup ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (!AreAllLayersInactive())
-    {
+    if (!AreAllLayersInactive()) {
         auto& category = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)];
         int oldSelectedGroup = gTilePanel.selectedGroup;
-        if ((++gTilePanel.selectedGroup) > category.size()-1)
-        {
+        if ((++gTilePanel.selectedGroup) > category.size()-1) {
             gTilePanel.selectedGroup = 0;
         }
         // Feels correct that a new history state should be made.
-        if (oldSelectedGroup != gTilePanel.selectedGroup)
-        {
-            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
-            {
-                if (gLevelEditor.toolState != ToolState::Idle)
-                {
+        if (oldSelectedGroup != gTilePanel.selectedGroup) {
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill) {
+                if (gLevelEditor.toolState != ToolState::Idle) {
                     NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
@@ -550,21 +483,16 @@ TEINAPI void DecrementSelectedGroup ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (!AreAllLayersInactive())
-    {
+    if (!AreAllLayersInactive()) {
         auto& category = gTilePanel.category[static_cast<TileCategory>(gTilePanel.selectedCategory)];
         int oldSelectedGroup = gTilePanel.selectedGroup;
-        if ((--gTilePanel.selectedGroup) < 0)
-        {
+        if ((--gTilePanel.selectedGroup) < 0) {
             gTilePanel.selectedGroup = static_cast<int>(category.size()-1);
         }
         // Feels correct that a new history state should be made.
-        if (oldSelectedGroup != gTilePanel.selectedGroup)
-        {
-            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
-            {
-                if (gLevelEditor.toolState != ToolState::Idle)
-                {
+        if (oldSelectedGroup != gTilePanel.selectedGroup) {
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill) {
+                if (gLevelEditor.toolState != ToolState::Idle) {
                     NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
@@ -579,21 +507,16 @@ TEINAPI void IncrementSelectedCategory ()
     int oldSelectedCategory = gTilePanel.selectedCategory;
     int oldSelectedGroup = gTilePanel.selectedGroup;
 
-    if (!AreAllLayersInactive())
-    {
-        if ((++gTilePanel.selectedCategory) > TILE_CATEGORY_BACK2)
-        {
+    if (!AreAllLayersInactive()) {
+        if ((++gTilePanel.selectedCategory) > TILE_CATEGORY_BACK2) {
             gTilePanel.selectedCategory = TILE_CATEGORY_BASIC;
         }
         gTilePanel.selectedGroup = 0;
         SelectNextActiveGroup();
         // Feels correct that a new history state should be made.
-        if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
-        {
-            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
-            {
-                if (gLevelEditor.toolState != ToolState::Idle)
-                {
+        if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup) {
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill) {
+                if (gLevelEditor.toolState != ToolState::Idle) {
                     NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
@@ -607,21 +530,16 @@ TEINAPI void DecrementSelectedCategory ()
     int oldSelectedCategory = gTilePanel.selectedCategory;
     int oldSelectedGroup = gTilePanel.selectedGroup;
 
-    if (!AreAllLayersInactive())
-    {
-        if ((--gTilePanel.selectedCategory) < TILE_CATEGORY_BASIC)
-        {
+    if (!AreAllLayersInactive()) {
+        if ((--gTilePanel.selectedCategory) < TILE_CATEGORY_BASIC) {
             gTilePanel.selectedCategory = TILE_CATEGORY_BACK2;
         }
         gTilePanel.selectedGroup = 0;
         SelectPrevActiveGroup();
         // Feels correct that a new history state should be made.
-        if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup)
-        {
-            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill)
-            {
-                if (gLevelEditor.toolState != ToolState::Idle)
-                {
+        if (oldSelectedCategory != gTilePanel.selectedCategory || oldSelectedGroup != gTilePanel.selectedGroup) {
+            if (gLevelEditor.toolType == ToolType::Brush || gLevelEditor.toolType == ToolType::Fill) {
+                if (gLevelEditor.toolState != ToolState::Idle) {
                     NewLevelHistoryState(LevelHistoryAction::Normal);
                 }
             }
@@ -631,10 +549,8 @@ TEINAPI void DecrementSelectedCategory ()
 
 TEINAPI TileID GetTileHorizontalFlip (TileID id)
 {
-    if (id)
-    {
-        for (const auto& pair: gTilePanel.flipMapHorz)
-        {
+    if (id) {
+        for (const auto& pair: gTilePanel.flipMapHorz) {
             if (id == pair.first) return pair.second;
             if (id == pair.second) return pair.first;
         }
@@ -643,10 +559,8 @@ TEINAPI TileID GetTileHorizontalFlip (TileID id)
 }
 TEINAPI TileID GetTileVerticalFlip (TileID id)
 {
-    if (id)
-    {
-        for (const auto& pair: gTilePanel.flipMapVert)
-        {
+    if (id) {
+        for (const auto& pair: gTilePanel.flipMapVert) {
             if (id == pair.first) return pair.second;
             if (id == pair.second) return pair.first;
         }

@@ -13,68 +13,50 @@ namespace Internal
         std::vector<std::vector<std::string>> table;
         std::string row;
 
-        while (!in.eof())
-        {
+        while (!in.eof()) {
             std::getline(in, row);
-            if (in.bad() || in.fail())
-            {
+            if (in.bad() || in.fail()) {
                 break;
             }
             CSVState state = CSVState::UnquotedField;
             std::vector<std::string> fields {""};
             size_t i = 0; // index of the current field
-            for (char c : row)
-            {
-                switch (state)
-                {
-                    case (CSVState::UnquotedField):
-                    {
-                        switch (c)
-                        {
-                            case (','): // end of field
-                            {
+            for (char c : row) {
+                switch (state) {
+                    case (CSVState::UnquotedField): {
+                        switch (c) {
+                            case (','): { // end of field
                                 fields.push_back(""); i++;
                             } break;
-                            case ('"'):
-                            {
+                            case ('"'): {
                                 state = CSVState::QuotedField;
                             } break;
-                            default:
-                            {
+                            default: {
                                 fields[i].push_back(c);
                             } break;
                         }
                     } break;
-                    case (CSVState::QuotedField):
-                    {
-                        switch (c)
-                        {
-                            case ('"'):
-                            {
+                    case (CSVState::QuotedField): {
+                        switch (c) {
+                            case ('"'): {
                                 state = CSVState::QuotedQuote;
                             } break;
-                            default:
-                            {
+                            default: {
                                 fields[i].push_back(c);
                             } break;
                         }
                     } break;
-                    case (CSVState::QuotedQuote):
-                    {
-                        switch (c)
-                        {
-                            case (','): // , after closing quote
-                            {
+                    case (CSVState::QuotedQuote): {
+                        switch (c) {
+                            case (','): { // , after closing quote
                                 fields.push_back(""); i++;
                                 state = CSVState::UnquotedField;
                             } break;
-                            case ('"'): // "" -> "
-                            {
+                            case ('"'): { // "" -> "
                                 fields[i].push_back('"');
                                 state = CSVState::QuotedField;
                             } break;
-                            default: // end of quote
-                            {
+                            default: { // end of quote
                                 state = CSVState::UnquotedField;
                             } break;
                         }
@@ -90,14 +72,11 @@ namespace Internal
     {
         // Convert raw CSV values into our internal map format.
         auto csv = ReadCSV(stream);
-        for (int iy=0; iy<static_cast<int>(csv.size()); ++iy)
-        {
+        for (int iy=0; iy<static_cast<int>(csv.size()); ++iy) {
             const auto& row = csv.at(iy);
-            for (int ix=0; ix<static_cast<int>(row.size()); ++ix)
-            {
+            for (int ix=0; ix<static_cast<int>(row.size()); ++ix) {
                 const auto& field = row.at(ix);
-                if (!field.empty())
-                {
+                if (!field.empty()) {
                     tab.map.push_back({ ix,iy, field });
                 }
             }
@@ -117,33 +96,24 @@ namespace Internal
         int h = GetMapHeight(tab.map);
 
         // Write out the CSV formatted fields for the map.
-        for (int iy=y; iy<y+h; ++iy)
-        {
-            for (int ix=x; ix<x+w; ++ix)
-            {
-                for (auto& node: tab.map)
-                {
-                    if (node.x == ix && node.y == iy)
-                    {
+        for (int iy=y; iy<y+h; ++iy) {
+            for (int ix=x; ix<x+w; ++ix) {
+                for (auto& node: tab.map) {
+                    if (node.x == ix && node.y == iy) {
                         std::string txt(node.lvl);
-                        if (tab.mapNodeInfo.active && (node.x == tab.mapNodeInfo.active->x && node.y == tab.mapNodeInfo.active->y))
-                        {
+                        if (tab.mapNodeInfo.active && (node.x == tab.mapNodeInfo.active->x && node.y == tab.mapNodeInfo.active->y)) {
                             txt = tab.mapNodeInfo.cachedLevelText;
                         }
                         // Need to wrap in quotes if it contains a comma.
-                        if (txt.find(',') == std::string::npos)
-                        {
+                        if (txt.find(',') == std::string::npos) {
                             fprintf(file, "%s", txt.c_str());
-                        }
-                        else
-                        {
+                        } else {
                             fprintf(file, "\"%s\"", txt.c_str());
                         }
                         break;
                     }
                 }
-                if (ix != (x+w-1))
-                {
+                if (ix != (x+w-1)) {
                     fprintf(file, ",");
                 }
             }
@@ -158,8 +128,7 @@ TEINAPI bool LoadMap (Tab& tab, std::string fileName)
 {
     // We don't make the path absolute or anything becuase if that is needed
     // then it should be handled by a higher-level than this internal system.
-    if (!DoesFileExist(fileName))
-    {
+    if (!DoesFileExist(fileName)) {
         LogError(ErrorLevel::Med, "CSV file '%s' does not exist!", fileName.c_str());
         return false;
     }
@@ -171,8 +140,7 @@ TEINAPI bool SaveMap (const Tab& tab, std::string fileName)
     // We don't make the path absolute or anything becuase if that is needed
     // then it should be handled by a higher-level than this internal system.
     FILE* file = fopen(fileName.c_str(), "wb");
-    if (!file)
-    {
+    if (!file) {
         LogError(ErrorLevel::Med, "Failed to save level file '%s'!", fileName.c_str());
         return false;
     }
@@ -186,8 +154,7 @@ TEINAPI bool LoadRestoreMap (Tab& tab, std::string fileName)
 
     // Read until the null-terminator to get the name of the map.
     std::string mapName;
-    for (auto c: data)
-    {
+    for (auto c: data) {
         if (!c) break;
         mapName += c;
     }
@@ -201,21 +168,17 @@ TEINAPI bool LoadRestoreMap (Tab& tab, std::string fileName)
 TEINAPI bool SaveRestoreMap (const Tab& tab, std::string fileName)
 {
     FILE* file = fopen(fileName.c_str(), "wb");
-    if (!file)
-    {
+    if (!file) {
         LogError(ErrorLevel::Med, "Failed to save restore file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };
 
     // Write the name of the map + null-terminator for later restoration.
-    if (tab.name.empty())
-    {
+    if (tab.name.empty()) {
         char nullTerminator = '\0';
         fwrite(&nullTerminator, sizeof(char), 1, file);
-    }
-    else
-    {
+    } else {
         const char* name = tab.name.c_str();
         fwrite(name, sizeof(char), strlen(name)+1, file);
     }
@@ -243,8 +206,7 @@ TEINAPI int GetMapWidth (const Map& map)
 {
     if (map.empty()) return 1;
     int minX = INT_MAX, maxX = INT_MIN;
-    for (auto node: map)
-    {
+    for (auto node: map) {
         minX = std::min(node.x, minX);
         maxX = std::max(node.x, maxX);
     }
@@ -255,8 +217,7 @@ TEINAPI int GetMapHeight (const Map& map)
 {
     if (map.empty()) return 1;
     int minY = INT_MAX, maxY = INT_MIN;
-    for (auto node: map)
-    {
+    for (auto node: map) {
         minY = std::min(node.y, minY);
         maxY = std::max(node.y, maxY);
     }

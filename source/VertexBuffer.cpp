@@ -30,7 +30,6 @@ TEINAPI void PutBufferVertex (VertexBuffer& buffer, Vertex v)
 TEINAPI void DrawVertexBuffer (VertexBuffer& buffer, BufferMode mode)
 {
     if (buffer.verts.empty()) return;
-
     glBindVertexArray(buffer.vao);
     glBindBuffer(GL_ARRAY_BUFFER, buffer.vbo);
     GLsizeiptr size = buffer.verts.size() * sizeof(Vertex);

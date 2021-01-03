@@ -52,58 +52,43 @@ TEINAPI void DoHotbar ()
     packFlags = ((IsGPAKPackComplete()) ? UiFlag::None : UiFlag::Locked);
     unpackFlags = ((IsGPAKUnpackComplete()) ? UiFlag::None : UiFlag::Locked);
 
-    if (AreThereAnyTabs())
-    {
+    if (AreThereAnyTabs()) {
         const Tab& tab = GetCurrentTab();
 
         // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
-        if (tab.type == TabType::Level)
-        {
-            if (tab.levelHistory.currentPosition == tab.levelHistory.state.size()-1)
-            {
+        if (tab.type == TabType::Level) {
+            if (tab.levelHistory.currentPosition == tab.levelHistory.state.size()-1) {
                 redoFlags = UiFlag::Locked;
             }
-            if (tab.levelHistory.currentPosition <= -1)
-            {
+            if (tab.levelHistory.currentPosition <= -1) {
                 undoFlags = UiFlag::Locked;
             }
-            if (tab.levelHistory.state.empty())
-            {
+            if (tab.levelHistory.state.empty()) {
                 undoFlags = UiFlag::Locked;
                 redoFlags = UiFlag::Locked;
             }
-        }
-        else
-        {
-            if (tab.mapHistory.currentPosition == tab.mapHistory.state.size()-1)
-            {
+        } else {
+            if (tab.mapHistory.currentPosition == tab.mapHistory.state.size()-1) {
                 redoFlags = UiFlag::Locked;
             }
-            if (tab.mapHistory.currentPosition <= 0)
-            {
+            if (tab.mapHistory.currentPosition <= 0) {
                 undoFlags = UiFlag::Locked;
             }
-            if (tab.mapHistory.state.size() == 1)
-            {
+            if (tab.mapHistory.state.size() == 1) {
                 undoFlags = UiFlag::Locked;
                 redoFlags = UiFlag::Locked;
             }
         }
 
         // @Improve: Duplicate across level and map, pull-out and generalise for both tab types!
-        if (tab.type == TabType::Level)
-        {
+        if (tab.type == TabType::Level) {
             zoomOutFlags = ((tab.camera.zoom == gMinLevelEditorZoom) ? UiFlag::Locked : UiFlag::None);
             zoomInFlags = ((tab.camera.zoom == gMaxLevelEditorZoom) ? UiFlag::Locked : UiFlag::None);
-        }
-        else
-        {
+        } else {
             zoomOutFlags = (tab.camera.zoom == gMinMapEditorZoom) ? UiFlag::Locked : UiFlag::None;
             zoomInFlags = (tab.camera.zoom == gMaxMapEditorZoom) ? UiFlag::Locked : UiFlag::None;
         }
-    }
-    else
-    {
+    } else {
         saveFlags = UiFlag::Locked;
         saveAsFlags = UiFlag::Locked;
         undoFlags = UiFlag::Locked;
@@ -140,8 +125,7 @@ TEINAPI void DoHotbar ()
     width += CalculateTextButtonWidth(gHotbarNameHelp);
 
     // Display text or icons depending on what we have room for.
-    if (width < GetViewport().w)
-    {
+    if (width < GetViewport().w) {
         DoTextButton(HotbarNew, bh, UiFlag::None, gHotbarNameNew, gHotbarInfoNew, gKbLevelNew);
         DoTextButton(HotbarLoad, bh, UiFlag::None, gHotbarNameLoad, gHotbarInfoLoad, gKbLevelOpen);
         DoTextButton(HotbarSave, bh, saveFlags, gHotbarNameSave, gHotbarInfoSave, gKbLevelSave);
@@ -157,9 +141,7 @@ TEINAPI void DoHotbar ()
         DoTextButton(HotbarAbout, bh, UiFlag::None, gHotbarNameAbout, gHotbarInfoAbout, gKbAbout);
         DoTextButton(HotbarBugReport, bh, UiFlag::None, gHotbarNameBugReport, gHotbarInfoBugReport, gKbBugReport);
         DoTextButton(HotbarHelp, bh, UiFlag::None, gHotbarNameHelp, gHotbarInfoHelp, gKbHelp);
-    }
-    else
-    {
+    } else {
         DoImageButton(HotbarNew, bw,bh, UiFlag::None, &gClipNew, gHotbarInfoNew, gKbLevelNew, gHotbarNameNew);
         DoImageButton(HotbarLoad, bw,bh, UiFlag::None, &gClipLoad, gHotbarInfoLoad, gKbLevelOpen, gHotbarNameLoad);
         DoImageButton(HotbarSave, bw,bh, saveFlags, &gClipSave, gHotbarInfoSave, gKbLevelSave, gHotbarNameSave);
@@ -188,10 +170,8 @@ TEINAPI void HotbarNew ()
 TEINAPI void HotbarLoad ()
 {
     std::vector<std::string> fileNames = OpenDialog(DialogType::LvlCsv);
-    if (!fileNames.empty())
-    {
-        for (auto file: fileNames)
-        {
+    if (!fileNames.empty()) {
+        for (auto file: fileNames) {
             std::string ext(file.substr(file.find_last_of(".")));
             if (ext == ".lvl") LoadLevelTab(file);
             else if (ext == ".csv") LoadMapTab(file);
@@ -202,8 +182,7 @@ TEINAPI void HotbarLoad ()
 TEINAPI void HotbarSave ()
 {
     if (!AreThereAnyTabs()) return;
-    switch (GetCurrentTab().type)
-    {
+    switch (GetCurrentTab().type) {
         case (TabType::Level): LevelEditorSave(GetCurrentTab()); break;
         case (TabType::Map): SaveMapTab(GetCurrentTab()); break;
     }
@@ -212,8 +191,7 @@ TEINAPI void HotbarSave ()
 TEINAPI void HotbarSaveAs ()
 {
     if (!AreThereAnyTabs()) return;
-    switch (GetCurrentTab().type)
-    {
+    switch (GetCurrentTab().type) {
         case (TabType::Level): LevelEditorSaveAs(); break;
         case (TabType::Map): SaveMapTabAs(); break;
     }
@@ -222,8 +200,7 @@ TEINAPI void HotbarSaveAs ()
 TEINAPI void HotbarUndo ()
 {
     if (!AreThereAnyTabs()) return;
-    switch (GetCurrentTab().type)
-    {
+    switch (GetCurrentTab().type) {
         case (TabType::Level): LevelEditorUndo(); break;
         case (TabType::Map): MapEditorUndo(); break;
     }
@@ -232,8 +209,7 @@ TEINAPI void HotbarUndo ()
 TEINAPI void HotbarRedo ()
 {
     if (!AreThereAnyTabs()) return;
-    switch (GetCurrentTab().type)
-    {
+    switch (GetCurrentTab().type) {
         case (TabType::Level): LevelEditorRedo(); break;
         case (TabType::Map): MapEditorRedo(); break;
     }
@@ -242,8 +218,7 @@ TEINAPI void HotbarRedo ()
 TEINAPI void HotbarHistoryBegin ()
 {
     if (!AreThereAnyTabs()) return;
-    switch (GetCurrentTab().type)
-    {
+    switch (GetCurrentTab().type) {
         case (TabType::Level): LevelEditorHistoryBegin(); break;
         case (TabType::Map): MapEditorHistoryBegin(); break;
     }
@@ -252,8 +227,7 @@ TEINAPI void HotbarHistoryBegin ()
 TEINAPI void HotbarHistoryEnd ()
 {
     if (!AreThereAnyTabs()) return;
-    switch (GetCurrentTab().type)
-    {
+    switch (GetCurrentTab().type) {
         case (TabType::Level): LevelEditorHistoryEnd(); break;
         case (TabType::Map): MapEditorHistoryEnd(); break;
     }
@@ -263,17 +237,12 @@ TEINAPI void HotbarZoomOut ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    if (tab.type == TabType::Level)
-    {
-        if ((tab.camera.zoom /= 2) < gMinLevelEditorZoom)
-        {
+    if (tab.type == TabType::Level) {
+        if ((tab.camera.zoom /= 2) < gMinLevelEditorZoom) {
             tab.camera.zoom = gMinLevelEditorZoom;
         }
-    }
-    else
-    {
-        if ((tab.camera.zoom /= 2) < gMinMapEditorZoom)
-        {
+    } else {
+        if ((tab.camera.zoom /= 2) < gMinMapEditorZoom) {
             tab.camera.zoom = gMinMapEditorZoom;
         }
     }
@@ -283,17 +252,12 @@ TEINAPI void HotbarZoomIn ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    if (tab.type == TabType::Level)
-    {
-        if ((tab.camera.zoom *= 2) > gMaxLevelEditorZoom)
-        {
+    if (tab.type == TabType::Level) {
+        if ((tab.camera.zoom *= 2) > gMaxLevelEditorZoom) {
             tab.camera.zoom = gMaxLevelEditorZoom;
         }
-    }
-    else
-    {
-        if ((tab.camera.zoom *= 2) > gMaxMapEditorZoom)
-        {
+    } else {
+        if ((tab.camera.zoom *= 2) > gMaxMapEditorZoom) {
             tab.camera.zoom = gMaxMapEditorZoom;
         }
     }
@@ -302,14 +266,11 @@ TEINAPI void HotbarZoomIn ()
 TEINAPI void HotbarGPAKUnpack ()
 {
     std::vector<std::string> files = OpenDialog(DialogType::Gpak, false);
-    if (!files.empty())
-    {
+    if (!files.empty()) {
         bool shouldOverwrite = true;
-        if (ShowAlert("Overwrite", "Do you want to overwrite any existing files during unpack?", AlertType::Info, AlertButton::YesNo) == AlertResult::No)
-        {
+        if (ShowAlert("Overwrite", "Do you want to overwrite any existing files during unpack?", AlertType::Info, AlertButton::YesNo) == AlertResult::No) {
             shouldOverwrite = false;
         }
-
         GPAKUnpack(files.at(0), shouldOverwrite);
     }
 }
@@ -317,11 +278,9 @@ TEINAPI void HotbarGPAKUnpack ()
 TEINAPI void HotbarGPAKPack ()
 {
     std::vector<std::string> paths = PathDialog();
-    if (!paths.empty())
-    {
+    if (!paths.empty()) {
         std::string file = SaveDialog(DialogType::Gpak);
-        if (!file.empty())
-        {
+        if (!file.empty()) {
             GPAKPack(file, paths);
         }
     }
@@ -336,57 +295,44 @@ TEINAPI void HotbarRunGame ()
     constexpr const char* ExeEpicX64  = "C:/Program Files)/Epic Games/theendisnigh/TheEnd.exe";
     constexpr const char* ExeEpicApp  = "TheEnd.exe";
 
-    const std::vector<std::string> Executables
-    {
+    const std::vector<std::string> Executables {
         ExeSteamX86, ExeSteamX64, ExeSteamApp,
         ExeEpicX86, ExeEpicX64, ExeEpicApp
     };
 
     std::string executable;
-    if (!gEditorSettings.gamePath.empty())
-    {
+    if (!gEditorSettings.gamePath.empty()) {
         executable = gEditorSettings.gamePath;
-        if (!DoesFileExist(executable))
-        {
+        if (!DoesFileExist(executable)) {
             executable.clear();
         }
     }
-    if (executable.empty())
-    {
-        for (auto exe: Executables)
-        {
+    if (executable.empty()) {
+        for (auto exe: Executables) {
             executable = exe;
-            if (DoesFileExist(executable))
-            {
+            if (DoesFileExist(executable)) {
                 break;
             }
         }
-        if (!DoesFileExist(executable))
-        {
+        if (!DoesFileExist(executable)) {
             executable.clear();
         }
     }
 
     // Executable couldn't be found so we will ask for the location.
-    if (executable.empty())
-    {
+    if (executable.empty()) {
         OpenPath();
-    }
-    else if (!RunExecutable(executable))
-    {
+    } else if (!RunExecutable(executable)) {
         LogError(ErrorLevel::Med, "Failed to launch The End is Nigh executable!");
     }
 }
 
 TEINAPI void HotbarPreferences ()
 {
-    if (IsWindowHidden("WINPREFERENCES"))
-    {
+    if (IsWindowHidden("WINPREFERENCES")) {
         InitPreferencesMenu(); // Load current settings.
         ShowWindow("WINPREFERENCES");
-    }
-    else
-    {
+    } else {
         RaiseWindow("WINPREFERENCES");
     }
 }

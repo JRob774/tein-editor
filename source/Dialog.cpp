@@ -26,34 +26,28 @@ TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
     const char* title = NULL;
     const char* ext = NULL;
 
-    switch (type)
-    {
-        case (DialogType::Lvl):
-        {
+    switch (type) {
+        case (DialogType::Lvl): {
             filter = "All Files (*.*)\0*.*\0LVL Files (*.lvl)\0*.lvl\0";
             title = "Open";
             ext = "lvl";
         } break;
-        case (DialogType::Csv):
-        {
+        case (DialogType::Csv): {
             filter = "All Files (*.*)\0*.*\0CSV Files (*.csv)\0*.csv\0";
             title = "Open";
             ext = "csv";
         } break;
-        case (DialogType::LvlCsv):
-        {
+        case (DialogType::LvlCsv): {
             filter = "All Files (*.*)\0*.*\0Supported Files (*.lvl; *.csv)\0*.lvl;*.csv\0CSV Files (*.csv)\0*.csv\0LVL Files (*.lvl)\0*.lvl\0";
             title = "Open";
             ext = "lvl";
         } break;
-        case (DialogType::Gpak):
-        {
+        case (DialogType::Gpak): {
             filter = "All Files (*.*)\0*.*\0GPAK Files (*.gpak)\0*.gpak\0";
             title = "Unpack";
             ext = "gpak";
         } break;
-        case (DialogType::Exe):
-        {
+        case (DialogType::Exe): {
             filter = "All Files (*.*)\0*.*\0EXE Files (*.exe)\0*.exe\0";
             title = "Open";
             ext = "exe";
@@ -73,41 +67,29 @@ TEINAPI std::vector<std::string> OpenDialog (DialogType type, bool multiselect)
     openFileName.lpstrTitle = title;
     openFileName.Flags = OFN_PATHMUSTEXIST|OFN_FILEMUSTEXIST|OFN_EXPLORER|OFN_NOCHANGEDIR;
 
-    if (multiselect)
-    {
-        openFileName.Flags |= OFN_ALLOWMULTISELECT;
-    }
+    if (multiselect) openFileName.Flags |= OFN_ALLOWMULTISELECT;
 
     std::vector<std::string> files;
-    if (!GetOpenFileNameA(&openFileName))
-    {
+    if (!GetOpenFileNameA(&openFileName)) {
         DWORD error = CommDlgExtendedError();
-        if (error) // Zero means the user cancelled -- not an actual error!
-        {
+        if (error) { // Zero means the user cancelled -- not an actual error!
             LogError(ErrorLevel::Med, "Failed to open file! (Error: 0x%X)", error);
         }
-    }
-    else
-    {
+    } else {
         const char* pos = fileBuffer;
-        if (*pos != '\0')
-        {
+        if (*pos != '\0') {
             // Determines if there is just one file or multiple
-            if (IsPath(pos))
-            {
+            if (IsPath(pos)) {
                 // First part is always the path.
                 std::string path(FixPathSlashes(pos));
                 path.push_back('/');
                 // Then it is followed by all the names.
                 pos += openFileName.nFileOffset;
-                while (*pos)
-                {
+                while (*pos) {
                     files.push_back(path + std::string(pos));
                     pos += strlen(pos)+1;
                 }
-            }
-            else
-            {
+            } else {
                 files.push_back(FixPathSlashes(pos));
             }
         }
@@ -130,28 +112,23 @@ TEINAPI std::string SaveDialog (DialogType type)
     const char* title = NULL;
     const char* ext = NULL;
 
-    switch (type)
-    {
-        case (DialogType::Lvl):
-        {
+    switch (type) {
+        case (DialogType::Lvl): {
             filter = "All Files (*.*)\0*.*\0LVL Files (*.lvl)\0*.lvl\0";
             title = "Save As";
             ext = "lvl";
         } break;
-        case (DialogType::Csv):
-        {
+        case (DialogType::Csv): {
             filter = "All Files (*.*)\0*.*\0CSV Files (*.csv)\0*.csv\0";
             title = "Save As";
             ext = "csv";
         } break;
-        case (DialogType::Gpak):
-        {
+        case (DialogType::Gpak): {
             filter = "All Files (*.*)\0*.*\0GPAK Files (*.gpak)\0*.gpak\0";
             title = "Pack";
             ext = "gpak";
         } break;
-        case (DialogType::Exe):
-        {
+        case (DialogType::Exe): {
             filter = "All Files (*.*)\0*.*\0EXE Files (*.exe)\0*.exe\0";
             title = "Save As";
             ext = "exe";
@@ -172,16 +149,12 @@ TEINAPI std::string SaveDialog (DialogType type)
     openFileName.Flags = OFN_PATHMUSTEXIST|OFN_OVERWRITEPROMPT|OFN_NOREADONLYRETURN|OFN_NOCHANGEDIR;
 
     std::string file;
-    if (!GetSaveFileNameA(&openFileName))
-    {
+    if (!GetSaveFileNameA(&openFileName)) {
         DWORD error = CommDlgExtendedError();
-        if (error) // Zero means the user cancelled -- not an actual error!
-        {
+        if (error) { // Zero means the user cancelled -- not an actual error!
             LogError(ErrorLevel::Med, "Failed to save file! (Error: 0x%X)", error);
         }
-    }
-    else
-    {
+    } else {
         file = FixPathSlashes(fileBuffer);
     }
 
@@ -199,16 +172,14 @@ TEINAPI std::vector<std::string> PathDialog (bool multiselect)
     std::vector<std::string> paths;
 
     IFileOpenDialog* fileDialog = NULL;
-    if (!SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fileDialog))))
-    {
+    if (!SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fileDialog)))) {
         LogError(ErrorLevel::Med, "Failed to create the folder dialog!");
         return paths;
     }
     Defer { fileDialog->Release(); };
 
     DWORD options;
-    if (!SUCCEEDED(fileDialog->GetOptions(&options)))
-    {
+    if (!SUCCEEDED(fileDialog->GetOptions(&options))) {
         LogError(ErrorLevel::Med, "Failed to get folder dialog options!");
         return paths;
     }
@@ -217,15 +188,13 @@ TEINAPI std::vector<std::string> PathDialog (bool multiselect)
     options |= FOS_PICKFOLDERS;
 
     fileDialog->SetOptions(options);
-    if (!SUCCEEDED(fileDialog->Show(NULL)))
-    {
+    if (!SUCCEEDED(fileDialog->Show(NULL))) {
         // No error because the user may have only cancelled...
         return paths;
     }
 
     IShellItemArray* shellItemArray = NULL;
-    if (!SUCCEEDED(fileDialog->GetResults(&shellItemArray)))
-    {
+    if (!SUCCEEDED(fileDialog->GetResults(&shellItemArray))) {
         LogError(ErrorLevel::Med, "Failed to create shell item array!");
         return paths;
     }
@@ -237,14 +206,11 @@ TEINAPI std::vector<std::string> PathDialog (bool multiselect)
     IShellItem* shellItem = NULL;
     shellItemArray->GetCount(&itemCount);
 
-    for (DWORD i=0; i<itemCount; ++i)
-    {
+    for (DWORD i=0; i<itemCount; ++i) {
         shellItemArray->GetItemAt(i, &shellItem);
-        if (shellItem)
-        {
+        if (shellItem) {
             shellItem->GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, &result);
-            if (result)
-            {
+            if (result) {
                 std::wstring widePath(result);
                 CoTaskMemFree(result);
                 paths.push_back(std::string());

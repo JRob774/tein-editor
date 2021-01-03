@@ -17,13 +17,11 @@ namespace Internal
     TEINAPI void LogDebugMessage (const char* format, ...)
     {
         // We only open the debug log once the first debug occurs.
-        if (!gDebugLog)
-        {
+        if (!gDebugLog) {
             std::string debugLogName(BuildResourceString(gDebugLogName));
             CreatePath(StripFileName(debugLogName));
             gDebugLog = fopen(debugLogName.c_str(), "w");
-            if (gDebugLog)
-            {
+            if (gDebugLog) {
                 LogDebug("DEBUG LOG [%s]", FormatTime("%m/%d/%Y %H:%M:%S").c_str());
             }
         }
@@ -32,23 +30,16 @@ namespace Internal
 
         #if defined(BuildDebug)
         va_start(args, format);
-        for (int i=0; i<gCurrentDebugSection; ++i)
-        {
-            fprintf(stdout, "  ");
-        }
+        for (int i=0; i<gCurrentDebugSection; ++i) fprintf(stdout, "  ");
         vfprintf(stdout, format, args);
         fprintf(stdout, "\n");
         va_end(args);
         fflush(stdout);
         #endif // BuildDebug
 
-        if (gDebugLog)
-        {
+        if (gDebugLog) {
             va_start(args, format);
-            for (int i=0; i<gCurrentDebugSection; ++i)
-            {
-                fprintf(gDebugLog, "  ");
-            }
+            for (int i=0; i<gCurrentDebugSection; ++i) fprintf(gDebugLog, "  ");
             vfprintf(gDebugLog, format, args);
             fprintf(gDebugLog, "\n");
             va_end(args);
@@ -72,8 +63,7 @@ TEINAPI void QuitDebugSystem ()
 {
     // This condition is important because, for some reason, calling
     // fclose(NULL) results in a long hang-time during program exit.
-    if (gDebugLog)
-    {
+    if (gDebugLog) {
         fclose(gDebugLog);
         gDebugLog = NULL;
     }
@@ -109,8 +99,7 @@ TEINAPI void ClearDebugTimerResult ()
 }
 TEINAPI void DumpDebugTimerResult  ()
 {
-    if (!gDebugTimerResults.empty())
-    {
+    if (!gDebugTimerResults.empty()) {
         BeginDebugSection("Debug Timer Results:");
         for (auto str: gDebugTimerResults) LogDebug(str.c_str());
         EndDebugSection();

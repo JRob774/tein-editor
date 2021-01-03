@@ -3,22 +3,19 @@ namespace Internal
     TEINAPI bool CreateTextureAtlas (TextureAtlas& atlas, GonObject gon)
     {
         std::string textureFile(gon["texture"].String());
-        if (!LoadTextureResource(textureFile, atlas.texture))
-        {
+        if (!LoadTextureResource(textureFile, atlas.texture)) {
             LogError(ErrorLevel::Min, "Failed to load texture atlas image!");
             return false;
         }
 
-        for (const auto& obj: gon["clips"].children_array)
-        {
+        for (const auto& obj: gon["clips"].children_array) {
             S32 id = std::stoi(obj["id"].String());
             auto& clipData = obj["clip"].children_array;
-            Quad clip
-            {
-            static_cast<float>(clipData[0].Number()),
-            static_cast<float>(clipData[1].Number()),
-            static_cast<float>(clipData[2].Number()),
-            static_cast<float>(clipData[3].Number())
+            Quad clip {
+                static_cast<float>(clipData[0].Number()),
+                static_cast<float>(clipData[1].Number()),
+                static_cast<float>(clipData[2].Number()),
+                static_cast<float>(clipData[3].Number())
             };
             atlas.clips.insert({ id, clip });
         }

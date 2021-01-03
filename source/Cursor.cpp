@@ -17,8 +17,7 @@ namespace Internal
     TEINAPI bool LoadCursor (Cursor cursor, const char* fileName, int x, int y)
     {
         SDL_Surface* surface = LoadSurfaceResource(fileName);
-        if (!surface)
-        {
+        if (!surface) {
             LogError(ErrorLevel::Min, "Failed to load cursor file '%s'!", fileName);
             return false;
         }
@@ -32,15 +31,13 @@ namespace Internal
         // boxes around them... So instead we just fail and instead fallback to
         // using the standard operating system cursor instead of custom cursors.
         U32 colorKey = SDL_MapRGB(surface->format, 0xFF,0x00,0xFF);
-        if (SDL_SetColorKey(surface, SDL_TRUE, colorKey) < 0)
-        {
+        if (SDL_SetColorKey(surface, SDL_TRUE, colorKey) < 0) {
             LogError(ErrorLevel::Min, "Failed to color key cursor '%s'!", fileName);
             return false;
         }
 
         gCursors[static_cast<int>(cursor)] = SDL_CreateColorCursor(surface, x, y);
-        if (!gCursors[static_cast<int>(cursor)])
-        {
+        if (!gCursors[static_cast<int>(cursor)]) {
             LogError(ErrorLevel::Min, "Failed to create cursor '%s'!", fileName);
             return false;
         }
@@ -74,22 +71,17 @@ TEINAPI bool LoadEditorCursors ()
     gCursorsLoaded = true;
 
     // By default we want to be using the arrow cursor.
-    if (!gCursorsEnabled)
-    {
+    if (!gCursorsEnabled) {
         SDL_SetCursor(SDL_GetDefaultCursor());
         gCurrentCursor = Cursor::Arrow;
-    }
-    else
-    {
-        if (gCursorsLoaded)
-        {
+    } else {
+        if (gCursorsLoaded) {
             SDL_SetCursor(gCursors[static_cast<int>(Cursor::Arrow)]);
             gCurrentCursor = Cursor::Arrow;
         }
     }
 
-    if (!cursorsWereLoaded) // Stops this getting printed on settings change.
-    {
+    if (!cursorsWereLoaded) { // Stops this getting printed on settings change.
         LogDebug("Loaded Editor Cursors");
     }
 
@@ -98,8 +90,7 @@ TEINAPI bool LoadEditorCursors ()
 
 TEINAPI void FreeEditorCursors ()
 {
-    for (int i=0; i<static_cast<int>(Cursor::Total); ++i)
-    {
+    for (int i=0; i<static_cast<int>(Cursor::Total); ++i) {
         SDL_FreeCursor(gCursors[i]);
         gCursors[i] = NULL;
     }
@@ -109,8 +100,7 @@ TEINAPI void FreeEditorCursors ()
 
 TEINAPI void SetCursorType (Cursor cursor)
 {
-    if (gCursorsEnabled && gCursorsLoaded && gCurrentCursor != cursor && gCursors[static_cast<int>(cursor)])
-    {
+    if (gCursorsEnabled && gCursorsLoaded && gCurrentCursor != cursor && gCursors[static_cast<int>(cursor)]) {
         SDL_SetCursor(gCursors[static_cast<int>(cursor)]);
         gCurrentCursor = cursor;
     }

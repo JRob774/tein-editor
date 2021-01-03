@@ -62,8 +62,7 @@ namespace Internal
         mirrorHFlags = ((gLevelEditor.mirrorH) ? UiFlag::None : UiFlag::Inactive);
         mirrorVFlags = ((gLevelEditor.mirrorV) ? UiFlag::None : UiFlag::Inactive);
 
-        if (AreAnySelectBoxesVisible())
-        {
+        if (AreAnySelectBoxesVisible()) {
             cutFlags = UiFlag::None;
             copyFlags = UiFlag::None;
             deselectFlags = UiFlag::None;
@@ -76,8 +75,7 @@ namespace Internal
         // toolbar and then place the buttons side-to-side instead of straight down.
         float contentHeight = (bh*gTotalToolbarLevelButtons)+(gToolbarInnerPad*2);
         gToolbarWidth = gToolbarDefaultWidth;
-        if (GetViewport().h < contentHeight)
-        {
+        if (GetViewport().h < contentHeight) {
             gToolbarWidth *= 2;
             gToolbarWidth -= 1;
         }
@@ -100,8 +98,7 @@ namespace Internal
 
         // If not all buttons will fit on the screen we will double the width of the
         // toolbar and then place the buttons side-to-side instead of straight down.
-        if (GetViewport().h < contentHeight)
-        {
+        if (GetViewport().h < contentHeight) {
             cursor.x += bw + 1;
             cursor.y = gToolbarInnerPad;
 
@@ -143,8 +140,7 @@ namespace Internal
         UiFlag deselectFlags = UiFlag::Locked;
         UiFlag clearFlags = UiFlag::Locked;
 
-        if (MapSelectBoxPresent())
-        {
+        if (MapSelectBoxPresent()) {
             cutFlags = UiFlag::None;
             copyFlags = UiFlag::None;
             deselectFlags = UiFlag::None;
@@ -182,8 +178,7 @@ TEINAPI void ToolbarSetToolToBrush ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (gLevelEditor.toolType == ToolType::Select && gLevelEditor.toolState == ToolState::Place)
-    {
+    if (gLevelEditor.toolType == ToolType::Select && gLevelEditor.toolState == ToolState::Place) {
         Tab& tab = GetCurrentTab();
         if (!tab.toolInfo.select.bounds.empty())
         {
@@ -191,8 +186,7 @@ TEINAPI void ToolbarSetToolToBrush ()
         }
     }
 
-    if (gLevelEditor.toolType != ToolType::Brush && gLevelEditor.toolState != ToolState::Idle)
-    {
+    if (gLevelEditor.toolType != ToolType::Brush && gLevelEditor.toolState != ToolState::Idle) {
         NewLevelHistoryState(LevelHistoryAction::Normal);
     }
 
@@ -203,17 +197,14 @@ TEINAPI void ToolbarSetToolToFill ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (gLevelEditor.toolType == ToolType::Select && gLevelEditor.toolState == ToolState::Place)
-    {
+    if (gLevelEditor.toolType == ToolType::Select && gLevelEditor.toolState == ToolState::Place) {
         Tab& tab = GetCurrentTab();
-        if (!tab.toolInfo.select.bounds.empty())
-        {
+        if (!tab.toolInfo.select.bounds.empty()) {
             NewLevelHistoryState(LevelHistoryAction::SelectState);
         }
     }
 
-    if (gLevelEditor.toolType != ToolType::Fill && gLevelEditor.toolState != ToolState::Idle)
-    {
+    if (gLevelEditor.toolType != ToolType::Fill && gLevelEditor.toolState != ToolState::Idle) {
         NewLevelHistoryState(LevelHistoryAction::Normal);
     }
 
@@ -224,13 +215,11 @@ TEINAPI void ToolbarSetToolToSelect ()
 {
     if (!CurrentTabIsLevel()) return;
 
-    if (gLevelEditor.toolType != ToolType::Select && gLevelEditor.toolState != ToolState::Idle)
-    {
+    if (gLevelEditor.toolType != ToolType::Select && gLevelEditor.toolState != ToolState::Idle) {
         NewLevelHistoryState(LevelHistoryAction::Normal);
     }
 
-    if (gLevelEditor.toolState == ToolState::Place)
-    {
+    if (gLevelEditor.toolState == ToolState::Place) {
         Tab& tab = GetCurrentTab();
         tab.toolInfo.select.start = true;
     }
@@ -260,13 +249,10 @@ TEINAPI void ToolbarResetCamera ()
     Tab& tab = GetCurrentTab();
     tab.camera.zoom = 1;
 
-    if (tab.type == TabType::Map)
-    {
+    if (tab.type == TabType::Map) {
         tab.camera.x = -GetMinMapBoundsX();
         tab.camera.y = -GetMinMapBoundsY();
-    }
-    else
-    {
+    } else {
         tab.camera.x = 0;
         tab.camera.y = 0;
     }
@@ -294,8 +280,7 @@ TEINAPI void ToolbarCut ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    switch (tab.type)
-    {
+    switch (tab.type) {
         case (TabType::Level): LevelEditorCut(); break;
         case (TabType::Map): MapEditorCut(); break;
     }
@@ -305,8 +290,7 @@ TEINAPI void ToolbarCopy ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    switch (tab.type)
-    {
+    switch (tab.type) {
         case (TabType::Level): LevelEditorCopy(); break;
         case (TabType::Map): MapEditorCopy(); break;
     }
@@ -316,8 +300,7 @@ TEINAPI void ToolbarDeselect ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    switch (tab.type)
-    {
+    switch (tab.type) {
         case (TabType::Level): LevelEditorDeselect(); break;
         case (TabType::Map): MapEditorDeselect(); break;
     }
@@ -327,8 +310,7 @@ TEINAPI void ToolbarClearSelect ()
 {
     if (!AreThereAnyTabs()) return;
     Tab& tab = GetCurrentTab();
-    switch (tab.type)
-    {
+    switch (tab.type) {
         case (TabType::Level): LevelEditorClearSelect(); break;
         case (TabType::Map): MapEditorClearSelect(); break;
     }

@@ -14,8 +14,7 @@ TEINAPI bool InitResourceManager ()
 
     // Return true because we may still function.
     FILE* gpak = fopen(gpakFileName.c_str(), "rb");
-    if (!gpak)
-    {
+    if (!gpak) {
         LogError(ErrorLevel::Med, "Failed to load editor GPAK!");
         return true;
     }
@@ -27,8 +26,7 @@ TEINAPI bool InitResourceManager ()
     fread(&entryCount, sizeof(U32), 1, gpak);
     entries.resize(entryCount);
 
-    for (auto& e: entries)
-    {
+    for (auto& e: entries) {
         fread(&e.nameLength, sizeof(U16), 1, gpak);
         e.name.resize(e.nameLength);
         fread(&e.name[0], sizeof(char), e.nameLength, gpak);
@@ -36,8 +34,7 @@ TEINAPI bool InitResourceManager ()
     }
 
     std::vector<U8> fileBuffer;
-    for (auto& e: entries)
-    {
+    for (auto& e: entries) {
         fileBuffer.resize(e.fileSize);
         fread(&fileBuffer[0], sizeof(U8), e.fileSize, gpak);
         gGpakResourceLookup.insert({ e.name, fileBuffer });
@@ -50,8 +47,7 @@ TEINAPI bool InitResourceManager ()
 TEINAPI void GetResourceLocation ()
 {
     std::string resourceLocationFile(GetExecutablePath() + gResourceLocationFileName);
-    if (DoesFileExist(resourceLocationFile))
-    {
+    if (DoesFileExist(resourceLocationFile)) {
         std::string relativePath(ReadEntireFile(resourceLocationFile));
         gResourceLocation = GetExecutablePath() + relativePath;
         // Remove trailing whitespace, if there is any.
@@ -115,53 +111,43 @@ TEINAPI std::string LoadStringResource (std::string fileName)
 
 TEINAPI bool LoadEditorResources ()
 {
-    if (!LoadTextureResource("textures/editor_ui/tools.png", gResourceIcons))
-    {
+    if (!LoadTextureResource("textures/editor_ui/tools.png", gResourceIcons)) {
         LogError(ErrorLevel::Max, "Failed to load editor icons!");
         return false;
     }
-    if (!LoadTextureResource("textures/editor_ui/checker_x14.png", gResourceChecker14, TextureWrap::Repeat))
-    {
+    if (!LoadTextureResource("textures/editor_ui/checker_x14.png", gResourceChecker14, TextureWrap::Repeat)) {
         LogError(ErrorLevel::Max, "Failed to load the checker-x14 image!");
         return false;
     }
-    if (!LoadTextureResource("textures/editor_ui/checker_x16.png", gResourceChecker16, TextureWrap::Repeat))
-    {
+    if (!LoadTextureResource("textures/editor_ui/checker_x16.png", gResourceChecker16, TextureWrap::Repeat)) {
         LogError(ErrorLevel::Max, "Failed to load the checker-x16 image!");
         return false;
     }
-    if (!LoadTextureResource("textures/editor_ui/checker_x20.png", gResourceChecker20, TextureWrap::Repeat))
-    {
+    if (!LoadTextureResource("textures/editor_ui/checker_x20.png", gResourceChecker20, TextureWrap::Repeat)) {
         LogError(ErrorLevel::Max, "Failed to load the checker-x20 image!");
         return false;
     }
-    if (!LoadFontResource("fonts/opensans-regular.ttf", gResourceFontRegularSans, { gSmallFontPointSize, gLargeFontPointSize }))
-    {
+    if (!LoadFontResource("fonts/opensans-regular.ttf", gResourceFontRegularSans, { gSmallFontPointSize, gLargeFontPointSize })) {
         LogError(ErrorLevel::Max, "Failed to load OpenSans regular font!");
         return false;
     }
-    if (!LoadFontResource("fonts/opensans-bold.ttf", gResourceFontBoldSans, { gSmallFontPointSize, gLargeFontPointSize }))
-    {
+    if (!LoadFontResource("fonts/opensans-bold.ttf", gResourceFontBoldSans, { gSmallFontPointSize, gLargeFontPointSize })) {
         LogError(ErrorLevel::Max, "Failed to load OpenSans bold font!");
         return false;
     }
-    if (!LoadFontResource("fonts/liberationmono-regular.ttf", gResourceFontRegularLibMono))
-    {
+    if (!LoadFontResource("fonts/liberationmono-regular.ttf", gResourceFontRegularLibMono)) {
         LogError(ErrorLevel::Max, "Failed to load LiberationMono regular font!");
         return false;
     }
-    if (!LoadFontResource("fonts/opendyslexic-regular.ttf", gResourceFontRegularDyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
-    {
+    if (!LoadFontResource("fonts/opendyslexic-regular.ttf", gResourceFontRegularDyslexic, { gSmallFontPointSize, gLargeFontPointSize })) {
         LogError(ErrorLevel::Max, "Failed to load OpenDyslexic regular font!");
         return false;
     }
-    if (!LoadFontResource("fonts/opendyslexic-bold.ttf", gResourceFontBoldDyslexic, { gSmallFontPointSize, gLargeFontPointSize }))
-    {
+    if (!LoadFontResource("fonts/opendyslexic-bold.ttf", gResourceFontBoldDyslexic, { gSmallFontPointSize, gLargeFontPointSize })) {
         LogError(ErrorLevel::Max, "Failed to load OpenDyslexic bold font!");
         return false;
     }
-    if (!LoadFontResource("fonts/opendyslexic-mono.ttf", gResourceFontMonoDyslexic))
-    {
+    if (!LoadFontResource("fonts/opendyslexic-mono.ttf", gResourceFontMonoDyslexic)) {
         LogError(ErrorLevel::Max, "Failed to load OpenDyslexic mono font!");
         return false;
     }
@@ -174,16 +160,16 @@ TEINAPI bool LoadEditorResources ()
 
 TEINAPI void FreeEditorResources ()
 {
-    FreeFont        (gResourceFontMonoDyslexic);
-    FreeFont        (gResourceFontBoldSans);
-    FreeFont        (gResourceFontBoldDyslexic);
-    FreeFont        (gResourceFontRegularLibMono);
-    FreeFont        (gResourceFontRegularSans);
-    FreeFont        (gResourceFontRegularDyslexic);
-    FreeTexture     (gResourceIcons);
-    FreeTexture     (gResourceChecker14);
-    FreeTexture     (gResourceChecker16);
-    FreeTexture     (gResourceChecker20);
+    FreeFont(gResourceFontMonoDyslexic);
+    FreeFont(gResourceFontBoldSans);
+    FreeFont(gResourceFontBoldDyslexic);
+    FreeFont(gResourceFontRegularLibMono);
+    FreeFont(gResourceFontRegularSans);
+    FreeFont(gResourceFontRegularDyslexic);
+    FreeTexture(gResourceIcons);
+    FreeTexture(gResourceChecker14);
+    FreeTexture(gResourceChecker16);
+    FreeTexture(gResourceChecker20);
     FreeTextureAtlas(gResourceLarge);
     FreeTextureAtlas(gResourceSmall);
 }

@@ -139,42 +139,31 @@ namespace Internal
         bool result = false;
 
         // Don't bother handling widgets during resize to avoid ugly redraw stuff.
-        if (!IsAWindowResizing())
-        {
-            if (GetRenderTarget()->focus && GetRenderTarget()->mouse)
-            {
+        if (!IsAWindowResizing()) {
+            if (GetRenderTarget()->focus && GetRenderTarget()->mouse) {
                 Quad clippedBounds = GetClippedBounds(x,y,w,h);
                 Vec2 mouse = GetMousePos();
 
                 // Determine the hot and active states for the global UI context.
                 bool inside = PointInBoundsXYXY(mouse, clippedBounds);
-                if (!locked && (gUiHitID == gUiCurrentID))
-                {
-                    if (gUiMouseLeftUp)
-                    {
-                        if (gUiHotID == gUiCurrentID)
-                        {
+                if (!locked && (gUiHitID == gUiCurrentID)) {
+                    if (gUiMouseLeftUp) {
+                        if (gUiHotID == gUiCurrentID) {
                             result = true;
                         }
                         gUiHitID = gUiInvalidID;
                     }
                 }
-                if (gUiHotID == gUiCurrentID)
-                {
-                    if (!locked && inside)
-                    {
-                        if (gUiMouseLeftDown)
-                        {
+                if (gUiHotID == gUiCurrentID) {
+                    if (!locked && inside) {
+                        if (gUiMouseLeftDown) {
                             gUiHitID = gUiCurrentID;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         gUiHotID = gUiInvalidID;
                     }
                 }
-                if (inside)
-                {
+                if (inside) {
                     gUiHotID = gUiCurrentID;
                 }
             }
@@ -215,8 +204,7 @@ namespace Internal
         float x2 = cursor.x;
         float y2 = cursor.y;
 
-        switch (dir)
-        {
+        switch (dir) {
             case (UiDir::Up   ): { x1+=1; x2+=(w-1); y1+=1; y2+= 1;    } break;
             case (UiDir::Right): { x1+=w; x2+= w;    y1+=1; y2+=(h-1); } break;
             case (UiDir::Down ): { x1+=1; x2+=(w-1); y1+=h; y2+= h;    } break;
@@ -231,8 +219,7 @@ namespace Internal
     {
         if (!panel.cursorAdvanceEnabled) return;
         Vec2& cur = GetCursorRef(panel);
-        switch (panel.cursorDir)
-        {
+        switch (panel.cursorDir) {
             case(UiDir::Up): cur.y -= h; break;
             case(UiDir::Left): cur.x -= w; break;
         }
@@ -241,8 +228,7 @@ namespace Internal
     {
         if (!panel.cursorAdvanceEnabled) return;
         Vec2& cur = GetCursorRef(panel);
-        switch (panel.cursorDir)
-        {
+        switch (panel.cursorDir) {
             case(UiDir::Right): cur.x += w; break;
             case(UiDir::Down): cur.y += h; break;
         }
@@ -251,14 +237,12 @@ namespace Internal
     TEINAPI void AlignText (UiAlign horz, UiAlign vert, float& x, float& y, float tw, float th, float w, float h)
     {
         // Determine how to place the text based on alignment.
-        switch (horz)
-        {
+        switch (horz) {
             case (UiAlign::Left  ): /* No need to do anything. */ break;
             case (UiAlign::Right ): x += roundf( (w-tw));         break;
             case (UiAlign::Center): x += roundf(((w-tw)/2));      break;
         }
-        switch (vert)
-        {
+        switch (vert) {
             case (UiAlign::Top   ): y += gUiFont->lineGap.at(gUiFont->currentPointSize); break;
             case (UiAlign::Bottom): y += roundf(((h)  -(th/4)));                         break;
             case (UiAlign::Center): y += roundf(((h/2)+(th/4)));                         break;
@@ -279,42 +263,33 @@ namespace Internal
         Font& font = GetEditorRegularFont();
 
         std::string text;
-        for (auto& line: lines)
-        {
-            if (line.at(0) == '*') // Looks nicer.
-            {
+        for (auto& line: lines) {
+            if (line.at(0) == '*') { // Looks nicer.
                 line.at(0) = '>';
             }
 
-            if (GetTextWidthScaled(font, line) >= w) // Word-wrap.
-            {
+            if (GetTextWidthScaled(font, line) >= w) { // Word-wrap.
                 float xOff = 0.0f;
 
                 int i = 0;
                 int p = 0;
 
-                for (int j=0; j<static_cast<int>(line.length()); ++j)
-                {
+                for (int j=0; j<static_cast<int>(line.length()); ++j) {
                     xOff += GetGlyphAdvance(font, line.at(j), i,p);
 
-                    if (line.at(j) == '\n')
-                    {
+                    if (line.at(j) == '\n') {
                         xOff = 0.0f;
                     }
 
-                    if (xOff >= w)
-                    {
-                        for (int k=j; k>=0; --k)
-                        {
-                            if (line.at(k) == '\n' || k == 0)
-                            {
+                    if (xOff >= w) {
+                        for (int k=j; k>=0; --k) {
+                            if (line.at(k) == '\n' || k == 0) {
                                 line.at(k) = '\n';
                                 xOff = 0.0f;
                                 j = k;
                                 break;
                             }
-                            if (line.at(k) == ' ')
-                            {
+                            if (line.at(k) == ' ') {
                                 line.insert(k, "\n");
                                 xOff = 0.0f;
                                 break;
@@ -327,8 +302,7 @@ namespace Internal
             text += line + "\n";
         }
 
-        if (text.back() == '\n')
-        {
+        if (text.back() == '\n') {
             text.pop_back();
         }
 
@@ -340,29 +314,21 @@ TEINAPI bool InitUiSystem ()
 {
     gUiHotID = gUiInvalidID;
     gUiHitID = gUiInvalidID;
-
     gUiActiveTextBox = gUiInvalidID;
     gUiHotTextBox = gUiInvalidID;
     gUiTextBoxCursor = std::string::npos;
-
     gUiHotHyperlink = gUiInvalidID;
-
     gUiActiveHotkeyRebind = gUiInvalidID;
-
     gUiTexture = NULL;
     gUiFont = NULL;
-
     gUiMouseRelative = Vec2(0,0);
-
     gUiMouseLeftUp = false;
     gUiMouseLeftDown = false;
     gUiMouseRightUp = false;
     gUiMouseRightDown = false;
-
     gUiTextBoxTabWindowID = 0;
     gUiMakeNextTextBoxActive = false;
     gUiTabHandled = false;
-
     gUiCursorBlinkTimer = NULL;
     gUiCursorVisible = true;
 
@@ -373,8 +339,7 @@ TEINAPI void LoadUiTheme ()
 {
     std::string theme = gEditorSettings.uiTheme;
 
-    if (theme == "dark")
-    {
+    if (theme == "dark") {
         gUiColorBlack = gUiDarkColorBlack;
         gUiColorExDark = gUiDarkColorExDark;
         gUiColorDark = gUiDarkColorDark;
@@ -385,9 +350,7 @@ TEINAPI void LoadUiTheme ()
         gUiColorExLight = gUiDarkColorExLight;
         gUiColorWhite = gUiDarkColorWhite;
         gUiIsLight = false;
-    }
-    else
-    {
+    } else {
         gUiColorBlack = gUiLightColorBlack;
         gUiColorExDark = gUiLightColorExDark;
         gUiColorDark = gUiLightColorDark;
@@ -436,54 +399,42 @@ TEINAPI void HandleUiEvents ()
     bool prevDown = gUiMouseLeftDown;
     bool prevUp = gUiMouseLeftUp;
 
-    switch (gMainEvent.type)
-    {
-        case (SDL_MOUSEBUTTONDOWN):
-        {
+    switch (gMainEvent.type) {
+        case (SDL_MOUSEBUTTONDOWN): {
             if (gMainEvent.button.button == SDL_BUTTON_LEFT) gUiMouseLeftDown = true;
             else if (gMainEvent.button.button == SDL_BUTTON_RIGHT) gUiMouseRightDown = true;
         } break;
-        case (SDL_MOUSEBUTTONUP):
-        {
+        case (SDL_MOUSEBUTTONUP): {
             if (gMainEvent.button.button == SDL_BUTTON_LEFT) gUiMouseLeftUp = true;
             else if (gMainEvent.button.button == SDL_BUTTON_RIGHT) gUiMouseRightUp = true;
         } break;
-        case (SDL_WINDOWEVENT):
-        {
+        case (SDL_WINDOWEVENT): {
             // When focus changes to a new window then the current text box should be deselected.
             // We also do not want the current hit and hot IDs to persist to the new window.
-            if (gMainEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-            {
+            if (gMainEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
                 DeselectActiveTextBox();
                 DeselectActiveHotkeyRebind();
-
                 gUiHotID = gUiInvalidID;
                 gUiHitID = gUiInvalidID;
             }
         } break;
-        case (SDL_USEREVENT):
-        {
-            if (gMainEvent.user.code == static_cast<U32>(EditorEvent::BlinkCursor))
-            {
+        case (SDL_USEREVENT): {
+            if (gMainEvent.user.code == static_cast<U32>(EditorEvent::BlinkCursor)) {
                 gUiCursorVisible = !gUiCursorVisible;
             }
         } break;
     }
 
     // Handle events specifically for UI text boxes.
-    if (gUiActiveTextBox != gUiInvalidID)
-    {
+    if (gUiActiveTextBox != gUiInvalidID) {
         UiTextEvent textEvent;
-        switch (gMainEvent.type)
-        {
-            case (SDL_TEXTINPUT):
-            {
+        switch (gMainEvent.type) {
+            case (SDL_TEXTINPUT): {
                 textEvent.type = UiTextEventType::Text;
                 textEvent.text = gMainEvent.text.text;
                 gUiTextEvents.push_back(textEvent);
             } break;
-            case (SDL_KEYDOWN):
-            {
+            case (SDL_KEYDOWN): {
                 textEvent.type = UiTextEventType::Key;
                 textEvent.key = gMainEvent.key.keysym.sym;
                 gUiTextEvents.push_back(textEvent);
@@ -492,11 +443,9 @@ TEINAPI void HandleUiEvents ()
     }
     else
     {
-        if (gMainEvent.type == SDL_KEYDOWN)
-        {
+        if (gMainEvent.type == SDL_KEYDOWN) {
             // We do this so we can focus on the first text box in the window!
-            if (gMainEvent.key.keysym.sym == SDLK_TAB)
-            {
+            if (gMainEvent.key.keysym.sym == SDLK_TAB) {
                 gUiMakeNextTextBoxActive = true;
                 gUiTextBoxTabWindowID = GetFocusedWindow().id;
             }
@@ -561,8 +510,7 @@ TEINAPI void DeselectActiveTextBox (std::string& text, std::string defaultText)
 }
 TEINAPI void DeselectActiveTextBox ()
 {
-    if (gUiCursorBlinkTimer)
-    {
+    if (gUiCursorBlinkTimer) {
         SDL_RemoveTimer(gUiCursorBlinkTimer);
         gUiCursorBlinkTimer = NULL;
     }
@@ -595,8 +543,7 @@ TEINAPI void BeginPanel (float x, float y, float w, float h, UiFlag flags, Vec4 
     // The method of adding a new panel varies depending on whether the panel
     // is a child to an existing panel or if it is a lone panel in the window.
     panel.absoluteBounds = { x,y,w,h };
-    if (gUiPanels.size() > 0)
-    {
+    if (gUiPanels.size() > 0) {
         const Quad& pAbsolute = gUiPanels.top().absoluteBounds;
         const Vec2& pOffset = gUiPanels.top().relativeOffset;
         const Quad& pViewport = gUiPanels.top().viewport;
@@ -630,9 +577,7 @@ TEINAPI void BeginPanel (float x, float y, float w, float h, UiFlag flags, Vec4 
 
         // Inherit the parent panel's flags.
         panel.flags = flags | gUiPanels.top().flags;
-    }
-    else
-    {
+    } else {
         panel.viewport = panel.absoluteBounds;
         panel.relativeOffset = Vec2(0,0);
         panel.flags = flags;
@@ -677,8 +622,7 @@ TEINAPI bool BeginClickPanel (UiAction action, float w, float h, UiFlag flags, s
     BeginPanel(cursor.x, cursor.y, w, h, flags, back);
     Internal::AdvanceUiCursorStart(parent, w, h);
 
-    if (highlight && !Internal::IsHit())
-    {
+    if (highlight && !Internal::IsHit()) {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
@@ -692,8 +636,7 @@ TEINAPI bool BeginClickPanel (UiAction action, float w, float h, UiFlag flags, s
     Internal::AdvanceUiCursorEnd(parent, w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && Internal::IsHot())
-    {
+    if (!locked && !info.empty() && Internal::IsHot()) {
         PushStatusBarMessage(info.c_str());
     }
 
@@ -808,8 +751,7 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
     else if (Internal::IsHit()) back = gUiColorDark;
     else if (Internal::IsHot()) back = gUiColorMedLight;
 
-    if (locked || inactive)
-    {
+    if (locked || inactive) {
         shadow.a = .5f;
         front.a = .5f;
     }
@@ -817,8 +759,7 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
     SetDrawColor(back); // Draw the button's background quad.
     FillQuad(cursor.x, cursor.y, cursor.x + w, cursor.y + h);
 
-    if (highlight && !Internal::IsHit())
-    {
+    if (highlight && !Internal::IsHit()) {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
@@ -848,14 +789,11 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
     Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && Internal::IsHot())
-    {
+    if (!locked && !info.empty() && Internal::IsHot()) {
         std::string kbInfo;
-        if (!kb.empty())
-        {
+        if (!kb.empty()) {
             kbInfo = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
-            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
-            {
+            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod) {
                 kbInfo += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
@@ -863,8 +801,7 @@ TEINAPI bool DoImageButton (UiAction action, float w, float h, UiFlag flags, con
         PushStatusBarMessage(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
-    if (!locked && !name.empty() && Internal::IsHot())
-    {
+    if (!locked && !name.empty() && Internal::IsHot()) {
         SetCurrentTooltip(name);
     }
 
@@ -907,8 +844,7 @@ TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std:
     else if (Internal::IsHit()) back = gUiColorDark;
     else if (Internal::IsHot()) back = gUiColorMedLight;
 
-    if (locked || inactive)
-    {
+    if (locked || inactive) {
         shadow.a = .5f;
         front.a = .5f;
     }
@@ -916,8 +852,7 @@ TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std:
     SetDrawColor(back); // Draw the button's background quad.
     FillQuad(cursor.x, cursor.y, cursor.x + w, cursor.y + h);
 
-    if (highlight && !Internal::IsHit())
-    {
+    if (highlight && !Internal::IsHit()) {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
@@ -937,22 +872,18 @@ TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std:
     font.color = front;
     DrawText(font, x, y, text);
 
-    if (!single)
-    {
+    if (!single) {
         Internal::DrawSeparator(Internal::GetRelativeCursor(gUiPanels.top()), gUiPanels.top().cursorDir, w, h, gUiColorMedDark);
     }
 
     Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && Internal::IsHot())
-    {
+    if (!locked && !info.empty() && Internal::IsHot()) {
         std::string kbInfo;
-        if (!kb.empty())
-        {
+        if (!kb.empty()) {
             kbInfo = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
-            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
-            {
+            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod) {
                 kbInfo += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
@@ -960,8 +891,7 @@ TEINAPI bool DoTextButton (UiAction action, float w, float h, UiFlag flags, std:
         PushStatusBarMessage(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
-    if (!locked && !name.empty() && Internal::IsHot())
-    {
+    if (!locked && !name.empty() && Internal::IsHot()) {
         SetCurrentTooltip(name);
     }
 
@@ -1011,21 +941,15 @@ TEINAPI void DoLabel (UiAlign horz, UiAlign vert, float w, float h, std::string 
     // and if necessary trim any off and replace the end with and ellipsis.
     bool textClipped = false;
     std::string clippedText(text);
-    if (std::count(clippedText.begin(), clippedText.end(), '\n') <= 1)
-    {
-        if (tw > w) // Our text goes out of the label bounds.
-        {
+    if (std::count(clippedText.begin(), clippedText.end(), '\n') <= 1) {
+        if (tw > w) { // Our text goes out of the label bounds.
             textClipped = true;
-            if (clippedText.length() <= 3)
-            {
+            if (clippedText.length() <= 3) {
                 clippedText = "...";
                 tw = GetTextWidthScaled(font, clippedText);
-            }
-            else
-            {
+            } else {
                 clippedText.replace(clippedText.length()-3, 3, "...");
-                while (tw > w && clippedText.length() > 3)
-                {
+                while (tw > w && clippedText.length() > 3) {
                     clippedText.erase(clippedText.length()-4, 1);
                     tw = GetTextWidthScaled(font, clippedText);
                 }
@@ -1043,18 +967,15 @@ TEINAPI void DoLabel (UiAlign horz, UiAlign vert, float w, float h, std::string 
     Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
     Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
 
-    if (locked || inactive)
-    {
+    if (locked || inactive) {
         shadow.a = .5f;
         front.a = .5f;
     }
 
-    if (tooltip)
-    {
+    if (tooltip) {
         shadow = gUiDarkColorBlack;
         front = gUiDarkColorExLight;
-        if (darken)
-        {
+        if (darken) {
             front = Vec4(.7f,.7f,.7f, 1);
         }
     }
@@ -1105,20 +1026,14 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
     // If text is a single line we calculate how much we can fit in the width
     // and if necessary trim any off and replace the end with and ellipsis.
     std::string clippedText(text);
-    if (std::count(clippedText.begin(), clippedText.end(), '\n') <= 1)
-    {
-        if (tw > w) // Our text goes out of the label bounds.
-        {
-            if (clippedText.length() <= 3)
-            {
+    if (std::count(clippedText.begin(), clippedText.end(), '\n') <= 1) {
+        if (tw > w) { // Our text goes out of the label bounds.
+            if (clippedText.length() <= 3) {
                 clippedText = "...";
                 tw = GetTextWidthScaled(font, clippedText);
-            }
-            else
-            {
+            } else {
                 clippedText.replace(clippedText.length()-3, 3, "...");
-                while (tw > w && clippedText.length() > 3)
-                {
+                while (tw > w && clippedText.length() > 3) {
                     clippedText.erase(clippedText.length()-4, 1);
                     tw = GetTextWidthScaled(font, clippedText);
                 }
@@ -1127,34 +1042,25 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
     }
 
     // Handle setting the application's cursor to the correct graphic.
-    if (Internal::IsHot())
-    {
+    if (Internal::IsHot()) {
         gUiHotHyperlink = gUiCurrentID;
         SetCursorType(Cursor::Pointer);
-    }
-    else
-    {
-        if (gUiHotHyperlink == gUiCurrentID)
-        {
+    } else {
+        if (gUiHotHyperlink == gUiCurrentID) {
             gUiHotHyperlink = gUiInvalidID;
         }
 
         // We have this check so that we can know it's okay to set the cursor back to arrow as no text box elements are hot.
-        if (gUiHotHyperlink == gUiInvalidID && gUiHotTextBox == gUiInvalidID)
-        {
+        if (gUiHotHyperlink == gUiInvalidID && gUiHotTextBox == gUiInvalidID) {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to hyperlinks. Could be cleaned.
-            if (CurrentTabIsLevel() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
-            {
-                switch (gLevelEditor.toolType)
-                {
+            if (CurrentTabIsLevel() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN")) {
+                switch (gLevelEditor.toolType) {
                     case (ToolType::Brush): SetCursorType(Cursor::Brush); break;
                     case (ToolType::Fill): SetCursorType(Cursor::Fill); break;
                     case (ToolType::Select): SetCursorType(Cursor::Select); break;
                 }
-            }
-            else
-            {
+            } else {
                 SetCursorType(Cursor::Arrow);
             }
         }
@@ -1178,8 +1084,7 @@ TEINAPI void DoLabelHyperlink (UiAlign horz, UiAlign vert, float w, float h, std
     Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
     Vec4 linkColor = front;
 
-    if (Internal::IsHit() || Internal::IsHot())
-    {
+    if (Internal::IsHit() || Internal::IsHot()) {
         linkColor = (IsUiLight()) ? gUiColorExDark : gUiColorWhite;
     }
 
@@ -1233,21 +1138,18 @@ TEINAPI void DoMarkdown (float w, float h, std::string text)
     Vec4 shadow = (IsUiLight()) ? gUiColorExLight : gUiColorBlack;
     Vec4 front = (IsUiLight()) ? gUiColorBlack : gUiColorExLight;
 
-    if (locked || inactive)
-    {
+    if (locked || inactive) {
         shadow.a = .5f;
         front.a = .5f;
     }
 
     Internal::DoMarkdownFormatting(lines, w);
 
-    for (auto& line: lines)
-    {
+    for (auto& line: lines) {
         std::vector<std::string> subLines;
         TokenizeString(line, "\r\n", subLines);
 
-        for (size_t i=0; i<subLines.size(); ++i)
-        {
+        for (size_t i=0; i<subLines.size(); ++i) {
             x = cursor.x;
             if (i != 0) x += GetTextWidthScaled(font, ">");
             font.color = shadow;
@@ -1284,12 +1186,10 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
 
     Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
-    if (!locked)
-    {
+    if (!locked) {
         if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked)) {
             // If the cursor was blinking before then reset the timer.
-            if (gUiCursorBlinkTimer)
-            {
+            if (gUiCursorBlinkTimer) {
                 SDL_RemoveTimer(gUiCursorBlinkTimer);
                 gUiCursorBlinkTimer = NULL;
             }
@@ -1297,8 +1197,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
             // Start the blinking of the cursor.
             gUiCursorVisible = true;
             gUiCursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::CursorBlinkCallback, NULL);
-            if (!gUiCursorBlinkTimer)
-            {
+            if (!gUiCursorBlinkTimer) {
                 LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }
 
@@ -1307,62 +1206,48 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
 
             SDL_StartTextInput();
         }
-    }
-    else if (gUiActiveTextBox == gUiCurrentID)
-    {
+    } else if (gUiActiveTextBox == gUiCurrentID) {
         DeselectActiveTextBox(text, defaultText);
     }
 
     // If we are the active text box and the mouse was pressed this update
     // and we're not hit then that means the press was outside of us and
     // therefore we need to become deselected and can no longer be active.
-    if (gUiActiveTextBox == gUiCurrentID && Internal::IsUiMouseLeftDown() && !Internal::IsHit())
-    {
+    if (gUiActiveTextBox == gUiCurrentID && Internal::IsUiMouseLeftDown() && !Internal::IsHit()) {
         DeselectActiveTextBox(text, defaultText);
     }
     // If the right mouse button is pressed then we just always deselect.
-    if (gUiActiveTextBox == gUiCurrentID && Internal::IsUiMouseRightDown())
-    {
+    if (gUiActiveTextBox == gUiCurrentID && Internal::IsUiMouseRightDown()) {
         DeselectActiveTextBox(text, defaultText);
     }
 
     // Handle setting the application's cursor to the correct graphic.
-    if (Internal::IsHot())
-    {
+    if (Internal::IsHot()) {
         gUiHotTextBox = gUiCurrentID;
         SetCursorType(Cursor::Beam);
-    }
-    else
-    {
-        if (gUiHotTextBox == gUiCurrentID)
-        {
+    } else {
+        if (gUiHotTextBox == gUiCurrentID) {
             gUiHotTextBox = gUiInvalidID;
         }
 
         // We have this check so that we can know it's okay to set
         // the cursor back to arrow as no text box elements are hot.
-        if ((gUiHotTextBox == gUiInvalidID) && (gUiHotHyperlink == gUiInvalidID))
-        {
+        if ((gUiHotTextBox == gUiInvalidID) && (gUiHotHyperlink == gUiInvalidID)) {
             // NOTE: Kind of hacky to put this here, but it prevents issues with
             // the flickering of the cursor due to text boxes. Could be cleaned.
-            if (CurrentTabIsLevel() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN"))
-            {
-                switch (gLevelEditor.toolType)
-                {
+            if (CurrentTabIsLevel() && MouseInsideLevelEditorViewport() && IsWindowFocused("WINMAIN")) {
+                switch (gLevelEditor.toolType) {
                     case (ToolType::Brush): SetCursorType(Cursor::Brush); break;
                     case (ToolType::Fill): SetCursorType(Cursor::Fill); break;
                     case (ToolType::Select): SetCursorType(Cursor::Select); break;
                 }
-            }
-            else
-            {
+            } else {
                 SetCursorType(Cursor::Arrow);
             }
         }
     }
 
-    if (!locked && gUiMakeNextTextBoxActive && GetRenderTarget()->id == gUiTextBoxTabWindowID)
-    {
+    if (!locked && gUiMakeNextTextBoxActive && GetRenderTarget()->id == gUiTextBoxTabWindowID) {
         gUiTextBoxCursor = std::string::npos;
         gUiActiveTextBox = gUiCurrentID;
         gUiMakeNextTextBoxActive = false;
@@ -1374,8 +1259,7 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
     Vec4 outline = gUiColorDark;
     Vec4 back = gUiColorMedDark;
 
-    if (locked)
-    {
+    if (locked) {
         outline = gUiColorMedDark;
         back = gUiColorMedium;
         shadow.a = .5f;
@@ -1396,150 +1280,114 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
     float bh = h       -(YPad*2);
 
     // Handle text input events if we are the active text box.
-    if (gUiActiveTextBox == gUiCurrentID)
-    {
+    if (gUiActiveTextBox == gUiCurrentID) {
         // Make sure that the cursor is in the bounds of the string.
-        if (gUiTextBoxCursor > text.length())
-        {
+        if (gUiTextBoxCursor > text.length()) {
             gUiTextBoxCursor = text.length();
         }
 
-        if (GetRenderTarget()->focus)
-        {
+        if (GetRenderTarget()->focus) {
             std::string oldText = text;
             size_t oldCursor = gUiTextBoxCursor;
 
-            for (auto& textEvent: gUiTextEvents)
-            {
-                switch (textEvent.type)
-                {
-                    case (UiTextEventType::Text):
-                    {
+            for (auto& textEvent: gUiTextEvents) {
+                switch (textEvent.type) {
+                    case (UiTextEventType::Text): {
                         bool invalidText = false;
-                        for (auto c: textEvent.text)
-                        {
+                        for (auto c: textEvent.text) {
                             if (static_cast<bool>(flags & UiFlag::Alphanum) && !isalnum(c)) invalidText = true;
                             if (static_cast<bool>(flags & UiFlag::Alphabetic) && !isalpha(c)) invalidText = true;
                             if (static_cast<bool>(flags & UiFlag::Numeric) && !isdigit(c)) invalidText = true;
                             if (static_cast<bool>(flags & UiFlag::FilePath) && !Internal::IsValidFilePath(c)) invalidText = true;
                         }
-                        if (invalidText)
-                        {
+                        if (invalidText) {
                             break;
                         }
                         // Clear out the default text and enter what the user actually wants.
-                        if (!defaultText.empty() && (text == defaultText))
-                        {
+                        if (!defaultText.empty() && (text == defaultText)) {
                             gUiTextBoxCursor = 0;
                             text.clear();
                         }
-                        for (auto c: textEvent.text)
-                        {
+                        for (auto c: textEvent.text) {
                             auto pos = text.begin()+(gUiTextBoxCursor++);
                             text.insert(pos, c);
                         }
                     } break;
-                    case (UiTextEventType::Key):
-                    {
-                        switch (textEvent.key)
-                        {
-                            case (SDLK_TAB):
-                            {
-                                if (!gUiTabHandled)
-                                {
+                    case (UiTextEventType::Key): {
+                        switch (textEvent.key) {
+                            case (SDLK_TAB): {
+                                if (!gUiTabHandled) {
                                     gUiMakeNextTextBoxActive = true;
                                     gUiTextBoxTabWindowID = GetRenderTarget()->id;
                                     gUiTabHandled = true;
                                 }
                             } break;
-                            case (SDLK_LEFT):
-                            {
-                                if (gUiTextBoxCursor > 0)
-                                {
+                            case (SDLK_LEFT): {
+                                if (gUiTextBoxCursor > 0) {
                                     --gUiTextBoxCursor;
                                 }
                             } break;
                             case (SDLK_RIGHT): {
-                                if (gUiTextBoxCursor < text.length())
-                                {
+                                if (gUiTextBoxCursor < text.length()) {
                                     ++gUiTextBoxCursor;
                                 }
                             } break;
-                            case (SDLK_UP):
-                            {
-                                if (static_cast<bool>(flags & UiFlag::Numeric))
-                                {
-                                    if (atoi(text.c_str()) < INT_MAX)
-                                    {
+                            case (SDLK_UP): {
+                                if (static_cast<bool>(flags & UiFlag::Numeric)) {
+                                    if (atoi(text.c_str()) < INT_MAX) {
                                         text = std::to_string(atoi(text.c_str())+1);
                                         gUiTextBoxCursor = text.length();
                                     }
                                 }
                             } break;
-                            case (SDLK_DOWN):
-                            {
-                                if (static_cast<bool>(flags & UiFlag::Numeric))
-                                {
-                                    if (atoi(text.c_str()) > 0)
-                                    {
+                            case (SDLK_DOWN): {
+                                if (static_cast<bool>(flags & UiFlag::Numeric)) {
+                                    if (atoi(text.c_str()) > 0) {
                                         text = std::to_string(atoi(text.c_str())-1);
                                         gUiTextBoxCursor = text.length();
                                     }
                                 }
                             } break;
-                            case (SDLK_HOME):
-                            {
+                            case (SDLK_HOME): {
                                 gUiTextBoxCursor = 0;
                             } break;
-                            case (SDLK_END):
-                            {
+                            case (SDLK_END): {
                                 gUiTextBoxCursor = text.length();
                             } break;
-                            case (SDLK_BACKSPACE):
-                            {
+                            case (SDLK_BACKSPACE): {
                                 if (gUiTextBoxCursor != 0)
                                 {
                                     text.erase(--gUiTextBoxCursor, 1);
                                 }
                             } break;
-                            case (SDLK_DELETE):
-                            {
-                                if (gUiTextBoxCursor < text.length())
-                                {
+                            case (SDLK_DELETE): {
+                                if (gUiTextBoxCursor < text.length()) {
                                     text.erase(gUiTextBoxCursor, 1);
                                 }
                             } break;
-                            case (SDLK_RETURN):
-                            {
+                            case (SDLK_RETURN): {
                                 DeselectActiveTextBox(text, defaultText);
                             } break;
-                            case (SDLK_v):
-                            {
-                                if (SDL_GetModState() & KMOD_CTRL)
-                                {
-                                    if (SDL_HasClipboardText())
-                                    {
+                            case (SDLK_v): {
+                                if (SDL_GetModState() & KMOD_CTRL) {
+                                    if (SDL_HasClipboardText()) {
                                         char* clipboardText = SDL_GetClipboardText();
-                                        if (clipboardText)
-                                        {
+                                        if (clipboardText) {
                                             Defer { SDL_free(clipboardText); }; // Docs say we need to free!
 
                                             bool addText = true;
                                             std::string t(clipboardText);
 
-                                            for (auto c: t)
-                                            {
+                                            for (auto c: t) {
                                                 if (static_cast<bool>(flags & UiFlag::Alphanum) && !isalnum(c)) { addText = false; break; }
                                                 if (static_cast<bool>(flags & UiFlag::Alphabetic) && !isalpha(c)) { addText = false; break; }
                                                 if (static_cast<bool>(flags & UiFlag::Numeric) && !isdigit(c)) { addText = false; break; }
                                                 if (static_cast<bool>(flags & UiFlag::FilePath) && !Internal::IsValidFilePath(c)) { addText = false; break; }
                                             }
 
-                                            if (addText)
-                                            {
+                                            if (addText) {
                                                 // Clear out the default text and enter what the user actually wants.
-                                                if (!defaultText.empty() && text == defaultText)
-                                                {
+                                                if (!defaultText.empty() && text == defaultText) {
                                                     gUiTextBoxCursor = 0;
                                                     text.clear();
                                                 }
@@ -1559,27 +1407,23 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
             gUiTextEvents.clear();
 
             // Reset the cursor blink interval.
-            if (oldText != text || oldCursor != gUiTextBoxCursor)
-            {
+            if (oldText != text || oldCursor != gUiTextBoxCursor) {
                 // If the cursor was blinking before then reset the timer.
-                if (gUiCursorBlinkTimer)
-                {
+                if (gUiCursorBlinkTimer) {
                     SDL_RemoveTimer(gUiCursorBlinkTimer);
                     gUiCursorBlinkTimer = NULL;
                 }
                 // Start the blinking of the cursor.
                 gUiCursorVisible = true;
                 gUiCursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::CursorBlinkCallback, NULL);
-                if (!gUiCursorBlinkTimer)
-                {
+                if (!gUiCursorBlinkTimer) {
                     LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
                 }
             }
         }
 
         // Cursor should always be at the end of the default text.
-        if (!defaultText.empty() && text == defaultText)
-        {
+        if (!defaultText.empty() && text == defaultText) {
             gUiTextBoxCursor = text.length();
         }
     }
@@ -1600,24 +1444,18 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
     float yOff = (IsUiLight()) ? -1.0f : 1.0f;
 
     // Adjust text position/offsetrun based on the current cursor.
-    if (gUiActiveTextBox == gUiCurrentID)
-    {
-        if (hAlign == UiAlign::Left)
-        {
+    if (gUiActiveTextBox == gUiCurrentID) {
+        if (hAlign == UiAlign::Left) {
             std::string sub(text.substr(0, gUiTextBoxCursor));
             float cursorX = tx+GetTextWidthScaled(font, sub);
-            if (cursorX > bx+bw)
-            {
+            if (cursorX > bx+bw) {
                 float diff = abs(bw - GetTextWidthScaled(font, sub));
                 xOff = -diff;
             }
-        }
-        else
-        {
+        } else {
             std::string sub(text.substr(0, gUiTextBoxCursor));
             float cursorX = tx+GetTextWidthScaled(font, sub);
-            if (cursorX < bx)
-            {
+            if (cursorX < bx) {
                 xOff = (bx - cursorX);
             }
         }
@@ -1631,16 +1469,14 @@ TEINAPI void DoTextBox (float w, float h, UiFlag flags, std::string& text, std::
     EndScissor();
 
     // If we're active then draw the text box cursor as well.
-    if ((gUiActiveTextBox == gUiCurrentID) && gUiCursorVisible)
-    {
+    if ((gUiActiveTextBox == gUiCurrentID) && gUiCursorVisible) {
         BeginScissor(bx-1, by-1, bw+2, bh+2);
 
         std::string sub(text.substr(0, gUiTextBoxCursor));
         float xo = GetTextWidthScaled(font, sub);
         float yo = (bh-th)/2; // Center the cursor vertically.
         // Just looks nicer...
-        if ((gUiTextBoxCursor != 0 && text.length()) || (!text.length()))
-        {
+        if ((gUiTextBoxCursor != 0 && text.length()) || (!text.length())) {
             xo += 1;
         }
         SetDrawColor((IsUiLight()) ? gUiColorBlack : gUiColorExLight);
@@ -1675,8 +1511,7 @@ TEINAPI void DoTextBoxLabeled (float w, float h, UiFlag flags, std::string& text
     DoTextBox(tw, h, flags, text, defaultText, hAlign);
 
     // Reset the X location of the cursor for the caller.
-    if (dir == UiDir::Up || dir == UiDir::Down)
-    {
+    if (dir == UiDir::Up || dir == UiDir::Down){
         gUiPanels.top().cursor->x = cursor.x;
     }
 }
@@ -1695,28 +1530,22 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
 
     Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
-    if (!locked)
-    {
-        if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked))
-        {
+    if (!locked) {
+        if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked)) {
             gUiActiveHotkeyRebind = gUiCurrentID;
         }
-    }
-    else if (gUiActiveHotkeyRebind == gUiCurrentID)
-    {
+    } else if (gUiActiveHotkeyRebind == gUiCurrentID) {
         DeselectActiveHotkeyRebind();
     }
 
     // If we are the active KB rebind and the mouse was pressed this update
     // and we're not hit then that means the press was outside of us and
     // therefore we need to become deselected and can no longer be active.
-    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseLeftDown() && !Internal::IsHit())
-    {
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseLeftDown() && !Internal::IsHit()) {
         DeselectActiveHotkeyRebind();
     }
     // If the right mouse button is pressed then we just always deselect.
-    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseRightDown())
-    {
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseRightDown()) {
         DeselectActiveHotkeyRebind();
     }
 
@@ -1725,8 +1554,7 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
     Vec4 outline = gUiColorDark;
     Vec4 back = gUiColorMedDark;
 
-    if (locked)
-    {
+    if (locked) {
         outline = gUiColorMedDark;
         back = gUiColorMedium;
         shadow.a = .5f;
@@ -1747,18 +1575,11 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
     float bh = h       -(YPad*2);
 
     // If we're active then we check if the user has entered a new binding.
-    if (gUiActiveHotkeyRebind == gUiCurrentID)
-    {
-        if (gMainEvent.type == SDL_KEYDOWN)
-        {
+    if (gUiActiveHotkeyRebind == gUiCurrentID) {
+        if (gMainEvent.type == SDL_KEYDOWN) {
             SDL_Keycode k = gMainEvent.key.keysym.sym;
             // We do not want the key binding to be set when just the mod is pressed!
-            if (k != SDLK_LCTRL  && k != SDLK_RCTRL  &&
-                k != SDLK_LALT   && k != SDLK_RALT   &&
-                k != SDLK_MODE                       &&
-                k != SDLK_RSHIFT && k != SDLK_LSHIFT &&
-                k != SDLK_LGUI   && k != SDLK_RGUI)
-            {
+            if (k != SDLK_LCTRL && k != SDLK_RCTRL && k != SDLK_LALT && k != SDLK_RALT && k != SDLK_MODE && k != SDLK_RSHIFT && k != SDLK_LSHIFT && k != SDLK_LGUI && k != SDLK_RGUI) {
                 kb.code = gMainEvent.key.keysym.sym;
 
                 // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
@@ -1780,12 +1601,9 @@ TEINAPI void DoHotkeyRebindMain (float w, float h, UiFlag flags, KeyBinding& kb)
 
     // The text to display depends on if we're active or not.
     std::string text;
-    if (gUiActiveHotkeyRebind == gUiCurrentID)
-    {
+    if (gUiActiveHotkeyRebind == gUiCurrentID) {
         text = "Enter new key binding...";
-    }
-    else
-    {
+    } else {
         text = GetKeyBindingMainString(kb);
     }
 
@@ -1826,14 +1644,11 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
 
     Vec2 cursor = Internal::GetRelativeCursor(gUiPanels.top());
 
-    if (!locked)
-    {
-        if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked))
-        {
+    if (!locked) {
+        if (Internal::HandleWidget(cursor.x, cursor.y, w, h, locked)) {
             gUiActiveHotkeyRebind = gUiCurrentID;
         }
-    }
-    else if (gUiActiveHotkeyRebind == gUiCurrentID)
+    } else if (gUiActiveHotkeyRebind == gUiCurrentID)
     {
         DeselectActiveHotkeyRebind();
     }
@@ -1841,13 +1656,11 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
     // If we are the active KB rebind and the mouse was pressed this update
     // and we're not hit then that means the press was outside of us and
     // therefore we need to become deselected and can no longer be active.
-    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseLeftDown() && !Internal::IsHit())
-    {
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseLeftDown() && !Internal::IsHit()) {
         DeselectActiveHotkeyRebind();
     }
     // If the right mouse button is pressed then we just always deselect.
-    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseRightDown())
-    {
+    if ((gUiActiveHotkeyRebind == gUiCurrentID) && Internal::IsUiMouseRightDown()) {
         DeselectActiveHotkeyRebind();
     }
 
@@ -1856,8 +1669,7 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
     Vec4 outline = gUiColorDark;
     Vec4 back = gUiColorMedDark;
 
-    if (locked)
-    {
+    if (locked) {
         outline = gUiColorMedDark;
         back = gUiColorMedium;
         shadow.a = .5f;
@@ -1878,18 +1690,11 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
     float bh = h       -(YPad*2);
 
     // If we're active then we check if the user has entered a new binding.
-    if (gUiActiveHotkeyRebind == gUiCurrentID)
-    {
-        if (gMainEvent.type == SDL_KEYDOWN)
-        {
+    if (gUiActiveHotkeyRebind == gUiCurrentID) {
+        if (gMainEvent.type == SDL_KEYDOWN) {
             SDL_Keycode k = gMainEvent.key.keysym.sym;
             // We do not want the key binding to be set when just the mod is pressed!
-            if (k != SDLK_LCTRL  && k != SDLK_RCTRL  &&
-                k != SDLK_LALT   && k != SDLK_RALT   &&
-                k != SDLK_MODE                       &&
-                k != SDLK_RSHIFT && k != SDLK_LSHIFT &&
-                k != SDLK_LGUI   && k != SDLK_RGUI)
-            {
+            if (k != SDLK_LCTRL && k != SDLK_RCTRL && k != SDLK_LALT && k != SDLK_RALT && k != SDLK_MODE && k != SDLK_RSHIFT && k != SDLK_LSHIFT && k != SDLK_LGUI && k != SDLK_RGUI) {
                 kb.altCode = gMainEvent.key.keysym.sym;
 
                 // Remove CAPSLOCK and NUMLOCK because we don't care about them at all.
@@ -1913,12 +1718,9 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
 
     // The text to display depends on if we're active or not.
     std::string text;
-    if (gUiActiveHotkeyRebind == gUiCurrentID)
-    {
+    if (gUiActiveHotkeyRebind == gUiCurrentID) {
         text = "Enter new key binding...";
-    }
-    else
-    {
+    } else {
         text = GetKeyBindingAltString(kb);
     }
 
@@ -1944,8 +1746,6 @@ TEINAPI void DoHotkeyRebindAlt (float w, float h, UiFlag flags, KeyBinding& kb)
     ++gUiCurrentID;
 }
 
-/* -------------------------------------------------------------------------- */
-
 TEINAPI void DoIcon (float w, float h, Texture& texture, const Quad* clip)
 {
     UiFlag flags = gUiPanels.top().flags;
@@ -1964,8 +1764,7 @@ TEINAPI void DoIcon (float w, float h, Texture& texture, const Quad* clip)
     Vec4 front = (IsUiLight()) ? Vec4(.4f,.4f,.4f, 1) : Vec4(.73f,.73f,.73f, 1);
     Vec4 shadow = (IsUiLight()) ? Vec4(.9f,.9f,.9f, 1) : Vec4(.16f,.16f,.16f, 1);
 
-    if (locked || inactive)
-    {
+    if (locked || inactive) {
         shadow.a = .5f;
         front.a = .5f;
     }
@@ -2057,8 +1856,7 @@ TEINAPI void DoScrollbar (float x, float y, float w, float h, float contentHeigh
     Internal::HandleWidget(bx,by, bw,bh, false);
 
     // Adjust the offset by however much the mouse has moved.
-    if (Internal::IsHit())
-    {
+    if (Internal::IsHit()) {
         scrollOffset += (gUiMouseRelative.y / (h-(Pad*2)));
         scrollOffset = std::clamp(scrollOffset, 0.0f, ndcHeight);
     }
@@ -2078,8 +1876,7 @@ TEINAPI void DoScrollbar (float x, float y, float w, float h, float contentHeigh
     //
     // We do not bother though if it's really small because then
     // adding these lines just looks sort of gross and cluttered.
-    if (bh > 10)
-    {
+    if (bh > 10) {
         constexpr float LineGap = 2;
 
         BeginScissor(bx,by,bw,bh);
@@ -2104,13 +1901,10 @@ TEINAPI void DoScrollbar (float x, float y, float w, float h, float contentHeigh
     // adjustment of the scroll in order to correct this issue.
     float finalOffset = roundf(contentHeight * scrollOffset);
     float resultingHeight = contentHeight - finalOffset;
-    if (scrollOffset != 0 && resultingHeight < GetPanelHeight())
-    {
+    if (scrollOffset != 0 && resultingHeight < GetPanelHeight()) {
         float difference = GetPanelHeight() - resultingHeight;
         gUiPanels.top().relativeOffset.y -= (finalOffset - difference);
-    }
-    else
-    {
+    } else {
         gUiPanels.top().relativeOffset.y -= roundf(contentHeight * scrollOffset);
     }
 
@@ -2124,8 +1918,7 @@ TEINAPI void BeginPanelGradient (float x, float y, float w, float h, UiFlag flag
     // The method of adding a new panel varies depending on whether the panel
     // is a child to an existing panel or if it is a lone panel in the window.
     panel.absoluteBounds = { x,y,w,h };
-    if (gUiPanels.size() > 0)
-    {
+    if (gUiPanels.size() > 0) {
         const Quad& pAbsolute = gUiPanels.top().absoluteBounds;
         const Vec2& pOffset = gUiPanels.top().relativeOffset;
         const Quad& pViewport = gUiPanels.top().viewport;
@@ -2159,9 +1952,7 @@ TEINAPI void BeginPanelGradient (float x, float y, float w, float h, UiFlag flag
 
         // Inherit the parent panel's flags.
         panel.flags = flags | gUiPanels.top().flags;
-    }
-    else
-    {
+    } else {
         panel.viewport = panel.absoluteBounds;
         panel.relativeOffset = Vec2(0,0);
         panel.flags = flags;
@@ -2210,15 +2001,13 @@ TEINAPI bool BeginClickPanelGradient (UiAction action, float w, float h, UiFlag 
     BeginPanelGradient(cursor.x, cursor.y, w, h, flags, bgLeft, bgRight);
     Internal::AdvanceUiCursorStart(parent, w, h);
 
-    if (highlight && !Internal::IsHit())
-    {
+    if (highlight && !Internal::IsHit()) {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
-    if (highlight && Internal::IsHit())
-    {
+    if (highlight && Internal::IsHit()) {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
         BeginDraw(BufferMode::TriangleStrip);
@@ -2236,8 +2025,7 @@ TEINAPI bool BeginClickPanelGradient (UiAction action, float w, float h, UiFlag 
     Internal::AdvanceUiCursorEnd(parent, w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && Internal::IsHot())
-    {
+    if (!locked && !info.empty() && Internal::IsHot()) {
         PushStatusBarMessage(info.c_str());
     }
 
@@ -2280,29 +2068,26 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
     else if (Internal::IsHit()) bgRight = gUiColorDark;
     else if (Internal::IsHot()) bgRight = gUiColorMedLight;
 
-    if (locked || inactive)
-    {
+    if (locked || inactive) {
         shadow.a = .5f;
         front.a = .5f;
     }
 
     // Draw the button's background quad.
     BeginDraw(BufferMode::TriangleStrip);
-    PutVertex(cursor.x,   cursor.y+h, bgLeft); // BL
-    PutVertex(cursor.x,   cursor.y,   bgLeft); // TL
+    PutVertex(cursor.x,   cursor.y+h, bgLeft ); // BL
+    PutVertex(cursor.x,   cursor.y,   bgLeft ); // TL
     PutVertex(cursor.x+w, cursor.y+h, bgRight); // BR
     PutVertex(cursor.x+w, cursor.y,   bgRight); // TR
     EndDraw();
 
-    if (highlight && !Internal::IsHit())
-    {
+    if (highlight && !Internal::IsHit()) {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
         SetDrawColor(color);
         FillQuad(0, 0, GetViewport().w, GetViewport().h);
     }
-    if (highlight && Internal::IsHit())
-    {
+    if (highlight && Internal::IsHit()) {
         Vec4 color = gUiColorMedLight;
         color.a = .66f;
         BeginDraw(BufferMode::TriangleStrip);
@@ -2319,7 +2104,7 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
     UiDir dir = gUiPanels.top().cursorDir;
 
     float w2 = (dir == UiDir::Right || dir == UiDir::Left) ? ((w)-1) : (w);
-    float h2 = (dir == UiDir::Up    || dir == UiDir::Down) ? ((h)-1) : (h);
+    float h2 = (dir == UiDir::Up || dir == UiDir::Down) ? ((h)-1) : (h);
 
     // Center the image within the button.
     float x = roundf(cursor.x + (w2 / 2) + ((dir == UiDir::Left) ? 1 : 0));
@@ -2336,14 +2121,11 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
     Internal::AdvanceUiCursorEnd(gUiPanels.top(), w, h);
 
     // If we are currently hot then we push our info to the status bar.
-    if (!locked && !info.empty() && Internal::IsHot())
-    {
+    if (!locked && !info.empty() && Internal::IsHot()) {
         std::string kbInfo;
-        if (kb.empty())
-        {
+        if (kb.empty()) {
             kbInfo = FormatString("(%s)", GetKeyBindingMainString(kb).c_str());
-            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod)
-            {
+            if (GetKeyBinding(kb).altCode && GetKeyBinding(kb).altMod) {
                 kbInfo += FormatString(" or (%s)", GetKeyBindingAltString(kb).c_str());
             }
         }
@@ -2351,8 +2133,7 @@ TEINAPI bool DoImageButtonGradient (UiAction action, float w, float h, UiFlag fl
         PushStatusBarMessage(infoText.c_str());
     }
     // If we are currently hot then set the tooltip.
-    if (!locked && !name.empty() && Internal::IsHot())
-    {
+    if (!locked && !name.empty() && Internal::IsHot()) {
         SetCurrentTooltip(name);
     }
 

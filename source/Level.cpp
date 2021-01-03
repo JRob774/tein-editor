@@ -24,8 +24,7 @@ namespace Internal
         level.header.height  = SDL_SwapBE32(level.header.height );
         level.header.layers  = SDL_SwapBE32(level.header.layers );
 
-        if (level.header.version != 1)
-        {
+        if (level.header.version != 1) {
             std::string msg(FormatString("Invalid level file version '%d'!", level.header.version));
             ShowAlert("Error", msg, AlertType::Error, AlertButton::Ok, "WINMAIN");
             return false;
@@ -34,12 +33,10 @@ namespace Internal
         S32 lw = level.header.width;
         S32 lh = level.header.height;
 
-        for (int i=0; i<static_cast<int>(LevelLayer::Total); ++i)
-        {
+        for (int i=0; i<static_cast<int>(LevelLayer::Total); ++i) {
             auto& layer = level.data[static_cast<int>(gLevelIOOrder[i])];
             layer.assign(lw*lh, 0);
-            for (auto& tile: layer)
-            {
+            for (auto& tile: layer) {
                 fread(&tile, sizeof(TileID), 1, file);
                 tile = SDL_SwapBE32(tile);
             }
@@ -60,11 +57,9 @@ namespace Internal
         fwrite(&height,  sizeof(S32), 1, file);
         fwrite(&layers,  sizeof(S32), 1, file);
 
-        for (int i=0; i<static_cast<int>(LevelLayer::Total); ++i)
-        {
+        for (int i=0; i<static_cast<int>(LevelLayer::Total); ++i) {
             auto& layer = level.data[static_cast<int>(gLevelIOOrder[i])];
-            for (auto& tile: layer)
-            {
+            for (auto& tile: layer) {
                 TileID id = SDL_SwapBE32(tile);
                 fwrite(&id, sizeof(TileID), 1, file);
             }
@@ -93,8 +88,7 @@ TEINAPI bool LoadLevel (Level& level, std::string fileName)
     // then it should be handled by a higher-level than this internal system.
 
     FILE* file = fopen(fileName.c_str(), "rb");
-    if (!file)
-    {
+    if (!file) {
         LogError(ErrorLevel::Med, "Failed to load level file '%s'!", fileName.c_str());
         return false;
     }
@@ -111,8 +105,7 @@ TEINAPI bool SaveLevel (const Level& level, std::string fileName)
     // then it should be handled by a higher-level than this internal system.
 
     FILE* file = fopen(fileName.c_str(), "wb");
-    if (!file)
-    {
+    if (!file) {
         LogError(ErrorLevel::Med, "Failed to save level file '%s'!", fileName.c_str());
         return false;
     }
@@ -125,8 +118,7 @@ TEINAPI bool SaveLevel (const Level& level, std::string fileName)
 TEINAPI bool LoadRestoreLevel (Tab& tab, std::string fileName)
 {
     FILE* file = fopen(fileName.c_str(), "rb");
-    if (!file)
-    {
+    if (!file) {
         LogError(ErrorLevel::Med, "Failed to load restore file '%s'!", fileName.c_str());
         return false;
     }
@@ -135,12 +127,10 @@ TEINAPI bool LoadRestoreLevel (Tab& tab, std::string fileName)
     // Read until the null-terminator to get the name of the level.
     std::string levelName;
     char c = 0;
-    do
-    {
+    do {
         fread(&c, sizeof(char), 1, file);
         if (c) { levelName.push_back(c); }
-    }
-    while (c);
+    } while (c);
 
     // Set the name of the level for the tab we are loading into.
     tab.name = levelName;
@@ -152,21 +142,17 @@ TEINAPI bool LoadRestoreLevel (Tab& tab, std::string fileName)
 TEINAPI bool SaveRestoreLevel (const Tab& tab, std::string fileName)
 {
     FILE* file = fopen(fileName.c_str(), "wb");
-    if (!file)
-    {
+    if (!file) {
         LogError(ErrorLevel::Med, "Failed to save restore file '%s'!", fileName.c_str());
         return false;
     }
     Defer { fclose(file); };
 
     // Write the name of the level + null-terminator for later restoration.
-    if (tab.name.empty())
-    {
+    if (tab.name.empty()) {
         char nullTerminator = '\0';
         fwrite(&nullTerminator, sizeof(char), 1, file);
-    }
-    else
-    {
+    } else {
         const char* name = tab.name.c_str();
         fwrite(name, sizeof(char), strlen(name)+1, file);
     }

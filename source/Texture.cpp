@@ -5,8 +5,7 @@ TEINAPI bool LoadTextureFromData (Texture& tex, const std::vector<U8>& fileData,
 
     int w,h,bpp;
     U8* rawData = stbi_load_from_memory(buffer, size, &w,&h,&bpp,0);
-    if (!rawData)
-    {
+    if (!rawData) {
         LogError(ErrorLevel::Min, "Failed to load texture from data!");
         return false;
     }
@@ -22,8 +21,7 @@ TEINAPI bool LoadTextureFromFile (Texture& tex, std::string fileName, TextureWra
 
     int w,h,bpp;
     U8* rawData = stbi_load(fileName.c_str(), &w,&h,&bpp,0);
-    if (!rawData)
-    {
+    if (!rawData) {
         LogError(ErrorLevel::Min, "Failed to load texture '%s'!", fileName.c_str());
         return false;
     }
@@ -43,14 +41,12 @@ TEINAPI bool CreateTexture (Texture& tex, int w, int h, int bpp, void* data, Tex
     assert(bpp == 1 || bpp == 2 || bpp == 3 || bpp == 4);
 
     int maxTextureSize = static_cast<int>(GetMaxTextureSize());
-    if (w > maxTextureSize || h > maxTextureSize)
-    {
+    if (w > maxTextureSize || h > maxTextureSize) {
         LogError(ErrorLevel::Min, "Texture size %dx%d too large for GPU!", w,h);
         return false;
     }
 
-    if (!data)
-    {
+    if (!data) {
         LogError(ErrorLevel::Min, "No texture data passed for creation!");
         return false;
     }
@@ -58,8 +54,7 @@ TEINAPI bool CreateTexture (Texture& tex, int w, int h, int bpp, void* data, Tex
     // The caller should always pass in pixel data that is RGBA ordered.
     // So it's just a matter of determinig how many components we have.
     GLenum format;
-    switch (bpp)
-    {
+    switch (bpp) {
         default:
         case(1): format = GL_RED;  break;
         case(2): format = GL_RG;   break;

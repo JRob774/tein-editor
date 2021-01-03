@@ -22,31 +22,26 @@ TEINAPI void InitPaletteLookup ()
     std::vector<U8> paletteData;
     std::vector<U8> tilesetData;
 
-    for (auto& path: Paths)
-    {
+    for (auto& path: Paths) {
         std::string paletteName(path + gPaletteFile);
         if (paletteData.empty() && DoesFileExist(paletteName)) paletteData = ReadBinaryFile(paletteName);
         std::string tilesetName(path + gTilesetFile);
         if (tilesetData.empty() && DoesFileExist(tilesetName)) tilesetData = ReadBinaryFile(tilesetName);
 
         // If either data does not exist then we will attempt to load from the GPAK.
-        if (paletteData.empty() || tilesetData.empty())
-        {
+        if (paletteData.empty() || tilesetData.empty()) {
             std::string fileName(path + gGameGPAK);
             std::vector<GPAKEntry> entries;
-            if (DoesFileExist(fileName))
-            {
+            if (DoesFileExist(fileName)) {
                 FILE* file = fopen(fileName.c_str(), "rb");
-                if (file)
-                {
+                if (file) {
                     Defer { fclose(file); };
 
                     U32 entryCount;
                     fread(&entryCount, sizeof(U32), 1, file);
                     entries.resize(entryCount);
 
-                    for (auto& e: entries)
-                    {
+                    for (auto& e: entries) {
                         fread(&e.nameLength, sizeof(U16), 1, file);
                         e.name.resize(e.nameLength);
                         fread(&e.name[0], sizeof(char), e.nameLength, file);
@@ -54,8 +49,7 @@ TEINAPI void InitPaletteLookup ()
                     }
 
                     std::vector<U8> fileBuffer;
-                    for (auto& e: entries)
-                    {
+                    for (auto& e: entries) {
                         fileBuffer.resize(e.fileSize);
                         fread(&fileBuffer[0], sizeof(U8), e.fileSize, file);
 
@@ -76,8 +70,7 @@ TEINAPI void InitPaletteLookup ()
 
     int w,h,bpp;
     U8* palette = stbi_load_from_memory(&paletteData[0], static_cast<int>(paletteData.size()), &w,&h,&bpp,Bpp);
-    if (!palette)
-    {
+    if (!palette) {
         LogError(ErrorLevel::Min, "Failed to load palette data for the map editor!");
         return;
     }
@@ -85,8 +78,7 @@ TEINAPI void InitPaletteLookup ()
 
     std::string buffer(tilesetData.begin(), tilesetData.end());
     GonObject gon = GonObject::LoadFromBuffer(buffer);
-    for (auto [name,index]: gon.children_map)
-    {
+    for (auto [name,index]: gon.children_map) {
         int paletteRow = gon.children_array[index]["palette"].Int(0);
         int paletteIndex = (paletteRow * (w*Bpp) + (gPaletteMainColumn * Bpp));
 
@@ -101,10 +93,8 @@ TEINAPI void InitPaletteLookup ()
 
 TEINAPI Vec4 GetTilesetMainColor (std::string tileset)
 {
-    if (tileset != "..")
-    {
-        if (gPaletteMainLookup.find(tileset) != gPaletteMainLookup.end())
-        {
+    if (tileset != "..") {
+        if (gPaletteMainLookup.find(tileset) != gPaletteMainLookup.end()) {
             return gPaletteMainLookup[tileset];
         }
         return gUiColorExDark;

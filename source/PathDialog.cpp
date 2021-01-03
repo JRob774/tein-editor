@@ -89,8 +89,7 @@ TEINAPI void DoPath ()
     SetDrawColor(gUiColorExDark);
     FillQuad(x1,y1,x2,y2);
 
-    if (DoTextButton(NULL, ButtonWidth,buttonHeight, UiFlag::Single, "Search"))
-    {
+    if (DoTextButton(NULL, ButtonWidth,buttonHeight, UiFlag::Single, "Search")) {
         auto result = OpenDialog(DialogType::Exe, false);
         if (!result.empty()) gTempGamePath = result.at(0);
     }
@@ -107,8 +106,7 @@ TEINAPI void OkayPath ()
     SavePreferences();
     HideWindow("WINPATH");
 
-    if (!RunExecutable(gEditorSettings.gamePath))
-    {
+    if (!RunExecutable(gEditorSettings.gamePath)) {
         LogError(ErrorLevel::Med, "Failed to launch The End is Nigh executable!");
     }
 }
@@ -123,12 +121,9 @@ TEINAPI void HandlePathEvents ()
 {
     if (!IsWindowFocused("WINPATH")) return;
 
-    if (!TextBoxIsActive())
-    {
-        if (gMainEvent.type == SDL_KEYDOWN)
-        {
-            switch (gMainEvent.key.keysym.sym)
-            {
+    if (!TextBoxIsActive()) {
+        if (gMainEvent.type == SDL_KEYDOWN) {
+            switch (gMainEvent.key.keysym.sym) {
                 case (SDLK_RETURN): OkayPath(); break;
                 case (SDLK_ESCAPE): CancelPath(); break;
             }

@@ -27,10 +27,8 @@ namespace Internal
 {
     TEINAPI void CalculateDirClips ()
     {
-        switch (gResizeDialogDir)
-        {
-            case (ResizeDir::NW):
-            {
+        switch (gResizeDialogDir) {
+            case (ResizeDir::NW): {
                 gNWClip     = &gClipBullet;
                 gNClip      = &gClipResizeE;
                 gNEClip     = &gClipNone;
@@ -41,8 +39,7 @@ namespace Internal
                 gSClip      = &gClipNone;
                 gSEClip     = &gClipNone;
             } break;
-            case (ResizeDir::N):
-            {
+            case (ResizeDir::N): {
                 gNWClip     = &gClipResizeW;
                 gNClip      = &gClipBullet;
                 gNEClip     = &gClipResizeE;
@@ -53,8 +50,7 @@ namespace Internal
                 gSClip      = &gClipNone;
                 gSEClip     = &gClipNone;
             } break;
-            case (ResizeDir::NE):
-            {
+            case (ResizeDir::NE): {
                 gNWClip     = &gClipNone;
                 gNClip      = &gClipResizeW;
                 gNEClip     = &gClipBullet;
@@ -65,8 +61,7 @@ namespace Internal
                 gSClip      = &gClipNone;
                 gSEClip     = &gClipNone;
             } break;
-            case (ResizeDir::W):
-            {
+            case (ResizeDir::W): {
                 gNWClip     = &gClipResizeN;
                 gNClip      = &gClipResizeNE;
                 gNEClip     = &gClipNone;
@@ -77,8 +72,7 @@ namespace Internal
                 gSClip      = &gClipResizeSE;
                 gSEClip     = &gClipNone;
             } break;
-            case (ResizeDir::Center):
-            {
+            case (ResizeDir::Center): {
                 gNWClip     = &gClipResizeNW;
                 gNClip      = &gClipResizeN;
                 gNEClip     = &gClipResizeNE;
@@ -89,8 +83,7 @@ namespace Internal
                 gSClip      = &gClipResizeS;
                 gSEClip     = &gClipResizeSE;
             } break;
-            case (ResizeDir::E):
-            {
+            case (ResizeDir::E): {
                 gNWClip     = &gClipNone;
                 gNClip      = &gClipResizeNW;
                 gNEClip     = &gClipResizeN;
@@ -101,8 +94,7 @@ namespace Internal
                 gSClip      = &gClipResizeSW;
                 gSEClip     = &gClipResizeS;
             } break;
-            case (ResizeDir::SW):
-            {
+            case (ResizeDir::SW): {
                 gNWClip     = &gClipNone;
                 gNClip      = &gClipNone;
                 gNEClip     = &gClipNone;
@@ -113,8 +105,7 @@ namespace Internal
                 gSClip      = &gClipResizeE;
                 gSEClip     = &gClipNone;
             } break;
-            case (ResizeDir::S):
-            {
+            case (ResizeDir::S): {
                 gNWClip     = &gClipNone;
                 gNClip      = &gClipNone;
                 gNEClip     = &gClipNone;
@@ -125,8 +116,7 @@ namespace Internal
                 gSClip      = &gClipBullet;
                 gSEClip     = &gClipResizeE;
             } break;
-            case (ResizeDir::SE):
-            {
+            case (ResizeDir::SE): {
                 gNWClip     = &gClipNone;
                 gNClip      = &gClipNone;
                 gNEClip     = &gClipNone;
@@ -187,16 +177,12 @@ namespace Internal
         if (DoImageButton(NULL, bw,bh, UiFlag::None, gSClip)) gResizeDialogDir = ResizeDir::S;
         if (DoImageButton(NULL, bw,bh, UiFlag::None, gSEClip)) gResizeDialogDir = ResizeDir::SE;
 
-        if (oldDir != gResizeDialogDir)
-        {
-            CalculateDirClips();
-        }
+        if (oldDir != gResizeDialogDir) CalculateDirClips();
     }
 
     TEINAPI void OkayResize ()
     {
-        if (gCurrentResizeWidth < gMinimumLevelWidth || gCurrentResizeHeight < gMinimumLevelHeight)
-        {
+        if (gCurrentResizeWidth < gMinimumLevelWidth || gCurrentResizeHeight < gMinimumLevelHeight) {
             ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), AlertType::Warning, AlertButton::Ok, "WINRESIZE");
             return;
         }
@@ -289,14 +275,12 @@ TEINAPI void DoResize ()
 
     int oldResizeWidth = gCurrentResizeWidth;
     int newResizeWidth = atoi(widthString.c_str());
-    if (newResizeWidth != oldResizeWidth)
-    {
+    if (newResizeWidth != oldResizeWidth) {
         gCurrentResizeWidth = newResizeWidth;
     }
     int oldResizeHeight = gCurrentResizeHeight;
     int newResizeHeight = atoi(heightString.c_str());
-    if (newResizeHeight != oldResizeHeight)
-    {
+    if (newResizeHeight != oldResizeHeight) {
         gCurrentResizeHeight = newResizeHeight;
     }
 
@@ -315,12 +299,9 @@ TEINAPI void HandleResizeEvents ()
 {
     if (!IsWindowFocused("WINRESIZE")) return;
 
-    if (!TextBoxIsActive())
-    {
-        if (gMainEvent.type == SDL_KEYDOWN)
-        {
-            switch (gMainEvent.key.keysym.sym)
-            {
+    if (!TextBoxIsActive()) {
+        if (gMainEvent.type == SDL_KEYDOWN) {
+            switch (gMainEvent.key.keysym.sym) {
                 case (SDLK_RETURN): Internal::OkayResize(); break;
                 case (SDLK_ESCAPE): CancelResize(); break;
             }

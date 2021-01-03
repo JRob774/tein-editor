@@ -42,8 +42,7 @@ namespace Internal
     TEINAPI Vec4 GetSettingsColor (const GonObject& gon, std::string name, Vec4 defaultValue, bool* didDefault = NULL)
     {
         // If the color couldn't be found we just return back default.
-        if (!gon.Contains(name) || gon[name].type != GonObject::FieldType::ARRAY)
-        {
+        if (!gon.Contains(name) || gon[name].type != GonObject::FieldType::ARRAY) {
             if (didDefault) *didDefault = true;
             return defaultValue;
         }
@@ -92,8 +91,7 @@ TEINAPI void UpdateSystemsThatRelyOnSettings (bool tileGraphicsChanged)
     UpdateBackupTimer();
     UpdateEditorFont();
     LoadUiTheme();
-    if (tileGraphicsChanged)
-    {
+    if (tileGraphicsChanged) {
         ReloadTileGraphics();
     }
 }
@@ -101,37 +99,28 @@ TEINAPI void UpdateSystemsThatRelyOnSettings (bool tileGraphicsChanged)
 TEINAPI bool LoadEditorSettings ()
 {
     GonObject gon;
-    try
-    {
+    try {
         std::string fileName(MakePathAbsolute(gSettingsFileName));
         gon = GonObject::Load(fileName);
-    }
-    catch (const char* msg)
-    {
+    } catch (const char* msg) {
         LogError(ErrorLevel::Med, "%s", msg);
 
         // If we already have settings data then we just inform the user that the operation
         // failed. Otherwise, we just fallback to using the default application settings.
-        if (gSettingsLoaded)
-        {
+        if (gSettingsLoaded) {
             LogError(ErrorLevel::Med, "Failed to reload settings data!");
             return false;
-        }
-        else
-        {
+        } else {
             gon = GonObject::LoadFromBuffer(gSettingsFallback);
         }
     }
 
     // If we reach this point and there are no settings then we just use the defaults.
     // This could be the case if the settings failed to load or haven't been modified.
-    if (gon.type != GonObject::FieldType::OBJECT)
-    {
+    if (gon.type != GonObject::FieldType::OBJECT) {
         LogDebug("No settings file found -- using defaults.");
         gon = GonObject::LoadFromBuffer(gSettingsFallback);
-    }
-    else
-    {
+    } else {
         LogDebug("Loaded Editor Settings");
     }
 

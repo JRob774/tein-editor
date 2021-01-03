@@ -90,8 +90,7 @@ namespace Internal
         if (kb.code) codeActive = IsKeyCodeActive(kb.code);
         modActive = IsKeyModStateActive(kb.mod);
 
-        if (kb.hasAlt)
-        {
+        if (kb.hasAlt) {
             if (kb.altCode) altCodeActive = IsKeyCodeActive(kb.altCode);
             altModActive = IsKeyModStateActive(kb.altMod);
         }
@@ -102,8 +101,7 @@ namespace Internal
     TEINAPI std::string GetKeyBindingString (int code, int mod)
     {
         std::string str;
-        if (mod)
-        {
+        if (mod) {
             if (mod & KMOD_CTRL ) str +=  "Ctrl ";
             if (mod & KMOD_ALT  ) str +=   "Alt ";
             if (mod & KMOD_MODE ) str += "AltGr ";
@@ -127,40 +125,30 @@ namespace Internal
         int mod = 0, altMod = 0;
 
         bool gonContains = gon.Contains(name);
-        if (!gonContains && !gonFallback.Contains(name))
-        {
+        if (!gonContains && !gonFallback.Contains(name)) {
             LogError(ErrorLevel::Min, "No key binding for '%s'!", name);
             return;
         }
 
-        if (gKeyBindings.count(name))
-        {
+        if (gKeyBindings.count(name)) {
             LogError(ErrorLevel::Med, "Duplicate key binding '%s'!", name);
             return;
         }
 
         const GonObject& keyBinding = (gonContains) ? gon[name] : gonFallback[name];
-        if (keyBinding.Contains("main"))
-        {
+        if (keyBinding.Contains("main")) {
             const GonObject& kbMain = keyBinding["main"];
-            for (int i=0; i<kbMain.size(); ++i)
-            {
+            for (int i=0; i<kbMain.size(); ++i) {
                 // Convert the key mod and code names into actual values.
                 std::string keyName = kbMain[i].String();
                 SDL_Keycode keyCode = SDL_GetKeyFromName(keyName.c_str());
 
-                if (keyCode != SDLK_UNKNOWN)
-                {
+                if (keyCode != SDLK_UNKNOWN) {
                     code = keyCode;
-                }
-                else
-                {
-                    if (gKeyModMap.count(keyName))
-                    {
+                } else {
+                    if (gKeyModMap.count(keyName)) {
                         mod |= gKeyModMap.at(keyName);
-                    }
-                    else
-                    {
+                    } else {
                         LogError(ErrorLevel::Med, "Invalid key mod '%s'!", keyName.c_str());
                         return;
                     }
@@ -169,27 +157,19 @@ namespace Internal
         }
 
         bool hasAlt = keyBinding.Contains("alt");
-        if (hasAlt)
-        {
+        if (hasAlt) {
             const GonObject& kbAlt = keyBinding["alt"];
-            for (int i=0; i<kbAlt.size(); ++i)
-            {
+            for (int i=0; i<kbAlt.size(); ++i) {
                 // Convert the key mod and code names into actual values.
                 std::string keyName = kbAlt[i].String();
                 SDL_Keycode keyCode = SDL_GetKeyFromName(keyName.c_str());
 
-                if (keyCode != SDLK_UNKNOWN)
-                {
+                if (keyCode != SDLK_UNKNOWN) {
                     altCode = keyCode;
-                }
-                else
-                {
-                    if (gKeyModMap.count(keyName))
-                    {
+                } else {
+                    if (gKeyModMap.count(keyName)) {
                         altMod |= gKeyModMap.at(keyName);
-                    }
-                    else
-                    {
+                    } else {
                         LogError(ErrorLevel::Med, "Invalid key mod '%s'!", keyName.c_str());
                         return;
                     }
@@ -198,8 +178,7 @@ namespace Internal
         }
 
         // If neither are set then input was malformed or empty.
-        if (!code && !mod)
-        {
+        if (!code && !mod) {
             LogError(ErrorLevel::Med, "Invalid key binding '%s'!", name);
             return;
         }
@@ -297,32 +276,25 @@ TEINAPI inline bool operator!= (const KeyBinding& a, const KeyBinding& b)
 TEINAPI bool LoadEditorKeyBindings ()
 {
     GonObject gon;
-    try
-    {
+    try {
         std::string fileName(MakePathAbsolute(gKeyBindingsFileName));
         gon = GonObject::Load(fileName);
-    }
-    catch (const char* msg)
-    {
+    } catch (const char* msg) {
         LogError(ErrorLevel::Med, "%s", msg);
 
         // If we already have key bind data then we just inform the user that the operation
         // failed. Otherwise, we just fallback to using the default application key binds.
-        if (!gKeyBindings.empty())
-        {
+        if (!gKeyBindings.empty()) {
             LogError(ErrorLevel::Med, "Failed to reload key bindings data!");
             return false;
-        }
-        else
-        {
+        } else {
             gon = GonObject::LoadFromBuffer(gKeyBindingsFallback);
         }
     }
 
     // If we reach this point and there are no key binds then we just use the defaults.
     // This could be the case if the key binds failed to load or haven't been modified.
-    if (gon.type != GonObject::FieldType::OBJECT)
-    {
+    if (gon.type != GonObject::FieldType::OBJECT) {
         gon = GonObject::LoadFromBuffer(gKeyBindingsFallback);
     }
 
@@ -343,16 +315,12 @@ TEINAPI void RestoreEditorKeyBindings ()
 
 TEINAPI void HandleKeyBindingEvents ()
 {
-    if (!TextBoxIsActive() || IsWindowFocused("WINMAIN"))
-    {
+    if (!TextBoxIsActive() || IsWindowFocused("WINMAIN")) {
         // We only care about key press events, anything else is ignored.
-        if (gMainEvent.type == SDL_KEYDOWN)
-        {
-            for (auto [name,kb]: gKeyBindings)
-            {
+        if (gMainEvent.type == SDL_KEYDOWN) {
+            for (auto [name,kb]: gKeyBindings) {
                 // Check that the appropriate keys and mods are pressed.
-                if (Internal::KeyBindingActive(kb))
-                {
+                if (Internal::KeyBindingActive(kb)) {
                     // Do not attempt to call a NULL value!
                     if (kb.action) kb.action();
                 }
@@ -391,8 +359,7 @@ TEINAPI bool IsKeyBindingActive (std::string name)
     if (TextBoxIsActive() || !IsWindowFocused("WINMAIN")) return false;
 
     // If the key binding doesn't exist then it can't be active.
-    if (!gKeyBindings.count(name))
-    {
+    if (!gKeyBindings.count(name)) {
         LogError(ErrorLevel::Min, "No key binding with name '%s'!", name.c_str());
         return false;
     }

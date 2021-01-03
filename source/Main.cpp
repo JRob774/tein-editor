@@ -9,8 +9,7 @@ int main (int argc, char** argv)
     Defer { QuitApplication(); };
 
     InitApplication(argc, argv);
-    while (gMainRunning && HandleApplicationEvents())
-    {
+    while (gMainRunning && HandleApplicationEvents()) {
         DoApplication();
     }
 

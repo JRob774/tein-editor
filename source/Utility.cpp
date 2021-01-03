@@ -6,8 +6,7 @@ namespace Internal
         SDL_SysWMinfo win_info = {};
         SDL_VERSION(&win_info.version);
         HWND hwnd = NULL;
-        if (SDL_GetWindowWMInfo(window, &win_info))
-        {
+        if (SDL_GetWindowWMInfo(window, &win_info)) {
             hwnd = win_info.info.win.window;;
         }
         return hwnd;
@@ -97,22 +96,17 @@ TEINAPI void ListPathContent (std::string pathName, std::vector<std::string>& co
     HANDLE findFile = FindFirstFileA(findPath.c_str(), &findData);
     Defer { FindClose(findFile); };
 
-    if (findFile != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
+    if (findFile != INVALID_HANDLE_VALUE) {
+        do {
             // We do not want to include the self and parent directories.
             std::string fileName(findData.cFileName);
-            if (fileName != "." && fileName != "..")
-            {
+            if (fileName != "." && fileName != "..") {
                 content.push_back(pathName + "/" + FixPathSlashes(fileName));
-                if (recursive && IsPath(content.back()))
-                {
+                if (recursive && IsPath(content.back())) {
                     ListPathContent(content.back(), content, recursive);
                 }
             }
-        }
-        while (FindNextFile(findFile, &findData));
+        } while (FindNextFile(findFile, &findData));
     }
 }
 #endif // PLATFORM_WIN32
@@ -132,20 +126,16 @@ TEINAPI void ListPathFiles (std::string pathName, std::vector<std::string>& file
     HANDLE findFile = FindFirstFileA(findPath.c_str(), &findData);
     Defer { FindClose(findFile); };
 
-    if (findFile != INVALID_HANDLE_VALUE)
-    {
-        do
-        {
+    if (findFile != INVALID_HANDLE_VALUE) {
+        do {
             // We do not want to include the self and parent directories.
             std::string fileName(findData.cFileName);
-            if (fileName != "." && fileName != "..")
-            {
+            if (fileName != "." && fileName != "..") {
                 std::string final(pathName + "/" + FixPathSlashes(fileName));
                 if (IsFile(final)) files.push_back(final);
                 else if (recursive) ListPathFiles(final, files, recursive);
             }
-        }
-        while (FindNextFile(findFile, &findData));
+        } while (FindNextFile(findFile, &findData));
     }
 }
 #endif // PLATFORM_WIN32
@@ -156,16 +146,12 @@ TEINAPI bool CreatePath (std::string pathName)
     std::vector<std::string> paths;
     TokenizeString(pathName, "\\/", paths);
 
-    if (!paths.empty())
-    {
+    if (!paths.empty()) {
         std::string path;
-        for (auto& p: paths)
-        {
+        for (auto& p: paths) {
             path += (p + "/");
-            if (!DoesPathExist(path))
-            {
-                if (!CreateDirectoryA(path.c_str(), NULL))
-                {
+            if (!DoesPathExist(path)) {
+                if (!CreateDirectoryA(path.c_str(), NULL)) {
                     return false;
                 }
             }
@@ -201,8 +187,7 @@ TEINAPI U64 LastFileWriteTime (std::string fileName)
 {
     WIN32_FILE_ATTRIBUTE_DATA attributes;
     ULARGE_INTEGER writeTime = {};
-    if (GetFileAttributesExA(fileName.c_str(), GetFileExInfoStandard, &attributes))
-    {
+    if (GetFileAttributesExA(fileName.c_str(), GetFileExInfoStandard, &attributes)) {
         writeTime.HighPart = attributes.ftLastWriteTime.dwHighDateTime;
         writeTime.LowPart = attributes.ftLastWriteTime.dwLowDateTime;
     }
@@ -243,8 +228,7 @@ TEINAPI std::string StripFilePath (std::string fileName)
 {
     fileName = FixPathSlashes(fileName);
     size_t lastSlash = fileName.rfind('/');
-    if (lastSlash != std::string::npos)
-    {
+    if (lastSlash != std::string::npos) {
         if (lastSlash == fileName.length()) fileName.clear();
         else fileName = fileName.substr(lastSlash+1);
     }
@@ -255,8 +239,7 @@ TEINAPI std::string StripFileExt (std::string fileName)
 {
     fileName = FixPathSlashes(fileName);
     size_t lastDot = fileName.rfind('.');
-    if (lastDot != std::string::npos)
-    {
+    if (lastDot != std::string::npos) {
         if (lastDot == 0) fileName.clear();
         else fileName = fileName.substr(0, lastDot);
     }
@@ -267,8 +250,7 @@ TEINAPI std::string StripFileName (std::string fileName)
 {
     fileName = FixPathSlashes(fileName);
     size_t lastSlash = fileName.rfind('/');
-    if (lastSlash != std::string::npos && lastSlash != fileName.length())
-    {
+    if (lastSlash != std::string::npos && lastSlash != fileName.length()) {
         fileName = fileName.substr(0, lastSlash+1);
     }
     return fileName;
@@ -284,13 +266,11 @@ TEINAPI void TokenizeString (const std::string& str, const char* delims, std::ve
     size_t prev = 0;
     size_t pos;
 
-    while ((pos = str.find_first_of(delims, prev)) != std::string::npos)
-    {
+    while ((pos = str.find_first_of(delims, prev)) != std::string::npos) {
         if (pos > prev) tokens.push_back(str.substr(prev, pos-prev));
         prev = pos+1;
     }
-    if (prev < str.length())
-    {
+    if (prev < str.length()) {
         tokens.push_back(str.substr(prev, std::string::npos));
     }
 }
@@ -308,8 +288,7 @@ TEINAPI std::string FormatStringV (const char* format, va_list args)
     std::string str;
     int size = vsnprintf(NULL, 0, format, args) + 1;
     char* buffer = Malloc(char, size);
-    if (buffer)
-    {
+    if (buffer) {
         vsnprintf(buffer, size, format, args);
         str = buffer;
         Free(buffer);
@@ -334,16 +313,13 @@ TEINAPI std::string FormatTime (const char* format)
 
     // We go until our buffer is big enough.
     char* buffer = NULL;
-    do
-    {
+    do {
         if (buffer) Free(buffer);
         buffer = Malloc(char, length);
         if (!buffer) return std::string();
-
         result = strftime(buffer, length, format, cur_time);
         length *= 2;
-    }
-    while (!result);
+    } while (!result);
 
     Defer { Free(buffer); };
     return std::string(buffer);
@@ -369,8 +345,7 @@ TEINAPI bool PointInBoundsXYWH (Vec2 p, Quad q)
 TEINAPI bool InsensitiveCompare (const std::string& a, const std::string& b)
 {
     if (a.length() != b.length()) return false;
-    for (std::string::size_type i=0; i<a.length(); ++i)
-    {
+    for (std::string::size_type i=0; i<a.length(); ++i) {
         if (tolower(a[i]) != tolower(b[i])) return false;
     }
     return true;
@@ -392,8 +367,7 @@ TEINAPI bool RunExecutable (std::string exe)
 
     startupInfo.cb = sizeof(startupInfo);
 
-    if (!CreateProcessA(exe.c_str(), NULL,NULL,NULL, FALSE, 0, NULL, StripFileName(exe).c_str(), &startupInfo, &processInfo))
-    {
+    if (!CreateProcessA(exe.c_str(), NULL,NULL,NULL, FALSE, 0, NULL, StripFileName(exe).c_str(), &startupInfo, &processInfo)) {
         return false;
     }
 
@@ -417,14 +391,12 @@ TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType typ
 {
     // Convert the type and button parameters into values that can be used by MessageBoxA.
     UINT flags = 0;
-    switch (type)
-    {
+    switch (type) {
         case (AlertType::Info): flags |= MB_ICONINFORMATION; break;
         case (AlertType::Warning): flags |= MB_ICONWARNING; break;
         case (AlertType::Error): flags |= MB_ICONERROR; break;
     }
-    switch (buttons)
-    {
+    switch (buttons) {
         case (AlertButton::YesNoCancel): flags |= MB_YESNOCANCEL; break;
         case (AlertButton::YesNo): flags |= MB_YESNO; break;
         case (AlertButton::Ok): flags |= MB_OK; break;
@@ -437,8 +409,7 @@ TEINAPI AlertResult ShowAlert (std::string title, std::string msg, AlertType typ
 
     // Convert the result into a platform-agnostic value for use in the program.
     AlertResult result = AlertResult::Invalid;
-    switch (ret)
-    {
+    switch (ret) {
         case (IDCANCEL): result = AlertResult::Cancel; break;
         case (IDOK): result = AlertResult::Ok; break;
         case (IDNO): result = AlertResult::No; break;

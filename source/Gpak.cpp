@@ -35,8 +35,7 @@ namespace Internal
 {
     TEINAPI void HandleGPAKError (GPAKError error)
     {
-        switch (error)
-        {
+        switch (error) {
             case(GPAKError::Write): LogError(ErrorLevel::Med, "Failed to write GPAK data!"); break;
             case(GPAKError::Read): LogError(ErrorLevel::Med, "Failed to read GPAK data!"); break;
             case(GPAKError::Empty): LogError(ErrorLevel::Med, "No files found to pack!"); break;
@@ -51,8 +50,7 @@ namespace Internal
         bool overwrite = args->overwrite;
 
         FILE* file = fopen(fileName.c_str(), "rb");
-        if (!file)
-        {
+        if (!file) {
             args->error.store(GPAKError::Read);
             return EXIT_FAILURE;
         }
@@ -64,15 +62,13 @@ namespace Internal
         fread(&entryCount, sizeof(32), 1, file);
         entries.resize(entryCount);
 
-        for (auto& e: entries)
-        {
+        for (auto& e: entries) {
             fread(&e.nameLength, sizeof(U16), 1, file);
             e.name.resize(e.nameLength);
             fread(&e.name[0], sizeof(char), e.nameLength, file);
             fread(&e.fileSize, sizeof(U32), 1, file);
 
-            if (args->cancel.load()) // Cancel!
-            {
+            if (args->cancel.load()) { // Cancel!
                 return EXIT_SUCCESS;
             }
         }
@@ -85,22 +81,18 @@ namespace Internal
         U32 entriesUnpacked = 0;
 
         std::string basePath(StripFileName(fileName));
-        for (auto& e: entries)
-        {
+        for (auto& e: entries) {
             fread(&fileBuffer[0], sizeof(U8), e.fileSize, file);
 
             std::string fullFileName(basePath + e.name);
             std::string fullFilePath(StripFileName(fullFileName));
 
-            if (!DoesPathExist(fullFilePath))
-            {
+            if (!DoesPathExist(fullFilePath)) {
                 CreatePath(fullFilePath);
             }
-            if (!DoesFileExist(fullFileName) || overwrite)
-            {
+            if (!DoesFileExist(fullFileName) || overwrite) {
                 FILE* output = fopen(fullFileName.c_str(), "wb");
-                if (output)
-                {
+                if (output) {
                     fwrite(&fileBuffer[0], sizeof(U8), e.fileSize, output);
                     fclose(output);
                 }
@@ -110,8 +102,7 @@ namespace Internal
             args->progress.store(static_cast<float>(entriesUnpacked) / static_cast<float>(entryCount));
             PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
-            if (args->cancel.load()) // Cancel!
-            {
+            if (args->cancel.load()) { // Cancel!
                 return EXIT_SUCCESS;
             }
         }
@@ -134,8 +125,7 @@ namespace Internal
         constexpr size_t ApproxGPAKEntries = 1340;
 
         FILE* file = fopen(fileName.c_str(), "wb");
-        if (!file)
-        {
+        if (!file) {
             args->error.store(GPAKError::Write);
             return EXIT_FAILURE;
         }
@@ -147,8 +137,7 @@ namespace Internal
         files.reserve(ApproxGPAKEntries);
         strippedFiles.reserve(ApproxGPAKEntries);
 
-        for (auto path: paths)
-        {
+        for (auto path: paths) {
             std::vector<std::string> tempFiles;
             ListPathFiles(path, tempFiles, true);
 
@@ -159,8 +148,7 @@ namespace Internal
             strippedFiles.insert(strippedFiles.end(), tempFiles.begin(), tempFiles.end());
         }
 
-        if (files.empty())
-        {
+        if (files.empty()) {
             args->error.store(GPAKError::Empty);
             return EXIT_FAILURE;
         }
@@ -173,8 +161,7 @@ namespace Internal
         U32 entriesPacked = 0;
 
         size_t maxSize = 0;
-        for (size_t i=0; i<files.size(); ++i)
-        {
+        for (size_t i=0; i<files.size(); ++i) {
             std::string name = strippedFiles.at(i);
             U16 nameLength = static_cast<U16>(name.length());
             U32 fileSize = static_cast<U32>(GetSizeOfFile(files.at(i)));
@@ -189,8 +176,7 @@ namespace Internal
             args->progress.store(((static_cast<float>(entriesPacked) / static_cast<float>(entryCount)) / 2));
             PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
-            if (args->cancel.load()) // Cancel!
-            {
+            if (args->cancel.load()) { // Cancel!
                 return EXIT_SUCCESS;
             }
         }
@@ -201,11 +187,9 @@ namespace Internal
         U32 fileCount = static_cast<U32>(files.size());
         U32 filesPacked = 0;
 
-        for (auto& f: files)
-        {
+        for (auto& f: files) {
             FILE* input = fopen(f.c_str(), "rb");
-            if (input)
-            {
+            if (input) {
                 size_t fileSize = GetSizeOfFile(input);
                 fread(&fileBuffer[0], sizeof(U8), fileSize, input);
                 fwrite(&fileBuffer[0], sizeof(U8), fileSize, file);
@@ -216,8 +200,7 @@ namespace Internal
             args->progress.store(.5f + ((static_cast<float>(filesPacked) / static_cast<float>(fileCount)) / 2));
             PushEditorEvent(EditorEvent::GPAKProgress, NULL, NULL);
 
-            if (args->cancel.load()) // Cancel!
-            {
+            if (args->cancel.load()) { // Cancel!
                 return EXIT_SUCCESS;
             }
         }
@@ -239,8 +222,7 @@ TEINAPI void GPAKUnpack (std::string fileName, bool overwrite)
     gGPAKUnpackData.error = GPAKError::None;
 
     gGPAKUnpackThread = SDL_CreateThread(Internal::GPAKUnpackThreadMain, "UnpackGPAK", &gGPAKUnpackData);
-    if (!gGPAKUnpackThread)
-    {
+    if (!gGPAKUnpackThread) {
         LogError(ErrorLevel::Med, "Failed to perform GPAK unpack operation! (%s)", SDL_GetError());
         return;
     }
@@ -259,8 +241,7 @@ TEINAPI void GPAKPack (std::string fileName, std::vector<std::string> paths)
     gGPAKPackData.error = GPAKError::None;
 
     gGPAKPackThread = SDL_CreateThread(Internal::GPAKPackThreadMain, "PackGPAK", &gGPAKPackData);
-    if (!gGPAKPackThread)
-    {
+    if (!gGPAKPackThread) {
         LogError(ErrorLevel::Med, "Failed to perform GPAK pack operation! (%s)", SDL_GetError());
         return;
     }
@@ -305,9 +286,9 @@ TEINAPI void DoUnpack ()
     float vw = GetViewport().w;
     float vh = GetViewport().h;
 
-    p2.x =             1;
-    p2.y =             1;
-    p2.w = vw        - 2;
+    p2.x = 1;
+    p2.y = 1;
+    p2.w = vw - 2;
     p2.h = vh - p2.y - 1;
 
     BeginPanel(p2, UiFlag::None, gUiColorMedium);
@@ -350,8 +331,7 @@ TEINAPI void DoUnpack ()
     EndPanel();
     EndPanel();
 
-    if (IsGPAKUnpackComplete())
-    {
+    if (IsGPAKUnpackComplete()) {
         Internal::HandleGPAKError(gGPAKUnpackData.error.load());
         HideWindow("WINUNPACK");
     }
@@ -375,9 +355,9 @@ TEINAPI void DoPack ()
     float vw = GetViewport().w;
     float vh = GetViewport().h;
 
-    p2.x =             1;
-    p2.y =             1;
-    p2.w = vw        - 2;
+    p2.x = 1;
+    p2.y = 1;
+    p2.w = vw - 2;
     p2.h = vh - p2.y - 1;
 
     BeginPanel(p2, UiFlag::None, gUiColorMedium);
@@ -420,8 +400,7 @@ TEINAPI void DoPack ()
     EndPanel();
     EndPanel();
 
-    if (IsGPAKPackComplete())
-    {
+    if (IsGPAKPackComplete()) {
         Internal::HandleGPAKError(gGPAKPackData.error.load());
         HideWindow("WINPACK");
     }

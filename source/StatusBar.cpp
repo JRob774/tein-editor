@@ -16,8 +16,7 @@ TEINAPI void DoStatusBar ()
     // If there is a message that has been pushed we display that, if
     // not then we just display a default message for the status bar.
     std::string message = gStatusBarDefaultMessage;
-    if (!gStatusBarPushedMessage.empty())
-    {
+    if (!gStatusBarPushedMessage.empty()) {
         message = gStatusBarPushedMessage;
     }
 
@@ -40,20 +39,14 @@ TEINAPI void DoStatusBar ()
 
     // Get the mouse position.
     int mx = 0, my = 0;
-    if (IsWindowFocused("WINMAIN"))
-    {
-        if (CurrentTabIsLevel())
-        {
-            if (PointInBoundsXYWH(GetMousePos(), gLevelEditor.viewport))
-            {
+    if (IsWindowFocused("WINMAIN")) {
+        if (CurrentTabIsLevel()) {
+            if (PointInBoundsXYWH(GetMousePos(), gLevelEditor.viewport)) {
                 mx = static_cast<int>(gLevelEditor.mouseTile.x);
                 my = static_cast<int>(gLevelEditor.mouseTile.y);
             }
-        }
-        else if (CurrentTabIsMap())
-        {
-            if (PointInBoundsXYWH(GetMousePos(), gMapEditor.viewport))
-            {
+        } else if (CurrentTabIsMap()) {
+            if (PointInBoundsXYWH(GetMousePos(), gMapEditor.viewport)) {
                 mx = static_cast<int>(gMapEditor.mouseTile.x);
                 my = static_cast<int>(gMapEditor.mouseTile.y);
             }
@@ -62,14 +55,11 @@ TEINAPI void DoStatusBar ()
 
     // Get the select bounds.
     int sx = 0, sy = 0, sw = 0, sh = 0;
-    if (CurrentTabIsLevel() && AreAnySelectBoxesVisible())
-    {
+    if (CurrentTabIsLevel() && AreAnySelectBoxesVisible()) {
         int l,t,r,b;
         GetTotalSelectBoundary(&l,&t,&r,&b);
         sx = l, sy = b, sw = (r-l)+1, sh = (t-b)+1;
-    }
-    else if (CurrentTabIsMap() && MapSelectBoxPresent())
-    {
+    } else if (CurrentTabIsMap() && MapSelectBoxPresent()) {
         int l,t,r,b;
         GetMapSelectBounds(&l,&t,&r,&b);
         sx = l, sy = b, sw = (r-l)+1, sh = (t-b)+1;

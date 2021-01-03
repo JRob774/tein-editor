@@ -28,13 +28,11 @@ namespace Internal
 TEINAPI void SetCurrentTooltip (std::string name, std::string desc)
 {
     // This is how we know we are still hovered over the tooltip item and don't need to hide it.
-    if (gTooltipName == name && gTooltipDesc == desc)
-    {
+    if (gTooltipName == name && gTooltipDesc == desc) {
         gTooltipSetThisUpdate = true;
         return;
     }
-    if (gTooltipTimer)
-    {
+    if (gTooltipTimer) {
         SDL_RemoveTimer(gTooltipTimer);
     }
 
@@ -53,23 +51,18 @@ TEINAPI void DoTooltip ()
 {
     if (!gEditorSettings.showTooltips) return;
 
-    if (!gTooltipSetThisUpdate)
-    {
+    if (!gTooltipSetThisUpdate) {
         Internal::ResetTooltip();
     }
-    if (gTooltipVisible)
-    {
+    if (gTooltipVisible) {
         // Word wrap the description if it is too large for the tooltip box.
         std::string desc = gTooltipDesc;
         size_t maxWidth = std::max<size_t>(gTooltipMaxLineLength, gTooltipName.length());
         int lineCount = 1;
-        if (maxWidth < desc.length())
-        {
+        if (maxWidth < desc.length()) {
             size_t offset = 0;
-            for (size_t pos=0; pos!=std::string::npos; pos=desc.find(' ', pos))
-            {
-                if (maxWidth <= (pos-offset))
-                {
+            for (size_t pos=0; pos!=std::string::npos; pos=desc.find(' ', pos)) {
+                if (maxWidth <= (pos-offset)) {
                     desc.at(pos) = '\n';
                     offset = pos;
                     lineCount++;
@@ -126,10 +119,8 @@ TEINAPI void HandleTooltipEvents ()
 {
     gTooltipSetThisUpdate = false;
 
-    if (gMainEvent.type == SDL_USEREVENT)
-    {
-        if (gMainEvent.user.code == static_cast<U32>(EditorEvent::ShowTooltip))
-        {
+    if (gMainEvent.type == SDL_USEREVENT) {
+        if (gMainEvent.user.code == static_cast<U32>(EditorEvent::ShowTooltip)) {
             gTooltipVisible = true;
         }
     }

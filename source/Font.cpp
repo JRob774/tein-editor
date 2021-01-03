@@ -7,8 +7,7 @@ namespace Internal
     {
         // We use the current display's DPI to determine the point size.
         float hDPI,vDPI;
-        if (SDL_GetDisplayDPI(0, NULL, &hDPI, &vDPI) != 0)
-        {
+        if (SDL_GetDisplayDPI(0, NULL, &hDPI, &vDPI) != 0) {
             LogError(ErrorLevel::Min, "Failed to determine display DPI! (%s)", SDL_GetError());
             return false;
         }
@@ -18,8 +17,7 @@ namespace Internal
 
         FT_F26Dot6 pointHeight = pointSize * 64;
 
-        if (FT_Set_Char_Size(font.face, 0, pointHeight, hRes, vRes) != 0)
-        {
+        if (FT_Set_Char_Size(font.face, 0, pointHeight, hRes, vRes) != 0) {
             LogError(ErrorLevel::Min, "Failed to set font glyph size!");
             return false;
         }
@@ -32,8 +30,7 @@ namespace Internal
         // Make sure the glyph cache size is within the GL texture bounds.
         // If not we set it to that size and log a low-priority error.
         GLfloat finalCacheSize = std::min(GetMaxTextureSize(), cacheSize);
-        if (finalCacheSize < cacheSize)
-        {
+        if (finalCacheSize < cacheSize) {
             LogError(ErrorLevel::Min, "Font cache size shrunk to %f!", finalCacheSize);
         }
 
@@ -46,8 +43,7 @@ namespace Internal
         size_t cacheBytes = cacheRow * cacheRow;
 
         U8* buffer = Malloc(U8, cacheBytes);
-        if (!buffer)
-        {
+        if (!buffer) {
             LogError(ErrorLevel::Min, "Failed to create glyph buffer!");
             return false;
         }
@@ -74,11 +70,9 @@ namespace Internal
         font.glyphs.insert({ pointSize, std::vector<FontGlyph>(gTotalGlyphCount) });
         assert(font.glyphs.at(font.currentPointSize).size() == gTotalGlyphCount);
 
-        for (int i=0; i<gTotalGlyphCount; ++i)
-        {
+        for (int i=0; i<gTotalGlyphCount; ++i) {
             int index = FT_Get_Char_Index(font.face, i);
-            if (FT_Load_Glyph(font.face, index, FT_LOAD_RENDER) != 0)
-            {
+            if (FT_Load_Glyph(font.face, index, FT_LOAD_RENDER) != 0) {
                 LogError(ErrorLevel::Min, "Failed to load glyph '%c'!", i);
                 return false;
             }
@@ -90,13 +84,11 @@ namespace Internal
             float bitmapHeight = static_cast<float>(bitmap->rows);
 
             // Move down a row if we have reached the edge of the cache.
-            if (cursor.x + bitmapWidth >= finalCacheSize)
-            {
+            if (cursor.x + bitmapWidth >= finalCacheSize) {
                 cursor.y += (font.lineGap[pointSize] + gFontGlyphCachePad);
                 cursor.x = 0.0f;
                 // If we hit the bottom edge then we are out of space.
-                if (cursor.y + bitmapHeight >= finalCacheSize)
-                {
+                if (cursor.y + bitmapHeight >= finalCacheSize) {
                     LogError(ErrorLevel::Min, "Font cache too small!");
                     return false;
                 }
@@ -112,8 +104,7 @@ namespace Internal
 
             // Write the bitmap content into our cache buffer line-by-line.
             size_t cx = static_cast<size_t>(cursor.x), cy = static_cast<size_t>(cursor.y);
-            for (FT_UInt y=0; y<bitmap->rows; ++y)
-            {
+            for (FT_UInt y=0; y<bitmap->rows; ++y) {
                 void* dst = buffer + ((cy+y)*cacheRow+cx);
                 void* src = bitmap->buffer + (y*bitmap->pitch);
                 memcpy(dst, src, bitmap->pitch);
@@ -141,8 +132,7 @@ TEINAPI bool LoadFontFromData (Font& font, const std::vector<U8>& fileData, std:
     const FT_Byte* buffer = &font.data[0];
     FT_Long size = static_cast<FT_Long>(font.data.size());
 
-    if (FT_New_Memory_Face(gFreetype, buffer, size, 0, &font.face) != 0)
-    {
+    if (FT_New_Memory_Face(gFreetype, buffer, size, 0, &font.face) != 0) {
         LogError(ErrorLevel::Min, "Failed to load font from data!");
         return false;
     }
@@ -160,8 +150,7 @@ TEINAPI bool LoadFontFromFile (Font& font, std::string fileName, std::vector<int
     // Build an absolute path to the file based on the executable location.
     fileName = MakePathAbsolute(fileName);
 
-    if (FT_New_Face(gFreetype, fileName.c_str(), 0, &font.face) != 0)
-    {
+    if (FT_New_Face(gFreetype, fileName.c_str(), 0, &font.face) != 0) {
         LogError(ErrorLevel::Min, "Failed to load font '%s'!", fileName.c_str());
         return false;
     }
@@ -190,8 +179,7 @@ TEINAPI float GetFontKerning (const Font& font, int c, int& i, int& p)
 {
     FT_Vector kerning = {};
     i = FT_Get_Char_Index(font.face, c);
-    if (font.hasKerning && i && p)
-    {
+    if (font.hasKerning && i && p) {
         FT_Get_Kerning(font.face, p, i, FT_KERNING_DEFAULT, &kerning);
     }
     p = i;
@@ -218,21 +206,16 @@ TEINAPI float GetTextWidth (const Font& font, std::string text)
     int i = 0;
     int p = 0;
 
-    for (const char* c=text.c_str(); *c; ++c)
-    {
-        switch (*c)
-        {
-            case ('\n'):
-            {
+    for (const char* c=text.c_str(); *c; ++c) {
+        switch (*c) {
+            case ('\n'): {
                 if (width > maxWidth) maxWidth = width;
                 width = 0;
             } break;
-            case ('\t'):
-            {
+            case ('\t'): {
                 width += GetFontTabWidth(font);
             } break;
-            default:
-            {
+            default: {
                 width += GetGlyphAdvance(font, *c, i, p);
             } break;
         }
@@ -245,8 +228,7 @@ TEINAPI float GetTextHeight (const Font& font, std::string text)
 {
     if (text.empty()) return 0.0f;
     float height = font.lineGap.at(font.currentPointSize);
-    for (const char* c=text.c_str(); *c; ++c)
-    {
+    for (const char* c=text.c_str(); *c; ++c) {
         if (*c == '\n') height += font.lineGap.at(font.currentPointSize);
     }
     return height;

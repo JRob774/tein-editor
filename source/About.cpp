@@ -39,10 +39,8 @@ TEINAPI void HandleAboutEvents ()
 {
     if (!IsWindowFocused("WINABOUT")) return;
 
-    if (gMainEvent.type == SDL_KEYDOWN)
-    {
-        if (gMainEvent.key.keysym.sym == SDLK_ESCAPE || gMainEvent.key.keysym.sym == SDLK_RETURN)
-        {
+    if (gMainEvent.type == SDL_KEYDOWN) {
+        if (gMainEvent.key.keysym.sym == SDLK_ESCAPE || gMainEvent.key.keysym.sym == SDLK_RETURN) {
             HideWindow("WINABOUT");
         }
     }

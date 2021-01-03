@@ -9,14 +9,12 @@ TEINAPI void DoControlPanel ()
 
     // Determine if we need scrollbars for either sub-panels.
     bool scrollbar = (TilePanelNeedsScrollbar() || LayerPanelNeedsScrollbar());
-    if (!scrollbar)
-    {
+    if (!scrollbar) {
         gControlPanelBounds.w = gControlPanelWidth;
         gControlPanelBounds.x = GetViewport().w - gControlPanelBounds.w;
     }
 
-    if (CurrentTabIsLevel())
-    {
+    if (CurrentTabIsLevel()) {
         BeginPanel(gControlPanelBounds, UiFlag::None);
         DoTilePanel(scrollbar);
         DoLayerPanel(scrollbar);

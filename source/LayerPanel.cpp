@@ -31,20 +31,15 @@ namespace Internal
         float bh = gLayerPanelButtonHeight;
 
         // If not inactive then we need to determine if this is the active layer.
-        if (!static_cast<bool>(flags & UiFlag::Inactive))
-        {
+        if (!static_cast<bool>(flags & UiFlag::Inactive)) {
             // If the tool is the select tool then technically all of the layers
             // are active (except for disabled ones). So it makes sense to just
             // highlight ever single layer when using this particular tool.
-            if (gLevelEditor.toolType == ToolType::Select)
-            {
+            if (gLevelEditor.toolType == ToolType::Select) {
                 flags |= UiFlag::Highlight;
-            }
-            else
-            {
+            } else {
                 TileCategory category = GetSelectedCategory();
-                if (CategoryToLayer(category) == static_cast<LevelLayer>(layer))
-                {
+                if (CategoryToLayer(category) == static_cast<LevelLayer>(layer)) {
                     flags |= UiFlag::Highlight;
                 }
             }
@@ -72,8 +67,7 @@ namespace Internal
 
     TEINAPI void ToggleLayer (LevelLayer layer)
     {
-        if (CurrentTabIsLevel())
-        {
+        if (CurrentTabIsLevel()) {
             Tab& tab = GetCurrentTab();
             tab.tileLayerActive[static_cast<int>(layer)] = !tab.tileLayerActive[static_cast<int>(layer)];
             SelectNextActiveGroup();
@@ -82,16 +76,13 @@ namespace Internal
 
     TEINAPI void ToggleLayerAction (LevelLayer layer)
     {
-        if (CurrentTabIsLevel())
-        {
-            if (IsWindowFocused("WINMAIN"))
-            {
+        if (CurrentTabIsLevel()) {
+            if (IsWindowFocused("WINMAIN")) {
                 bool allLayersWereInactive = AreAllLayersInactive();
                 Internal::ToggleLayer(layer);
                 // If we're coming from all layers being inactive we need to find an entity
                 // we can select now that there are entities that can be selected again.
-                if (allLayersWereInactive && !AreAllLayersInactive())
-                {
+                if (allLayersWereInactive && !AreAllLayersInactive()) {
                     ResetSelectedGroup();
                 }
             }
@@ -136,24 +127,20 @@ TEINAPI void DoLayerPanel (bool scrollbar)
     SetPanelCursor(&cursor);
     SetPanelCursorDir(UiDir::Down);
 
-    if (scrollbar)
-    {
+    if (scrollbar) {
         float sx =  1 + GetViewport().w + gControlPanelInnerPad;
         float sy = -1;
         float sw =  gControlPanelScrollbarWidth - gControlPanelInnerPad;
         float sh =  2 + GetViewport().h;
-
         DoScrollbar(sx,sy,sw,sh, gLayerPanelContentHeight, gLayerPanelScrollOffset);
     }
 
     bool allLayersWereInactive = AreAllLayersInactive();
     Tab& tab = GetCurrentTab();
 
-    for (int i=static_cast<int>(LevelLayer::Tag); i<static_cast<int>(LevelLayer::Total); ++i)
-    {
+    for (int i=static_cast<int>(LevelLayer::Tag); i<static_cast<int>(LevelLayer::Total); ++i) {
         const char* layerName = NULL;
-        switch (i)
-        {
+        switch (i) {
             case (LevelLayer::Tag): layerName = "Tag"; break;
             case (LevelLayer::Overlay): layerName = "Overlay"; break;
             case (LevelLayer::Active): layerName = "Active"; break;
@@ -162,16 +149,14 @@ TEINAPI void DoLayerPanel (bool scrollbar)
         }
 
         UiFlag tileFlag = ((tab.tileLayerActive[i]) ? UiFlag::None : UiFlag::Inactive);
-        if (Internal::DoLayerButton(tileFlag, i, layerName, gTileLayerInfo))
-        {
+        if (Internal::DoLayerButton(tileFlag, i, layerName, gTileLayerInfo)) {
             Internal::ToggleLayer(static_cast<LevelLayer>(i));
         }
     }
 
     // If we're coming from all layers being inactive we need to find an entity
     // we can select now that there are entities that can be selected again.
-    if (allLayersWereInactive && !AreAllLayersInactive())
-    {
+    if (allLayersWereInactive && !AreAllLayersInactive()) {
         ResetSelectedGroup();
     }
 

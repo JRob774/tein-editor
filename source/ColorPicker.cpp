@@ -82,8 +82,7 @@ namespace Internal
         float iy2 = pos+2;
 
         Vec4 cur = min;
-        switch (type)
-        {
+        switch (type) {
             case (ChannelType::R): cur.r = channel; break;
             case (ChannelType::G): cur.g = channel; break;
             case (ChannelType::B): cur.b = channel; break;
@@ -97,22 +96,17 @@ namespace Internal
         FillQuad(ix1-0,iy1-0,ix2+0,iy2+0);
 
         // Handle the indicator both being selected, deselected, and moved.
-        if (gColorPickerMousePressed)
-        {
-            if (MouseInUiBoundsXYWH(ix1-1, iy1-1, cw+2, 7))
-            {
+        if (gColorPickerMousePressed) {
+            if (MouseInUiBoundsXYWH(ix1-1, iy1-1, cw+2, 7)) {
                 gColorPickerActiveChannel = type;
-            }
-            else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, cw, ch))
-            {
+            } else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, cw, ch)) {
                 gColorPickerActiveChannel = type;
                 // Determine where the click was and jump to that position.
                 float my = ch - (GetMousePos().y - GetViewport().y - cursor.y);
                 channel = my / ch;
             }
         }
-        if (gColorPickerActiveChannel == type)
-        {
+        if (gColorPickerActiveChannel == type) {
             channel -= (UiGetRelativeMouse().y / ch);
             channel = std::clamp(channel, 0.0f, 1.0f);
         }
@@ -170,13 +164,10 @@ namespace Internal
         Vec2 cursor2(gColorPickerSwatchXPad, gColorPickerSwatchYPad);
         BeginPanel(x,y,w,h, UiFlag::None);
 
-        for (auto& swatch: gColorPickerSwatches)
-        {
+        for (auto& swatch: gColorPickerSwatches) {
             DoColorPreview(cursor2, swatch, gColorPickerSwatchSmall);
-            if (gColorPickerMousePressed)
-            {
-                if (MouseInUiBoundsXYWH(cursor2.x, cursor2.y, gColorPickerSwatchSmall, gColorPickerSwatchSmall))
-                {
+            if (gColorPickerMousePressed) {
+                if (MouseInUiBoundsXYWH(cursor2.x, cursor2.y, gColorPickerSwatchSmall, gColorPickerSwatchSmall)) {
                     *gCurrentColorPickerColor = swatch;
                 }
             }
@@ -271,22 +262,17 @@ namespace Internal
         FillQuad(ix1,iy1,ix2,iy2);
 
         // Handle the indicator both being selected, deselected, and moved.
-        if (gColorPickerMousePressed)
-        {
-            if (MouseInUiBoundsXYWH(ix1-1,iy1-1,7,th+2))
-            {
+        if (gColorPickerMousePressed) {
+            if (MouseInUiBoundsXYWH(ix1-1,iy1-1,7,th+2)) {
                 gColorPickerActiveChannel = ChannelType::A;
-            }
-            else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, tw, th))
-            {
+            } else if (MouseInUiBoundsXYWH(cursor.x, cursor.y, tw, th)) {
                 gColorPickerActiveChannel = ChannelType::A;
                 // Determine where the click was and jump to that position.
                 float mx = tw - (GetMousePos().x - GetViewport().x - cursor.x);
                 color.a = 1 - (mx / tw);
             }
         }
-        if (gColorPickerActiveChannel == ChannelType::A)
-        {
+        if (gColorPickerActiveChannel == ChannelType::A) {
             color.a += (UiGetRelativeMouse().x / tw);
             color.a = std::clamp(color.a, 0.0f, 1.0f);
         }
@@ -304,8 +290,7 @@ TEINAPI void InitColorPicker ()
 {
     gCurrentColorPickerColor = NULL;
     // Add some empty swatches to the color picker on start-up.
-    for (int i=0; i<gColorPickerSwatchCount; ++i)
-    {
+    for (int i=0; i<gColorPickerSwatchCount; ++i) {
         gColorPickerSwatches.push_back(Vec4(1,1,1,0));
     }
 }
@@ -428,28 +413,20 @@ TEINAPI void HandleColorPickerEvents ()
     if (!IsWindowFocused("WINCOLOR")) return;
 
     // Determine if the mouse was pressed this update/cycle.
-    switch (gMainEvent.type)
-    {
-        case (SDL_MOUSEBUTTONDOWN):
-        {
-            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
-            {
+    switch (gMainEvent.type) {
+        case (SDL_MOUSEBUTTONDOWN): {
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT) {
                 gColorPickerMousePressed = true;
             }
         } break;
-        case (SDL_MOUSEBUTTONUP):
-        {
-            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
-            {
+        case (SDL_MOUSEBUTTONUP): {
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT) {
                 gColorPickerActiveChannel = ChannelType::Invalid;
             }
         } break;
-        case (SDL_KEYDOWN):
-        {
-            if (!TextBoxIsActive())
-            {
-                switch (gMainEvent.key.keysym.sym)
-                {
+        case (SDL_KEYDOWN): {
+            if (!TextBoxIsActive()) {
+                switch (gMainEvent.key.keysym.sym) {
                     case (SDLK_RETURN): OkayColorPicker(); break;
                     case (SDLK_ESCAPE): CancelColorPicker(); break;
                 }

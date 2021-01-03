@@ -13,8 +13,7 @@ namespace Internal
 
         std::string fileName(MakePathAbsolute(gCrashDumpName));
         HANDLE file = CreateFileA(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (file != INVALID_HANDLE_VALUE)
-        {
+        if (file != INVALID_HANDLE_VALUE) {
             Defer { CloseHandle(file); };
 
             MINIDUMP_EXCEPTION_INFORMATION miniDumpInfo = {};
@@ -35,8 +34,7 @@ namespace Internal
     TEINAPI void LogErrorMessage (const char* file, int line, ErrorLevel level, const char* format, ...)
     {
         // We only open the error log once the first error occurs.
-        if (!gErrorLog)
-        {
+        if (!gErrorLog) {
             std::string errorLogName(BuildResourceString(gErrorLogName));
             CreatePath(StripFileName(errorLogName));
             gErrorLog = fopen(errorLogName.c_str(), "a");
@@ -58,8 +56,7 @@ namespace Internal
         fflush(stderr);
         #endif // BuildDebug
 
-        if (gErrorLog)
-        {
+        if (gErrorLog) {
             va_start(args, format);
             fprintf(gErrorLog, format, timeStr.c_str(), fileStr.c_str(), line);
             vfprintf(gErrorLog, errFormat, args);
@@ -79,10 +76,7 @@ namespace Internal
 
         gMainRunning = false;
 
-        if (gErrorMaximumCallback)
-        {
-            gErrorMaximumCallback();
-        }
+        if (gErrorMaximumCallback) gErrorMaximumCallback();
     }
 }
 
@@ -98,8 +92,7 @@ TEINAPI void QuitErrorSystem ()
 {
     // This condition is important because, for some reason, calling
     // fclose(NULL) results in a long hang-time during program exit.
-    if (gErrorLog)
-    {
+    if (gErrorLog) {
         fclose(gErrorLog);
         gErrorLog = NULL;
     }

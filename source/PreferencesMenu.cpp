@@ -294,8 +294,7 @@ namespace Internal
     {
         std::string fileName(MakePathAbsolute(gSettingsFileName));
         FILE* file = fopen(fileName.c_str(), "w");
-        if (!file)
-        {
+        if (!file) {
             LogError(ErrorLevel::Med, "Failed to save settings data!");
             return;
         }
@@ -303,8 +302,7 @@ namespace Internal
 
         Vec4 c;
 
-        if (!gEditorSettings.gamePath.empty())
-        {
+        if (!gEditorSettings.gamePath.empty()) {
             fprintf(file, "%s \"%s\"\n", gSettingGamePath, gEditorSettings.gamePath.c_str());
         }
         fprintf(file, "%s %s\n", gSettingUITheme, gEditorSettings.uiTheme.c_str());
@@ -316,13 +314,10 @@ namespace Internal
         fprintf(file, "%s %d\n", gSettingBackupCount, gEditorSettings.backupCount);
         fprintf(file, "%s %s\n", gSettingAutoBackup, (gEditorSettings.autoBackup) ? "true" : "false");
         fprintf(file, "%s %d\n", gSettingBackupInterval, gEditorSettings.backupInterval);
-        if (!gEditorSettings.backgroundColorDefaulted)
-        {
+        if (!gEditorSettings.backgroundColorDefaulted) {
             c = gEditorSettings.backgroundColor;
             fprintf(file, "%s [%f %f %f %f]\n", gSettingBackgroundColor, c.r, c.g, c.b, c.a);
-        }
-        else
-        {
+        } else {
             fprintf(file, "%s %s\n", gSettingBackgroundColor, "none");
         }
         c = gEditorSettings.selectColor;
@@ -333,49 +328,40 @@ namespace Internal
         fprintf(file, "%s [%f %f %f %f]\n", gSettingCursorColor, c.r, c.g, c.b, c.a);
         c = gEditorSettings.mirrorLineColor;
         fprintf(file, "%s [%f %f %f %f]\n", gSettingMirrorLineColor, c.r, c.g, c.b, c.a);
-        if (!gEditorSettings.tileGridColorDefaulted)
-        {
+        if (!gEditorSettings.tileGridColorDefaulted) {
             c = gEditorSettings.tileGridColor;
             fprintf(file, "%s [%f %f %f %f]\n", gSettingTileGridColor, c.r, c.g, c.b, c.a);
-        }
-        else
-        {
+        } else {
             fprintf(file, "%s %s\n", gSettingTileGridColor, "none");
         }
 
         fprintf(file, "\n");
 
         // Save all of the hotkeys to GON format.
-        for (auto& [name,kb]: gKeyBindings)
-        {
+        for (auto& [name,kb]: gKeyBindings) {
             fprintf(file, "%s { ", name.c_str());
             fprintf(file, "main [");
-            if (kb.mod)
-            {
-                if (kb.mod&KMOD_CTRL) fprintf(file, "\"Ctrl\" " );
-                if (kb.mod&KMOD_ALT) fprintf(file, "\"Alt\" "  );
+            if (kb.mod) {
+                if (kb.mod&KMOD_CTRL) fprintf(file, "\"Ctrl\" ");
+                if (kb.mod&KMOD_ALT) fprintf(file, "\"Alt\" ");
                 if (kb.mod&KMOD_MODE) fprintf(file, "\"AltGr\" ");
                 if (kb.mod&KMOD_SHIFT) fprintf(file, "\"Shift\" ");
-                if (kb.mod&KMOD_GUI) fprintf(file, "\"Gui\" "  );
+                if (kb.mod&KMOD_GUI) fprintf(file, "\"Gui\" ");
             }
-            if (kb.code)
-            {
+            if (kb.code) {
                 fprintf(file, "\"%s\"", SDL_GetKeyName(kb.code));
             }
             fprintf(file, "] ");
-            if (kb.hasAlt)
-            {
+            if (kb.hasAlt) {
                 fprintf(file, "alt [");
-                if (kb.altMod)
-                {
-                    if (kb.altMod & KMOD_CTRL) fprintf(file, "\"Ctrl\" " );
-                    if (kb.altMod & KMOD_ALT) fprintf(file, "\"Alt\" "  );
+                if (kb.altMod) {
+                    if (kb.altMod & KMOD_CTRL) fprintf(file, "\"Ctrl\" ");
+                    if (kb.altMod & KMOD_ALT) fprintf(file, "\"Alt\" ");
                     if (kb.altMod & KMOD_MODE) fprintf(file, "\"AltGr\" ");
                     if (kb.altMod & KMOD_SHIFT) fprintf(file, "\"Shift\" ");
-                    if (kb.altMod & KMOD_GUI) fprintf(file, "\"Gui\" "  );
+                    if (kb.altMod & KMOD_GUI) fprintf(file, "\"Gui\" ");
                 }
-                if (kb.altCode)
-                {
+                if (kb.altCode) {
                     fprintf(file, "\"%s\"", SDL_GetKeyName(kb.altCode));
                 }
                 fprintf(file, "] ");
@@ -415,13 +401,11 @@ namespace Internal
         DoSettingsLabel(sw, gSettingUITheme);
         UiFlag darkFlags = (IsUiLight()) ? UiFlag::Inactive : UiFlag::None;
         UiFlag lightFlags = (IsUiLight()) ? UiFlag::None : UiFlag::Inactive;
-        if (DoTextButton(NULL, bw,sh, darkFlags, "Dark"))
-        {
+        if (DoTextButton(NULL, bw,sh, darkFlags, "Dark")) {
             gEditorSettings.uiTheme = "dark";
             LoadUiTheme();
         }
-        if (DoTextButton(NULL, bw,sh, lightFlags, "Light"))
-        {
+        if (DoTextButton(NULL, bw,sh, lightFlags, "Light")) {
             gEditorSettings.uiTheme = "light";
             LoadUiTheme();
         }
@@ -431,14 +415,12 @@ namespace Internal
         UiFlag sansFlags = (IsEditorFontOpenSans()) ? UiFlag::None : UiFlag::Inactive;
         UiFlag dylsexicFlags = (IsEditorFontOpenSans()) ? UiFlag::Inactive : UiFlag::None;
         SetUiFont(&gResourceFontRegularSans);
-        if (DoTextButton(NULL, bw,sh, sansFlags, "OpenSans"))
-        {
+        if (DoTextButton(NULL, bw,sh, sansFlags, "OpenSans")) {
             gEditorSettings.fontFace = "OpenSans";
             UpdateEditorFont();
         }
         SetUiFont(&gResourceFontRegularDyslexic);
-        if (DoTextButton(NULL, bw,sh, dylsexicFlags, "OpenDyslexic"))
-        {
+        if (DoTextButton(NULL, bw,sh, dylsexicFlags, "OpenDyslexic")) {
             gEditorSettings.fontFace = "OpenDyslexic";
             UpdateEditorFont();
         }
@@ -450,18 +432,14 @@ namespace Internal
         DoSettingsLabel(sw, gSettingTileGraphics);
         UiFlag tileGraphicsNewFlags = (gEditorSettings.tileGraphics == "new") ? UiFlag::None : UiFlag::Inactive;
         UiFlag tileGraphicsOldFlags = (gEditorSettings.tileGraphics == "new") ? UiFlag::Inactive : UiFlag::None;
-        if (DoTextButton(NULL, bw,sh, tileGraphicsNewFlags, "New"))
-        {
-            if (gEditorSettings.tileGraphics != "new")
-            {
+        if (DoTextButton(NULL, bw,sh, tileGraphicsNewFlags, "New")) {
+            if (gEditorSettings.tileGraphics != "new") {
                 gEditorSettings.tileGraphics = "new";
                 ReloadTileGraphics();
             }
         }
-        if (DoTextButton(NULL, bw,sh, tileGraphicsOldFlags, "Old"))
-        {
-            if (gEditorSettings.tileGraphics != "old")
-            {
+        if (DoTextButton(NULL, bw,sh, tileGraphicsOldFlags, "Old")) {
+            if (gEditorSettings.tileGraphics != "old") {
                 gEditorSettings.tileGraphics = "old";
                 ReloadTileGraphics();
             }
@@ -471,13 +449,11 @@ namespace Internal
         DoSettingsLabel(sw, gSettingCustomCursors);
         UiFlag cursorEnabledFlags = (CustomCursorsEnabled()) ? UiFlag::None : UiFlag::Inactive;
         UiFlag cursorDisabledFlags = (CustomCursorsEnabled()) ? UiFlag::Inactive : UiFlag::None;
-        if (DoTextButton(NULL, bw,sh, cursorEnabledFlags, "Enabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, cursorEnabledFlags, "Enabled")) {
             gEditorSettings.customCursors = true;
             LoadEditorCursors();
         }
-        if (DoTextButton(NULL, bw,sh, cursorDisabledFlags, "Disabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, cursorDisabledFlags, "Disabled")) {
             gEditorSettings.customCursors = false;
             LoadEditorCursors();
         }
@@ -486,12 +462,10 @@ namespace Internal
         UiFlag tooltipsEnabledFlags = (gEditorSettings.showTooltips) ? UiFlag::None : UiFlag::Inactive;
         UiFlag tooltipsDisabledFlags = (gEditorSettings.showTooltips) ? UiFlag::Inactive : UiFlag::None;
         DoSettingsLabel(sw, gSettingShowTooltips);
-        if (DoTextButton(NULL, bw,sh, tooltipsEnabledFlags, "Enabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, tooltipsEnabledFlags, "Enabled")) {
             gEditorSettings.showTooltips = true;
         }
-        if (DoTextButton(NULL, bw,sh, tooltipsDisabledFlags, "Disabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, tooltipsDisabledFlags, "Disabled")) {
             gEditorSettings.showTooltips = false;
         }
         NextSection(cursor);
@@ -503,13 +477,11 @@ namespace Internal
         DoSettingsLabel(sw, gSettingAutoBackup);
         UiFlag backupEnabledFlags = (gEditorSettings.autoBackup) ? UiFlag::None : UiFlag::Inactive;
         UiFlag backupDisabledFlags = (gEditorSettings.autoBackup) ? UiFlag::Inactive : UiFlag::None;
-        if (DoTextButton(NULL, bw,sh, backupEnabledFlags, "Enabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, backupEnabledFlags, "Enabled")) {
             gEditorSettings.autoBackup = true;
             UpdateBackupTimer();
         }
-        if (DoTextButton(NULL, bw,sh, backupDisabledFlags, "Disabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, backupDisabledFlags, "Disabled")) {
             gEditorSettings.autoBackup = false;
             UpdateBackupTimer();
         }
@@ -518,12 +490,10 @@ namespace Internal
         DoSettingsLabel(sw, gSettingUnlimitedBackups);
         UiFlag unlimitedEnabledFlags = (gEditorSettings.unlimitedBackups) ? UiFlag::None : UiFlag::Inactive;
         UiFlag unlimitedDisabledFlags = (gEditorSettings.unlimitedBackups) ? UiFlag::Inactive : UiFlag::None;
-        if (DoTextButton(NULL, bw,sh, unlimitedEnabledFlags, "Enabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, unlimitedEnabledFlags, "Enabled")) {
             gEditorSettings.unlimitedBackups = true;
         }
-        if (DoTextButton(NULL, bw,sh, unlimitedDisabledFlags, "Disabled"))
-        {
+        if (DoTextButton(NULL, bw,sh, unlimitedDisabledFlags, "Disabled")) {
             gEditorSettings.unlimitedBackups = false;
         }
         NextSection(cursor);
@@ -535,13 +505,11 @@ namespace Internal
         DoTextBox(vw-cursor.x,th, UiFlag::Numeric, backupIntervalString, "0");
         cursor.y -= gPreferencesTextBoxInset;
         if (!gEditorSettings.autoBackup) SetPanelFlags(UiFlag::None);
-        if (atoll(backupIntervalString.c_str()) > INT_MAX)
-        {
+        if (atoll(backupIntervalString.c_str()) > INT_MAX) {
             backupIntervalString = std::to_string(INT_MAX);
         }
         int backupInterval = atoi(backupIntervalString.c_str());
-        if (backupInterval != gEditorSettings.backupInterval)
-        {
+        if (backupInterval != gEditorSettings.backupInterval) {
             gEditorSettings.backupInterval = backupInterval;
             UpdateBackupTimer();
         }
@@ -554,13 +522,11 @@ namespace Internal
         DoTextBox(vw-cursor.x,th, UiFlag::Numeric, backupCountString, "0");
         cursor.y -= gPreferencesTextBoxInset;
         if (gEditorSettings.unlimitedBackups) SetPanelFlags(UiFlag::None);
-        if (atoll(backupCountString.c_str()) > INT_MAX)
-        {
+        if (atoll(backupCountString.c_str()) > INT_MAX) {
             backupCountString = std::to_string(INT_MAX);
         }
         int backupCount = atoi(backupCountString.c_str());
-        if (backupCount != gEditorSettings.backupCount)
-        {
+        if (backupCount != gEditorSettings.backupCount) {
             gEditorSettings.backupCount = backupCount;
         }
         NextSection(cursor);
@@ -730,8 +696,7 @@ TEINAPI void DoPreferencesMenu ()
     SetPanelCursor(&cursor);
 
     std::string restoreMessage;
-    switch (gPreferencesTab)
-    {
+    switch (gPreferencesTab) {
         case (PreferencesTab::Settings): restoreMessage = "Restore Settings"; break;
         case (PreferencesTab::Hotkeys): restoreMessage = "Restore Hotkeys";  break;
     }
@@ -755,8 +720,7 @@ TEINAPI void DoPreferencesMenu ()
     p2.h = GetViewport().h - p2.y - pvfh - 1;
 
     BeginPanel(p2, UiFlag::None);
-    switch (gPreferencesTab)
-    {
+    switch (gPreferencesTab) {
         case (PreferencesTab::Settings): Internal::DoPreferencesSettings(); break;
         case (PreferencesTab::Hotkeys): Internal::DoPreferencesHotkeys(); break;
     }
@@ -772,21 +736,15 @@ TEINAPI void HandlePreferencesMenuEvents ()
 
     if (!IsWindowFocused("WINPREFERENCES")) return;
 
-    switch (gMainEvent.type)
-    {
-        case (SDL_MOUSEBUTTONDOWN):
-        {
-            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
-            {
+    switch (gMainEvent.type) {
+        case (SDL_MOUSEBUTTONDOWN): {
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT) {
                 gPreferencesMousePressed = true;
             }
         } break;
-        case (SDL_KEYDOWN):
-        {
-            if (!TextBoxIsActive() && !HotkeyIsActive())
-            {
-                switch (gMainEvent.key.keysym.sym)
-                {
+        case (SDL_KEYDOWN): {
+            if (!TextBoxIsActive() && !HotkeyIsActive()) {
+                switch (gMainEvent.key.keysym.sym) {
                     case (SDLK_RETURN): SavePreferences(); break;
                     case (SDLK_ESCAPE): CancelPreferences(); break;
                 }
@@ -797,8 +755,7 @@ TEINAPI void HandlePreferencesMenuEvents ()
 
 TEINAPI void RestorePreferences ()
 {
-    switch (gPreferencesTab)
-    {
+    switch (gPreferencesTab) {
         case (PreferencesTab::Settings): RestoreEditorSettings(); break;
         case (PreferencesTab::Hotkeys): RestoreEditorKeyBindings(); break;
     }
@@ -807,12 +764,10 @@ TEINAPI void RestorePreferences ()
 TEINAPI void CancelPreferences ()
 {
     // We only want to shot this prompt if the user actually made any changes to preferences.
-    if (gEditorSettings != gCachedEditorSettings || gKeyBindings != gCachedEditorHotkeys)
-    {
+    if (gEditorSettings != gCachedEditorSettings || gKeyBindings != gCachedEditorHotkeys) {
         // Make sure the user is certain about what they are doing and cancel the
         // action if they decide that they do not actually want to discard changes.
-        if (ShowAlert("Discard Changes", "Are you sure you want do discard changes?", AlertType::Warning, AlertButton::YesNo, "WINPREFERENCES") == AlertResult::No)
-        {
+        if (ShowAlert("Discard Changes", "Are you sure you want do discard changes?", AlertType::Warning, AlertButton::YesNo, "WINPREFERENCES") == AlertResult::No) {
             return;
         }
     }

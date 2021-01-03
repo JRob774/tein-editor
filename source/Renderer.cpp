@@ -74,14 +74,12 @@ namespace Internal
 TEINAPI bool InitRenderer ()
 {
     gGLContext = SDL_GL_CreateContext(GetWindowFromName("WINMAIN").window);
-    if (!gGLContext)
-    {
+    if (!gGLContext) {
         LogError(ErrorLevel::Min, "Failed to create GL context! (%s)", SDL_GetError());
         return false;
     }
 
-    if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
-    {
+    if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
         LogError(ErrorLevel::Min, "Failed to load OpenGL procedures!");
         return false;
     }
@@ -97,15 +95,13 @@ TEINAPI bool InitRenderer ()
     glGetFloatv(GL_MAX_TEXTURE_SIZE, &gMaxGLTextureSize);
 
     gUntexturedShader = LoadShaderResource("shaders/untextured.shader");
-    if (!gUntexturedShader)
-    {
+    if (!gUntexturedShader) {
         LogError(ErrorLevel::Max, "Failed to load the untextured shader!");
         return false;
     }
 
     gTexturedShader = LoadShaderResource("shaders/textured.shader");
-    if (!gTexturedShader)
-    {
+    if (!gTexturedShader) {
         LogError(ErrorLevel::Max, "Failed to load the textured shader!");
         return false;
     }
@@ -113,8 +109,7 @@ TEINAPI bool InitRenderer ()
     // We carry on even on failure because text will still be drawn it
     // will just be extremely ugly... but it's not worth failing over.
     gTextShader = LoadShaderResource("shaders/text.shader");
-    if (!gTextShader)
-    {
+    if (!gTextShader) {
         LogError(ErrorLevel::Med, "Failed to load the text shader!");
     }
 
@@ -234,8 +229,7 @@ TEINAPI void SetRenderTarget (Window* window)
     gRenderTarget = window;
     assert(gRenderTarget);
 
-    if (SDL_GL_MakeCurrent(gRenderTarget->window, gGLContext) < 0)
-    {
+    if (SDL_GL_MakeCurrent(gRenderTarget->window, gGLContext) < 0) {
         gRenderTarget = NULL;
         LogError(ErrorLevel::Med, "Failed to set render target! (%s)", SDL_GetError());
     }
@@ -445,23 +439,18 @@ TEINAPI void DrawTexture (const Texture& tex, float x, float y, const Quad* clip
     float cx1,cy1,cx2,cy2;
     float w,h;
 
-    if (clip)
-    {
+    if (clip) {
         cx1 =       (clip->x / tex.w);
         cy1 =       (clip->y / tex.h);
         cx2 = cx1 + (clip->w / tex.w);
         cy2 = cy1 + (clip->h / tex.h);
-
         w = clip->w * gTextureDrawScaleX;
         h = clip->h * gTextureDrawScaleY;
-    }
-    else
-    {
+    } else {
         cx1 = 0;
         cy1 = 0;
         cx2 = 1;
         cy2 = 1;
-
         w = tex.w * gTextureDrawScaleX;
         h = tex.h * gTextureDrawScaleY;
     }
@@ -503,20 +492,17 @@ TEINAPI void DrawText (const Font& fnt, float x, float y, std::string text)
     const Texture& cache = fnt.cache.at(fnt.currentPointSize);
     auto& glyphs = fnt.glyphs.at(fnt.currentPointSize);
 
-    for (const char* c=text.c_str(); *c; ++c)
-    {
+    for (const char* c=text.c_str(); *c; ++c) {
         if (*c < 0 || *c >= gTotalGlyphCount) continue;
 
         cx += (GetFontKerning(fnt, *c, index, prevIndex) * scale);
 
-        switch (*c)
-        {
+        switch (*c) {
             case ('\r'): cx = x;                                                       break;
             case ('\n'): cx = x, cy += (fnt.lineGap.at(fnt.currentPointSize) * scale); break;
             case ('\t'): cx += GetFontTabWidth(fnt) * scale;                           break;
 
-            default:
-            {
+            default: {
                 const FontGlyph& glyph = glyphs.at(*c);
                 const Quad& clip = glyph.bounds;
 
@@ -653,20 +639,17 @@ TEINAPI void DrawBatchedText (float x, float y, std::string text)
     const auto& glyphs = fnt.glyphs.at(fnt.currentPointSize);
     const auto& lineGap = fnt.lineGap.at(fnt.currentPointSize);
 
-    for (const char* c=text.c_str(); *c; ++c)
-    {
+    for (const char* c=text.c_str(); *c; ++c) {
         if (*c < 0 || *c >= gTotalGlyphCount) continue;
 
         cx += (GetFontKerning(fnt, *c, index, prevIndex) * scale);
 
-        switch (*c)
-        {
+        switch (*c) {
             case ('\r'): cx = x;                               break;
             case ('\n'): cx = x, cy += (lineGap * scale);      break;
             case ('\t'): cx += (GetFontTabWidth(fnt) * scale); break;
 
-            default:
-            {
+            default: {
                 const FontGlyph& glyph = glyphs.at(*c);
                 const Quad& clip = glyph.bounds;
 

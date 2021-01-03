@@ -17,13 +17,11 @@ namespace Internal
 {
     TEINAPI void OkayNew ()
     {
-        if (gCurrentNewWidth < gMinimumLevelWidth || gCurrentNewHeight < gMinimumLevelHeight)
-        {
+        if (gCurrentNewWidth < gMinimumLevelWidth || gCurrentNewHeight < gMinimumLevelHeight) {
             ShowAlert("Warning", FormatString("Minimum level size is %dx%d!", gMinimumLevelWidth, gMinimumLevelHeight), AlertType::Warning, AlertButton::Ok, "WINNEW");
             return;
         }
-        switch (gCurrentTabType)
-        {
+        switch (gCurrentTabType) {
             case (TabType::Level): CreateNewLevelTabAndFocus(GetNewWidth(), GetNewHeight()); break;
             case (TabType::Map): CreateNewMapTabAndFocus(); break;
         }
@@ -107,9 +105,9 @@ TEINAPI void DoNew ()
 
     EndPanel();
 
-    p2.x =                    1;
-    p2.y = nvfh             + 1;
-    p2.w = vw               - 2;
+    p2.x = 1;
+    p2.y = nvfh + 1;
+    p2.w = vw - 2;
     p2.h = vh - p2.y - nvfh - 1;
 
     UiFlag panelFlags = ((gCurrentTabType == TabType::Level) ? UiFlag::None : UiFlag::Locked);
@@ -138,14 +136,12 @@ TEINAPI void DoNew ()
 
     int oldNewWidth = gCurrentNewWidth;
     int newNewWidth = atoi(widthString.c_str());
-    if (newNewWidth != oldNewWidth)
-    {
+    if (newNewWidth != oldNewWidth) {
         gCurrentNewWidth = newNewWidth;
     }
     int oldNewHeight = gCurrentNewHeight;
     int newNewHeight = atoi(heightString.c_str());
-    if (newNewHeight != oldNewHeight)
-    {
+    if (newNewHeight != oldNewHeight) {
         gCurrentNewHeight = newNewHeight;
     }
 
@@ -161,14 +157,10 @@ TEINAPI void CancelNew ()
 
 TEINAPI void HandleNewEvents ()
 {
-    if (IsWindowFocused("WINNEW"))
-    {
-        if (!TextBoxIsActive())
-        {
-            if (gMainEvent.type == SDL_KEYDOWN)
-            {
-                switch (gMainEvent.key.keysym.sym)
-                {
+    if (IsWindowFocused("WINNEW")) {
+        if (!TextBoxIsActive()) {
+            if (gMainEvent.type == SDL_KEYDOWN) {
+                switch (gMainEvent.key.keysym.sym) {
                     case (SDLK_RETURN): Internal::OkayNew(); break;
                     case (SDLK_ESCAPE): CancelNew(); break;
                 }

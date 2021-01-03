@@ -28,10 +28,8 @@ namespace Internal
     TEINAPI int ResizeWindow (void* mainWindowThreadID, SDL_Event* event)
     {
         // We only care about window resizing events, ignore everything else!
-        if (event->type == SDL_WINDOWEVENT)
-        {
-            if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-            {
+        if (event->type == SDL_WINDOWEVENT) {
+            if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 Window& window = GetWindowFromID(event->window.windowID);
 
                 float oldWidth = window.width;
@@ -42,23 +40,17 @@ namespace Internal
 
                 // If not on main thread leave early as it would be unsafe otherwise.
                 // See the top of the init_window() function for a clear explanation.
-                if (*reinterpret_cast<unsigned int*>(mainWindowThreadID) == GetThreadID())
-                {
+                if (*reinterpret_cast<unsigned int*>(mainWindowThreadID) == GetThreadID()) {
                     // Force a redraw on resize, which looks nicer than the usual glitchy
                     // looking screen content when a program's window is usually resized.
                     gWindowResizing = true;
-                    if (!gFromManualResize)
-                    {
-                        if (window.resizeCallback)
-                        {
-                            if (oldWidth != event->window.data1 || oldHeight != event->window.data2)
-                            {
+                    if (!gFromManualResize) {
+                        if (window.resizeCallback) {
+                            if (oldWidth != event->window.data1 || oldHeight != event->window.data2) {
                                 window.resizeCallback();
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         gFromManualResize = false;
                     }
 
@@ -75,8 +67,7 @@ namespace Internal
     {
         HKEY key;
         LSTATUS ret = RegOpenKeyExA(HKEY_CURRENT_USER, gWindowStateKeyName, 0, KEY_READ, &key);
-        if (ret != ERROR_SUCCESS)
-        {
+        if (ret != ERROR_SUCCESS) {
             // We don't bother logging an error because it isn't that important...
             return;
         }
@@ -100,8 +91,7 @@ namespace Internal
 
         SDL_Window* win = gWindows.at("WINMAIN").window;
         SDL_Rect displayBounds;
-        if (SDL_GetDisplayBounds(dwDisplayIndex, &displayBounds) < 0)
-        {
+        if (SDL_GetDisplayBounds(dwDisplayIndex, &displayBounds) < 0) {
             // We don't bother logging an error because it isn't that important...
             return;
         }
@@ -115,8 +105,7 @@ namespace Internal
         SetWindowSize("WINMAIN", w, h);
         SetWindowPos("WINMAIN", x, y);
 
-        if (dwMaximized)
-        {
+        if (dwMaximized) {
             SDL_MaximizeWindow(win);
         }
     }
@@ -128,8 +117,7 @@ namespace Internal
         DWORD disp;
         HKEY key;
         LSTATUS ret = RegCreateKeyExA(HKEY_CURRENT_USER, gWindowStateKeyName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &key, &disp);
-        if (ret != ERROR_SUCCESS)
-        {
+        if (ret != ERROR_SUCCESS) {
             // We don't bother logging an error because it isn't that important...
             return;
         }
@@ -195,8 +183,7 @@ TEINAPI bool InitWindow ()
     std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #endif // BuildDebug
 
-    if (!RegisterWindow("WINMAIN", mainTitle, gMainWindowX,gMainWindowY,gMainWindowBaseW,gMainWindowBaseH,gMainWindowMinW,gMainWindowMinH,gMainWindowFlags))
-    {
+    if (!RegisterWindow("WINMAIN", mainTitle, gMainWindowX,gMainWindowY,gMainWindowBaseW,gMainWindowBaseH,gMainWindowMinW,gMainWindowMinH,gMainWindowFlags)) {
         LogError(ErrorLevel::Max, "Failed to create the main application window!");
         return false;
     }
@@ -229,52 +216,36 @@ TEINAPI void HandleWindowEvents ()
     std::string windowName = GetWindowNameFromID(gMainEvent.window.windowID);
     Window& window = GetWindowFromID(gMainEvent.window.windowID);
 
-    switch (gMainEvent.window.event)
-    {
-        case (SDL_WINDOWEVENT_FOCUS_GAINED):
-        {
+    switch (gMainEvent.window.event) {
+        case (SDL_WINDOWEVENT_FOCUS_GAINED): {
             // Special case for the main window to ensure all sub-windows stay on top of it.
-            if (windowName == "WINMAIN" && Internal::AreAnySubWindowsOpen())
-            {
-                for (auto [name,unused]: gWindows)
-                {
+            if (windowName == "WINMAIN" && Internal::AreAnySubWindowsOpen()) {
+                for (auto [name,unused]: gWindows) {
                     if (name != "WINMAIN") RaiseWindow(name);
                 }
-            }
-            else
-            {
+            } else {
                 window.focus = true;
             }
         } break;
-        case (SDL_WINDOWEVENT_FOCUS_LOST):
-        {
+        case (SDL_WINDOWEVENT_FOCUS_LOST): {
             window.focus = false;
         } break;
 
-        case (SDL_WINDOWEVENT_MINIMIZED):
-        {
-            if (windowName == "WINMAIN")
-            {
-                for (auto [name,unused]: gWindows)
-                {
-                    if (name != "WINMAIN" && !IsWindowHidden(name))
-                    {
+        case (SDL_WINDOWEVENT_MINIMIZED): {
+            if (windowName == "WINMAIN") {
+                for (auto [name,unused]: gWindows) {
+                    if (name != "WINMAIN" && !IsWindowHidden(name)) {
                         gRestoreList.push_back(name);
                         HideWindow(name);
                     }
                 }
             }
         } break;
-        case (SDL_WINDOWEVENT_RESTORED):
-        {
-            if (windowName == "WINMAIN")
-            {
-                for (auto [name,unused]: gWindows)
-                {
-                    if (name != "WINMAIN")
-                    {
-                        if (std::find(gRestoreList.begin(), gRestoreList.end(), name) != gRestoreList.end())
-                        {
+        case (SDL_WINDOWEVENT_RESTORED): {
+            if (windowName == "WINMAIN") {
+                for (auto [name,unused]: gWindows) {
+                    if (name != "WINMAIN") {
+                        if (std::find(gRestoreList.begin(), gRestoreList.end(), name) != gRestoreList.end()) {
                             ShowWindow(name);
                         }
                     }
@@ -283,17 +254,14 @@ TEINAPI void HandleWindowEvents ()
             }
         } break;
 
-        case (SDL_WINDOWEVENT_CLOSE):
-        {
+        case (SDL_WINDOWEVENT_CLOSE): {
             if (window.closeCallback) window.closeCallback();
         } break;
 
-        case (SDL_WINDOWEVENT_ENTER):
-        {
+        case (SDL_WINDOWEVENT_ENTER): {
             window.mouse = true;
         } break;
-        case (SDL_WINDOWEVENT_LEAVE):
-        {
+        case (SDL_WINDOWEVENT_LEAVE): {
             window.mouse = false;
         } break;
     }
@@ -307,8 +275,7 @@ TEINAPI void SetMainWindowSubtitle (std::string subtitle)
     std::string mainTitle(FormatString("%s (%d.%d.%d)", gMainWindowTitle, gAppVerMajor,gAppVerMinor,gAppVerPatch));
     #endif // BuildDebug
 
-    if (!subtitle.empty())
-    {
+    if (!subtitle.empty()) {
         mainTitle += " | ";
         mainTitle += subtitle;
     }
@@ -360,8 +327,7 @@ TEINAPI bool IsAWindowResizing ()
 
 TEINAPI bool RegisterWindow (std::string name, std::string title, int x, int y, int w, int h, int minW, int minH, U32 flags)
 {
-    if (gWindows.find(name) != gWindows.end())
-    {
+    if (gWindows.find(name) != gWindows.end()) {
         LogError(ErrorLevel::Max, "Window with name \"%s\" already exists!", name.c_str());
         return false;
     }
@@ -372,15 +338,13 @@ TEINAPI bool RegisterWindow (std::string name, std::string title, int x, int y, 
     // These are the required flags for all of our application sub-windows.
     flags |= (SDL_WINDOW_HIDDEN|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_OPENGL);
     window.window = SDL_CreateWindow(title.c_str(), x, y, w, h, flags);
-    if (!window.window)
-    {
+    if (!window.window) {
         LogError(ErrorLevel::Min, "Failed to create window! (%s)", SDL_GetError());
         return false;
     }
 
     window.id = SDL_GetWindowID(window.window);
-    if (!window.id)
-    {
+    if (!window.id) {
         LogError(ErrorLevel::Min, "Failed to get window ID! (%s)", SDL_GetError());
         return false;
     }

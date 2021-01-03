@@ -41,8 +41,7 @@ namespace Internal
 
         // We display the level tab's full file name in the status bar on hover.
         std::string info((tab.name.empty()) ? "Untitled" : tab.name);
-        if (BeginClickPanelGradient(NULL, pw,th+1.0f, flags, info))
-        {
+        if (BeginClickPanelGradient(NULL, pw,th+1.0f, flags, info)) {
             SetCurrentTab(index);
         }
 
@@ -67,12 +66,9 @@ namespace Internal
 
 TEINAPI void HandleTabBarEvents ()
 {
-    switch (gMainEvent.type)
-    {
-        case (SDL_MOUSEWHEEL):
-        {
-            if (gCanScrollInTabBar)
-            {
+    switch (gMainEvent.type) {
+        case (SDL_MOUSEWHEEL): {
+            if (gCanScrollInTabBar) {
                 if (gMainEvent.wheel.y > 0) IncrementTab();
                 if (gMainEvent.wheel.y < 0) DecrementTab();
             }
@@ -102,8 +98,7 @@ TEINAPI void DoTabBar ()
     // Figure out how many tabs we can fit on the bar before we need to start scrolling.
     gMaxNumberOfTabs = static_cast<int>(ceilf(pw / (gDefaultLevelTabWidth + 1)));
 
-    if (gNeedToScrollTabBar)
-    {
+    if (gNeedToScrollTabBar) {
         gNeedToScrollTabBar = false;
         MaybeScrollTabBar();
     }
@@ -111,35 +106,28 @@ TEINAPI void DoTabBar ()
     float tabWidth = gDefaultLevelTabWidth;
     float leftover = 0;
 
-    if (gEditor.tabs.size() >= gMaxNumberOfTabs)
-    {
+    if (gEditor.tabs.size() >= gMaxNumberOfTabs) {
         tabWidth = floorf((pw-((gMaxNumberOfTabs-1)*1)) / gMaxNumberOfTabs);
         leftover = (pw-((gMaxNumberOfTabs-1)*1)) - (tabWidth * gMaxNumberOfTabs);
-    }
-    else
-    {
+    } else {
         gStartingTabOffset = 0;
     }
 
     // Prevents the tab bar from being offset too far to the right creating an ugly space when there shouldn't be.
-    if (gEditor.tabs.size() >= gMaxNumberOfTabs)
-    {
-        while (gStartingTabOffset+gMaxNumberOfTabs > gEditor.tabs.size())
-        {
+    if (gEditor.tabs.size() >= gMaxNumberOfTabs) {
+        while (gStartingTabOffset+gMaxNumberOfTabs > gEditor.tabs.size()) {
              --gStartingTabOffset;
         }
     }
 
     // THE LEFT ARROW BUTTON
-    if (AreThereAnyTabs())
-    {
+    if (AreThereAnyTabs()) {
         BeginPanel(x,y,bw,bh, UiFlag::None);
         Vec2 tempCursor(0,0);
         SetPanelCursor(&tempCursor);
         bool leftArrowActive = (gStartingTabOffset != 0);
         UiFlag flags = ((leftArrowActive) ? UiFlag::None : UiFlag::Locked);
-        if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowLeft))
-        {
+        if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowLeft)) {
             --gStartingTabOffset;
         }
         EndPanel();
@@ -159,12 +147,10 @@ TEINAPI void DoTabBar ()
 
     size_t indexToClose = gNoTabToClose;
     size_t last = std::min(gEditor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs);
-    for (size_t i=gStartingTabOffset; i<last; ++i)
-    {
+    for (size_t i=gStartingTabOffset; i<last; ++i) {
         float w = tabWidth + ((i == last-1) ? leftover : 0);
         bool current = (i == gEditor.currentTab);
-        if (Internal::DoLevelTab(w, gEditor.tabs.at(i), i, current))
-        {
+        if (Internal::DoLevelTab(w, gEditor.tabs.at(i), i, current)) {
             indexToClose = i;
         }
     }
@@ -172,15 +158,13 @@ TEINAPI void DoTabBar ()
     EndPanel();
 
     // THE RIGHT ARROW BUTTON
-    if (AreThereAnyTabs())
-    {
+    if (AreThereAnyTabs()) {
         BeginPanel(x+bw+2+pw,0,bw,bh, UiFlag::None);
         Vec2 tempCursor(0,0);
         SetPanelCursor(&tempCursor);
         bool rightArrowActive = (gStartingTabOffset+gMaxNumberOfTabs < gEditor.tabs.size());
         UiFlag flags = ((rightArrowActive) ? UiFlag::None : UiFlag::Locked);
-        if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowRight))
-        {
+        if (DoImageButton(NULL, bw+1,bh, flags, &gClipArrowRight)) {
             ++gStartingTabOffset;
         }
         EndPanel();
@@ -193,21 +177,17 @@ TEINAPI void DoTabBar ()
 TEINAPI void MaybeScrollTabBar ()
 {
     if (gEditor.currentTab < gStartingTabOffset) gStartingTabOffset = gEditor.currentTab;
-    while (gEditor.currentTab >= std::min(gEditor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs))
-    {
+    while (gEditor.currentTab >= std::min(gEditor.tabs.size(), gStartingTabOffset+gMaxNumberOfTabs)) {
         ++gStartingTabOffset;
     }
 }
 
 TEINAPI void MoveTabLeft ()
 {
-    if (AreThereAnyTabs())
-    {
+    if (AreThereAnyTabs()) {
         Tab& tab = GetCurrentTab();
-        if (tab.type != TabType::Map || !tab.mapNodeInfo.active)
-        {
-            if (gEditor.currentTab > 0)
-            {
+        if (tab.type != TabType::Map || !tab.mapNodeInfo.active) {
+            if (gEditor.currentTab > 0) {
                 auto begin = gEditor.tabs.begin();
                 std::iter_swap(begin+gEditor.currentTab-1, begin+gEditor.currentTab);
                 --gEditor.currentTab;
@@ -218,13 +198,10 @@ TEINAPI void MoveTabLeft ()
 }
 TEINAPI void MoveTabRight ()
 {
-    if (AreThereAnyTabs())
-    {
+    if (AreThereAnyTabs()) {
         Tab& tab = GetCurrentTab();
-        if (tab.type != TabType::Map || !tab.mapNodeInfo.active)
-        {
-            if (gEditor.currentTab < gEditor.tabs.size()-1)
-            {
+        if (tab.type != TabType::Map || !tab.mapNodeInfo.active) {
+            if (gEditor.currentTab < gEditor.tabs.size()-1) {
                 auto begin = gEditor.tabs.begin();
                 std::iter_swap(begin+gEditor.currentTab+1, begin+gEditor.currentTab);
                 ++gEditor.currentTab;

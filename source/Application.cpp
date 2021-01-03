@@ -6,14 +6,11 @@ namespace Internal
         int numVideoDrivers = SDL_GetNumVideoDrivers();
 
         LogDebug("Platform: %s", SDL_GetPlatform());
-        if (numDisplayModes > 0)
-        {
+        if (numDisplayModes > 0) {
             BeginDebugSection("Displays:");
-            for (int i=0; i<numDisplayModes; ++i)
-            {
+            for (int i=0; i<numDisplayModes; ++i) {
                 SDL_DisplayMode displayMode = {};
-                if (SDL_GetCurrentDisplayMode(i, &displayMode) == 0)
-                {
+                if (SDL_GetCurrentDisplayMode(i, &displayMode) == 0) {
                     const char* name = SDL_GetDisplayName(i);
                     int w = displayMode.w;
                     int h = displayMode.h;
@@ -23,11 +20,9 @@ namespace Internal
             }
             EndDebugSection();
         }
-        if (numVideoDrivers > 0)
-        {
+        if (numVideoDrivers > 0) {
             BeginDebugSection("Drivers:");
-            for (int i=0; i<numVideoDrivers; ++i)
-            {
+            for (int i=0; i<numVideoDrivers; ++i) {
                 const char* name = SDL_GetVideoDriver(i);
                 LogDebug("(%d) %s", i, name);
             }
@@ -57,41 +52,37 @@ TEINAPI void InitApplication (int argc, char** argv)
 
     BeginDebugSection("Initialization:");
 
-    if (!InitErrorSystem())
-    {
+    if (!InitErrorSystem()) {
         LogError(ErrorLevel::Max, "Failed to setup the error system!");
         return;
     }
 
     U32 sdlFLags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
-    if (SDL_Init(sdlFLags) != 0)
-    {
+    if (SDL_Init(sdlFLags) != 0) {
         LogError(ErrorLevel::Max, "Failed to initialize SDL! (%s)", SDL_GetError());
         return;
+    } else {
+        LogDebug("Initialized SDL2 Library");
     }
-    else LogDebug("Initialized SDL2 Library");
 
-    if (FT_Init_FreeType(&gFreetype) != 0)
-    {
+    if (FT_Init_FreeType(&gFreetype) != 0) {
         LogError(ErrorLevel::Max, "Failed to initialize FreeType!");
         return;
+    } else {
+        LogDebug("Initialized FreeType2 Library");
     }
-    else LogDebug("Initialized FreeType2 Library");
 
     Internal::DumpDebugApplicationInfo();
 
-    if (!InitResourceManager())
-    {
+    if (!InitResourceManager()) {
         LogError(ErrorLevel::Max, "Failed to setup the resource manager!");
         return;
     }
-    if (!InitUiSystem())
-    {
+    if (!InitUiSystem()) {
         LogError(ErrorLevel::Max, "Failed to setup the UI system!");
         return;
     }
-    if (!InitWindow())
-    {
+    if (!InitWindow()) {
         LogError(ErrorLevel::Max, "Failed to setup the window system!");
         return;
     }
@@ -124,26 +115,21 @@ TEINAPI void InitApplication (int argc, char** argv)
     SetWindowChild("WINPACK");
     SetWindowChild("WINPATH");
 
-    if (!InitRenderer())
-    {
+    if (!InitRenderer()) {
         LogError(ErrorLevel::Max, "Failed to setup the renderer!");
         return;
     }
-    if (!LoadEditorSettings ())
-    {
+    if (!LoadEditorSettings ()) {
         LogError(ErrorLevel::Med, "Failed to load editor settings!");
     }
-    if (!LoadEditorKeyBindings())
-    {
+    if (!LoadEditorKeyBindings()) {
         LogError(ErrorLevel::Med, "Failed to load editor key bindings!");
     }
-    if (!LoadEditorResources())
-    {
+    if (!LoadEditorResources()) {
         LogError(ErrorLevel::Max, "Failed to load editor resources!");
         return;
     }
-    if (!InitTilePanel())
-    {
+    if (!InitTilePanel()) {
         LogError(ErrorLevel::Max, "Failed to setup the tile panel!");
         return;
     }
@@ -232,8 +218,7 @@ TEINAPI void DoApplication ()
 
     RenderPresent();
 
-    if (!IsWindowHidden("WINPREFERENCES"))
-    {
+    if (!IsWindowHidden("WINPREFERENCES")) {
         SetRenderTarget(&GetWindowFromName("WINPREFERENCES"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -241,8 +226,7 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINCOLOR"))
-    {
+    if (!IsWindowHidden("WINCOLOR")) {
         SetRenderTarget(&GetWindowFromName("WINCOLOR"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -250,8 +234,7 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINABOUT"))
-    {
+    if (!IsWindowHidden("WINABOUT")) {
         SetRenderTarget(&GetWindowFromName("WINABOUT"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -259,8 +242,7 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINNEW"))
-    {
+    if (!IsWindowHidden("WINNEW")) {
         SetRenderTarget(&GetWindowFromName("WINNEW"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -268,8 +250,7 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINRESIZE"))
-    {
+    if (!IsWindowHidden("WINRESIZE")) {
         SetRenderTarget(&GetWindowFromName("WINRESIZE"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -277,8 +258,7 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINUNPACK"))
-    {
+    if (!IsWindowHidden("WINUNPACK")) {
         SetRenderTarget(&GetWindowFromName("WINUNPACK"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -286,8 +266,7 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINPACK"))
-    {
+    if (!IsWindowHidden("WINPACK")) {
         SetRenderTarget(&GetWindowFromName("WINPACK"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -295,8 +274,7 @@ TEINAPI void DoApplication ()
         RenderPresent();
     }
 
-    if (!IsWindowHidden("WINPATH"))
-    {
+    if (!IsWindowHidden("WINPATH")) {
         SetRenderTarget(&GetWindowFromName("WINPATH"));
         SetViewport(0, 0, GetRenderTargetWidth(), GetRenderTargetHeight());
         RenderClear(gUiColorMedium);
@@ -305,8 +283,7 @@ TEINAPI void DoApplication ()
     }
 
     // IMPORTANT: Otherwise the UI will not redraw very well!
-    if (gShouldPushUiRedrawEvent)
-    {
+    if (gShouldPushUiRedrawEvent) {
         PushEditorEvent(EditorEvent::UiRedraw, NULL, NULL);
         gShouldPushUiRedrawEvent = false;
     }
@@ -315,8 +292,7 @@ TEINAPI void DoApplication ()
 TEINAPI bool HandleApplicationEvents ()
 {
     // We wait for events so we don't waste CPU and GPU power.
-    if (!SDL_WaitEvent(&gMainEvent))
-    {
+    if (!SDL_WaitEvent(&gMainEvent)) {
         LogError(ErrorLevel::Med, "Error waiting for events! (%s)", SDL_GetError());
         return false;
     }
@@ -325,8 +301,7 @@ TEINAPI bool HandleApplicationEvents ()
 
     // We need to poll events afterwards so that we can process
     // multiple events that may have occurred on the same frame.
-    do
-    {
+    do {
         if (gMainEvent.type == SDL_QUIT) gMainRunning = false;
 
         #if defined(BuildDebug)
@@ -347,8 +322,7 @@ TEINAPI bool HandleApplicationEvents ()
         HandleTooltipEvents();
         HandleAboutEvents();
         HandlePathEvents();
-    }
-    while (SDL_PollEvent(&gMainEvent));
+    } while (SDL_PollEvent(&gMainEvent));
 
     return true;
 }

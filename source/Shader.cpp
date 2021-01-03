@@ -9,14 +9,12 @@ namespace Internal
         GLint infoLogLength;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
         char* infoLog = Malloc(char, infoLogLength);
-        if (infoLog)
-        {
+        if (infoLog) {
             Defer { Free(infoLog); };
 
             GLint compileSuccess;
             glGetShaderiv(shader, GL_COMPILE_STATUS, &compileSuccess);
-            if (!compileSuccess)
-            {
+            if (!compileSuccess) {
                 glGetShaderInfoLog(shader, infoLogLength, NULL, infoLog);
                 LogError(ErrorLevel::Min, "Failed to compile shader:\n%s", infoLog);
             }
@@ -48,10 +46,7 @@ TEINAPI Shader LoadShaderFromSource (std::string source)
 
     Defer { glDeleteShader(vert); glDeleteShader(frag); };
 
-    if (!vert || !frag)
-    {
-        return NULL;
-    }
+    if (!vert || !frag) return NULL;
 
     Shader program = glCreateProgram();
 
@@ -63,17 +58,14 @@ TEINAPI Shader LoadShaderFromSource (std::string source)
     GLint infoLogLength;
     glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
     char* infoLog = Malloc(char, infoLogLength);
-    if (infoLog)
-    {
+    if (infoLog) {
         Defer { Free(infoLog); };
 
         GLint linkSuccess;
         glGetProgramiv(program, GL_LINK_STATUS, &linkSuccess);
-        if (!linkSuccess)
-        {
+        if (!linkSuccess) {
             glGetProgramInfoLog(program, infoLogLength, NULL, infoLog);
             LogError(ErrorLevel::Min, "Failed to link shader:\n%s", infoLog);
-
             glDeleteProgram(program);
             program = NULL;
         }
@@ -94,15 +86,13 @@ TEINAPI Shader LoadShaderFromFile (std::string fileName)
     fileName = MakePathAbsolute(fileName);
 
     std::string source = ReadEntireFile(fileName);
-    if (source.empty())
-    {
+    if (source.empty()) {
         LogError(ErrorLevel::Min, "Failed to load shader '%s'!", fileName.c_str());
         return NULL;
     }
 
     Shader shader = LoadShaderFromSource(source);
-    if (!shader)
-    {
+    if (!shader) {
         LogError(ErrorLevel::Min, "Failed to build shader '%s'!", fileName.c_str());
     }
     return shader;

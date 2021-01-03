@@ -73,15 +73,13 @@ namespace Internal
     {
         gMapEditor.cursorVisible = true;
         gMapEditor.cursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, MapCursorBlinkCallback, NULL);
-        if (!gMapEditor.cursorBlinkTimer)
-        {
+        if (!gMapEditor.cursorBlinkTimer) {
             LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
         }
     }
     TEINAPI void QuitMapEditorCursor ()
     {
-        if (gMapEditor.cursorBlinkTimer)
-        {
+        if (gMapEditor.cursorBlinkTimer) {
             SDL_RemoveTimer(gMapEditor.cursorBlinkTimer);
             gMapEditor.cursorBlinkTimer = NULL;
         }
@@ -104,13 +102,10 @@ namespace Internal
         if (!CurrentTabIsMap()) return false;
 
         Tab& tab = GetCurrentTab();
-        if (tab.mapNodeInfo.active && tab.mapNodeInfo.active->lvl.empty())
-        {
-            for (size_t i=0; i<tab.map.size(); ++i)
-            {
+        if (tab.mapNodeInfo.active && tab.mapNodeInfo.active->lvl.empty()) {
+            for (size_t i=0; i<tab.map.size(); ++i) {
                 auto& node = tab.map.at(i);
-                if (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y)
-                {
+                if (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y) {
                     tab.map.erase(tab.map.begin()+i);
                     return true;
                 }
@@ -126,21 +121,15 @@ namespace Internal
         Tab& tab = GetCurrentTab();
 
         QuitMapEditorCursor();
-        if (!RemoveActiveNodeWithNoContent()) // Didn't remove.
-        {
-            if (tab.mapNodeInfo.active)
-            {
-                if (tab.mapNodeInfo.cachedLevelText != tab.mapNodeInfo.active->lvl)
-                {
+        if (!RemoveActiveNodeWithNoContent()) { // Didn't remove.
+            if (tab.mapNodeInfo.active) {
+                if (tab.mapNodeInfo.cachedLevelText != tab.mapNodeInfo.active->lvl) {
                     NewMapHistoryState(tab.map);
                     tab.unsavedChanges = true;
                 }
             }
-        }
-        else
-        {
-            if (!tab.mapNodeInfo.cachedLevelText.empty())
-            {
+        } else {
+            if (!tab.mapNodeInfo.cachedLevelText.empty()) {
                 NewMapHistoryState(tab.map);
                 tab.unsavedChanges = true;
             }
@@ -182,18 +171,14 @@ namespace Internal
         int minNodeY = INT_MAX;
 
         // Determine the position of the top-left most node in the selection so we can offset all the clipboard data relative to that.
-        for (auto& node: tab.map)
-        {
-            if (node.x >= sx1 && node.x <= sx2 && node.y >= sy1 && node.y <= sy2) // Inside select bounds.
-            {
+        for (auto& node: tab.map) {
+            if (node.x >= sx1 && node.x <= sx2 && node.y >= sy1 && node.y <= sy2) { // Inside select bounds.
                 minNodeX = std::min(minNodeX, node.x);
                 minNodeY = std::min(minNodeY, node.y);
             }
         }
-        for (auto& node: tab.map)
-        {
-            if (node.x >= sx1 && node.x <= sx2 && node.y >= sy1 && node.y <= sy2) // Inside select bounds.
-            {
+        for (auto& node: tab.map) {
+            if (node.x >= sx1 && node.x <= sx2 && node.y >= sy1 && node.y <= sy2) { // Inside select bounds.
                 gMapEditor.clipboard.push_back({ node.x-minNodeX, node.y-minNodeY, node.lvl });
             }
         }
@@ -213,8 +198,7 @@ namespace Internal
         Font& font = (IsEditorFontOpenSans()) ? gResourceFontRegularLibMono : gResourceFontMonoDyslexic;
         SetTextBatchFont(font);
 
-        for (auto node: gMapEditor.clipboard)
-        {
+        for (auto node: gMapEditor.clipboard) {
             float nx = static_cast<float>(node.x + m.x) * gMapNodeWidth;
             float ny = static_cast<float>(node.y + m.y) * gMapNodeHeight;
 
@@ -234,15 +218,13 @@ namespace Internal
             FillQuad(x1,y1,x2,y2);
 
             // Don't bother drawing text when it's this zoomed out (can't even see it).
-            if (tab.camera.zoom >= gMapEditorTextCutOff)
-            {
+            if (tab.camera.zoom >= gMapEditorTextCutOff) {
                 float tw = GetTextWidthScaled(font, node.lvl);
                 float th = GetTextHeightScaled(font, node.lvl);
                 float tx = x1+gMapEditorTextPad;
                 float ty = y1+roundf(((gMapNodeHeight/2)+(th/4)));
 
-                if (tw > (gMapNodeWidth-(gMapEditorTextPad*2)))
-                {
+                if (tw > (gMapNodeWidth-(gMapEditorTextPad*2))) {
                     Vec2 sa(WorldToScreen(Vec2(x+x1+gMapEditorTextPad, y+y1)));
                     Vec2 sb(WorldToScreen(Vec2(x+x2-gMapEditorTextPad, y+y2)));
 
@@ -260,8 +242,7 @@ namespace Internal
                 SetTextBatchColor(GetNodeTextColor(bg));
                 DrawBatchedText(tx, ty, node.lvl);
 
-                if (tw > (gMapNodeWidth-(gMapEditorTextPad*2)))
-                {
+                if (tw > (gMapNodeWidth-(gMapEditorTextPad*2))) {
                     FlushBatchedText();
                     EndScissor();
                 }
@@ -283,10 +264,8 @@ TEINAPI void InitMapEditor ()
     gMapEditor.mouseWorld = Vec2(0,0);
     gMapEditor.mouse = Vec2(0,0);
     gMapEditor.mouseTile = Vec2(0,0);
-
     gMapEditor.cursorBlinkTimer = NULL;
     gMapEditor.cursorVisible = true;
-
     gMapEditor.bounds = { 0,0,0,0 };
     gMapEditor.viewport = { 0,0,0,0 };
 }
@@ -347,12 +326,9 @@ TEINAPI void DoMapEditor ()
 
     // Determine if we are going to draw the clipboard or not.
     bool drawClipboard = false;
-    if (!tab.mapNodeInfo.active)
-    {
-        if (!IsAWindowResizing() && Internal::MouseInsideMapEditorViewport())
-        {
-            if (!Internal::MapClipboardEmpty() && IsKeyModStateActive(GetKeyBinding(gKbPaste).mod))
-            {
+    if (!tab.mapNodeInfo.active) {
+        if (!IsAWindowResizing() && Internal::MouseInsideMapEditorViewport()) {
+            if (!Internal::MapClipboardEmpty() && IsKeyModStateActive(GetKeyBinding(gKbPaste).mod)) {
                 drawClipboard = true;
             }
         }
@@ -361,8 +337,7 @@ TEINAPI void DoMapEditor ()
     // DRAW NODES
     Font& font = (IsEditorFontOpenSans()) ? gResourceFontRegularLibMono : gResourceFontMonoDyslexic;
     SetTextBatchFont(font);
-    for (auto node: tab.map)
-    {
+    for (auto node: tab.map) {
         float nx = static_cast<float>(node.x) * gMapNodeWidth;
         float ny = static_cast<float>(node.y) * gMapNodeHeight;
 
@@ -381,24 +356,19 @@ TEINAPI void DoMapEditor ()
 
         // Highlight the moused over node and the active node.
         IVec2 m = Internal::MouseToNodePositionInt();
-        if (!drawClipboard)
-        {
-            if ((m.x == node.x && m.y == node.y) || ((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y)))
-            {
-                if ((m.x == node.x && m.y == node.y))
-                {
+        if (!drawClipboard) {
+            if ((m.x == node.x && m.y == node.y) || ((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y))) {
+                if ((m.x == node.x && m.y == node.y)) {
                     PushStatusBarMessage(node.lvl.c_str());
                     mouseOverNode = true;
 
-                    if (IsWindowFocused("WINMAIN"))
-                    {
+                    if (IsWindowFocused("WINMAIN")) {
                         bg.r += ((1-bg.r)*.4f);
                         bg.g += ((1-bg.g)*.4f);
                         bg.b += ((1-bg.b)*.4f);
                     }
                 }
-                if (((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y)))
-                {
+                if (((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y))) {
                     activeNodePosBeenDrawn = true;
                     bg = gUiColorExLight;
                 }
@@ -409,15 +379,13 @@ TEINAPI void DoMapEditor ()
         FillQuad(x1,y1,x2,y2);
 
         // Don't bother drawing text when it's this zoomed out (can't even see it).
-        if (tab.camera.zoom >= gMapEditorTextCutOff)
-        {
+        if (tab.camera.zoom >= gMapEditorTextCutOff) {
             float tw = GetTextWidthScaled (font, node.lvl);
             float th = GetTextHeightScaled(font, node.lvl);
             float tx = x1+gMapEditorTextPad;
             float ty = y1+roundf(((gMapNodeHeight/2)+(th/4)));
 
-            if ((tw > (gMapNodeWidth-(gMapEditorTextPad*2))) || ((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y)))
-            {
+            if ((tw > (gMapNodeWidth-(gMapEditorTextPad*2))) || ((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y))) {
                 Vec2 sa(WorldToScreen(Vec2(x+x1+gMapEditorTextPad, y+y1)));
                 Vec2 sb(WorldToScreen(Vec2(x+x2-gMapEditorTextPad, y+y2)));
 
@@ -431,12 +399,10 @@ TEINAPI void DoMapEditor ()
             }
 
             float xOff = 0;
-            if (tab.mapNodeInfo.active && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y))
-            {
+            if (tab.mapNodeInfo.active && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y)) {
                 std::string sub(node.lvl.substr(0, tab.mapNodeInfo.cursor));
                 float cursorX = tx+GetTextWidthScaled(font, sub);
-                if (cursorX > tx+(gMapNodeWidth-(gMapEditorTextPad*2)))
-                {
+                if (cursorX > tx+(gMapNodeWidth-(gMapEditorTextPad*2))) {
                     float diff = abs((gMapNodeWidth-(gMapEditorTextPad*2)) - GetTextWidthScaled(font, sub));
                     xOff = -diff;
                 }
@@ -447,16 +413,12 @@ TEINAPI void DoMapEditor ()
             SetTextBatchColor(Internal::GetNodeTextColor(bg));
             DrawBatchedText(tx+xOff, ty, node.lvl);
 
-            if ((tw > (gMapNodeWidth-(gMapEditorTextPad*2))) || ((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y)))
-            {
+            if ((tw > (gMapNodeWidth-(gMapEditorTextPad*2))) || ((tab.mapNodeInfo.active) && (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y))) {
                 FlushBatchedText();
                 EndScissor();
             }
-        }
-        else
-        {
-            if (static_cast<int>(m.x) == node.x && static_cast<int>(m.y) == node.y)
-            {
+        } else {
+            if (static_cast<int>(m.x) == node.x && static_cast<int>(m.y) == node.y) {
                 SetCurrentTooltip(node.lvl);
             }
         }
@@ -464,12 +426,9 @@ TEINAPI void DoMapEditor ()
     FlushBatchedText();
 
     // DRAW HIGHLIGHT
-    if (!drawClipboard)
-    {
-        if (!mouseOverNode && Internal::MouseInsideMapEditorViewport())
-        {
-            if (IsWindowFocused("WINMAIN"))
-            {
+    if (!drawClipboard) {
+        if (!mouseOverNode && Internal::MouseInsideMapEditorViewport()) {
+            if (IsWindowFocused("WINMAIN")) {
                 Vec2 m = Internal::MouseToNodePosition();
                 m.x *= gMapNodeWidth;
                 m.y *= gMapNodeHeight;
@@ -477,8 +436,7 @@ TEINAPI void DoMapEditor ()
                 FillQuad(m.x,m.y,m.x+gMapNodeWidth,m.y+gMapNodeHeight);
             }
         }
-        if (tab.mapNodeInfo.active && !activeNodePosBeenDrawn)
-        {
+        if (tab.mapNodeInfo.active && !activeNodePosBeenDrawn) {
             IVec2 m = Internal::MouseToNodePositionInt();
             float nx = tab.mapNodeInfo.activePos.x * gMapNodeWidth;
             float ny = tab.mapNodeInfo.activePos.y * gMapNodeHeight;
@@ -488,10 +446,8 @@ TEINAPI void DoMapEditor ()
     }
 
     // DRAW TEXT CURSOR/SELECT
-    if (tab.mapNodeInfo.active)
-    {
-        if (tab.camera.zoom >= gMapEditorTextCutOff)
-        {
+    if (tab.mapNodeInfo.active) {
+        if (tab.camera.zoom >= gMapEditorTextCutOff) {
             std::string text = (tab.mapNodeInfo.active) ? tab.mapNodeInfo.active->lvl : "";
 
             float nx = static_cast<float>(tab.mapNodeInfo.activePos.x) * gMapNodeWidth;
@@ -514,8 +470,7 @@ TEINAPI void DoMapEditor ()
             float xOff = 0;
             std::string sub(text.substr(0, tab.mapNodeInfo.cursor));
             float cursorX = tx+GetTextWidthScaled(font, sub);
-            if (cursorX > tx+(gMapNodeWidth-(gMapEditorTextPad*2)))
-            {
+            if (cursorX > tx+(gMapNodeWidth-(gMapEditorTextPad*2))) {
                 float diff = abs((gMapNodeWidth-(gMapEditorTextPad*2)) - GetTextWidthScaled(font, sub));
                 xOff = -diff;
             }
@@ -523,15 +478,12 @@ TEINAPI void DoMapEditor ()
             float xo = GetTextWidthScaled(font, sub);
             float yo = ((y2-y1)-th)/2; // Center the cursor vertically.
             // Just looks nicer...
-            if ((tab.mapNodeInfo.cursor != 0 && text.length()) || (!text.length()))
-            {
+            if ((tab.mapNodeInfo.cursor != 0 && text.length()) || (!text.length())) {
                 xo += 1;
             }
 
-            if (Internal::IsTextSelectActive())
-            {
-                if (!text.empty())
-                {
+            if (Internal::IsTextSelectActive()) {
+                if (!text.empty()) {
                     size_t begin = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                     size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
 
@@ -548,16 +500,14 @@ TEINAPI void DoMapEditor ()
                     float xOff2 = 0;
                     std::string sub2(text.substr(0, tab.mapNodeInfo.select));
                     float cursorX2 = tx+GetTextWidthScaled(font, sub2);
-                    if (cursorX2 > tx+(gMapNodeWidth-(gMapEditorTextPad*2)))
-                    {
+                    if (cursorX2 > tx+(gMapNodeWidth-(gMapEditorTextPad*2))) {
                         float diff = abs((gMapNodeWidth-(gMapEditorTextPad*2)) - GetTextWidthScaled(font, sub2));
                         xOff2 = -diff;
                     }
 
                     float xo2 = GetTextWidthScaled(font, sub2);
                     // Just looks nicer...
-                    if ((tab.mapNodeInfo.select != 0 && text.length()) || (!text.length()))
-                    {
+                    if ((tab.mapNodeInfo.select != 0 && text.length()) || (!text.length())) {
                         xo2 += 1;
                     }
 
@@ -566,11 +516,8 @@ TEINAPI void DoMapEditor ()
 
                     EndScissor();
                 }
-            }
-            else
-            {
-                if (gMapEditor.cursorVisible)
-                {
+            } else {
+                if (gMapEditor.cursorVisible) {
                     SetDrawColor(Internal::GetNodeShadowColor(gUiColorExLight));
                     DrawLine(tx+xo+xOff+1, y1+yo+1, tx+xo+xOff+1, y1+yo+th+1);
                     SetDrawColor(Internal::GetNodeTextColor(gUiColorExLight));
@@ -581,20 +528,16 @@ TEINAPI void DoMapEditor ()
     }
 
     // DRAW CLIPBOARD
-    if (!tab.mapNodeInfo.active)
-    {
-        if (!IsAWindowResizing() && Internal::MouseInsideMapEditorViewport())
-        {
-            if (!Internal::MapClipboardEmpty() && IsKeyModStateActive(GetKeyBinding(gKbPaste).mod))
-            {
+    if (!tab.mapNodeInfo.active) {
+        if (!IsAWindowResizing() && Internal::MouseInsideMapEditorViewport()) {
+            if (!Internal::MapClipboardEmpty() && IsKeyModStateActive(GetKeyBinding(gKbPaste).mod)) {
                 Internal::DrawMapClipboard();
             }
         }
     }
 
     // DRAW SELECT
-    if (MapSelectBoxPresent())
-    {
+    if (MapSelectBoxPresent()) {
         float sx1 = std::min(tab.mapSelect.a.x, tab.mapSelect.b.x) * gMapNodeWidth;
         float sy1 = std::min(tab.mapSelect.a.y, tab.mapSelect.b.y) * gMapNodeHeight;
         float sx2 = std::max(tab.mapSelect.a.x, tab.mapSelect.b.x) * gMapNodeWidth;
@@ -625,14 +568,10 @@ TEINAPI void HandleMapEditorEvents ()
     bool justSelected = false;
     bool doNotSetSelect = false;
 
-    switch (gMainEvent.type)
-    {
-        case (SDL_MOUSEBUTTONDOWN):
-        {
-            if (Internal::MouseInsideMapEditorViewport())
-            {
-                if (gMainEvent.button.button == SDL_BUTTON_LEFT)
-                {
+    switch (gMainEvent.type) {
+        case (SDL_MOUSEBUTTONDOWN): {
+            if (Internal::MouseInsideMapEditorViewport()) {
+                if (gMainEvent.button.button == SDL_BUTTON_LEFT) {
                     Internal::DeselectActiveNode();
                     tab.mapNodeInfo.pressedNodePos = Internal::MouseToNodePositionInt();
                     tab.mapSelect.a = tab.mapNodeInfo.pressedNodePos;
@@ -642,20 +581,14 @@ TEINAPI void HandleMapEditorEvents ()
                 gMapEditor.pressed = true;
             }
         } break;
-        case (SDL_MOUSEBUTTONUP):
-        {
-            if (Internal::MouseInsideMapEditorViewport())
-            {
-                if (gMainEvent.button.button == SDL_BUTTON_LEFT)
-                {
-                    if (gMapEditor.pressed && (tab.mapNodeInfo.pressedNodePos == Internal::MouseToNodePositionInt()))
-                    {
+        case (SDL_MOUSEBUTTONUP): {
+            if (Internal::MouseInsideMapEditorViewport()) {
+                if (gMainEvent.button.button == SDL_BUTTON_LEFT) {
+                    if (gMapEditor.pressed && (tab.mapNodeInfo.pressedNodePos == Internal::MouseToNodePositionInt())) {
                         tab.mapNodeInfo.activePos = Internal::MouseToNodePositionInt();
                         // Find the node and if we can't it means it's empty and we will just create one.
-                        for (auto& node: tab.map)
-                        {
-                            if (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y)
-                            {
+                        for (auto& node: tab.map) {
+                            if (tab.mapNodeInfo.activePos.x == node.x && tab.mapNodeInfo.activePos.y == node.y) {
                                 tab.mapNodeInfo.active = &node;
                                 tab.mapNodeInfo.select = 0;
                                 tab.mapNodeInfo.cursor = tab.mapNodeInfo.active->lvl.length();
@@ -664,18 +597,14 @@ TEINAPI void HandleMapEditorEvents ()
                                 break;
                             }
                         }
-                        if (!tab.mapNodeInfo.active)
-                        {
+                        if (!tab.mapNodeInfo.active) {
                             Internal::CreateNewActiveNode();
                         }
                         Internal::InitMapEditorCursor();
                         justSelected = true;
                     }
-                }
-                else if (gMainEvent.button.button == SDL_BUTTON_RIGHT)
-                {
-                    if (gMapEditor.pressed)
-                    {
+                } else if (gMainEvent.button.button == SDL_BUTTON_RIGHT) {
+                    if (gMapEditor.pressed) {
                         Internal::DeselectActiveNode();
                         tab.mapSelect.a = IVec2(0,0);
                         tab.mapSelect.b = IVec2(0,0);
@@ -684,167 +613,123 @@ TEINAPI void HandleMapEditorEvents ()
                 }
             }
             gMapEditor.pressed = false;
-            if (gMainEvent.button.button == SDL_BUTTON_LEFT)
-            {
+            if (gMainEvent.button.button == SDL_BUTTON_LEFT) {
                 gMapEditor.leftPressed = false;
             }
         } break;
-        case (SDL_MOUSEMOTION):
-        {
-            if (gMapEditor.leftPressed)
-            {
-                if (Internal::MouseInsideMapEditorViewport())
-                {
+        case (SDL_MOUSEMOTION): {
+            if (gMapEditor.leftPressed) {
+                if (Internal::MouseInsideMapEditorViewport()) {
                     tab.mapSelect.b = Internal::MouseToNodePositionInt();
                 }
             }
         } break;
-        case (SDL_TEXTINPUT):
-        {
-            if (tab.mapNodeInfo.active)
-            {
-                if (Internal::IsTextSelectActive())
-                {
+        case (SDL_TEXTINPUT): {
+            if (tab.mapNodeInfo.active) {
+                if (Internal::IsTextSelectActive()) {
                     size_t begin = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                     size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                     tab.mapNodeInfo.active->lvl.erase(begin, end-begin);
                     tab.mapNodeInfo.cursor = begin;
-                    for (size_t i=0; i<strlen(gMainEvent.text.text); ++i)
-                    {
+                    for (size_t i=0; i<strlen(gMainEvent.text.text); ++i) {
                         auto pos = tab.mapNodeInfo.active->lvl.begin()+(tab.mapNodeInfo.cursor++);
                         tab.mapNodeInfo.active->lvl.insert(pos, gMainEvent.text.text[i]);
                     }
                     tab.mapNodeInfo.select = tab.mapNodeInfo.cursor;
-                }
-                else
-                {
-                    for (size_t i=0; i<strlen(gMainEvent.text.text); ++i)
-                    {
+                } else {
+                    for (size_t i=0; i<strlen(gMainEvent.text.text); ++i) {
                         auto pos = tab.mapNodeInfo.active->lvl.begin()+(tab.mapNodeInfo.cursor++);
                         tab.mapNodeInfo.active->lvl.insert(pos, gMainEvent.text.text[i]);
                     }
                 }
             }
         } break;
-        case (SDL_KEYDOWN):
-        {
-            if (tab.mapNodeInfo.active)
-            {
+        case (SDL_KEYDOWN): {
+            if (tab.mapNodeInfo.active) {
                 bool shift = (SDL_GetModState() & KMOD_SHIFT);
                 bool ctrl = (SDL_GetModState() & KMOD_CTRL);
 
-                switch (gMainEvent.key.keysym.sym)
-                {
-                    case (SDLK_LEFT):
-                    {
-                        if (Internal::IsTextSelectActive())
-                        {
+                switch (gMainEvent.key.keysym.sym) {
+                    case (SDLK_LEFT): {
+                        if (Internal::IsTextSelectActive()) {
                             tab.mapNodeInfo.cursor = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                         }
-                        if (tab.mapNodeInfo.cursor > 0)
-                        {
+                        if (tab.mapNodeInfo.cursor > 0) {
                             --tab.mapNodeInfo.cursor;
                         }
                         movementAction = true;
                     } break;
-                    case (SDLK_RIGHT):
-                    {
-                        if (Internal::IsTextSelectActive())
-                        {
+                    case (SDLK_RIGHT): {
+                        if (Internal::IsTextSelectActive()) {
                             tab.mapNodeInfo.cursor = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                         }
-                        if (tab.mapNodeInfo.cursor < tab.mapNodeInfo.active->lvl.length())
-                        {
+                        if (tab.mapNodeInfo.cursor < tab.mapNodeInfo.active->lvl.length()) {
                             ++tab.mapNodeInfo.cursor;
                         }
                         movementAction = true;
                     } break;
-                    case (SDLK_HOME):
-                    {
+                    case (SDLK_HOME): {
                         tab.mapNodeInfo.cursor = 0;
                         movementAction = true;
                     } break;
-                    case (SDLK_END):
-                    {
+                    case (SDLK_END): {
                         tab.mapNodeInfo.cursor = tab.mapNodeInfo.active->lvl.length();
                         movementAction = true;
                     } break;
-                    case (SDLK_BACKSPACE):
-                    {
-                        if (Internal::IsTextSelectActive())
-                        {
+                    case (SDLK_BACKSPACE): {
+                        if (Internal::IsTextSelectActive()) {
                             size_t begin = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                             size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                             tab.mapNodeInfo.active->lvl.erase(begin, end-begin);
                             tab.mapNodeInfo.cursor = begin;
                             tab.mapNodeInfo.select = begin;
-                        }
-                        else
-                        {
-                            if (tab.mapNodeInfo.cursor != 0)
-                            {
+                        } else {
+                            if (tab.mapNodeInfo.cursor != 0) {
                                 tab.mapNodeInfo.active->lvl.erase(--tab.mapNodeInfo.cursor, 1);
                             }
                         }
                     } break;
-                    case (SDLK_DELETE):
-                    {
-                        if (Internal::IsTextSelectActive())
-                        {
+                    case (SDLK_DELETE): {
+                        if (Internal::IsTextSelectActive()) {
                             size_t begin = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                             size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                             tab.mapNodeInfo.active->lvl.erase(begin, end-begin);
                             tab.mapNodeInfo.cursor = begin;
                             tab.mapNodeInfo.select = begin;
-                        }
-                        else
-                        {
-                            if (tab.mapNodeInfo.cursor < tab.mapNodeInfo.active->lvl.length())
-                            {
+                        } else {
+                            if (tab.mapNodeInfo.cursor < tab.mapNodeInfo.active->lvl.length()) {
                                 tab.mapNodeInfo.active->lvl.erase(tab.mapNodeInfo.cursor, 1);
                             }
                         }
                     } break;
-                    case (SDLK_RETURN):
-                    {
+                    case (SDLK_RETURN): {
                         Internal::DeselectActiveNode();
                     } break;
-                    case (SDLK_ESCAPE):
-                    {
+                    case (SDLK_ESCAPE): {
                         tab.mapNodeInfo.active->lvl = tab.mapNodeInfo.cachedLevelText;
                         Internal::DeselectActiveNode();
                     } break;
-                    case (SDLK_c):
-                    {
-                        if (ctrl)
-                        {
-                            if (Internal::IsTextSelectActive())
-                            {
+                    case (SDLK_c): {
+                        if (ctrl) {
+                            if (Internal::IsTextSelectActive()) {
                                 size_t begin = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                                 size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                                 std::string text(tab.mapNodeInfo.active->lvl.substr(begin, end-begin));
-                                if (SDL_SetClipboardText(text.c_str()) < 0)
-                                {
+                                if (SDL_SetClipboardText(text.c_str()) < 0) {
                                     LogError(ErrorLevel::Med, "Failed to set clipboard text! (%s)", SDL_GetError());
                                 }
                             }
                         }
                     } break;
-                    case (SDLK_x):
-                    {
-                        if (ctrl)
-                        {
-                            if (Internal::IsTextSelectActive())
-                            {
+                    case (SDLK_x): {
+                        if (ctrl) {
+                            if (Internal::IsTextSelectActive()) {
                                 size_t begin = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                                 size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                                 std::string text(tab.mapNodeInfo.active->lvl.substr(begin, end-begin));
-                                if (SDL_SetClipboardText(text.c_str()) < 0)
-                                {
+                                if (SDL_SetClipboardText(text.c_str()) < 0) {
                                     LogError(ErrorLevel::Med, "Failed to set clipboard text! (%s)", SDL_GetError());
-                                }
-                                else
-                                {
+                                } else {
                                     tab.mapNodeInfo.active->lvl.erase(begin, end-begin);
                                     tab.mapNodeInfo.cursor = begin;
                                     tab.mapNodeInfo.select = begin;
@@ -853,24 +738,18 @@ TEINAPI void HandleMapEditorEvents ()
                             }
                         }
                     } break;
-                    case (SDLK_v):
-                    {
-                        if (ctrl)
-                        {
-                            if (SDL_HasClipboardText())
-                            {
+                    case (SDLK_v): {
+                        if (ctrl) {
+                            if (SDL_HasClipboardText()) {
                                 char* text = SDL_GetClipboardText();
-                                if (text)
-                                {
+                                if (text) {
                                     Defer { SDL_free(text); }; // Docs say we need to free.
-                                    if (Internal::IsTextSelectActive())
-                                    {
+                                    if (Internal::IsTextSelectActive()) {
                                         size_t begin = std::min(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                                         size_t end = std::max(tab.mapNodeInfo.cursor, tab.mapNodeInfo.select);
                                         tab.mapNodeInfo.active->lvl.erase(begin, end-begin);
                                         tab.mapNodeInfo.cursor = begin;
-                                        for (size_t i=0; i<strlen(text); ++i)
-                                        {
+                                        for (size_t i=0; i<strlen(text); ++i) {
                                             auto pos = tab.mapNodeInfo.active->lvl.begin()+(tab.mapNodeInfo.cursor++);
                                             if (text[i] != '\n' && text[i] != '\r') {
                                                 tab.mapNodeInfo.active->lvl.insert(pos, text[i]);
@@ -878,11 +757,8 @@ TEINAPI void HandleMapEditorEvents ()
                                         }
                                         tab.mapNodeInfo.select = tab.mapNodeInfo.cursor;
                                         tab.mapNodeInfo.selecting = false;
-                                    }
-                                    else
-                                    {
-                                        for (size_t i=0; i<strlen(text); ++i)
-                                        {
+                                    } else {
+                                        for (size_t i=0; i<strlen(text); ++i) {
                                             auto pos = tab.mapNodeInfo.active->lvl.begin()+(tab.mapNodeInfo.cursor++);
                                             tab.mapNodeInfo.active->lvl.insert(pos, text[i]);
                                         }
@@ -891,71 +767,55 @@ TEINAPI void HandleMapEditorEvents ()
                             }
                         }
                     } break;
-                    case (SDLK_a):
-                    {
-                        if (ctrl)
-                        {
+                    case (SDLK_a): {
+                        if (ctrl) {
                             tab.mapNodeInfo.select = 0;
                             tab.mapNodeInfo.cursor = tab.mapNodeInfo.active->lvl.length();
                             doNotSetSelect = true;
                         }
                     } break;
                     case (SDLK_LSHIFT):
-                    case (SDLK_RSHIFT):
-                    {
+                    case (SDLK_RSHIFT): {
                         tab.mapNodeInfo.selecting = true;
                     } break;
                 }
             }
         } break;
-        case (SDL_KEYUP):
-        {
-            if (tab.mapNodeInfo.active)
-            {
-                if (gMainEvent.key.keysym.sym == SDLK_LSHIFT || gMainEvent.key.keysym.sym == SDLK_RSHIFT)
-                {
+        case (SDL_KEYUP): {
+            if (tab.mapNodeInfo.active) {
+                if (gMainEvent.key.keysym.sym == SDLK_LSHIFT || gMainEvent.key.keysym.sym == SDLK_RSHIFT) {
                     tab.mapNodeInfo.selecting = false;
                 }
             }
         } break;
-        case (SDL_USEREVENT):
-        {
-            if (gMainEvent.user.code == static_cast<U32>(EditorEvent::BlinkCursor))
-            {
+        case (SDL_USEREVENT): {
+            if (gMainEvent.user.code == static_cast<U32>(EditorEvent::BlinkCursor)) {
                 gMapEditor.cursorVisible = !gMapEditor.cursorVisible;
             }
         } break;
     }
 
     // Reset the cursor blink interval.
-    if (tab.mapNodeInfo.active)
-    {
-        if (oldText != tab.mapNodeInfo.active->lvl || oldCursor != tab.mapNodeInfo.cursor)
-        {
+    if (tab.mapNodeInfo.active) {
+        if (oldText != tab.mapNodeInfo.active->lvl || oldCursor != tab.mapNodeInfo.cursor) {
             // If the cursor was blinking before then reset the timer.
-            if (gMapEditor.cursorBlinkTimer)
-            {
+            if (gMapEditor.cursorBlinkTimer) {
                 SDL_RemoveTimer(gMapEditor.cursorBlinkTimer);
                 gMapEditor.cursorBlinkTimer = NULL;
             }
             // Start the blinking of the cursor.
             gMapEditor.cursorVisible = true;
             gMapEditor.cursorBlinkTimer = SDL_AddTimer(gUiCursorBlinkInterval, Internal::MapCursorBlinkCallback, NULL);
-            if (!gMapEditor.cursorBlinkTimer)
-            {
+            if (!gMapEditor.cursorBlinkTimer) {
                 LogError(ErrorLevel::Min, "Failed to setup cursor blink timer! (%s)", SDL_GetError());
             }
         }
     }
 
-    if (!doNotSetSelect)
-    {
-        if (!justSelected)
-        {
-            if ((oldCursor != tab.mapNodeInfo.cursor) || movementAction)
-            {
-                if (!tab.mapNodeInfo.selecting)
-                {
+    if (!doNotSetSelect) {
+        if (!justSelected) {
+            if ((oldCursor != tab.mapNodeInfo.cursor) || movementAction) {
+                if (!tab.mapNodeInfo.selecting) {
                     tab.mapNodeInfo.select = tab.mapNodeInfo.cursor;
                 }
             }
@@ -963,12 +823,9 @@ TEINAPI void HandleMapEditorEvents ()
     }
 
     // Important to stop select issues when holding shift for CAPS.
-    if (tab.mapNodeInfo.active)
-    {
-        if (!justSelected)
-        {
-            if (oldText != tab.mapNodeInfo.active->lvl)
-            {
+    if (tab.mapNodeInfo.active) {
+        if (!justSelected) {
+            if (oldText != tab.mapNodeInfo.active->lvl) {
                 tab.mapNodeInfo.select = tab.mapNodeInfo.cursor;
             }
         }
@@ -979,27 +836,21 @@ TEINAPI void LoadMapTab (std::string fileName)
 {
     // If there is just one tab and it is completely empty with no changes
     // then we close this tab before opening the new world map(s) in editor.
-    if (gEditor.tabs.size() == 1)
-    {
-        if (IsCurrentTabEmpty() && !GetCurrentTab().unsavedChanges && GetCurrentTab().name.empty())
-        {
+    if (gEditor.tabs.size() == 1) {
+        if (IsCurrentTabEmpty() && !GetCurrentTab().unsavedChanges && GetCurrentTab().name.empty()) {
             CloseCurrentTab();
         }
     }
 
     size_t tabIndex = GetTabIndexWithThisFileName(fileName);
-    if (tabIndex != gInvalidTab) // This file is already open so just focus on it.
-    {
+    if (tabIndex != gInvalidTab) { // This file is already open so just focus on it.
         SetCurrentTab(tabIndex);
-    }
-    else
-    {
+    } else {
         CreateNewMapTabAndFocus();
         Tab& tab = GetCurrentTab();
         tab.name = fileName;
         SetMainWindowSubtitleForTab(tab.name);
-        if (!LoadMap(tab, tab.name))
-        {
+        if (!LoadMap(tab, tab.name)) {
             CloseCurrentTab();
         }
         tab.mapHistory.state.at(0) = tab.map;
@@ -1012,8 +863,7 @@ TEINAPI bool SaveMapTab (Tab& tab)
 {
     // If the current file already has a name (has been saved before) then we
     // just do a normal Save to that file. Otherwise, we perform a Save As.
-    if (tab.name.empty())
-    {
+    if (tab.name.empty()) {
         std::string fileName = SaveDialog(DialogType::Csv);
         if (fileName.empty()) return false;
         tab.name = fileName;
@@ -1049,27 +899,21 @@ TEINAPI void MapDropFile (Tab* tab, std::string fileName)
 
     // If there is just one tab and it is completely empty with no changes
     // then we close this tab before opening the new world map(s) in editor.
-    if (gEditor.tabs.size() == 1)
-    {
-        if (IsCurrentTabEmpty() && !GetCurrentTab().unsavedChanges && GetCurrentTab().name.empty())
-        {
+    if (gEditor.tabs.size() == 1) {
+        if (IsCurrentTabEmpty() && !GetCurrentTab().unsavedChanges && GetCurrentTab().name.empty()) {
             CloseCurrentTab();
         }
     }
 
     size_t tabIndex = GetTabIndexWithThisFileName(fileName);
-    if (tabIndex != gInvalidTab) // This file is already open so just focus on it.
-    {
+    if (tabIndex != gInvalidTab) { // This file is already open so just focus on it.
         SetCurrentTab(tabIndex);
-    }
-    else
-    {
+    } else {
         CreateNewMapTabAndFocus();
         tab = &GetCurrentTab();
         tab->name = fileName;
         SetMainWindowSubtitleForTab(tab->name);
-        if (!LoadMap(*tab, tab->name))
-        {
+        if (!LoadMap(*tab, tab->name)) {
             CloseCurrentTab();
         }
         tab->mapHistory.state.at(0) = tab->map;
@@ -1092,10 +936,8 @@ TEINAPI void BackupMapTab (const Tab& tab, const std::string& fileName)
     // up levels to a backups folder with loads of saves. This was because the
     // editor was searching the folder for old backups (leading to a freeze).
     std::string backupPath(MakePathAbsolute("backups/" + mapName + "/"));
-    if (!DoesPathExist(backupPath))
-    {
-        if (!CreatePath(backupPath))
-        {
+    if (!DoesPathExist(backupPath)) {
+        if (!CreatePath(backupPath)) {
             LogError(ErrorLevel::Min, "Failed to create backup for map \"%s\"!", mapName.c_str());
             return;
         }
@@ -1106,10 +948,8 @@ TEINAPI void BackupMapTab (const Tab& tab, const std::string& fileName)
     ListPathContent(backupPath, backups);
 
     int mapCount = 0;
-    for (auto& file: backups)
-    {
-        if (IsFile(file))
-        {
+    for (auto& file: backups) {
+        if (IsFile(file)) {
             // We strip extension twice because there are two extension parts to backups the .bak and the .csv.
             std::string compareName(StripFileExt(StripFilePathAndExt(file)));
             if (InsensitiveCompare(mapName, compareName)) ++mapCount;
@@ -1119,22 +959,17 @@ TEINAPI void BackupMapTab (const Tab& tab, const std::string& fileName)
     // If there is still room to create a new backup then that is what
     // we do. Otherwise, we overwrite the oldest backup of the map.
     std::string backupName = backupPath + mapName + ".bak";
-    if (gEditorSettings.unlimitedBackups || (mapCount < backupCount))
-    {
+    if (gEditorSettings.unlimitedBackups || (mapCount < backupCount)) {
         backupName += std::to_string(mapCount) + ".csv";
         SaveMap(tab, backupName);
-    }
-    else
-    {
+    } else {
         U64 oldest = UINT64_MAX;
         int oldestIndex = 0;
 
-        for (int i=0; i<mapCount; ++i)
-        {
+        for (int i=0; i<mapCount; ++i) {
             std::string name(backupName + std::to_string(i) + ".csv");
             U64 current = LastFileWriteTime(name);
-            if (current < oldest)
-            {
+            if (current < oldest) {
                 oldest = current;
                 oldestIndex = i;
             }
@@ -1147,11 +982,9 @@ TEINAPI void BackupMapTab (const Tab& tab, const std::string& fileName)
 
 TEINAPI bool IsCurrentMapEmpty ()
 {
-    if (AreThereAnyMapTabs())
-    {
+    if (AreThereAnyMapTabs()) {
         const Tab& tab = GetCurrentTab();
-        if (tab.type == TabType::Map)
-        {
+        if (tab.type == TabType::Map) {
             return (tab.map.empty());
         }
     }
@@ -1161,20 +994,14 @@ TEINAPI bool IsCurrentMapEmpty ()
 TEINAPI float GetMinMapBoundsX ()
 {
     float x = 0;
-    if (CurrentTabIsMap())
-    {
+    if (CurrentTabIsMap()) {
         const Tab& tab = GetCurrentTab();
-        if (!tab.map.empty())
-        {
-            if (!(tab.map.size() == 1 && tab.map.back().lvl.empty()))
-            {
+        if (!tab.map.empty()) {
+            if (!(tab.map.size() == 1 && tab.map.back().lvl.empty())) {
                 x = FLT_MAX;
-                for (auto& node: tab.map)
-                {
-                    if (!node.lvl.empty())
-                    {
-                        if (node.x < x)
-                        {
+                for (auto& node: tab.map) {
+                    if (!node.lvl.empty()) {
+                        if (node.x < x) {
                             x = static_cast<float>(node.x);
                         }
                     }
@@ -1188,20 +1015,14 @@ TEINAPI float GetMinMapBoundsX ()
 TEINAPI float GetMinMapBoundsY ()
 {
     float y = 0;
-    if (CurrentTabIsMap())
-    {
+    if (CurrentTabIsMap()) {
         const Tab& tab = GetCurrentTab();
-        if (!tab.map.empty())
-        {
-            if (!(tab.map.size() == 1 && tab.map.back().lvl.empty()))
-            {
+        if (!tab.map.empty()) {
+            if (!(tab.map.size() == 1 && tab.map.back().lvl.empty())) {
                 y = FLT_MAX;
-                for (auto& node: tab.map)
-                {
-                    if (!node.lvl.empty())
-                    {
-                        if (node.y < y)
-                        {
+                for (auto& node: tab.map) {
+                    if (!node.lvl.empty()) {
+                        if (node.y < y) {
                             y = static_cast<float>(node.y);
                         }
                     }
@@ -1215,17 +1036,12 @@ TEINAPI float GetMinMapBoundsY ()
 TEINAPI float GetMaxMapBoundsX ()
 {
     float x = 0;
-    if (CurrentTabIsMap())
-    {
+    if (CurrentTabIsMap()) {
         x = FLT_MIN;
-        if (!GetCurrentTab().map.empty())
-        {
-            for (auto& node: GetCurrentTab().map)
-            {
-                if (!node.lvl.empty())
-                {
-                    if (node.x > x)
-                    {
+        if (!GetCurrentTab().map.empty()) {
+            for (auto& node: GetCurrentTab().map) {
+                if (!node.lvl.empty()) {
+                    if (node.x > x) {
                         x = static_cast<float>(node.x);
                     }
                 }
@@ -1238,17 +1054,12 @@ TEINAPI float GetMaxMapBoundsX ()
 TEINAPI float GetMaxMapBoundsY ()
 {
     float y = 0;
-    if (CurrentTabIsMap())
-    {
-        if (!GetCurrentTab().map.empty())
-        {
+    if (CurrentTabIsMap()) {
+        if (!GetCurrentTab().map.empty()) {
             y = FLT_MIN;
-            for (auto& node: GetCurrentTab().map)
-            {
-                if (!node.lvl.empty())
-                {
-                    if (node.y > y)
-                    {
+            for (auto& node: GetCurrentTab().map) {
+                if (!node.lvl.empty()) {
+                    if (node.y > y) {
                         y = static_cast<float>(node.y);
                     }
                 }
@@ -1262,8 +1073,7 @@ TEINAPI void MapEditorCut ()
 {
     if (!CurrentTabIsMap() || !MapSelectBoxPresent()) return;
     Tab& tab = GetCurrentTab();
-    if (!tab.mapNodeInfo.active)
-    {
+    if (!tab.mapNodeInfo.active) {
         Internal::MapCopy();
         MapEditorClearSelect(); // Does deselect and history for us.
     }
@@ -1273,8 +1083,7 @@ TEINAPI void MapEditorCopy ()
 {
     if (!CurrentTabIsMap() || !MapSelectBoxPresent()) return;
     Tab& tab = GetCurrentTab();
-    if (!tab.mapNodeInfo.active)
-    {
+    if (!tab.mapNodeInfo.active) {
         Internal::MapCopy();
         MapEditorDeselect();
     }
@@ -1286,24 +1095,19 @@ TEINAPI void MapEditorPaste ()
 
     Tab& tab = GetCurrentTab();
 
-    if (!tab.mapNodeInfo.active)
-    {
+    if (!tab.mapNodeInfo.active) {
         int x1 = Internal::MouseToNodePositionInt().x;
         int y1 = Internal::MouseToNodePositionInt().y;
 
         // Clear old content from any nodes that are going to be overwritten/overlapped.
-        for (auto& newNode: gMapEditor.clipboard)
-        {
+        for (auto& newNode: gMapEditor.clipboard) {
             tab.map.erase(std::remove_if(tab.map.begin(), tab.map.end(),
-            [=](const MapNode& oldNode)
-            {
+            [=](const MapNode& oldNode) {
                 return (oldNode.x == newNode.x+x1 && oldNode.y == newNode.y+y1);
-            }),
-            tab.map.end());
+            }), tab.map.end());
         }
 
-        for (auto& node: gMapEditor.clipboard)
-        {
+        for (auto& node: gMapEditor.clipboard) {
             tab.map.push_back({ node.x+x1, node.y+y1, node.lvl });
         }
 
@@ -1334,14 +1138,11 @@ TEINAPI void MapEditorClearSelect ()
     size_t oldSize = tab.map.size();
 
     tab.map.erase(std::remove_if(tab.map.begin(), tab.map.end(),
-    [=](const MapNode& node)
-    {
+    [=](const MapNode& node) {
         return (node.x >= sx1 && node.x <= sx2 && node.y >= sy1 && node.y <= sy2);
-    }),
-    tab.map.end());
+    }), tab.map.end());
 
-    if (oldSize != tab.map.size())
-    {
+    if (oldSize != tab.map.size()) {
         NewMapHistoryState(tab.map);
         tab.unsavedChanges = true;
     }
@@ -1355,8 +1156,7 @@ TEINAPI void MapEditorSelectAll ()
 
     Tab& tab = GetCurrentTab();
 
-    if (!tab.mapNodeInfo.active)
-    {
+    if (!tab.mapNodeInfo.active) {
         Internal::DeselectActiveNode();
 
         int x1 = static_cast<int>(GetMinMapBoundsX()/gMapNodeWidth);
@@ -1409,8 +1209,7 @@ TEINAPI void NewMapHistoryState (Map& map)
     // Clear all the history after the current position, if there is any, as
     // it will no longer apply to the timeline of map editor actions anymore.
     int deletePosition = tab.mapHistory.currentPosition+1;
-    if (deletePosition < static_cast<int>(tab.mapHistory.state.size()))
-    {
+    if (deletePosition < static_cast<int>(tab.mapHistory.state.size())) {
         auto begin = tab.mapHistory.state.begin();
         auto end = tab.mapHistory.state.end();
 
