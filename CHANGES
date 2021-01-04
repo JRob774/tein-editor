@@ -1,7 +1,7 @@
 Release v1.1.00 on ???, ???? ????
 ---------------------------------------------------------
 - Removed the update notification system, as it wasn't really necessary or useful compared to the amount of complexity it added to the program.
-- Flipping a level horizontally or vertically now deselects the current selection.
+- ...
 
 
 Release v1.0.13 on Nov, 18th 2020
