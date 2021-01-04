@@ -1,3 +1,5 @@
+// Some more descriptive keywords for static depending on the context being used.
+#define Persistent static
 #define Internal static
 #define Global static
 
@@ -13,6 +15,32 @@ typedef   int8_t  S8;
 typedef  int16_t S16;
 typedef  int32_t S32;
 typedef  int64_t S64;
+
+// @Refactor: Do we need all of the functionality of glm? It's quite a large library
+// and we are probably only going to use a small subset so we might want to just
+// implement that functionality ourselves (for now it is just useful to have though).
+typedef glm::vec2 Vec2;
+typedef glm::vec3 Vec3;
+typedef glm::vec4 Vec4;
+typedef glm::mat2 Mat2;
+typedef glm::mat3 Mat3;
+typedef glm::mat4 Mat4;
+
+struct Rect
+{
+    float x,y,w,h;
+
+    inline bool operator== (const Rect& rhs) const {
+        return ((x == rhs.x) && (y == rhs.y) && (w == rhs.w) && (h == rhs.h));
+    }
+    inline bool operator!= (const Rect& rhs) const {
+        return !(operator==(rhs));
+    }
+};
+
+// We wrap the C functions malloc and free because C++ does not implicitly cast from void* so this macro handles the cast.
+#define Malloc(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
+#define Free(pt) free((pt))
 
 // C++ implementation of defer functionality. This can be used to defer blocks of
 // code to be executed during exit of the current scope. Useful for freeing any
@@ -73,21 +101,9 @@ inline t  operator &  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::ty
 inline t  operator ^  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::type )(a) ^  (GetEnumIntegralSizeType<t>::type)(b)); } \
 inline t  operator ~  (t  a     ) { return (t )(~(GetEnumIntegralSizeType<t>::type )(a));                                          }
 
-// We wrap the C functions malloc and free because C++ does not implicitly cast from void* so this macro handles the cast.
-#define Malloc(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
-#define Free(pt) free((pt))
-
-typedef glm::vec2 Vec2;
-typedef glm::vec3 Vec3;
-typedef glm::vec4 Vec4;
-typedef glm::mat2 Mat2;
-typedef glm::mat3 Mat3;
-typedef glm::mat4 Mat4;
-
-struct Rect
-{
-    float x,y,w,h;
-};
+///////////////////////
+// Utility Functions //
+///////////////////////
 
 EditorAPI std::vector<U8> ReadEntireBinaryFile (std::string fileName);
 EditorAPI std::string ReadEntireTextFile (std::string fileName);
