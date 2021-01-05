@@ -28,10 +28,20 @@
 
 #include <SDL2/SDL.h>
 
+#include <GON.hpp>
+#include <GON.cpp>
+
+#include <glad/glad.h>
+#include <glad/glad.c>
+
 // Header Includes
 #include "Utility.hpp"
 #include "Logger.hpp"
+#include "Settings.hpp"
+#include "Window.hpp"
 
 // Source Includes
 #include "Utility.cpp"
 #include "Logger.cpp"
+#include "Settings.cpp"
+#include "Window.cpp"

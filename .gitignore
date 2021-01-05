@@ -1,8 +1,8 @@
 .vs/
 
+binary/settings.data
 binary/backups/
 binary/*.pdb
-binary/settings_editor.txt
 
 dev/releases/
 
