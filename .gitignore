@@ -1,6 +1,7 @@
 .vs/
 
 binary/settings.data
+binary/imgui.ini
 binary/backups/
 binary/*.pdb
 

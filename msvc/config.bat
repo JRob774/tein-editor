@@ -10,7 +10,7 @@ set Libraries=SDL2main.lib SDL2.lib freetype.lib opengl32.lib dinput8.lib dxguid
 if %Architecture%==x86 ( set LibArch=x86 )
 if %Architecture%==amd64 ( set LibArch=x64 )
 
-set IncludeDirs= -I source\depends\libfreetype\include -I source\depends\libglad -I source\depends\libglm -I source\depends\libgon -I source\depends\libsdl2\include -I source\depends\libstb
+set IncludeDirs= -I source\depends\libfreetype\include -I source\depends\libglad -I source\depends\libglm -I source\depends\libgon -I source\depends\libsdl2\include -I source\depends\libstb  -I source\depends\libimgui
 set LibraryDirs= -libpath:source\depends\libfreetype\library\%LibArch% -libpath:source\depends\libsdl2\library\%LibArch%
 
 set Defines=-D_CRT_SECURE_NO_WARNINGS -DPLATFORM_WIN32

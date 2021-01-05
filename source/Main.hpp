@@ -39,22 +39,44 @@
 
 #include <glm/glm.hpp>
 
-// Header Includes
+// NOTE: This header goes up here so that we can use EditorAPI just below this include.
 #include "Utility.hpp"
+
+#ifndef IM_ASSERT_USER_ERROR
+EditorAPI void LogSingleSystemMessage (std::string system, const char* format, ...); // Predeclare for ImGui!
+#define IM_ASSERT_USER_ERROR(exp,msg) do { if (!(exp)) LogSingleSystemMessage("imgui", (msg)); } while (0)
+#endif
+#include <imconfig.h>
+#include <imgui.h>
+#include <imgui.cpp>
+#include <imgui_demo.cpp>
+#include <imgui_widgets.cpp>
+#include <imgui_draw.cpp>
+#include <imgui_tables.cpp>
+#include <imgui_stdlib.h>
+#include <imgui_stdlib.cpp>
+#include <backend/imgui_impl_sdl.h>
+#include <backend/imgui_impl_sdl.cpp>
+#include <backend/imgui_impl_opengl3.h>
+#include <backend/imgui_impl_opengl3.cpp>
+
+// Header Includes
 #include "Logger.hpp"
-#include "Settings.hpp"
+#include "Window.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
 #include "VertexBuffer.hpp"
 #include "AssetManager.hpp"
-#include "Window.hpp"
+#include "UserInterface.hpp"
+#include "Settings.hpp"
 
 // Source Includes
 #include "Utility.cpp"
 #include "Logger.cpp"
-#include "Settings.cpp"
+#include "Window.cpp"
 #include "Shader.cpp"
 #include "Texture.cpp"
 #include "VertexBuffer.cpp"
 #include "AssetManager.cpp"
-#include "Window.cpp"
+#include "UserInterface.cpp"
+#include "Settings.cpp"
