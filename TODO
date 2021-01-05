@@ -11,3 +11,7 @@ Bug Fixes:
 Removals:
 - Remove the update notification system (lots of extra code for something not really necessary or stable).
 - We can probably remove GLM if we wanted, we really dont't use much of it at all.
+
+
+
+Preferred over native dialogs? ---> https://github.com/aiekick/ImGuiFileDialog
