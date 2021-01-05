@@ -14,12 +14,15 @@
 #include <cstdio>
 #include <cstdint>
 #include <cstdarg>
+#include <cassert>
 
 #include <filesystem>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <vector>
 #include <string>
+#include <stack>
 
 #include <glm/glm.hpp>
 
@@ -27,6 +30,8 @@
 
 // Header Includes
 #include "Utility.hpp"
+#include "Logger.hpp"
 
 // Source Includes
 #include "Utility.cpp"
+#include "Logger.cpp"
