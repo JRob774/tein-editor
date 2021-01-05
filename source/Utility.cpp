@@ -40,9 +40,9 @@ EditorAPI std::string FormatString_V (const char* format, va_list args)
 {
     std::string str;
     int size = vsnprintf(NULL, 0, format, args) + 1;
-    char* buffer = Malloc(char, size);
+    char* buffer = Allocate(char, size);
     if (buffer) {
-        Defer { Free(buffer); };
+        Defer { Deallocate(buffer); };
         vsnprintf(buffer, size, format, args);
         str = buffer;
     }

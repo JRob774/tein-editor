@@ -39,8 +39,8 @@ struct Rect
 };
 
 // We wrap the C functions malloc and free because C++ does not implicitly cast from void* so this macro handles the cast.
-#define Malloc(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
-#define Free(pt) free((pt))
+#define Allocate(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
+#define Deallocate(pt) free((pt))
 
 // C++ implementation of defer functionality. This can be used to defer blocks of
 // code to be executed during exit of the current scope. Useful for freeing any
