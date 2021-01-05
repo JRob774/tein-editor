@@ -16,7 +16,7 @@ set LibraryDirs= -libpath:source\depends\libfreetype\library\%LibArch% -libpath:
 set Defines=-D_CRT_SECURE_NO_WARNINGS -DPLATFORM_WIN32
 
 set CompilerFlags=-Zc:__cplusplus -std:c++17 -nologo -W4 -MT -Oi -EHsc -Z7
-set LinkerFlags=-opt:ref -incremental:no
+set LinkerFlags=-opt:ref -incremental:no -force:multiple
 
 set CompilerWarnings=-wd4100 -wd4505 -wd4189 -wd4201
 set LinkerWarnings=-ignore:4099
