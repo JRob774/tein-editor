@@ -1,7 +1,7 @@
 Release v1.1.00 on ???, ???? ????
 ---------------------------------------------------------
 - Removed the update notification system, as it wasn't really necessary or useful compared to the amount of complexity it added to the program.
-- ...
+- The editor can now be made to go into fullscreen mode using the shortcut commands ALT+ENTER or F11.
 
 
 Release v1.0.13 on Nov, 18th 2020
