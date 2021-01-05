@@ -65,9 +65,20 @@ EditorAPI bool StringCaseInsensitiveCompare (const std::string& a, const std::st
 EditorAPI std::string GetExecutablePath ()
 {
     // On return remove the executable name so it's just the path.
-    char moduleBuffer[MAX_PATH] = {};
-    GetModuleFileNameA(NULL, moduleBuffer, MAX_PATH);
-    return std::filesystem::path(moduleBuffer).remove_filename().string();
+    char pathBuffer[MAX_PATH] = {};
+    GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
+    return std::filesystem::path(pathBuffer).remove_filename().string();
+}
+
+EditorAPI std::string GetSaveDataPath ()
+{
+    char pathBuffer[MAX_PATH] = {};
+    std::filesystem::path path;
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, pathBuffer))) {
+        path = pathBuffer;
+        path.append("TheEndEditor");
+    }
+    return path.string();
 }
 
 EditorAPI bool RunExecutable (std::string exe)

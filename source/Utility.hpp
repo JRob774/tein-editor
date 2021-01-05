@@ -117,5 +117,6 @@ EditorAPI bool StringCaseInsensitiveCompare (const std::string& a, const std::st
 
 // These functions have platform-specific implementations in the source file.
 EditorAPI std::string GetExecutablePath ();
+EditorAPI std::string GetSaveDataPath ();
 EditorAPI bool RunExecutable (std::string exe);
 EditorAPI void LoadWebpage (std::string url);

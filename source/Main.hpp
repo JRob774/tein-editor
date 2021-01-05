@@ -7,6 +7,7 @@
 #endif
 #include <windows.h>
 #include <shellapi.h>
+#include <shlobj.h>
 #include <objbase.h>
 #endif // PLATFORM_WIN32
 
