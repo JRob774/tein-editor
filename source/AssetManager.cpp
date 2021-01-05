@@ -1,7 +1,9 @@
 AssetManager::AssetManager ()
 {
+    // @Incomplete: Sort out this path stuff...
+
     assetBasePath = GetExecutablePath();
-    assetBasePath += "/";
+    // assetBasePath += "/";
 
     // If there is a file in the current working directory specifying the assets relative path
     // then we append that to the executable path, otherwise we just expect the exe directory.

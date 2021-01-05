@@ -100,10 +100,9 @@ EditorAPI void BeginUiFrame ()
         ImGui::DockSpace(dockSpaceID, ImVec2(0,0), dockSpaceFlags);
     }
 
-    // @Incomplete: Add a way for editor code to be called from here so the editor can define the menu bar...
     // MenuBar
     if (ImGui::BeginMenuBar()) {
-        // @Incomplete: Do our menu bar...
+        DoEditorMenuBar();
         ImGui::EndMenuBar();
     }
 
