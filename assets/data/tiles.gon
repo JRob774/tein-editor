@@ -1,0 +1,642 @@
+tiles [
+    solid {
+        name tile_solid_name
+        tooltip tile_solid_tip
+        id [1]
+    }
+    spikes_l {
+        name tile_spikes_l_name
+        tooltip tile_spikes_l_tip
+        id [2 3 4 5]
+    }
+    spikes_s {
+        name tile_spikes_s_name
+        tooltip tile_spikes_s_tip
+        id [11 12 13 14]
+    }
+    platform {
+        name tile_platform_name
+        tooltip tile_platform_tip
+        id [6]
+    }
+    hook {
+        name tile_hook_name
+        tooltip tile_hook_tip
+        id [7]
+    }
+    pipe_ungrab {
+        name tile_pipe_ungrab_name
+        tooltip tile_pipe_ungrab_tip
+        id [8]
+    }
+    pipe_grab {
+        name tile_pipe_grab_name
+        tooltip tile_pipe_grab_tip
+        id [39]
+    }
+    solid_fake {
+        name tile_solid_fake_name
+        tooltip tile_solid_fake_tip
+        id [9]
+    }
+    solid_crumble {
+        name tile_solid_crumble_name
+        tooltip tile_solid_crumble_tip
+        id [10]
+    }
+    switch_unpress {
+        name tile_switch_unpress_name
+        tooltip tile_switch_unpress_tip
+        id [16 17 18 19]
+    }
+    switch_press {
+        name tile_switch_press_name
+        tooltip tile_switch_press_tip
+        id [20 21 22 23]
+    }
+    solid_break {
+        name tile_solid_break_name
+        tooltip tile_solid_break_tip
+        id [26]
+    }
+    solid_hidden {
+        name tile_solid_hidden_name
+        tooltip tile_solid_hidden_tip
+        id [40]
+    }
+    conveyor_slow {
+        name tile_conveyor_slow_name
+        tooltip tile_conveyor_slow_tip
+        id [27 29 31]
+    }
+    conveyor_fast {
+        name tile_conveyor_fast_name
+        tooltip tile_conveyor_fast_tip
+        id [28 30 32]
+    }
+    lock {
+        name tile_lock_name
+        tooltip tile_lock_tip
+        id [33]
+    }
+    lock_barrier {
+        name tile_lock_barrier_name
+        tooltip tile_lock_barrier_tip
+        id [34]
+    }
+    drilll {
+        name tile_drill_name
+        tooltip tile_drill_tip
+        id [15]
+    }
+    deco_active {
+        name tile_deco_active_name
+        tooltip tile_deco_active_tip
+        id [24 25]
+    }
+    emitter_active {
+        name tile_emitter_active_name
+        tooltip tile_emitter_active_tip
+        id [35 36 37 38]
+    }
+    camera {
+        name tile_camera_name
+        tooltip tile_camera_tip
+        id [20000]
+    }
+    bg_and_fg {
+        name tile_bg_and_fg_name
+        tooltip tile_bg_and_fg_tip
+        id [20089 20090]
+    }
+    debug_spawn {
+        name tile_debug_spawn_name
+        tooltip tile_debug_spawn_tip
+        id [20001]
+    }
+    savepoint {
+        name tile_savepoint_name
+        tooltip tile_savepoint_tip
+        id [20105]
+    }
+    trans_green {
+        name tile_trans_green_name
+        tooltip tile_trans_green_tip
+        id [20002 20100 20005 20102 20003 20101 20004 20099]
+    }
+    trans_yellow {
+        name tile_trans_yellow_name
+        tooltip tile_trans_yellow_tip
+        id [20054 20096 20057 20098 20055 20097 20056 20095]
+    }
+    checkpoint {
+        name tile_checkpoint_name
+        tooltip tile_checkpoint_tip
+        id [20103]
+    }
+    direction {
+        name tile_direction_name
+        tooltip tile_direction_tip
+        id [20006 20009 20007 20008]
+    }
+    stop {
+        name tile_stop_name
+        tooltip tile_stop_tip
+        id [20058]
+    }
+    destroy {
+        name tile_destroy_name
+        tooltip tile_destroy_tip
+        id [20059]
+    }
+    extension {
+        name tile_extension_name
+        tooltip tile_extension_tip
+        id [20010]
+    }
+    fall {
+        name tile_fall_name
+        tooltip tile_fall_tip
+        id [20011 20012 20013]
+    }
+    fall_trigger {
+        name tile_fall_trigger_name
+        tooltip tile_fall_trigger_tip
+        id [20014 20015 20016]
+    }
+    move_no_acc_slow {
+        name tile_move_no_acc_slow_name
+        tooltip tile_move_no_acc_slow_tip
+        id [20017 20020 20018 20019]
+    }
+    move_no_acc_med {
+        name tile_move_no_acc_med_name
+        tooltip tile_move_no_acc_med_tip
+        id [20021 20024 20022 20023]
+    }
+    move_no_acc_fast {
+        name tile_move_no_acc_fast_name
+        tooltip tile_move_no_acc_fast_tip
+        id [20025 20028 20026 20027]
+    }
+    move_no_acc_pause_slow {
+        name tile_move_no_acc_pause_slow_name
+        tooltip tile_move_no_acc_pause_slow_tip
+        id [20029 20032 20030 20031]
+    }
+    move_no_acc_pause_med {
+        name tile_move_no_acc_pause_med_name
+        tooltip tile_move_no_acc_pause_med_tip
+        id [20033 20036 20034 20035]
+    }
+    move_no_acc_pause_fast {
+        name tile_move_no_acc_pause_fast_name
+        tooltip tile_move_no_acc_pause_fast_tip
+        id [20037 20040 20038 20039]
+    }
+    move_pause_vslow {
+        name tile_move_pause_vslow_name
+        tooltip tile_move_pause_vslow_tip
+        id [20091 20094 20092 20093]
+    }
+    move_pause_slow {
+        name tile_move_pause_slow_name
+        tooltip tile_move_pause_slow_tip
+        id [20041 20044 20042 20043]
+    }
+    move_pause_med {
+        name tile_move_pause_med_name
+        tooltip tile_move_pause_med_tip
+        id [20045 20048 20046 20047]
+    }
+    move_pause_fast {
+        name tile_move_pause_fast_name
+        tooltip tile_move_pause_fast_tip
+        id [20049 20052 20050 20051]
+    }
+    do_not_move {
+        name tile_do_not_move_name
+        tooltip tile_do_not_move_tip
+        id [20071 20072 20053]
+    }
+    wrap {
+        name tile_wrap_name
+        tooltip tile_wrap_tip
+        id [20070]
+    }
+    ascend_trigger {
+        name tile_ascend_trigger_name
+        tooltip tile_ascend_trigger_tip
+        id [20073 20074 20075]
+    }
+    weight_trigger {
+        name tile_weight_trigger_name
+        tooltip tile_weight_trigger_tip
+        id [20076 20077 20078]
+    }
+    sine {
+        name tile_sine_name
+        tooltip tile_sine_tip
+        id [20079 20080 20081]
+    }
+    spawner {
+        name tile_spawner_name
+        tooltip tile_spawner_tip
+        id [20060 20061 20062 20063]
+    }
+    despawner {
+        name tile_despawner_name
+        tooltip tile_despawner_tip
+        id [20064 20065 20066 20067]
+    }
+    crusher {
+        name tile_crusher_name
+        tooltip tile_crusher_tip
+        id [20082 20085 20083 20084 20086]
+    }
+    warp {
+        name tile_warp_name
+        tooltip tile_warp_tip
+        id [20069]
+    }
+    wind {
+        name tile_wind_name
+        tooltip tile_wind_tip
+        id [20087 20088]
+    }
+    liquid {
+        name tile_liquid_name
+        tooltip tile_liquid_tip
+        id [30000 30001 30002]
+    }
+    liquid_bottom {
+        name tile_liquid_bottom_name
+        tooltip tile_liquid_bottom_tip
+        id [30003 30004 30005]
+    }
+    solid_overlay {
+        name tile_solid_overlay_name
+        tooltip tile_solid_overlay_tip
+        id [30006]
+    }
+    gravity_beam {
+        name tile_gravity_beam_name
+        tooltip tile_gravity_beam_tip
+        id [30007]
+    }
+    emitter_overlay {
+        name tile_emitter_overlay_name
+        tooltip tile_emitter_overlay_tip
+        id [30008]
+    }
+    solid_fake_overlay {
+        name tile_solid_fake_overlay_name
+        tooltip tile_solid_fake_overlay_tip
+        id [30009]
+    }
+    hoast {
+        name tile_hoast_name
+        tooltip tile_hoast_tip
+        id [40000 40001]
+    }
+    floast {
+        name tile_floast_name
+        tooltip tile_floast_tip
+        id [40002]
+    }
+    xfloast {
+        name tile_xfloast_name
+        tooltip tile_xfloast_tip
+        id [40085]
+    }
+    toast {
+        name tile_toast_name
+        tooltip tile_toast_tip
+        id [40004]
+    }
+    gasper {
+        name tile_gasper_name
+        tooltip tile_gasper_tip
+        id [40003]
+    }
+    slag {
+        name tile_slag_name
+        tooltip tile_slag_tip
+        id [40005 40006 40007 40008]
+    }
+    paraslag {
+        name tile_paraslag_name
+        tooltip tile_paraslag_tip
+        id [40009 40010]
+    }
+    kuko {
+        name tile_kuko_name
+        tooltip tile_kuko_tip
+        id [40011 40072]
+    }
+    edema {
+        name tile_edema_name
+        tooltip tile_edema_tip
+        id [40012 40013 40014 40015]
+    }
+    anchorfish_cw {
+        name tile_anchorfish_cw_name
+        tooltip tile_anchorfish_cw_tip
+        id [40016 40017 40018]
+    }
+    anchorfish_ccw {
+        name tile_anchorfish_ccw_name
+        tooltip tile_anchorfish_ccw_tip
+        id [40019 40020 40021]
+    }
+    fissure_a {
+        name tile_fissure_a_name
+        tooltip tile_fissure_a_tip
+        id [40027 40045 40026]
+    }
+    fissure_b {
+        name tile_fissure_b_name
+        tooltip tile_fissure_b_tip
+        id [40029 40046 40028]
+    }
+    musk {
+        name tile_musk_name
+        tooltip tile_musk_tip
+        id [40030]
+    }
+    crunch {
+        name tile_crunch_name
+        tooltip tile_crunch_tip
+        id [40031 40032 40033]
+    }
+    croast {
+        name tile_croast_name
+        tooltip tile_croast_tip
+        id [40034 40035]
+    }
+    springboard {
+        name tile_springboard_name
+        tooltip tile_springboard_tip
+        id [40036]
+    }
+    tumor {
+        name tile_tumor_name
+        tooltip tile_tumor_tip
+        id [40037 40111]
+    }
+    cart {
+        name tile_cart_name
+        tooltip tile_cart_tip
+        id [40038]
+    }
+    key {
+        name tile_key_name
+        tooltip tile_key_tip
+        id [40073]
+    }
+    pollution {
+        name tile_pollution_name
+        tooltip tile_pollution_tip
+        id [40047]
+    }
+    mother {
+        name tile_mother_name
+        tooltip tile_mother_tip
+        id [40048]
+    }
+    cannon_a {
+        name tile_cannon_a_name
+        tooltip tile_cannon_a_tip
+        id [40050 40052 40054]
+    }
+    cannon_b {
+        name tile_cannon_b_name
+        tooltip tile_cannon_b_tip
+        id [40051 40053 40055]
+    }
+    fireball_a {
+        name tile_fireball_a_name
+        tooltip tile_fireball_a_tip
+        id [40056 40058 40060]
+    }
+    fireball_b {
+        name tile_fireball_b_name
+        tooltip tile_fireball_b_tip
+        id [40057 40059 40061]
+    }
+    target {
+        name tile_target_name
+        tooltip tile_target_tip
+        id [40062 40063 40064]
+    }
+    turret_fixed_single {
+        name tile_turret_fixed_single_name
+        tooltip tile_turret_fixed_single_tip
+        id [40022 40025 40023 40024]
+    }
+    turret_sight {
+        name tile_turret_sight_name
+        tooltip tile_turret_sight_tip
+        id [40049]
+    }
+    turret_fixed_burst {
+        name tile_turret_fixed_burst_name
+        tooltip tile_turret_fixed_burst_tip
+        id [40065 40068 40066 40067]
+    }
+    turret_sight_v {
+        name tile_turret_sight_v_name
+        tooltip tile_turret_sight_v_tip
+        id [40069]
+    }
+    turret_sight_rapid {
+        name tile_turret_sight_rapid_name
+        tooltip tile_turret_sight_rapid_tip
+        id [40070]
+    }
+    turret_sight_predict {
+        name tile_turret_sight_predict_name
+        tooltip tile_turret_sight_predict_tip
+        id [40071]
+    }
+    mushroom {
+        name tile_mushroom_name
+        tooltip tile_mushroom_tip
+        id [40074 40099]
+    }
+    agon {
+        name tile_agon_name
+        tooltip tile_agon_tip
+        id [40075 40077 40113]
+    }
+    feral {
+        name tile_feral_name
+        tooltip tile_feral_tip
+        id [40076]
+    }
+    charger {
+        name tile_charger_name
+        tooltip tile_charger_tip
+        id [40078]
+    }
+    drooper {
+        name tile_drooper_name
+        tooltip tile_drooper_tip
+        id [40080]
+    }
+    gorger {
+        name tile_gorger_name
+        tooltip tile_gorger_tip
+        id [40082]
+    }
+    retinara {
+        name tile_retinara_name
+        tooltip tile_retinara_tip
+        id [40084]
+    }
+    thistlefish {
+        name tile_thistlefish_name
+        tooltip tile_thistlefish_tip
+        id [40086 40087]
+    }
+    wailer {
+        name tile_wailer_name
+        tooltip tile_wailer_tip
+        id [40089 40090 40088]
+    }
+    mine {
+        name tile_mine_name
+        tooltip tile_mine_tip
+        id [40091]
+    }
+    exit {
+        name tile_exit_name
+        tooltip tile_exit_tip
+        id [40092]
+    }
+    npc {
+        name tile_npc_name
+        tooltip tile_npc_tip
+        id [40093 40094 40095]
+    }
+    special {
+        name tile_special_name
+        tooltip tile_special_tip
+        id [40096 40097 40098]
+    }
+    ring {
+        name tile_ring_name
+        tooltip tile_ring_tip
+        id [40100]
+    }
+    goal {
+        name tile_goal_name
+        tooltip tile_goal_tip
+        id [40110]
+    }
+    friend_piece {
+        name tile_friend_piece_name
+        tooltip tile_friend_piece_tip
+        id [40101 40102 40103]
+    }
+    friend_stand {
+        name tile_friend_stand_name
+        tooltip tile_friend_piece_tip
+        id [40104]
+    }
+    tv {
+        name tile_tv_name
+        tooltip tile_tv_tip
+        id [40107]
+    }
+    crusher_deco {
+        name tile_crusher_deco_name
+        tooltip tile_crusher_deco_tip
+        id [40108 40109]
+    }
+    watcher {
+        name tile_watcher_name
+        tooltip tile_watcher_tip
+        id [40112]
+    }
+    critter {
+        name tile_critter_name
+        tooltip tile_critter_tip
+        id [40114 40115 40116 40117 40118 40119 40120]
+    }
+    orb {
+        name tile_orb_name
+        tooltip tile_orb_tip
+        id [40121 40105]
+    }
+    bg1_whole {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50000]
+    }
+    bg1_side_l {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50001 50002 50003 50004]
+    }
+    bg1_side_s {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50005 50006 50007 50008]
+    }
+    bg1_corner_s {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50009 50010 50011 50012]
+    }
+    bg1_corner_l {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50013 50014 50015 50016]
+    }
+    bg1_diagonal {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50017 50018 50019 50020]
+    }
+    bg1_deco {
+        name tile_bg_deco_name
+        tooltip tile_bg_deco_tip
+        id [50021 50022 50023 50024]
+    }
+    bg2_whole {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50033]
+    }
+    bg2_side_l {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50034 50035 50036 50037]
+    }
+    bg2_side_s {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50038 50039 50040 50041]
+    }
+    bg2_corner_s {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50042 50043 50044 50045]
+    }
+    bg2_corner_l {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50046 50047 50048 50049]
+    }
+    bg2_diagonal {
+        name tile_bg_piece_name
+        tooltip tile_bg_piece_tip
+        id [50050 50051 50052 50053]
+    }
+    bg2_deco {
+        name tile_bg_deco_name
+        tooltip tile_bg_deco_tip
+        id [50054 50055 50056 50057]
+    }
+]

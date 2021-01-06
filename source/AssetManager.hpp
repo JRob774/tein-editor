@@ -60,7 +60,7 @@ struct AssetTexture: public AssetBase
 struct AssetData: public AssetBase
 {
     static inline const std::string Path = "data/";
-    static inline const std::string Ext = ".data";
+    static inline const std::string Ext = ".gon";
     void Load (std::string fileName) override;
     void Free () override;
     GonObject data;
