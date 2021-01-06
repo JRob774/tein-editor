@@ -6,12 +6,12 @@ tiles [
     }
     spikes_l {
         name tile_spikes_l_name
-        tooltip tile_spikes_l_tip
+        tooltip tile_spikes_tip
         id [2 3 4 5]
     }
     spikes_s {
         name tile_spikes_s_name
-        tooltip tile_spikes_s_tip
+        tooltip tile_spikes_tip
         id [11 12 13 14]
     }
     platform {
@@ -90,13 +90,13 @@ tiles [
         id [15]
     }
     deco_active {
-        name tile_deco_active_name
+        name tile_deco_name
         tooltip tile_deco_active_tip
         id [24 25]
     }
     emitter_active {
-        name tile_emitter_active_name
-        tooltip tile_emitter_active_tip
+        name tile_emitter_name
+        tooltip tile_emitter_tip
         id [35 36 37 38]
     }
     camera {
@@ -166,52 +166,52 @@ tiles [
     }
     move_no_acc_slow {
         name tile_move_no_acc_slow_name
-        tooltip tile_move_no_acc_slow_tip
+        tooltip tile_move_no_acc_tip
         id [20017 20020 20018 20019]
     }
     move_no_acc_med {
         name tile_move_no_acc_med_name
-        tooltip tile_move_no_acc_med_tip
+        tooltip tile_move_no_acc_tip
         id [20021 20024 20022 20023]
     }
     move_no_acc_fast {
         name tile_move_no_acc_fast_name
-        tooltip tile_move_no_acc_fast_tip
+        tooltip tile_move_no_acc_tip
         id [20025 20028 20026 20027]
     }
     move_no_acc_pause_slow {
         name tile_move_no_acc_pause_slow_name
-        tooltip tile_move_no_acc_pause_slow_tip
+        tooltip tile_move_no_acc_pause_tip
         id [20029 20032 20030 20031]
     }
     move_no_acc_pause_med {
         name tile_move_no_acc_pause_med_name
-        tooltip tile_move_no_acc_pause_med_tip
+        tooltip tile_move_no_acc_pause_tip
         id [20033 20036 20034 20035]
     }
     move_no_acc_pause_fast {
         name tile_move_no_acc_pause_fast_name
-        tooltip tile_move_no_acc_pause_fast_tip
+        tooltip tile_move_no_acc_pause_tip
         id [20037 20040 20038 20039]
     }
     move_pause_vslow {
         name tile_move_pause_vslow_name
-        tooltip tile_move_pause_vslow_tip
+        tooltip tile_move_pause_tip
         id [20091 20094 20092 20093]
     }
     move_pause_slow {
         name tile_move_pause_slow_name
-        tooltip tile_move_pause_slow_tip
+        tooltip tile_move_pause_tip
         id [20041 20044 20042 20043]
     }
     move_pause_med {
         name tile_move_pause_med_name
-        tooltip tile_move_pause_med_tip
+        tooltip tile_move_pause_tip
         id [20045 20048 20046 20047]
     }
     move_pause_fast {
         name tile_move_pause_fast_name
-        tooltip tile_move_pause_fast_tip
+        tooltip tile_move_pause_tip
         id [20049 20052 20050 20051]
     }
     do_not_move {
@@ -285,8 +285,8 @@ tiles [
         id [30007]
     }
     emitter_overlay {
-        name tile_emitter_overlay_name
-        tooltip tile_emitter_overlay_tip
+        name tile_emitter_name
+        tooltip tile_emitter_tip
         id [30008]
     }
     solid_fake_overlay {
@@ -341,12 +341,12 @@ tiles [
     }
     anchorfish_cw {
         name tile_anchorfish_cw_name
-        tooltip tile_anchorfish_cw_tip
+        tooltip tile_anchorfish_tip
         id [40016 40017 40018]
     }
     anchorfish_ccw {
         name tile_anchorfish_ccw_name
-        tooltip tile_anchorfish_ccw_tip
+        tooltip tile_anchorfish_tip
         id [40019 40020 40021]
     }
     fissure_a {
@@ -374,9 +374,9 @@ tiles [
         tooltip tile_croast_tip
         id [40034 40035]
     }
-    springboard {
-        name tile_springboard_name
-        tooltip tile_springboard_tip
+    spring {
+        name tile_spring_name
+        tooltip tile_spring_tip
         id [40036]
     }
     tumor {
@@ -570,72 +570,72 @@ tiles [
         id [40121 40105]
     }
     bg1_whole {
-        name tile_bg_piece_name
+        name tile_bg_whole_name
         tooltip tile_bg_piece_tip
         id [50000]
     }
     bg1_side_l {
-        name tile_bg_piece_name
+        name tile_bg_side_l_name
         tooltip tile_bg_piece_tip
         id [50001 50002 50003 50004]
     }
     bg1_side_s {
-        name tile_bg_piece_name
+        name tile_bg_side_s_name
         tooltip tile_bg_piece_tip
         id [50005 50006 50007 50008]
     }
-    bg1_corner_s {
-        name tile_bg_piece_name
-        tooltip tile_bg_piece_tip
-        id [50009 50010 50011 50012]
-    }
     bg1_corner_l {
-        name tile_bg_piece_name
+        name tile_bg_corner_l_name
         tooltip tile_bg_piece_tip
         id [50013 50014 50015 50016]
     }
+    bg1_corner_s {
+        name tile_bg_corner_s_name
+        tooltip tile_bg_piece_tip
+        id [50009 50010 50011 50012]
+    }
     bg1_diagonal {
-        name tile_bg_piece_name
+        name tile_bg_diagonal_name
         tooltip tile_bg_piece_tip
         id [50017 50018 50019 50020]
     }
     bg1_deco {
-        name tile_bg_deco_name
+        name tile_deco_name
         tooltip tile_bg_deco_tip
         id [50021 50022 50023 50024]
     }
     bg2_whole {
-        name tile_bg_piece_name
+        name tile_bg_whole_name
         tooltip tile_bg_piece_tip
         id [50033]
     }
     bg2_side_l {
-        name tile_bg_piece_name
+        name tile_bg_side_l_name
         tooltip tile_bg_piece_tip
         id [50034 50035 50036 50037]
     }
     bg2_side_s {
-        name tile_bg_piece_name
+        name tile_bg_side_s_name
         tooltip tile_bg_piece_tip
         id [50038 50039 50040 50041]
     }
-    bg2_corner_s {
-        name tile_bg_piece_name
-        tooltip tile_bg_piece_tip
-        id [50042 50043 50044 50045]
-    }
     bg2_corner_l {
-        name tile_bg_piece_name
+        name tile_bg_corner_l_name
         tooltip tile_bg_piece_tip
         id [50046 50047 50048 50049]
     }
+    bg2_corner_s {
+        name tile_bg_corner_s_name
+        tooltip tile_bg_piece_tip
+        id [50042 50043 50044 50045]
+    }
     bg2_diagonal {
-        name tile_bg_piece_name
+        name tile_bg_diagonal_name
         tooltip tile_bg_piece_tip
         id [50050 50051 50052 50053]
     }
     bg2_deco {
-        name tile_bg_deco_name
+        name tile_deco_name
         tooltip tile_bg_deco_tip
         id [50054 50055 50056 50057]
     }
