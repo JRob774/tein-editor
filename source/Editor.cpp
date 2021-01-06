@@ -6,12 +6,12 @@ Internal struct
 
 EditorAPI bool InitEditor ()
 {
-    // Nothing...
+    InitTilesWidget();
     return true;
 }
 EditorAPI void QuitEditor ()
 {
-    // Nothing...
+    QuitTilesWidget();
 }
 
 EditorAPI void HandleEditorEvents (const SDL_Event& event)

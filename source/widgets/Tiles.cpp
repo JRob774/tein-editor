@@ -1,12 +1,17 @@
 Internal struct
 {
-    bool open = true;
+    bool open = true; // @Incomplete: Store this value so we can restore the GUI state properly for later sessions.
 
 } iTilesWidget;
 
-EditorAPI void ToggleTilesWidget ()
+EditorAPI void InitTilesWidget ()
 {
-    iTilesWidget.open = !iTilesWidget.open;
+    // Nothing...
+}
+
+EditorAPI void QuitTilesWidget ()
+{
+    // Nothing...
 }
 
 EditorAPI void DoTilesWidget ()
@@ -16,7 +21,7 @@ EditorAPI void DoTilesWidget ()
     ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
     ImGui::Begin("Tiles", &iTilesWidget.open, windowFlags);
 
-    Texture* tileTex = GetAsset<AssetTexture>("test_tile");
+    Texture* tileTex = GetAsset<AssetTexture>("small_icons/10");
     if (tileTex) {
         // Code for wrapping button items taken from this issue in the imgui repo:
         //   https://github.com/ocornut/imgui/issues/1977#issuecomment-408847708
@@ -34,6 +39,11 @@ EditorAPI void DoTilesWidget ()
     }
 
     ImGui::End();
+}
+
+EditorAPI void ToggleTilesWidget ()
+{
+    iTilesWidget.open = !iTilesWidget.open;
 }
 
 EditorAPI bool IsTilesWidgetOpen ()

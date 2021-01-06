@@ -11,25 +11,25 @@ Global struct AssetManager
 {
     AssetManager ();
     std::map<std::string,AssetBase*> assets;
-    std::string assetBasePath;
+    std::filesystem::path assetBasePath;
 
 } gAssetManager;
-
-EditorAPI std::string BuildAssetPath (std::string pathName);
 
 EditorAPI void FreeAssets ();
 
 template<typename T>
 EditorAPI auto* GetAsset (std::string name)
 {
-    std::string fileName = name + T::Ext;
-    std::string fullFileName = BuildAssetPath(T::Path + fileName);
-    T* asset = dynamic_cast<T*>(gAssetManager.assets[fileName]); // Will create the asset if it doesn't exist.
+    // @Improve: We can probably clean up this path stuff quite a bit as its pretty messy...
+    std::filesystem::path pathName = std::filesystem::canonical(std::filesystem::path(gAssetManager.assetBasePath / T::Path).make_preferred());
+    std::filesystem::path fileName = std::filesystem::path(name + T::Ext).make_preferred();
+
+    T* asset = dynamic_cast<T*>(gAssetManager.assets[fileName.string()]); // Will create the asset if it doesn't exist.
     if (!asset) {
         // Allocate and load the asset if it hasn't been loaded.
         asset = new T; // @Improve: Change to std::nothrow and handle NULL case?
-        asset->Load(fullFileName);
-        gAssetManager.assets[fileName] = asset;
+        asset->Load((pathName / fileName).string());
+        gAssetManager.assets[fileName.string()] = asset;
     }
     if (name.empty()) {
         return static_cast<decltype(asset->data)*>(NULL);
@@ -39,9 +39,18 @@ EditorAPI auto* GetAsset (std::string name)
 
 // Asset Types
 
+struct AssetData: public AssetBase
+{
+    static inline const std::filesystem::path Path = "data";
+    static inline const std::string Ext = ".gon";
+    void Load (std::string fileName) override;
+    void Free () override;
+    GonObject data;
+};
+
 struct AssetShader: public AssetBase
 {
-    static inline const std::string Path = "shaders/";
+    static inline const std::filesystem::path Path = "shaders";
     static inline const std::string Ext = ".shader";
     void Load (std::string fileName) override;
     void Free () override;
@@ -50,18 +59,9 @@ struct AssetShader: public AssetBase
 
 struct AssetTexture: public AssetBase
 {
-    static inline const std::string Path = "textures/";
+    static inline const std::filesystem::path Path = "textures";
     static inline const std::string Ext = ".png";
     void Load (std::string fileName) override;
     void Free () override;
     Texture data;
-};
-
-struct AssetData: public AssetBase
-{
-    static inline const std::string Path = "data/";
-    static inline const std::string Ext = ".gon";
-    void Load (std::string fileName) override;
-    void Free () override;
-    GonObject data;
 };

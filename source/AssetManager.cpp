@@ -1,9 +1,6 @@
 AssetManager::AssetManager ()
 {
-    // @Incomplete: Sort out this path stuff...
-
     assetBasePath = GetExecutablePath();
-    // assetBasePath += "/";
 
     // If there is a file in the current working directory specifying the assets relative path
     // then we append that to the executable path, otherwise we just expect the exe directory.
@@ -11,20 +8,10 @@ AssetManager::AssetManager ()
     if (file.is_open()) {
         std::string assetPath;
         std::getline(file, assetPath);
-        assetBasePath += assetPath;
+        assetBasePath.append(assetPath);
     } else {
-        assetBasePath += "assets/";
+        assetBasePath.append("assets");
     }
-
-    // Make sure the asset path always ends in a slash.
-    if (assetBasePath.back() != '\\' && assetBasePath.back() != '/') {
-        assetBasePath += "/";
-    }
-}
-
-EditorAPI std::string BuildAssetPath (std::string pathName)
-{
-    return gAssetManager.assetBasePath + pathName;
 }
 
 EditorAPI void FreeAssets ()
@@ -37,6 +24,15 @@ EditorAPI void FreeAssets ()
 }
 
 // Asset Types
+
+void AssetData::Load (std::string fileName)
+{
+    data = GonObject::Load(fileName);
+}
+void AssetData::Free ()
+{
+    // Nothing...
+}
 
 void AssetShader::Load (std::string fileName)
 {
@@ -54,13 +50,4 @@ void AssetTexture::Load (std::string fileName)
 void AssetTexture::Free ()
 {
     FreeTexture(data);
-}
-
-void AssetData::Load (std::string fileName)
-{
-    data = GonObject::Load(fileName);
-}
-void AssetData::Free ()
-{
-    // Nothing...
 }
