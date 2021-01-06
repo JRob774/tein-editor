@@ -6,7 +6,7 @@ pushd ..
 call msvc\findvs.bat
 call msvc\config.bat
 
-call %VSDevPath% -no_logo -arch=amd64
+call %VSDevPath% -no_logo -arch=%Architecture%
 
 if not exist %OutputPath% mkdir %OutputPath%
 
