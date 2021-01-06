@@ -1,160 +1,158 @@
-categories [
-    basic {
-        name "Basic"
-        tiles [
-            solid
-            spikes_l
-            spikes_s
-            platform
-            hook
-            pipe_ungrab
-            pipe_grab
-            solid_fake
-            solid_crumble
-            switch_unpress
-            switch_press
-            solid_break
-            solid_hidden
-            conveyor_slow
-            conveyor_fast
-            lock
-            lock_barrier
-            drill
-            deco_active
-            emitter_active
-        ]
-    }
-    tag {
-        name "Tag"
-        tiles [
-            camera
-            bg_and_fg
-            debug_spawn
-            savepoint
-            trans_green
-            trans_yellow
-            checkpoint
-            direction
-            stop
-            destroy
-            extension
-            fall
-            fall_trigger
-            move_no_acc_slow
-            move_no_acc_med
-            move_no_acc_fast
-            move_no_acc_pause_slow
-            move_no_acc_pause_med
-            move_no_acc_pause_fast
-            move_pause_vslow
-            move_pause_slow
-            move_pause_med
-            move_pause_fast
-            do_not_move
-            wrap
-            ascent_trigger
-            weight_trigger
-            sine
-            spawner
-            despawner
-            crusher
-            warp
-            wind
-        ]
-    }
-    overlay {
-        name "Overlay"
-        tiles [
-            liquid
-            liquid_bottom
-            solid_overlay
-            gravity_beam
-            emitter_overlay
-            solid_fake_overlay
-        ]
-    }
-    entities {
-        name "Entities"
-        tiles [
-            hoast
-            floast
-            xfloast
-            toast
-            gasper
-            slag
-            paraslag
-            kuko
-            edema
-            anchorfish_cw
-            anchorfish_ccw
-            fissure_a
-            fissure_b
-            musk
-            crunch
-            croast
-            spring
-            tumor
-            cart
-            key
-            pollution
-            mother
-            cannon_a
-            cannon_b
-            fireball_a
-            fireball_b
-            target
-            turret_fixed_single
-            turret_sight
-            turret_fixed_burst
-            turret_sight_v
-            turret_sight_rapid
-            turret_sight_predict
-            mushroom
-            agon
-            feral
-            charger
-            drooper
-            gorger
-            retinara
-            thistlefish
-            wailer
-            mine
-            exit
-            npc
-            special
-            ring
-            goal
-            friend_piece
-            friend_stand
-            tv
-            crusher_desco
-            watcher
-            critter
-            orb
-        ]
-    }
-    back1 {
-        name "Background 1"
-        tiles [
-            bg1_whole
-            bg1_side_l
-            bg1_side_s
-            bg1_corner_l
-            bg1_corner_s
-            bg1_diagonal
-            bg1_deco
-        ]
-    }
-    back2 {
-        name "Background 2"
-        tiles [
-            bg2_whole
-            bg2_side_l
-            bg2_side_s
-            bg2_corner_l
-            bg2_corner_s
-            bg2_diagonal
-            bg2_deco
-        ]
-    }
-]
+basic {
+    name "Basic"
+    tiles [
+        solid
+        spikes_l
+        spikes_s
+        platform
+        hook
+        pipe_ungrab
+        pipe_grab
+        solid_fake
+        solid_crumble
+        switch_unpress
+        switch_press
+        solid_break
+        solid_hidden
+        conveyor_slow
+        conveyor_fast
+        lock
+        lock_barrier
+        drill
+        deco_active
+        emitter_active
+    ]
+}
+tag {
+    name "Tag"
+    tiles [
+        camera
+        bg_and_fg
+        debug_spawn
+        savepoint
+        trans_green
+        trans_yellow
+        checkpoint
+        direction
+        stop
+        destroy
+        extension
+        fall
+        fall_trigger
+        move_no_acc_slow
+        move_no_acc_med
+        move_no_acc_fast
+        move_no_acc_pause_slow
+        move_no_acc_pause_med
+        move_no_acc_pause_fast
+        move_pause_vslow
+        move_pause_slow
+        move_pause_med
+        move_pause_fast
+        do_not_move
+        wrap
+        ascent_trigger
+        weight_trigger
+        sine
+        spawner
+        despawner
+        crusher
+        warp
+        wind
+    ]
+}
+overlay {
+    name "Overlay"
+    tiles [
+        liquid
+        liquid_bottom
+        solid_overlay
+        gravity_beam
+        emitter_overlay
+        solid_fake_overlay
+    ]
+}
+entities {
+    name "Entities"
+    tiles [
+        hoast
+        floast
+        xfloast
+        toast
+        gasper
+        slag
+        paraslag
+        kuko
+        edema
+        anchorfish_cw
+        anchorfish_ccw
+        fissure_a
+        fissure_b
+        musk
+        crunch
+        croast
+        spring
+        tumor
+        cart
+        key
+        pollution
+        mother
+        cannon_a
+        cannon_b
+        fireball_a
+        fireball_b
+        target
+        turret_fixed_single
+        turret_sight
+        turret_fixed_burst
+        turret_sight_v
+        turret_sight_rapid
+        turret_sight_predict
+        mushroom
+        agon
+        feral
+        charger
+        drooper
+        gorger
+        retinara
+        thistlefish
+        wailer
+        mine
+        exit
+        npc
+        special
+        ring
+        goal
+        friend_piece
+        friend_stand
+        tv
+        crusher_desco
+        watcher
+        critter
+        orb
+    ]
+}
+back1 {
+    name "Background 1"
+    tiles [
+        bg1_whole
+        bg1_side_l
+        bg1_side_s
+        bg1_corner_l
+        bg1_corner_s
+        bg1_diagonal
+        bg1_deco
+    ]
+}
+back2 {
+    name "Background 2"
+    tiles [
+        bg2_whole
+        bg2_side_l
+        bg2_side_s
+        bg2_corner_l
+        bg2_corner_s
+        bg2_diagonal
+        bg2_deco
+    ]
+}
