@@ -105,7 +105,7 @@ tile_wailer_name                  :  Wailer
 tile_mine_name                    :  Mine
 tile_exit_name                    :  Exit Warp
 tile_npc_name                     :  NPC
-tile_special_name                 :  Decoration
+tile_special_name                 :  Custom Decoration
 tile_ring_name                    :  Ring
 tile_goal_name                    :  Level Goal
 tile_friend_piece_name            :  Friend Pieces
@@ -220,7 +220,7 @@ tile_wailer_tip                   :  A ghost enemy that alternates between being
 tile_mine_tip                     :  A mine that will explode when the player comes into contact, launching the player in the opposite direction at extremely fast speeds. Do not use in retro levels without proper SWF editing, touching one will usually crash the game regardless of art alts.
 tile_exit_tip                     :  Usually found at the end of secret levels, touching it will warp the player back to the last {tile_warp_name} they encountered - unless the current area is 7-15.lvl or 6-1end.lvl, in which case an ending cutscene is triggered.
 tile_npc_tip                      :  NPCs that can be interacted with and talked to. They can be changed by modifying the 'data/tilesets.txt' file. New NPCs can be created by modifying the 'data/npcs.txt' file.
-tile_special_tip                  :  Displays a decoration graphic that varies depending on values that are set inside of the 'data/tilesets.txt' file.
+tile_special_tip                  :  Displays a custom decoration graphic that varies depending on values that are set inside of the 'data/tilesets.txt' file.
 tile_ring_tip                     :  A collectible ring used in the retro cartridge levels.
 tile_goal_tip                     :  The ending goal seen at the end of each retro cartridge. If the level is i5-5.lvl or c6-10.lvl, it will trigger an ending cutscene.
 tile_friend_piece_tip             :  The three different pieces of the friend (head, body, and heart).
