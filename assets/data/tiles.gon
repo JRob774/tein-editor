@@ -84,7 +84,7 @@ tiles [
         tooltip tile_lock_barrier_tip
         id [34]
     }
-    drilll {
+    drill {
         name tile_drill_name
         tooltip tile_drill_tip
         id [15]
