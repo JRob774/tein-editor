@@ -116,7 +116,7 @@ EditorAPI std::string FormatString_V (const char* format, va_list args);
 EditorAPI bool StringCaseInsensitiveCompare (const std::string& a, const std::string& b);
 
 // These functions have platform-specific implementations in the source file.
-EditorAPI std::string GetExecutablePath ();
-EditorAPI std::string GetSaveDataPath ();
+EditorAPI std::filesystem::path GetExecutablePath ();
+EditorAPI std::filesystem::path GetSaveDataPath ();
 EditorAPI bool RunExecutable (std::string exe);
 EditorAPI void LoadWebpage (std::string url);

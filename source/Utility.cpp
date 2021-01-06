@@ -62,15 +62,15 @@ EditorAPI bool StringCaseInsensitiveCompare (const std::string& a, const std::st
 
 #if defined(PLATFORM_WIN32)
 
-EditorAPI std::string GetExecutablePath ()
+EditorAPI std::filesystem::path GetExecutablePath ()
 {
     // On return remove the executable name so it's just the path.
     char pathBuffer[MAX_PATH] = {};
     GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
-    return std::filesystem::path(pathBuffer).remove_filename().string();
+    return std::filesystem::path(pathBuffer).remove_filename().make_preferred();
 }
 
-EditorAPI std::string GetSaveDataPath ()
+EditorAPI std::filesystem::path GetSaveDataPath ()
 {
     char pathBuffer[MAX_PATH] = {};
     std::filesystem::path path;
@@ -78,7 +78,7 @@ EditorAPI std::string GetSaveDataPath ()
         path = pathBuffer;
         path.append("TheEndEditor");
     }
-    return path.string();
+    return path.make_preferred();
 }
 
 EditorAPI bool RunExecutable (std::string exe)
