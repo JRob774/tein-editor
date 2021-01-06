@@ -32,7 +32,7 @@ tile_checkpoint_name              :  Checkpoint
 tile_direction_name               :  Direction Change
 tile_stop_name                    :  Stop
 tile_destroy_name                 :  Destroy
-tile_extension_name               :  Move Extension
+tile_extension_name               :  Blank Tag
 tile_fall_name                    :  Falling Movement
 tile_fall_trigger_name            :  Falling Movement Trigger
 tile_move_no_acc_slow_name        :  Move No Acceleration (Slow)
@@ -110,7 +110,7 @@ tile_ring_name                    :  Ring
 tile_goal_name                    :  Level Goal
 tile_friend_piece_name            :  Friend Pieces
 tile_friend_stand_name            :  Friend Stand
-tile_tv_name                      :  TV, Console, and Posters
+tile_tv_name                      :  Ash's Console
 tile_crusher_deco_name            :  Crushing Block Decorations
 tile_watcher_name                 :  Watcher
 tile_critter_name                 :  Small Critters
@@ -145,17 +145,17 @@ tile_lock_barrier_tip             :  Solid tiles that will break when a connecte
 tile_drill_tip                    :  This tile kills the player on contact. If it is placed next to a single normal {tile_solid_name} tile, and neither the saw nor the tile it is adjacent to have movement tags, it will appear as a drill. Nearly anything that collides with a {tile_drill_name} tile will be destroyed. If a {tile_drill_name} collides with a {tile_drill_name}, both are destroyed. Overlay, background, and tag tiles cannot be destroyed. {tile_pollution_name} tiles and {tile_mother_name} tiles will not be properly destroyed.
 tile_deco_active_tip              :  Active layer decorations that change depending on the current tileset. They are often extra detail applied to the tops and bottoms of tiles.
 tile_emitter_tip                  :  Emits decorative particle effects that can be changed using the 'data/tilesets.txt' file. New particles can be created by adding new entries to the 'data/particles.txt' file.
-tile_camera_tip                   :  These tiles mark the boundaries of the area that is visible in the level. Enable the camera bounds tool to see a rough visual representation of the area that will be visible.
-tile_bg_and_fg_tip                :  Specifies where to offset the background and foreground graphics.
-tile_debug_spawn_tip              :  This is where the player spawns in cartridges, 1-1 after the cart death cutscene, and when directly accessing a room via The End is Nigh Helper.
+tile_camera_tip                   :  These tiles mark the boundaries of the area that is visible in the level. Enable the camera bounds tool to see a rough visual representation of the area that will be visible. The proportions of the visible area are adjusted automatically by the game to fit a 16:9 aspect ratio.
+tile_bg_and_fg_tip                :  Specifies where to offset the background and foreground image graphics specified in the 'data/tilesets.txt' file.
+tile_debug_spawn_tip              :  The player's default spawn location. It's used when entering a cartridge, starting the game in 1-1, teleporting to a level via a console command, or when the transition between levels is set up incorrectly.
 tile_savepoint_tip                :  When the player quits and re-enters the game, they will spawn at the {tile_savepoint_name} closest to where they entered the room.
-tile_trans_green_tip              :  These tiles mark exits to levels and what direction the player should be moved in the 'data/map.csv' file when going to a new level. It is considered best practice to make level transitions between screen use the same number of tiles.
-tile_trans_yellow_tip             :  These are functionally identical to {tile_trans_green_name} tiles and can be used interchangeably. They are normally used for level makers to keep track of which exits lead to secret screens.
+tile_trans_green_tip              :  These tiles mark exits to levels and what direction the player should be moved in the 'data/map.csv' file when going to a new level. It is considered best practice to make level transitions between screen use the same number of tiles. Otherwise, a {tile_debug_spawn_name} tag may be used as a spawn location when entering the level.
+tile_trans_yellow_tip             :  These are functionally identical to {tile_trans_green_name} tiles and can be used interchangeably. They are normally used for level creators to keep track of which exits lead to secret screens.
 tile_checkpoint_tip               :  When the player goes through an {tile_exit_name}, they will be teleported to the last one of these that they encountered.
 tile_direction_tip                :  Changes the direction of a moving object that collides with it.
 tile_stop_tip                     :  Stops a moving object when it comes into contact. Does not apply to movements made by objects that can naturally move (e.g. {tile_croast_name}, {tile_hoast_name}, etc.) or Multi-Directional {tile_crusher_name} tiles. Directional {tile_crusher_name} tiles are affected, but only whilst retracting.
 tile_destroy_tip                  :  Destroys a moving object when it comes into contact.
-tile_extension_tip                :  This tile can be used to extend the area of movement tag tiles, allowing for triggers to move objects on the other side of a level, etc. by joining them up. These tiles are not affected by {tile_stop_name} or {tile_direction_name} tiles.
+tile_extension_tip                :  Can be used to extend the area of movement tags, spawners, and despawners. These tags aren't affected by {tile_stop_name} or {tile_direction_name} tags. When connected to falling/ascending movement triggers, the player passing through the {tile_extension_name} tiles won't trigger the effect.
 tile_fall_tip                     :  Tiles with this tag applied will begin moving slowly at one of the given speeds (slow, medium, or fast) upon room entrance.
 tile_fall_trigger_tip             :  When the player comes into contact with this tag, all connected tiles will begin falling at one of the given speeds (slow, medium, or fast).
 tile_move_no_acc_tip              :  Moves an object in a direction at a constant speed.
@@ -165,12 +165,12 @@ tile_do_not_move_tip              :  Applying one of these tiles will prevent co
 tile_wrap_tip                     :  Moving tiles with this tag attached will wrap around once they exit the screen, creating an endless loop. Note that this tag does not work correctly with levels larger than 54x32 tiles, and does not work with tiles that are not assigned a constant speed movement tag.
 tile_ascend_trigger_tip           :  When the player comes into contact with this tag, all connected tiles will begin ascending at one of the given speeds (slow, medium, or fast).
 tile_weight_trigger_tip           :  When the player stands on a tile with this tag, it will begin falling at one of the given speeds (slow, medium, or fast). If the player stops standing on the tile it will rise up until it hits a {tile_stop_name} tile.
-tile_sine_tip                     :  Any moving objects with this tag will move in a sine-wave pattern. These tiles can be placed repeatedly to increase the intensity. Only affects objects with a 'Move No Acceleration' tag.
+tile_sine_tip                     :  Any moving objects with this tag will move in a sine-wave pattern. These tiles can be placed repeatedly to increase the intensity. Only affects objects with a Move No Acceleration tag attached.
 tile_spawner_tip                  :  When the switch tile with the corresponding number is pressed, tiles will be spawned wherever this tile is located. If this tile is attached to certain movement tag tiles, it will instead trigger the movement. Note that for the {tile_spawner_name} to work with movement tag tiles it must be directly above or to the right of them.
 tile_despawner_tip                :  When the switch tile with the corresponding number is pressed, tiles will be despawned wherever this tile is located. If this tile is attached to certain movement tag tiles, it will instead stop the movement. Note that for the {tile_despawner_name} to work with movement tag tiles it must be directly above or to the right of them.
 tile_crusher_tip                  :  When the player comes into this tile's line-of-sight it will charge until colliding with a solid tile. It is not stopped by pipes or any tiles with movement tags. It will still collide with tiles that have been destroyed by a {tile_drill_name}.
 tile_warp_tip                     :  A warp point where the player will be warped to when accessing areas from the map. The player can also warp from here.
-tile_wind_tip                     :  This pushes the player in a given direction (left or right). It can be placed repeatedly to increase the intensity of the pushing effect.
+tile_wind_tip                     :  This pushes the player in a given direction (left or right). It can be placed repeatedly to increase the intensity of the pushing effect. It is used in the base game to represent the {tile_orb_name} tile's gravitational pull.
 tile_liquid_tip                   :  Water, Pollution, and Lava tiles. Pollution kills in the same time it takes for {tile_pollution_name} tiles to kill and Lava instantly kills.
 tile_liquid_bottom_tip            :  Water, Pollution, and Lava tiles that fill all overlay tiles below them with the same liquid type for 32 blocks under.
 tile_solid_overlay_tip            :  A solid tile that exists on the overlay layer instead of the active layer.
@@ -222,12 +222,12 @@ tile_exit_tip                     :  Usually found at the end of secret levels, 
 tile_npc_tip                      :  NPCs that can be interacted with and talked to. They can be changed by modifying the 'data/tilesets.txt' file. New NPCs can be created by modifying the 'data/npcs.txt' file.
 tile_special_tip                  :  Displays a custom decoration graphic that varies depending on values that are set inside of the 'data/tilesets.txt' file.
 tile_ring_tip                     :  A collectible ring used in the retro cartridge levels.
-tile_goal_tip                     :  The ending goal seen at the end of each retro cartridge. If the level is i5-5.lvl or c6-10.lvl, it will trigger an ending cutscene.
+tile_goal_tip                     :  The ending goal seen at the end of each retro cartridge. If the level is 'i5-5.lvl' or 'c6-10.lvl', it will trigger an ending cutscene.
 tile_friend_piece_tip             :  The three different pieces of the friend (head, body, and heart).
 tile_friend_piece_tip             :  The stand that is used to place collected friend pieces.
-tile_tv_tip                       :  This tile can be interacted with to access the retro cartridge selection menu.
+tile_tv_tip                       :  This tile can be interacted with to access the retro cartridge selection menu. It comes with posters placed on top of the first background layer.
 tile_crusher_deco_tip             :  Decorative solid tiles used to identity the different types of {tile_crusher_name} tiles.
-tile_watcher_tip                  :  Slowly floats towards the player constantly.
+tile_watcher_tip                  :  Slowly floats towards the player constantly. By default they look like chainless {tile_feral_name} enemies, to change them to their normal in-game look they must be reskinned from 'OrbChomp' to 'MovingOrbBlob' in the 'data/tilesets.txt' file.
 tile_critter_tip                  :  Decorative critters used to add visual flare and life to levels.
 tile_orb_tip                      :  The friend attached to the giant orb and the trigger for the Acceptance countdown.
 tile_bg_piece_tip                 :  A modular background piece.
