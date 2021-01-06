@@ -1,8 +1,8 @@
 @echo off
 setlocal
 
-pushd ..
-call msvc\config.bat
+pushd ..\..
+call build\win32\config.bat
 pushd %OutputPath%
 %OutputName%.exe
 popd

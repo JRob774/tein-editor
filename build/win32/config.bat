@@ -27,7 +27,7 @@ set ResourcePath=resource\
 set InputResource=resource\Resources.res
 set InputSource=source\Main.cpp
 
-set OutputPath=binary\
+set OutputPath=binary\win32\
 set OutputName=TheEndEditor-%Architecture%
 
 if %BuildMode%==Release (

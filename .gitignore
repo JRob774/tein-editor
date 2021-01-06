@@ -1,9 +1,9 @@
 .vs/
 
-binary/settings.data
-binary/imgui.ini
-binary/backups/
-binary/*.pdb
+binary/**/settings.data
+binary/**/imgui.ini
+binary/**/backups/
+binary/**/*.pdb
 
 dev/releases/
 
