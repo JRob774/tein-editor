@@ -51,7 +51,7 @@ tag {
         move_pause_fast
         do_not_move
         wrap
-        ascent_trigger
+        ascend_trigger
         weight_trigger
         sine
         spawner
@@ -126,7 +126,7 @@ entities {
         friend_piece
         friend_stand
         tv
-        crusher_desco
+        crusher_deco
         watcher
         critter
         orb
