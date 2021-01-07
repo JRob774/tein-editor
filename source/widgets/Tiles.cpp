@@ -99,23 +99,25 @@ EditorAPI void DoTilesWidget ()
     int count = 0;
     for (auto& categoryId: iTilesWidget.categoryList) {
         auto& category = iTilesWidget.categories.at(categoryId);
-        int index = 0;
-        for (auto& tile: category.tiles) {
-            Texture* tileTex = GetAsset<AssetTexture>("small_icons/" + std::to_string(iTilesWidget.tiles.at(tile).ids.at(0)));
-            if (tileTex) {
-                ImGui::PushID(count);
-                ImGui::ImageButton((ImTextureID)(intptr_t)tileTex->handle, tileSize, ImVec2(0,0), ImVec2(1,1), 2, ImVec4(0,0,0,0), ImVec4(1,1,1,1));
-                float lastButtonX2 = ImGui::GetItemRectMax().x;
-                float nextButtonX2 = lastButtonX2 + style.ItemSpacing.x + tileSize.x; // Expected position if next button was on same line.
-                if ((index+1 < category.tiles.size()) && (nextButtonX2 < windowVisibleX2)) ImGui::SameLine();
-                ++index;
-                ++count;
-                ImGui::PopID();
+        if (ImGui::CollapsingHeader(category.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2,2));
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3,3));
+            int index = 0;
+            for (auto& tile: category.tiles) {
+                Texture* tileTex = GetAsset<AssetTexture>("small_icons/" + std::to_string(iTilesWidget.tiles.at(tile).ids.at(0)));
+                if (tileTex) {
+                    ImGui::PushID(count);
+                    ImGui::ImageButton((ImTextureID)(intptr_t)tileTex->handle, tileSize);
+                    float lastButtonX2 = ImGui::GetItemRectMax().x;
+                    float nextButtonX2 = lastButtonX2 + style.ItemSpacing.x + tileSize.x; // Expected position if next button was on same line.
+                    if ((index+1 < category.tiles.size()) && (nextButtonX2 < windowVisibleX2)) ImGui::SameLine();
+                    ++index;
+                    ++count;
+                    ImGui::PopID();
+                }
             }
+            ImGui::PopStyleVar(2);
         }
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
     }
 
     ImGui::End();
