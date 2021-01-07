@@ -6,4 +6,5 @@
 - We can probably remove GLM if we wanted, we really dont't use much of it at all
 - Preferred over native dialogs? ---> https://github.com/aiekick/ImGuiFileDialog
 - Go over all of the tile names and descriptions with someone who knows a lot about modding and tweak/improve/change to make them better
-- Add support for different locales
+- Add support for different locales --> https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+- Reorganise dependencies (remove the "lib" part of the folder names as its just kind of redundant and pointless)
