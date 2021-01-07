@@ -6,7 +6,7 @@ Internal struct
 
 EditorAPI bool InitEditor ()
 {
-    InitTilesWidget();
+    if (!InitTilesWidget()) return false;
     return true;
 }
 EditorAPI void QuitEditor ()

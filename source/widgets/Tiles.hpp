@@ -1,4 +1,4 @@
-EditorAPI void InitTilesWidget ();
+EditorAPI bool InitTilesWidget ();
 EditorAPI void QuitTilesWidget ();
 EditorAPI void DoTilesWidget ();
 EditorAPI void ToggleTilesWidget ();
