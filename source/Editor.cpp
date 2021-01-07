@@ -6,12 +6,14 @@ Internal struct
 
 EditorAPI bool InitEditor ()
 {
+    if (!InitToolsWidget()) return false;
     if (!InitTilesWidget()) return false;
     return true;
 }
 EditorAPI void QuitEditor ()
 {
     QuitTilesWidget();
+    QuitToolsWidget();
 }
 
 EditorAPI void HandleEditorEvents (const SDL_Event& event)
@@ -47,6 +49,7 @@ EditorAPI void DoEditorMenuBar ()
         ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Window")) {
+        ImGui::MenuItem("Tools", NULL, &GetToolsWidgetOpen());
         ImGui::MenuItem("Tiles", NULL, &GetTilesWidgetOpen());
         ImGui::EndMenu();
     }
@@ -66,5 +69,6 @@ EditorAPI void DoEditor ()
 {
     ImGui::ShowDemoWindow();
 
+    DoToolsWidget();
     DoTilesWidget();
 }
