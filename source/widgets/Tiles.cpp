@@ -123,12 +123,7 @@ EditorAPI void DoTilesWidget ()
     ImGui::End();
 }
 
-EditorAPI void ToggleTilesWidget ()
-{
-    iTilesWidget.open = !iTilesWidget.open;
-}
-
-EditorAPI bool IsTilesWidgetOpen ()
+EditorAPI bool& GetTilesWidgetOpen ()
 {
     return iTilesWidget.open;
 }
