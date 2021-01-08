@@ -104,7 +104,7 @@ EditorAPI void DoTilesWidget ()
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3,3));
             int index = 0;
             for (auto& tile: category.tiles) {
-                Texture* tileTex = GetAsset<AssetTexture>("small_icons/" + std::to_string(iTilesWidget.tiles.at(tile).ids.at(0)));
+                Texture* tileTex = GetAsset<AssetTexture>("tiles_small/" + std::to_string(iTilesWidget.tiles.at(tile).ids.at(0)));
                 if (tileTex) {
                     ImGui::PushID(count);
                     ImGui::ImageButton((ImTextureID)(intptr_t)tileTex->handle, tileSize);
