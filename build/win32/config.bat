@@ -10,8 +10,8 @@ set Libraries=SDL2main.lib SDL2.lib freetype.lib opengl32.lib dinput8.lib dxguid
 if %Architecture%==x86 ( set LibArch=x86 )
 if %Architecture%==amd64 ( set LibArch=x64 )
 
-set IncludeDirs= -I source\depends\libfreetype\include -I source\depends\libglad -I source\depends\libglm -I source\depends\libgon -I source\depends\libsdl2\include -I source\depends\libstb  -I source\depends\libimgui
-set LibraryDirs= -libpath:source\depends\libfreetype\library\%LibArch% -libpath:source\depends\libsdl2\library\%LibArch%
+set IncludeDirs= -I source\dependencies\freetype\include -I source\dependencies\glad -I source\dependencies\glm -I source\dependencies\gon -I source\dependencies\sdl2\include -I source\dependencies\stb  -I source\dependencies\imgui
+set LibraryDirs= -libpath:source\dependencies\freetype\library\%LibArch% -libpath:source\dependencies\sdl2\library\%LibArch%
 
 set Defines=-D_CRT_SECURE_NO_WARNINGS -DPLATFORM_WIN32
 
@@ -21,11 +21,11 @@ set LinkerFlags=-opt:ref -incremental:no -force:multiple
 set CompilerWarnings=-wd4100 -wd4505 -wd4189 -wd4201
 set LinkerWarnings=-ignore:4099
 
-set ResourceFile=resource\Resources.rc
+set ResourceFile=resource\icon.rc
 set ResourcePath=resource\
 
-set InputResource=resource\Resources.res
-set InputSource=source\Main.cpp
+set InputResource=resource\icon.res
+set InputSource=source\main.cpp
 
 set OutputPath=binary\win32\
 set OutputName=TheEndEditor-%Architecture%

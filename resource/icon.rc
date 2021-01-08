@@ -1,4 +1,3 @@
 #include <winuser.h>
-
 #define IDI_ICON 100
-IDI_ICON ICON "resources/icon.ico"
+IDI_ICON ICON "app.ico"
