@@ -2,8 +2,8 @@ Release v1.1.00 on ???, ???? ????
 ---------------------------------------------------------
 - Removed the update notification system, as it wasn't really necessary or useful compared to the amount of complexity it added to the program.
 - The editor can now be made to go into fullscreen mode using the shortcut commands ALT+ENTER or F11.
-- Fixed spelling mistakes and improved certain names and descriptions of tlles when they are moused over in the Tiles widget.
-- ...
+- Fixed spelling mistakes and improved certain names and descriptions of tlles when they are moused over in the Tiles widget (thanks NotWendy).
+- Slight quality improvements to the smaller size variations of the application icon.
 
 
 Release v1.0.13 on Nov, 18th 2020
