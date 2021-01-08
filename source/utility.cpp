@@ -74,7 +74,7 @@ EditorAPI std::filesystem::path GetSaveDataPath ()
 {
     char pathBuffer[MAX_PATH] = {};
     std::filesystem::path path;
-    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, pathBuffer))) {
+    if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, pathBuffer))) {
         path = pathBuffer;
         path.append("TheEndEditor");
     }

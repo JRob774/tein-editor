@@ -3,15 +3,20 @@
 binary/**/settings.data
 binary/**/imgui.ini
 binary/**/backups/
+
+binary/**/*.exe
+binary/**/*.exp
+binary/**/*.ilk
+binary/**/*.iobj
+binary/**/*.ipdb
+binary/**/*.lib
+binary/**/*.log
 binary/**/*.pdb
 
-dev/releases/
+build/win32/Win32/
+build/win32/x64/
 
-*.log
-*.exe
-*.dmp
-*.res
-*.obj
+dev/releases/
 
 *.gpak
 
