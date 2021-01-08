@@ -82,9 +82,6 @@ EditorAPI void BeginUiFrame ()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     windowFlags |= ImGuiWindowFlags_NoTitleBar|ImGuiWindowFlags_NoCollapse|ImGuiWindowFlags_NoResize|ImGuiWindowFlags_NoMove;
     windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus|ImGuiWindowFlags_NoNavFocus;
-    // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
-    // and handle the pass-thru hole, so we ask ImGui::Begin() to not render a background.
-    windowFlags |= ImGuiWindowFlags_NoBackground;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0,0)); // Remove padding.
     bool mainOpen = true;
@@ -95,7 +92,7 @@ EditorAPI void BeginUiFrame ()
 
     // DockSpace
     if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
-        ImGuiDockNodeFlags dockSpaceFlags = ImGuiDockNodeFlags_None;
+        ImGuiDockNodeFlags dockSpaceFlags = ImGuiDockNodeFlags_NoWindowMenuButton|ImGuiDockNodeFlags_NoCloseButton;
         ImGuiID dockSpaceID = ImGui::GetID("AppDockSpace");
         ImGui::DockSpace(dockSpaceID, ImVec2(0,0), dockSpaceFlags);
     }

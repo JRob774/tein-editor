@@ -25,7 +25,7 @@ EditorAPI void DoToolsWidget ()
 {
     if (!iToolsWidget.open) return; // If the window is closed then don't do it.
 
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
     ImGui::Begin("Tools", &iToolsWidget.open, windowFlags);
 
     // @Incomplete: ...

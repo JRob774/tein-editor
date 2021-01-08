@@ -88,7 +88,7 @@ EditorAPI void DoTilesWidget ()
 {
     if (!iTilesWidget.open) return; // If the window is closed then don't do it.
 
-    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
     ImGui::Begin("Tiles", &iTilesWidget.open, windowFlags);
 
     // Code for wrapping button items taken from this issue in the imgui repo:
