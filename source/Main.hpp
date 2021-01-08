@@ -71,8 +71,8 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "UserInterface.hpp"
 #include "Settings.hpp"
 #include "Editor.hpp"
-#include "widgets/TilesWidget.hpp"
-#include "widgets/ToolsWidget.hpp"
+#include "TilesWidget.hpp"
+#include "ToolsWidget.hpp"
 
 // Source Includes
 #include "Utility.cpp"
@@ -85,5 +85,5 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "UserInterface.cpp"
 #include "Settings.cpp"
 #include "Editor.cpp"
-#include "widgets/TilesWidget.cpp"
-#include "widgets/ToolsWidget.cpp"
+#include "TilesWidget.cpp"
+#include "ToolsWidget.cpp"
