@@ -1,26 +1,24 @@
-Internal struct
-{
-    // Nothing...
-
-} iEditor;
-
-EditorAPI bool InitEditor ()
+EditorAPI bool InitApplication ()
 {
     if (!InitToolsWidget()) return false;
     if (!InitTilesWidget()) return false;
     return true;
 }
-EditorAPI void QuitEditor ()
+
+EditorAPI void QuitApplication ()
 {
     QuitTilesWidget();
     QuitToolsWidget();
 }
 
-EditorAPI void HandleEditorEvents (const SDL_Event& event)
+EditorAPI void DoApplication ()
 {
-    // Nothing...
+    // ImGui::ShowDemoWindow();
+    DoToolsWidget();
+    DoTilesWidget();
 }
 
+/*
 EditorAPI void DoEditorMenuBar ()
 {
     if (ImGui::BeginMenu("File")) {
@@ -64,11 +62,4 @@ EditorAPI void DoEditorMenuBar ()
         ImGui::EndMenu();
     }
 }
-
-EditorAPI void DoEditor ()
-{
-    // ImGui::ShowDemoWindow();
-
-    DoToolsWidget();
-    DoTilesWidget();
-}
+*/

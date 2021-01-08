@@ -99,7 +99,7 @@ EditorAPI void BeginUiFrame ()
 
     // MenuBar
     if (ImGui::BeginMenuBar()) {
-        DoEditorMenuBar();
+        // @Incomplete: ...
         ImGui::EndMenuBar();
     }
 

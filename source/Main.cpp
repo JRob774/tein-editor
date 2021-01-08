@@ -6,7 +6,7 @@ int main (int argc, char** argv)
     Defer {
         SaveSettings();
         FreeAssets();
-        QuitEditor();
+        QuitApplication();
         QuitUi();
         QuitWindow();
         SDL_Quit();
@@ -19,7 +19,7 @@ int main (int argc, char** argv)
     } else {
         if (InitWindow()) {
             if (InitUi()) {
-                if (InitEditor()) {
+                if (InitApplication()) {
                     ShowWindow(); // We show window after everything is setup and ready.
 
                     bool running = true;
@@ -48,14 +48,13 @@ int main (int argc, char** argv)
                                 } break;
                             }
                             HandleUiEvents(event);
-                            HandleEditorEvents(event);
                         }
 
                         glClearColor(0,0,0,1);
                         glClear(GL_COLOR_BUFFER_BIT);
 
                         BeginUiFrame();
-                        DoEditor();
+                        DoApplication();
                         EndUiFrame();
 
                         RefreshWindow();

@@ -70,9 +70,9 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "AssetManager.hpp"
 #include "UserInterface.hpp"
 #include "Settings.hpp"
-#include "Editor.hpp"
 #include "TilesWidget.hpp"
 #include "ToolsWidget.hpp"
+#include "Application.hpp"
 
 // Source Includes
 #include "Utility.cpp"
@@ -84,6 +84,6 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "AssetManager.cpp"
 #include "UserInterface.cpp"
 #include "Settings.cpp"
-#include "Editor.cpp"
 #include "TilesWidget.cpp"
 #include "ToolsWidget.cpp"
+#include "Application.cpp"
