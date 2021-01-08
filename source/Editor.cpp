@@ -67,7 +67,7 @@ EditorAPI void DoEditorMenuBar ()
 
 EditorAPI void DoEditor ()
 {
-    ImGui::ShowDemoWindow();
+    // ImGui::ShowDemoWindow();
 
     DoToolsWidget();
     DoTilesWidget();

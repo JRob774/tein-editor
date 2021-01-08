@@ -28,7 +28,30 @@ EditorAPI void DoToolsWidget ()
     ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
     ImGui::Begin("Tools", &iToolsWidget.open, windowFlags);
 
-    // @Incomplete: ...
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2,2));
+
+    ImVec2 buttonSize(24,24);
+
+    DoImageButton("icons/brush", buttonSize);
+    DoImageButton("icons/fill", buttonSize);
+    DoImageButton("icons/select", buttonSize);
+    DoImageButton("icons/grid", buttonSize);
+    DoImageButton("icons/bounds", buttonSize);
+    DoImageButton("icons/layertrans", buttonSize);
+    DoImageButton("icons/resetcamera", buttonSize);
+    DoImageButton("icons/entitylarge", buttonSize);
+    DoImageButton("icons/entityguide", buttonSize);
+    DoImageButton("icons/resize", buttonSize);
+    DoImageButton("icons/fliph", buttonSize);
+    DoImageButton("icons/flipv", buttonSize);
+    DoImageButton("icons/mirrorh", buttonSize);
+    DoImageButton("icons/mirrorv", buttonSize);
+    DoImageButton("icons/cut", buttonSize);
+    DoImageButton("icons/copy", buttonSize);
+    DoImageButton("icons/deselect", buttonSize);
+    DoImageButton("icons/clearselect", buttonSize);
+
+    ImGui::PopStyleVar();
 
     ImGui::End();
 }

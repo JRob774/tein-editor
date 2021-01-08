@@ -104,17 +104,15 @@ EditorAPI void DoTilesWidget ()
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3,3));
             int index = 0;
             for (auto& tile: category.tiles) {
-                Texture* tileTex = GetAsset<AssetTexture>("tiles_small/" + std::to_string(iTilesWidget.tiles.at(tile).ids.at(0)));
-                if (tileTex) {
-                    ImGui::PushID(count);
-                    ImGui::ImageButton((ImTextureID)(intptr_t)tileTex->handle, tileSize);
-                    float lastButtonX2 = ImGui::GetItemRectMax().x;
-                    float nextButtonX2 = lastButtonX2 + style.ItemSpacing.x + tileSize.x; // Expected position if next button was on same line.
-                    if ((index+1 < category.tiles.size()) && (nextButtonX2 < windowVisibleX2)) ImGui::SameLine();
-                    ++index;
-                    ++count;
-                    ImGui::PopID();
-                }
+                std::string textureName = "tiles_small/" + std::to_string(iTilesWidget.tiles.at(tile).ids.at(0));
+                ImGui::PushID(count);
+                DoImageButton(textureName, tileSize);
+                float lastButtonX2 = ImGui::GetItemRectMax().x;
+                float nextButtonX2 = lastButtonX2 + style.ItemSpacing.x + tileSize.x; // Expected position if next button was on same line.
+                if ((index+1 < category.tiles.size()) && (nextButtonX2 < windowVisibleX2)) ImGui::SameLine();
+                ++index;
+                ++count;
+                ImGui::PopID();
             }
             ImGui::PopStyleVar(2);
         }

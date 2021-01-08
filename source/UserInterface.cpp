@@ -125,3 +125,13 @@ EditorAPI void EndUiFrame ()
         SDL_GL_MakeCurrent(backupCurrentWindow, backupCurrentContext);
     }
 }
+
+EditorAPI bool DoImageButton (std::string imageName, ImVec2 size)
+{
+    Texture* texture = GetAsset<AssetTexture>(imageName);
+    ImTextureID textureId = 0;
+    if (texture) {
+        textureId = reinterpret_cast<ImTextureID>(static_cast<intptr_t>(texture->handle));
+    }
+    return ImGui::ImageButton(textureId, size);
+}
