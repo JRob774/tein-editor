@@ -1,12 +1,6 @@
-Internal constexpr const char* iSettingsFile = "settings.data";
-
-Internal constexpr int iSettingsDefaultWindowWidth = gWindowStartWidth;
-Internal constexpr int iSettingsDefaultWindowHeight = gWindowStartHeight;
-Internal constexpr bool iSettingsDefaultFullscreen = true;
-
 EditorAPI void SaveSettings ()
 {
-    std::ofstream settings(iSettingsFile, std::ios::trunc);
+    std::ofstream settings(gSettingsFile, std::ios::trunc);
     if (!settings.is_open()) {
         LogSingleSystemMessage("settings", "Failed to save settings!");
     } else {
@@ -19,14 +13,14 @@ EditorAPI void SaveSettings ()
 
 EditorAPI void LoadSettings ()
 {
-    GonObject settings = GonObject::Load(iSettingsFile);
-    gSettings.windowWidth = settings["window_width"].Int(iSettingsDefaultWindowWidth);
-    gSettings.windowHeight = settings["window_height"].Int(iSettingsDefaultWindowHeight);
-    gSettings.fullscreen = settings["fullscreen"].Bool(iSettingsDefaultFullscreen);
+    GonObject settings = GonObject::Load(gSettingsFile);
+    gSettings.windowWidth = settings["window_width"].Int(gSettingsDefaultWindowWidth);
+    gSettings.windowHeight = settings["window_height"].Int(gSettingsDefaultWindowHeight);
+    gSettings.fullscreen = settings["fullscreen"].Bool(gSettingsDefaultFullscreen);
 }
 
 EditorAPI void ResetSettings ()
 {
-    SetWindowSize(iSettingsDefaultWindowWidth, iSettingsDefaultWindowHeight);
-    EnableWindowFullscreen(iSettingsDefaultFullscreen);
+    SetWindowSize(gSettingsDefaultWindowWidth, gSettingsDefaultWindowHeight);
+    EnableWindowFullscreen(gSettingsDefaultFullscreen);
 }

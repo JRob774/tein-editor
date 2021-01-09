@@ -1,29 +1,3 @@
-typedef S32 TileID;
-
-struct Tile
-{
-    std::string name, tooltip;
-    int layer; // @Improve; Make an enum for this??
-    std::vector<TileID> ids;
-};
-
-struct Category
-{
-    std::string name;
-    std::vector<std::string> tiles; // These strings point into the iTilesWidget.tiles map.
-};
-
-Internal struct
-{
-    std::map<std::string,Tile> tiles;
-    std::map<std::string,Category> categories;
-
-    std::vector<std::string> categoryList; // These strings point into the iTilesWidget.categories map.
-
-    bool open;
-
-} iTilesWidget;
-
 EditorAPI bool InitTilesWidget ()
 {
     PushLogSystem("tiles");
@@ -47,7 +21,7 @@ EditorAPI bool InitTilesWidget ()
             for (auto& id: data["ids"].children_array) {
                 tile.ids.push_back(id.Int());
             }
-            iTilesWidget.tiles.insert({ data.name, std::move(tile) });
+            gTilesWidget.tiles.insert({ data.name, std::move(tile) });
         }
     }
 
@@ -67,14 +41,14 @@ EditorAPI bool InitTilesWidget ()
             for (auto& tile: data["tiles"].children_array) {
                 category.tiles.push_back(tile.String());
             }
-            iTilesWidget.categories.insert({ data.name, std::move(category) });
-            iTilesWidget.categoryList.push_back(data.name);
+            gTilesWidget.categories.insert({ data.name, std::move(category) });
+            gTilesWidget.categoryList.push_back(data.name);
         }
     }
 
     // @Improve: We don't want this to always be true on start up. Store this
     // value so we can restore the GUI state properly for later sessions.
-    iTilesWidget.open = true;
+    gTilesWidget.open = true;
 
     return true;
 }
@@ -86,10 +60,10 @@ EditorAPI void QuitTilesWidget ()
 
 EditorAPI void DoTilesWidget ()
 {
-    if (!iTilesWidget.open) return; // If the window is closed then don't do it.
+    if (!gTilesWidget.open) return; // If the window is closed then don't do it.
 
     ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
-    ImGui::Begin("Tiles", &iTilesWidget.open, windowFlags);
+    ImGui::Begin("Tiles", &gTilesWidget.open, windowFlags);
 
     // Code for wrapping button items taken from this issue in the imgui repo:
     //   https://github.com/ocornut/imgui/issues/1977#issuecomment-408847708
@@ -97,14 +71,14 @@ EditorAPI void DoTilesWidget ()
     float windowVisibleX2 = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
     ImVec2 tileSize(20,20);
     int count = 0;
-    for (auto& categoryId: iTilesWidget.categoryList) {
-        auto& category = iTilesWidget.categories.at(categoryId);
+    for (auto& categoryId: gTilesWidget.categoryList) {
+        auto& category = gTilesWidget.categories.at(categoryId);
         if (ImGui::CollapsingHeader(category.name.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2,2));
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3,3));
             int index = 0;
             for (auto& tile: category.tiles) {
-                std::string textureName = "tiles_small/" + std::to_string(iTilesWidget.tiles.at(tile).ids.at(0));
+                std::string textureName = "tiles_small/" + std::to_string(gTilesWidget.tiles.at(tile).ids.at(0));
                 ImGui::PushID(count);
                 DoImageButton(textureName, tileSize);
                 float lastButtonX2 = ImGui::GetItemRectMax().x;
@@ -123,5 +97,5 @@ EditorAPI void DoTilesWidget ()
 
 EditorAPI bool& GetTilesWidgetOpen ()
 {
-    return iTilesWidget.open;
+    return gTilesWidget.open;
 }

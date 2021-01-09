@@ -1,17 +1,10 @@
-Internal struct
-{
-    // @Incomplete: ...
-    bool open;
-
-} iToolsWidget;
-
 EditorAPI bool InitToolsWidget ()
 {
     // @Incomplete: ...
 
     // @Improve: We don't want this to always be true on start up. Store this
     // value so we can restore the GUI state properly for later sessions.
-    iToolsWidget.open = true;
+    gToolsWidget.open = true;
 
     return true;
 }
@@ -23,10 +16,10 @@ EditorAPI void QuitToolsWidget ()
 
 EditorAPI void DoToolsWidget ()
 {
-    if (!iToolsWidget.open) return; // If the window is closed then don't do it.
+    if (!gToolsWidget.open) return; // If the window is closed then don't do it.
 
     ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
-    ImGui::Begin("Tools", &iToolsWidget.open, windowFlags);
+    ImGui::Begin("Tools", &gToolsWidget.open, windowFlags);
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2,2));
 
@@ -58,5 +51,5 @@ EditorAPI void DoToolsWidget ()
 
 EditorAPI bool& GetToolsWidgetOpen ()
 {
-    return iToolsWidget.open;
+    return gToolsWidget.open;
 }

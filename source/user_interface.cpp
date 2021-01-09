@@ -99,7 +99,9 @@ EditorAPI void BeginUiFrame ()
 
     // MenuBar
     if (ImGui::BeginMenuBar()) {
-        // @Incomplete: ...
+        if (gUserInterface.menuBarCallback) {
+            gUserInterface.menuBarCallback();
+        }
         ImGui::EndMenuBar();
     }
 

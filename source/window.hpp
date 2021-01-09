@@ -5,6 +5,17 @@ Global constexpr int gWindowStartHeight = 720;
 Global constexpr int gWindowMinimumWidth = 320;
 Global constexpr int gWindowMinimumHeight = 240;
 
+struct Window
+{
+    SDL_Window* window;
+    SDL_GLContext context;
+    int cachedWidth; // The size of the non-fullscreen window.
+    int cachedHeight;
+    bool fullscreen;
+};
+
+Global Window gWindow;
+
 // Interface
 
 EditorAPI bool InitWindow ();

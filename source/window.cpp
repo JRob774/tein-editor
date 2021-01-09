@@ -1,13 +1,3 @@
-Internal struct
-{
-    SDL_Window* window;
-    SDL_GLContext context;
-    int cachedWidth; // The size of the non-fullscreen window.
-    int cachedHeight;
-    bool fullscreen;
-
-} iWindow;
-
 EditorAPI bool InitWindow ()
 {
     PushLogSystem("window");
@@ -20,18 +10,18 @@ EditorAPI bool InitWindow ()
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
 
-    iWindow.cachedWidth = gSettings.windowWidth;
-    iWindow.cachedHeight = gSettings.windowHeight;
+    gWindow.cachedWidth = gSettings.windowWidth;
+    gWindow.cachedHeight = gSettings.windowHeight;
 
-    iWindow.window = SDL_CreateWindow(gWindowTitle, SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
-        iWindow.cachedWidth,iWindow.cachedHeight, SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_RESIZABLE|SDL_WINDOW_HIDDEN);
-    if (!iWindow.window) {
+    gWindow.window = SDL_CreateWindow(gWindowTitle, SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,
+        gWindow.cachedWidth,gWindow.cachedHeight, SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_RESIZABLE|SDL_WINDOW_HIDDEN);
+    if (!gWindow.window) {
         LogSystemMessage("Failed to create window: %s", SDL_GetError());
         return false;
     }
 
-    iWindow.context = SDL_GL_CreateContext(iWindow.window);
-    if (!iWindow.context) {
+    gWindow.context = SDL_GL_CreateContext(gWindow.window);
+    if (!gWindow.context) {
         LogSystemMessage("Failed to create OpenGL context: %s", SDL_GetError());
         return false;
     }
@@ -41,7 +31,7 @@ EditorAPI bool InitWindow ()
         return false;
     }
 
-    SDL_SetWindowMinimumSize(iWindow.window, gWindowMinimumWidth,gWindowMinimumHeight);
+    SDL_SetWindowMinimumSize(gWindow.window, gWindowMinimumWidth,gWindowMinimumHeight);
 
     EnableWindowFullscreen(gSettings.fullscreen);
 
@@ -56,74 +46,74 @@ EditorAPI bool InitWindow ()
 
 EditorAPI void QuitWindow ()
 {
-    SDL_GL_DeleteContext(iWindow.context);
-    SDL_DestroyWindow(iWindow.window);
+    SDL_GL_DeleteContext(gWindow.context);
+    SDL_DestroyWindow(gWindow.window);
 }
 
 EditorAPI void RefreshWindow ()
 {
-    SDL_GL_SwapWindow(iWindow.window);
+    SDL_GL_SwapWindow(gWindow.window);
 }
 
 EditorAPI void ShowWindow ()
 {
-    SDL_ShowWindow(iWindow.window);
+    SDL_ShowWindow(gWindow.window);
 }
 EditorAPI void HideWindow ()
 {
-    SDL_HideWindow(iWindow.window);
+    SDL_HideWindow(gWindow.window);
 }
 
 EditorAPI void EnableWindowFullscreen (bool enable)
 {
-    if (enable) SDL_GetWindowSize(iWindow.window, &iWindow.cachedWidth, &iWindow.cachedHeight);
-    iWindow.fullscreen = enable;
-    SDL_SetWindowFullscreen(iWindow.window, (iWindow.fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    if (enable) SDL_GetWindowSize(gWindow.window, &gWindow.cachedWidth, &gWindow.cachedHeight);
+    gWindow.fullscreen = enable;
+    SDL_SetWindowFullscreen(gWindow.window, (gWindow.fullscreen) ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 EditorAPI bool IsWindowFullscreen ()
 {
-    return iWindow.fullscreen;
+    return gWindow.fullscreen;
 }
 
 EditorAPI void SetWindowSize (int width, int height)
 {
-    SDL_SetWindowSize(iWindow.window, width, height);
+    SDL_SetWindowSize(gWindow.window, width, height);
 }
 
 EditorAPI void SetWindowTitle (std::string title)
 {
-    SDL_SetWindowTitle(iWindow.window, title.c_str());
+    SDL_SetWindowTitle(gWindow.window, title.c_str());
 }
 
 EditorAPI int GetWindowWidth ()
 {
     int width;
-    SDL_GetWindowSize(iWindow.window, &width,NULL);
+    SDL_GetWindowSize(gWindow.window, &width,NULL);
     return width;
 }
 EditorAPI int GetWindowHeight ()
 {
     int height;
-    SDL_GetWindowSize(iWindow.window, NULL,&height);
+    SDL_GetWindowSize(gWindow.window, NULL,&height);
     return height;
 }
 
 EditorAPI int GetCachedWindowWidth ()
 {
-    if (iWindow.fullscreen) return iWindow.cachedWidth;
+    if (gWindow.fullscreen) return gWindow.cachedWidth;
     return GetWindowWidth();
 }
 EditorAPI int GetCachedWindowHeight ()
 {
-    if (iWindow.fullscreen) return iWindow.cachedHeight;
+    if (gWindow.fullscreen) return gWindow.cachedHeight;
     return GetWindowHeight();
 }
 
 EditorAPI SDL_Window* GetInternalWindow ()
 {
-    return iWindow.window;
+    return gWindow.window;
 }
 EditorAPI SDL_GLContext GetInternalContext ()
 {
-    return iWindow.context;
+    return gWindow.context;
 }

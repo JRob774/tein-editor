@@ -7,13 +7,14 @@ struct AssetBase
     virtual void Free () = 0;
 };
 
-Global struct AssetManager
+struct AssetManager
 {
     AssetManager ();
     std::map<std::string,AssetBase*> assets;
     std::filesystem::path assetBasePath;
+};
 
-} gAssetManager;
+Global AssetManager gAssetManager;
 
 EditorAPI void FreeAssets ();
 

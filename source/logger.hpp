@@ -1,3 +1,12 @@
+struct Logger
+{
+    const char* LogFileName = "debug.log";
+    std::ofstream logFile;
+    std::stack<std::string> systems;
+};
+
+Global Logger gLogger;
+
 // Controls the stack of current systems the logger reports to.
 EditorAPI void PushLogSystem (std::string system);
 EditorAPI void PopLogSystem ();
