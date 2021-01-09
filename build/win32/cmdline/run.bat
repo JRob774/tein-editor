@@ -2,7 +2,7 @@
 setlocal
 
 call config.bat
-pushd ..\..\binary\win32
+pushd ..\..\..\binary\win32
 %Executable%
 popd
 

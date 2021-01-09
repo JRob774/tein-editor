@@ -13,8 +13,7 @@ binary/**/*.lib
 binary/**/*.log
 binary/**/*.pdb
 
-build/win32/Win32/
-build/win32/x64/
+build/win32/temp/
 
 dev/releases/
 
