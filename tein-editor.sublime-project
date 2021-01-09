@@ -6,6 +6,19 @@
             "folder_exclude_patterns":
             [
                 "source_old"
+            ],
+            "file_exclude_patterns":
+            [
+                "*.ipch",
+                "*.exp",
+                "*.ilk",
+                "*.bmp",
+                "*.vcxproj",
+                "*.vcxproj.filters",
+                "*.vcxproj.user",
+                "*.sln",
+                "*.tlog",
+                "*.res"
             ]
 		}
 	]
