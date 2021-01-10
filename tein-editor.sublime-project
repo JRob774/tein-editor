@@ -5,20 +5,16 @@
 			"path": ".",
             "folder_exclude_patterns":
             [
+                "build/win32/temp",
+                "build/win32/.vs",
                 "source_old"
             ],
             "file_exclude_patterns":
             [
-                "*.ipch",
-                "*.exp",
-                "*.ilk",
-                "*.bmp",
                 "*.vcxproj",
                 "*.vcxproj.filters",
                 "*.vcxproj.user",
-                "*.sln",
-                "*.tlog",
-                "*.res"
+                "*.sln"
             ]
 		}
 	]
