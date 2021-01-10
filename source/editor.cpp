@@ -1,9 +1,24 @@
-EditorAPI void InitHotbar ()
+EditorAPI bool InitEditor ()
 {
-    gUserInterface.menuBarCallback = DoHotbar;
+    if (!CreateWidget<  TilesWidget>()) return false;
+    if (!CreateWidget<  ToolsWidget>()) return false;
+    if (!CreateWidget< LayersWidget>()) return false;
+    if (!CreateWidget<HistoryWidget>()) return false;
+    return true;
 }
 
-EditorAPI void DoHotbar ()
+EditorAPI void QuitEditor ()
+{
+    FreeWidgets();
+}
+
+EditorAPI void DoEditor ()
+{
+    // ImGui::ShowDemoWindow();
+    UpdateWidgets();
+}
+
+EditorAPI void DoEditorMenuBar ()
 {
     if (ImGui::BeginMenu("File")) {
         if (ImGui::MenuItem("New", "Ctrl+N")) {} // @Incomplete: ...

@@ -1,12 +1,3 @@
-typedef void(*MenuBarCallback)(void);
-
-struct UserInterface
-{
-    MenuBarCallback menuBarCallback;
-};
-
-Global UserInterface gUserInterface;
-
 EditorAPI bool InitUi ();
 EditorAPI void QuitUi ();
 

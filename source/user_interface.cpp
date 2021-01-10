@@ -99,9 +99,7 @@ EditorAPI void BeginUiFrame ()
 
     // MenuBar
     if (ImGui::BeginMenuBar()) {
-        if (gUserInterface.menuBarCallback) {
-            gUserInterface.menuBarCallback();
-        }
+        DoEditorMenuBar();
         ImGui::EndMenuBar();
     }
 
