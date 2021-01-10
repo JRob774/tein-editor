@@ -31,8 +31,9 @@ EditorAPI void DoHotbar ()
         ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Window")) {
-        ImGui::MenuItem("Tools", NULL, &GetToolsWidgetOpen());
-        ImGui::MenuItem("Tiles", NULL, &GetTilesWidgetOpen());
+        for (auto& widget: gWidgetManager.widgets) {
+            ImGui::MenuItem(widget->mName.c_str(), NULL, &widget->mOpen);
+        }
         ImGui::EndMenu();
     }
     if (ImGui::MenuItem("Launch Game")) {

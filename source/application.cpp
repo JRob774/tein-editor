@@ -1,20 +1,19 @@
 EditorAPI bool InitApplication ()
 {
-    if (!InitToolsWidget()) return false;
-    if (!InitTilesWidget()) return false;
+    if (!CreateWidget<TilesWidget>()) return false;
+    if (!CreateWidget<ToolsWidget>()) return false;
+
     InitHotbar();
     return true;
 }
 
 EditorAPI void QuitApplication ()
 {
-    QuitTilesWidget();
-    QuitToolsWidget();
+    FreeWidgets();
 }
 
 EditorAPI void DoApplication ()
 {
     // ImGui::ShowDemoWindow();
-    DoToolsWidget();
-    DoTilesWidget();
+    UpdateWidgets();
 }

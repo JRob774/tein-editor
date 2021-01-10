@@ -1,4 +1,3 @@
-// Nothing...
 // The order in which layer data is stored within the .lvl files is different
 // from the order it is actually represented in the editor so we use an array
 // to get the correct order in which to read & write the layers to the files.

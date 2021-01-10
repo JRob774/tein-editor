@@ -73,8 +73,7 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "settings.hpp"
 #include "level.hpp"
 #include "hotbar.hpp"
-#include "tiles_widget.hpp"
-#include "tools_widget.hpp"
+#include "widgets.hpp"
 #include "application.hpp"
 
 // Source Includes
@@ -89,6 +88,5 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "settings.cpp"
 #include "level.cpp"
 #include "hotbar.cpp"
-#include "tiles_widget.cpp"
-#include "tools_widget.cpp"
+#include "widgets.cpp"
 #include "application.cpp"
