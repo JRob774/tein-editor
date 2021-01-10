@@ -82,3 +82,29 @@ public:
 private:
     void InternalUpdate () override;
 };
+
+//
+// Layers Widget
+//
+
+class LayersWidget: public Widget
+{
+public:
+     LayersWidget ();
+    ~LayersWidget ();
+private:
+    void InternalUpdate () override;
+};
+
+//
+// History Widget
+//
+
+class HistoryWidget: public Widget
+{
+public:
+     HistoryWidget ();
+    ~HistoryWidget ();
+private:
+    void InternalUpdate () override;
+};

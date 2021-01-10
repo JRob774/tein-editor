@@ -167,3 +167,37 @@ void ToolsWidget::InternalUpdate ()
     DoImageButton("icons/clearselect", buttonSize);
     ImGui::PopStyleVar();
 }
+
+//
+// Layers Widget
+//
+
+LayersWidget::LayersWidget (): Widget("Layers")
+{
+    // Nothing...
+}
+LayersWidget::~LayersWidget ()
+{
+    // Nothing...
+}
+void LayersWidget::InternalUpdate ()
+{
+    // @Incomplete: ...
+}
+
+//
+// History Widget
+//
+
+HistoryWidget::HistoryWidget (): Widget("History")
+{
+    // Nothing...
+}
+HistoryWidget::~HistoryWidget ()
+{
+    // Nothing...
+}
+void HistoryWidget::InternalUpdate ()
+{
+    // @Incomplete: ...
+}
