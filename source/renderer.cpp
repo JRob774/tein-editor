@@ -143,7 +143,7 @@ Internal void Internal_CreateTexture (Texture& texture, int width, int height, i
     glGenTextures(1, &texture.handle);
     glBindTexture(GL_TEXTURE_2D, texture.handle);
 
-    // @Improve: Right now there is no way to specify how a texture should wrap or be filtered.
+    // @Improve: Right now there is no way to specify how a texture should wrap or be filtered?
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -171,4 +171,52 @@ EditorAPI void LoadTexture (Texture& texture, std::string fileName)
 EditorAPI void FreeTexture (Texture& texture)
 {
     glDeleteTextures(1, &texture.handle);
+}
+
+//
+// Framebuffer
+//
+
+EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, float width, float height)
+{
+    ResizeFramebuffer(framebuffer, width, height);
+}
+
+EditorAPI void FreeFramebuffer (Framebuffer& framebuffer)
+{
+    glDeleteFramebuffers(1, &framebuffer.handle);
+    glDeleteTextures(1, &framebuffer.texture);
+}
+
+EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, float width, float height)
+{
+    FreeFramebuffer(framebuffer); // Delete the old contents (if any).
+
+    glGenFramebuffers(1, &framebuffer.handle);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.handle);
+
+    glGenTextures(1, &framebuffer.texture);
+    glBindTexture(GL_TEXTURE_2D, framebuffer.texture);
+
+    int textureWidth = static_cast<int>(width);
+    int textureHeight = static_cast<int>(height);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    // @Improve: Right now there is no way to specify how a framebuffer should wrap or be filtered?
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer.texture, 0);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        LogSingleSystemMessage("[framebuffer]", "Failed to complete framebuffer resize!");
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    framebuffer.width = width;
+    framebuffer.height = height;
 }

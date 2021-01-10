@@ -57,3 +57,19 @@ struct Texture
 // SHOULD NOT BE USED DIRECTLY -- USE THE ASSET MANAGER INSTEAD!
 EditorAPI void LoadTexture (Texture& texture, std::string fileName);
 EditorAPI void FreeTexture (Texture& texture);
+
+//
+// Framebuffer
+//
+
+struct Framebuffer
+{
+    GLuint handle = GL_NONE; // Framebuffer
+    GLuint texture = GL_NONE; // Color Attachment
+    float width;
+    float height;
+};
+
+EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, float width, float height);
+EditorAPI void FreeFramebuffer   (Framebuffer& framebuffer);
+EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, float width, float height);
