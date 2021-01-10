@@ -25,6 +25,7 @@
 #include <string>
 #include <map>
 #include <stack>
+#include <array>
 
 #include <SDL2/SDL.h>
 
@@ -70,6 +71,7 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "asset_manager.hpp"
 #include "user_interface.hpp"
 #include "settings.hpp"
+#include "level.hpp"
 #include "hotbar.hpp"
 #include "tiles_widget.hpp"
 #include "tools_widget.hpp"
@@ -85,6 +87,7 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "asset_manager.cpp"
 #include "user_interface.cpp"
 #include "settings.cpp"
+#include "level.cpp"
 #include "hotbar.cpp"
 #include "tiles_widget.cpp"
 #include "tools_widget.cpp"

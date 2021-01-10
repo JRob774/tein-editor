@@ -1,5 +1,3 @@
-typedef S32 TileID;
-
 struct Tile
 {
     std::string name, tooltip;
