@@ -151,8 +151,8 @@ Internal void Internal_CreateTexture (Texture& texture, int width, int height, i
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width,height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rawData);
 
-    texture.w = static_cast<float>(width);
-    texture.h = static_cast<float>(height);
+    texture.width = width;
+    texture.height = height;
 }
 
 EditorAPI void LoadTexture (Texture& texture, std::string fileName)
@@ -177,7 +177,7 @@ EditorAPI void FreeTexture (Texture& texture)
 // Framebuffer
 //
 
-EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, float width, float height)
+EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, int width, int height)
 {
     ResizeFramebuffer(framebuffer, width, height);
 }
@@ -188,7 +188,7 @@ EditorAPI void FreeFramebuffer (Framebuffer& framebuffer)
     glDeleteTextures(1, &framebuffer.texture);
 }
 
-EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, float width, float height)
+EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, int width, int height)
 {
     FreeFramebuffer(framebuffer); // Delete the old contents (if any).
 
@@ -198,10 +198,7 @@ EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, float width, float h
     glGenTextures(1, &framebuffer.texture);
     glBindTexture(GL_TEXTURE_2D, framebuffer.texture);
 
-    int textureWidth = static_cast<int>(width);
-    int textureHeight = static_cast<int>(height);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
     // @Improve: Right now there is no way to specify how a framebuffer should wrap or be filtered?
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

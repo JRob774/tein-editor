@@ -40,7 +40,6 @@ struct Shader
     GLuint program;
 };
 
-// SHOULD NOT BE USED DIRECTLY -- USE THE ASSET MANAGER INSTEAD!
 EditorAPI void LoadShader (Shader& shader, std::string fileName);
 EditorAPI void FreeShader (Shader& shader);
 
@@ -51,10 +50,10 @@ EditorAPI void FreeShader (Shader& shader);
 struct Texture
 {
     GLuint handle;
-    float w,h; // @Improve: These should probably be ints?
+    int width;
+    int height;
 };
 
-// SHOULD NOT BE USED DIRECTLY -- USE THE ASSET MANAGER INSTEAD!
 EditorAPI void LoadTexture (Texture& texture, std::string fileName);
 EditorAPI void FreeTexture (Texture& texture);
 
@@ -66,10 +65,10 @@ struct Framebuffer
 {
     GLuint handle = GL_NONE; // Framebuffer
     GLuint texture = GL_NONE; // Color Attachment
-    float width;
-    float height;
+    int width;
+    int height;
 };
 
-EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, float width, float height);
+EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, int width, int height);
 EditorAPI void FreeFramebuffer   (Framebuffer& framebuffer);
-EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, float width, float height);
+EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, int width, int height);
