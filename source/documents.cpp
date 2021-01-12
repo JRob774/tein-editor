@@ -19,6 +19,19 @@ EditorAPI void CreateNewLevelDocument (int width, int height)
     }
 }
 
+EditorAPI bool InitDocumentManager ()
+{
+    // The size doesn't matter as we resize this per document that is visible.
+    CreateFramebuffer(gDocumentManager.documentFramebuffer, 1280,720);
+}
+EditorAPI void QuitDocumentManager ()
+{
+    FreeFramebuffer(gDocumentManager.documentFramebuffer);
+    for (auto& document: gDocumentManager.documents) {
+        delete document;
+    }
+}
+
 EditorAPI void UpdateDocuments ()
 {
     for (auto& document: gDocumentManager.documents) {
@@ -27,12 +40,6 @@ EditorAPI void UpdateDocuments ()
         bool visible = ImGui::Begin(label.c_str(), &document->mOpen, ImGuiWindowFlags_NoSavedSettings); // @Improve: Do we want to save documents to settings???
         if (visible) document->Update();
         ImGui::End();
-    }
-}
-EditorAPI void FreeDocuments ()
-{
-    for (auto& document: gDocumentManager.documents) {
-        delete document;
     }
 }
 

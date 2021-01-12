@@ -31,17 +31,26 @@ void Widget::Update ()
 // Widget Manager
 //
 
-EditorAPI void UpdateWidgets ()
+EditorAPI void InitWidgetManager ()
 {
-    for (auto& widget: gWidgetManager.widgets) {
-        widget->Update();
-    }
+    if (!CreateWidget<  TilesWidget>()) return false;
+    if (!CreateWidget<  ToolsWidget>()) return false;
+    if (!CreateWidget< LayersWidget>()) return false;
+    if (!CreateWidget<HistoryWidget>()) return false;
+    return true;
 }
-EditorAPI void FreeWidgets ()
+EditorAPI void QuitWidgetManager ()
 {
     for (auto& widget: gWidgetManager.widgets) {
         widget->Delete();
         delete widget;
+    }
+}
+
+EditorAPI void UpdateWidgets ()
+{
+    for (auto& widget: gWidgetManager.widgets) {
+        widget->Update();
     }
 }
 

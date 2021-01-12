@@ -29,8 +29,10 @@ struct WidgetManager
 
 Global WidgetManager gWidgetManager;
 
+EditorAPI bool InitWidgetManager ();
+EditorAPI void QuitWidgetManager ();
+
 EditorAPI void UpdateWidgets ();
-EditorAPI void FreeWidgets ();
 
 template<typename T>
 EditorAPI bool CreateWidget ()

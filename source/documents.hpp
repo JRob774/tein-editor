@@ -21,14 +21,17 @@ public:
 struct DocumentManager
 {
     std::vector<Document*> documents;
+    Framebuffer documentFramebuffer;
 };
 
 Global DocumentManager gDocumentManager;
 
 EditorAPI void CreateNewLevelDocument (int width, int height);
 
+EditorAPI bool InitDocumentManager ();
+EditorAPI void QuitDocumentManager ();
+
 EditorAPI void UpdateDocuments ();
-EditorAPI void FreeDocuments ();
 
 //
 // Level Document

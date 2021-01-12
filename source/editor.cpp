@@ -1,9 +1,7 @@
 EditorAPI bool InitEditor ()
 {
-    if (!CreateWidget<  TilesWidget>()) return false;
-    if (!CreateWidget<  ToolsWidget>()) return false;
-    if (!CreateWidget< LayersWidget>()) return false;
-    if (!CreateWidget<HistoryWidget>()) return false;
+    if (!InitWidgetManager()) return false;
+    if (!InitDocumentManager()) return false;
 
     CreateNewLevelDocument(54,32);
 
@@ -13,8 +11,8 @@ EditorAPI bool InitEditor ()
 EditorAPI void QuitEditor ()
 {
     SaveSettings();
-    FreeWidgets();
-    FreeDocuments();
+    QuitDocumentManager();
+    QuitWidgetManager();
     FreeAssets();
 }
 
