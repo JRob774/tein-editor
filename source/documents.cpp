@@ -2,7 +2,18 @@
 // Base Document
 //
 
-// ...
+Vec2 Document::GetWindowSize () const
+{
+    ImVec2 winMin = ImGui::GetWindowContentRegionMin();
+    ImVec2 winMax = ImGui::GetWindowContentRegionMax();
+
+    winMin.x += ImGui::GetWindowPos().x;
+    winMin.y += ImGui::GetWindowPos().y;
+    winMax.x += ImGui::GetWindowPos().x;
+    winMax.y += ImGui::GetWindowPos().y;
+
+    return { winMax.x-winMin.x, winMax.y-winMin.y };
+}
 
 //
 // Document Manager
@@ -39,7 +50,18 @@ EditorAPI void UpdateDocuments ()
         if (!document->mOpen) continue;
         std::string label = document->mName + "###Document" + document->mId;
         bool visible = ImGui::Begin(label.c_str(), &document->mOpen);
-        if (visible) document->Update();
+        if (visible) {
+            Vec2 windowSize = document->GetWindowSize();
+            int windowWidth = static_cast<int>(windowSize.x);
+            int windowHeight = static_cast<int>(windowSize.y);
+            if (windowWidth > 0 && windowHeight > 0) { // These can report as negative, in which case we draw nothing!
+                // Only resize the framebuffer when it's necessary.
+                if (windowWidth != gDocumentManager.documentFramebuffer.width || windowHeight != gDocumentManager.documentFramebuffer.height) {
+                    ResizeFramebuffer(gDocumentManager.documentFramebuffer, windowWidth, windowHeight);
+                }
+                document->Update();
+            }
+        }
         ImGui::End();
     }
 }
