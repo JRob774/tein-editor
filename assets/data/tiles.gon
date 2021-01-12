@@ -648,7 +648,7 @@ friend_piece {
 }
 friend_stand {
     name tile_friend_stand_name
-    tooltip tile_friend_piece_tip
+    tooltip tile_friend_stand_tip
     layer active
     ids [40104]
 }

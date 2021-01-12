@@ -224,7 +224,7 @@ tile_special_tip                  :  Displays a custom decoration graphic that v
 tile_ring_tip                     :  A collectible ring used in the retro cartridge levels.
 tile_goal_tip                     :  The ending goal seen at the end of each retro cartridge. If the level is 'i5-5.lvl' or 'c6-10.lvl', it will trigger an ending cutscene.
 tile_friend_piece_tip             :  The three different pieces of the friend (head, body, and heart).
-tile_friend_piece_tip             :  The stand that is used to place collected friend pieces.
+tile_friend_stand_tip             :  The stand that is used to place collected friend pieces.
 tile_tv_tip                       :  This tile can be interacted with to access the retro cartridge selection menu. It comes with posters placed on top of the first background layer.
 tile_crusher_deco_tip             :  Decorative solid tiles used to identity the different types of {tile_crusher_name} tiles.
 tile_watcher_tip                  :  Slowly floats towards the player constantly. By default they look like chainless {tile_feral_name} enemies, to change them to their normal in-game look they must be reskinned from 'OrbChomp' to 'MovingOrbBlob' in the 'data/tilesets.txt' file.
