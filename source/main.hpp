@@ -71,6 +71,7 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "settings.hpp"
 #include "level.hpp"
 #include "widgets.hpp"
+#include "documents.hpp"
 #include "editor.hpp"
 
 // Source Includes
@@ -83,4 +84,5 @@ EditorAPI void LogSingleSystemMessage (std::string system, const char* format, .
 #include "settings.cpp"
 #include "level.cpp"
 #include "widgets.cpp"
+#include "documents.cpp"
 #include "editor.cpp"

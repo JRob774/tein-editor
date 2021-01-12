@@ -4,24 +4,32 @@ EditorAPI bool InitEditor ()
     if (!CreateWidget<  ToolsWidget>()) return false;
     if (!CreateWidget< LayersWidget>()) return false;
     if (!CreateWidget<HistoryWidget>()) return false;
+
+    CreateNewLevelDocument(54,32);
+
     return true;
 }
 
 EditorAPI void QuitEditor ()
 {
+    SaveSettings();
     FreeWidgets();
+    FreeDocuments();
+    FreeAssets();
 }
 
 EditorAPI void DoEditor ()
 {
     // ImGui::ShowDemoWindow();
+
     UpdateWidgets();
+    UpdateDocuments();
 }
 
 EditorAPI void DoEditorMenuBar ()
 {
     if (ImGui::BeginMenu("File")) {
-        if (ImGui::MenuItem("New", "Ctrl+N")) {} // @Incomplete: ...
+        if (ImGui::MenuItem("New", "Ctrl+N")) CreateNewLevelDocument(54,32);
         if (ImGui::MenuItem("Open", "Ctrl+O")) {} // @Incomplete: ...
         if (ImGui::MenuItem("Save", "Ctrl+S")) {} // @Incomplete: ...
         if (ImGui::MenuItem("Save As", "Ctrl+Shift+S")) {} // @Incomplete: ...

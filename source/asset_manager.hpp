@@ -1,3 +1,7 @@
+//
+// Base Asset
+//
+
 // Base type for assets, all custom asset types should inherit from this!
 struct AssetBase
 {
@@ -6,6 +10,10 @@ struct AssetBase
     virtual void Load (std::string fileName) = 0;
     virtual void Free () = 0;
 };
+
+//
+// Asset Manager
+//
 
 struct AssetManager
 {
@@ -38,7 +46,9 @@ EditorAPI auto* GetAsset (std::string name)
     return &asset->data;
 }
 
+//
 // Asset Types
+//
 
 struct AssetData: public AssetBase
 {

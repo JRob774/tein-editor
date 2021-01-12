@@ -4,8 +4,6 @@ int main (int argc, char** argv)
 {
     // We defer the termination code so that it is always called no matter how the program exits.
     Defer {
-        SaveSettings();
-        FreeAssets();
         QuitEditor();
         QuitUi();
         QuitWindow();

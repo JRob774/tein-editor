@@ -29,15 +29,15 @@ struct WidgetManager
 
 Global WidgetManager gWidgetManager;
 
+EditorAPI void UpdateWidgets ();
+EditorAPI void FreeWidgets ();
+
 template<typename T>
 EditorAPI bool CreateWidget ()
 {
     gWidgetManager.widgets.push_back(new T);
     return gWidgetManager.widgets.back()->Create();
 }
-
-EditorAPI void UpdateWidgets ();
-EditorAPI void FreeWidgets ();
 
 //
 // Tiles Widget
