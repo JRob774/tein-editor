@@ -217,3 +217,12 @@ EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, int width, int heigh
     framebuffer.width = width;
     framebuffer.height = height;
 }
+
+EditorAPI void BindFramebuffer (Framebuffer* framebuffer)
+{
+    if (framebuffer) {
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->handle);
+    } else {
+        glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+    }
+}

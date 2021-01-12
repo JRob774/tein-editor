@@ -9,7 +9,7 @@ public:
     virtual void Open   () = 0;
     virtual void Save   () = 0;
 
-    Vec2 GetWindowSize () const; // Note: Only safe to be called inside Update()!
+    ImVec2 GetWindowSize () const; // Note: Only safe to be called inside Update()!
 
     std::string mName;
     std::string mId;

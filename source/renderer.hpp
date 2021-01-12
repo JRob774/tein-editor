@@ -72,3 +72,4 @@ struct Framebuffer
 EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, int width, int height);
 EditorAPI void FreeFramebuffer   (Framebuffer& framebuffer);
 EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, int width, int height);
+EditorAPI void BindFramebuffer   (Framebuffer* framebuffer); // NULL to set to the main window.
