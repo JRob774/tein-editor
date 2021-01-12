@@ -31,7 +31,7 @@ void Widget::Update ()
 // Widget Manager
 //
 
-EditorAPI void InitWidgetManager ()
+EditorAPI bool InitWidgetManager ()
 {
     if (!CreateWidget<  TilesWidget>()) return false;
     if (!CreateWidget<  ToolsWidget>()) return false;

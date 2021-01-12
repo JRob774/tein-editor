@@ -23,6 +23,7 @@ EditorAPI bool InitDocumentManager ()
 {
     // The size doesn't matter as we resize this per document that is visible.
     CreateFramebuffer(gDocumentManager.documentFramebuffer, 1280,720);
+    return true;
 }
 EditorAPI void QuitDocumentManager ()
 {
@@ -36,8 +37,8 @@ EditorAPI void UpdateDocuments ()
 {
     for (auto& document: gDocumentManager.documents) {
         if (!document->mOpen) continue;
-        std::string label = document->mName + "###" + document->mId;
-        bool visible = ImGui::Begin(label.c_str(), &document->mOpen, ImGuiWindowFlags_NoSavedSettings); // @Improve: Do we want to save documents to settings???
+        std::string label = document->mName + "###Document" + document->mId;
+        bool visible = ImGui::Begin(label.c_str(), &document->mOpen);
         if (visible) document->Update();
         ImGui::End();
     }
