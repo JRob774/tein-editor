@@ -209,7 +209,7 @@ EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, int width, int heigh
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer.texture, 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        LogSingleSystemMessage("[framebuffer]", "Failed to complete framebuffer resize!");
+        LogSingleSystemMessage("framebuffer", "Failed to complete framebuffer resize!");
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
