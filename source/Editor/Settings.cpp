@@ -1,26 +1,45 @@
-EditorAPI void SaveSettings ()
+#include "Settings.hpp"
+
+#include "Logger.hpp"
+#include "Window.hpp"
+
+#include <fstream>
+
+#include <gon/gon.h>
+
+namespace TEIN
 {
-    std::ofstream settings(gSettingsFile, std::ios::trunc);
-    if (!settings.is_open()) {
-        LogSingleSystemMessage("settings", "Failed to save settings!");
-    } else {
-        settings << std::boolalpha;
-        settings << "window_width " << GetCachedWindowWidth() << std::endl;
-        settings << "window_height " << GetCachedWindowHeight() << std:: endl;
-        settings << "fullscreen " << IsWindowFullscreen() << std::endl;
+    namespace
+    {
+        static constexpr const char* k_SettingsFile = "settings.data";
     }
-}
 
-EditorAPI void LoadSettings ()
-{
-    GonObject settings = GonObject::Load(gSettingsFile);
-    gSettings.windowWidth = settings["window_width"].Int(gSettingsDefaultWindowWidth);
-    gSettings.windowHeight = settings["window_height"].Int(gSettingsDefaultWindowHeight);
-    gSettings.fullscreen = settings["fullscreen"].Bool(gSettingsDefaultFullscreen);
-}
+    void Settings::Save ()
+    {
+        std::ofstream settings(k_SettingsFile, std::ios::trunc);
+        if (!settings.is_open()) {
+            Logger::SingleSystemMessage("settings", "Failed to save settings!");
+        } else {
+            settings << std::boolalpha;
+            settings << "window_width "  << Window::GetCachedWidth()  << std::endl;
+            settings << "window_height " << Window::GetCachedHeight() << std::endl;
+            settings << "fullscreen "    << Window::IsFullscreen()    << std::endl;
+        }
+    }
 
-EditorAPI void ResetSettings ()
-{
-    SetWindowSize(gSettingsDefaultWindowWidth, gSettingsDefaultWindowHeight);
-    EnableWindowFullscreen(gSettingsDefaultFullscreen);
+    void Settings::Load ()
+    {
+        GonObject settings = GonObject::Load(k_SettingsFile);
+        g_Settings.m_WindowWidth  = settings["window_width" ].Int (Settings::k_DefaultWindowWidth);
+        g_Settings.m_WindowHeight = settings["window_height"].Int (Settings::k_DefaultWindowHeight);
+        g_Settings.m_Fullscreen   = settings["fullscreen"   ].Bool(Settings::k_DefaultFullscreen);
+    }
+
+    void Settings::Reset ()
+    {
+        Window::SetSize(Settings::k_DefaultWindowWidth, Settings::k_DefaultWindowHeight);
+        Window::EnableFullscreen(Settings::k_DefaultFullscreen);
+    }
+
+    Settings g_Settings;
 }

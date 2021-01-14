@@ -1,4 +1,12 @@
-EditorAPI bool InitEditor      ();
-EditorAPI void QuitEditor      ();
-EditorAPI void DoEditor        ();
-EditorAPI void DoEditorMenuBar ();
+#pragma once
+
+namespace TEIN
+{
+    namespace Editor
+    {
+        bool Init      ();
+        void Quit      ();
+        void Update    ();
+        void DoMenuBar ();
+    }
+}

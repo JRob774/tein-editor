@@ -1,52 +1,50 @@
-//
-// Base Document
-//
+#pragma once
 
-class Document
+#include "Renderer.hpp"
+
+#include <string>
+#include <vector>
+
+#include <imgui/imgui.h>
+
+namespace TEIN
 {
-public:
-    virtual void Update () = 0;
-    virtual void Open   () = 0;
-    virtual void Save   () = 0;
+    class Document // Base type for documents, all custom document types should inherit from this!
+    {
+    public:
+        virtual ~Document   () = default;
+        virtual void Update () = 0;
+        virtual void Open   () = 0;
+        virtual void Save   () = 0;
 
-    ImVec2 GetWindowSize () const; // Note: Only safe to be called inside Update()!
+        ImVec2 GetWindowSize () const; // Note: Only safe to be called inside Update()!
 
-    std::string mName;
-    std::string mId;
-    bool        mOpen;
-};
+        std::string m_Name;
+        std::string m_ID;
+        bool        m_Open;
+    };
 
-//
-// Document Manager
-//
+    class LevelDocument: public Document
+    {
+    public:
+        bool Create (int width, int height);
+        void Update () override;
+        void Open   () override;
+        void Save   () override;
+    private:
+        int m_LevelWidth;
+        int m_LevelHeight;
+    };
 
-struct DocumentManager
-{
-    std::vector<Document*> documents;
-    Framebuffer documentFramebuffer;
-};
+    namespace DocumentManager
+    {
+        extern std::vector<Document*> g_Documents;
+        extern Framebuffer g_DocumentFramebuffer;
 
-Global DocumentManager gDocumentManager;
+        bool Init   ();
+        void Quit   ();
+        void Update ();
 
-EditorAPI void CreateNewLevelDocument (int width, int height);
-
-EditorAPI bool InitDocumentManager ();
-EditorAPI void QuitDocumentManager ();
-
-EditorAPI void UpdateDocuments ();
-
-//
-// Level Document
-//
-
-class LevelDocument: public Document
-{
-public:
-    bool Create (int width, int height);
-    void Update () override;
-    void Open   () override;
-    void Save   () override;
-private:
-    int mLevelWidth;
-    int mLevelHeight;
-};
+        void CreateNewLevelDocument (int width, int height);
+    }
+}

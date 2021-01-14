@@ -1,8 +1,9 @@
 .vs/
 
-binary/**/settings.data
-binary/**/imgui.ini
-binary/**/backups/
+**/settings.data
+**/debug.log
+**/imgui.ini
+**/backups/
 
 binary/**/*.exe
 binary/**/*.exp

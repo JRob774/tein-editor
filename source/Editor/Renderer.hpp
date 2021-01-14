@@ -1,75 +1,83 @@
-//
-// Vertex Buffer
-//
+#pragma once
 
-enum class DrawMode: GLenum
+#include "Utility.hpp"
+
+#include <glad/glad.h>
+
+namespace TEIN
 {
-    Points        = GL_POINTS,
-    LineStrip     = GL_LINE_STRIP,
-    LineLoop      = GL_LINE_LOOP,
-    Lines         = GL_LINES,
-    TriangleStrip = GL_TRIANGLE_STRIP,
-    TriangleFan   = GL_TRIANGLE_FAN,
-    Triangles     = GL_TRIANGLES
-};
+    DECLARE_ENUM(e_DrawMode, DrawMode, GLenum)
+    {
+        Points = GL_POINTS,
+        LineStrip = GL_LINE_STRIP,
+        LineLoop = GL_LINE_LOOP,
+        Lines = GL_LINES,
+        TriangleStrip = GL_TRIANGLE_STRIP,
+        TriangleFan = GL_TRIANGLE_FAN,
+        Triangles = GL_TRIANGLES
+    };
 
-struct Vertex
-{
-    Vec2 position;
-    Vec2 texCoord;
-    Vec4 color;
-};
+    struct Vertex
+    {
+        Vec2 position;
+        Vec2 texCoord;
+        Vec4 color;
+    };
 
-struct VertexBuffer
-{
-    GLuint vao, vbo;
-    std::vector<Vertex> verts;
-};
+    class VertexBuffer
+    {
+    public:
+        void Create ();
+        void Free   ();
+        void Draw   (DrawMode drawMode);
+        void Clear  ();
 
-EditorAPI void CreateVertexBuffer (VertexBuffer& buffer);
-EditorAPI void FreeVertexBuffer   (VertexBuffer& buffer);
-EditorAPI void DrawVertexBuffer   (VertexBuffer& buffer, DrawMode drawMode);
-EditorAPI void ClearVertexBuffer  (VertexBuffer& buffer);
+        GLuint m_VAO, m_VBO;
+        std::vector<Vertex> m_Verts;
+    };
 
-//
-// Shader
-//
+    class Shader
+    {
+    public:
+        void Load (std::string fileName);
+        void Free ();
 
-struct Shader
-{
-    GLuint program;
-};
+        GLuint m_Program;
 
-EditorAPI void LoadShader (Shader& shader, std::string fileName);
-EditorAPI void FreeShader (Shader& shader);
+    private:
+        GLuint Compile (std::string& source, GLenum type);
+        void   Create  (std::stringstream& stream);
+    };
 
-//
-// Texture
-//
+    class Texture
+    {
+    public:
+        void Load (std::string fileName);
+        void Free ();
 
-struct Texture
-{
-    GLuint handle;
-    int width;
-    int height;
-};
+        int m_Width, m_Height;
+        GLuint m_Handle;
 
-EditorAPI void LoadTexture (Texture& texture, std::string fileName);
-EditorAPI void FreeTexture (Texture& texture);
+    private:
+        void Create (int width, int height, int bytesPerPixel, void* rawData);
+    };
 
-//
-// Framebuffer
-//
+    class Framebuffer
+    {
+    public:
+        void Create (int width, int height);
+        void Free   ();
+        void Resize (int width, int height);
 
-struct Framebuffer
-{
-    GLuint handle = GL_NONE; // Framebuffer
-    GLuint texture = GL_NONE; // Color Attachment
-    int width;
-    int height;
-};
+        GLuint m_Handle = GL_NONE;
+        GLuint m_Texture = GL_NONE;
+        int m_Width;
+        int m_Height;
+    };
 
-EditorAPI void CreateFramebuffer (Framebuffer& framebuffer, int width, int height);
-EditorAPI void FreeFramebuffer   (Framebuffer& framebuffer);
-EditorAPI void ResizeFramebuffer (Framebuffer& framebuffer, int width, int height);
-EditorAPI void BindFramebuffer   (Framebuffer* framebuffer); // NULL to set to the main window.
+    namespace Renderer
+    {
+        void Clear (float r, float g, float b, float a = 1.0f);
+        void BindFramebuffer (Framebuffer* framebuffer); // NULL to set to the main window.
+    }
+}

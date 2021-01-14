@@ -1,24 +1,32 @@
+#include "Editor/Utility.hpp"
+#include "Editor/Window.hpp"
+#include "Editor/Settings.hpp"
+#include "Editor/UserInterface.hpp"
+#include "Editor/Logger.hpp"
+#include "Editor/Renderer.hpp"
 #include "Editor/Editor.hpp"
+
+using namespace TEIN;
 
 int main (int argc, char** argv)
 {
     // We defer the termination code so that it is always called no matter how the program exits.
     Defer {
-        QuitEditor();
-        QuitUi();
-        QuitWindow();
+        Editor::Quit();
+        Ui::Quit();
+        Window::Quit();
         SDL_Quit();
     };
 
-    LoadSettings();
+    g_Settings.Load();
 
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        LogSingleSystemMessage("SDL", "Failed to initialize SDL: ", SDL_GetError());
+        Logger::SingleSystemMessage("SDL", "Failed to initialize SDL: ", SDL_GetError());
     } else {
-        if (InitWindow()) {
-            if (InitUi()) {
-                if (InitEditor()) {
-                    ShowWindow(); // We show window after everything is setup and ready.
+        if (Window::Init()) {
+            if (Ui::Init()) {
+                if (Editor::Init()) {
+                    Window::Show(); // We show window after everything is setup and ready.
 
                     bool running = true;
                     while (running) {
@@ -29,7 +37,7 @@ int main (int argc, char** argv)
                                     switch (event.key.keysym.sym) {
                                         case (SDLK_RETURN): if (!(SDL_GetModState()&KMOD_ALT)) break;
                                         case (SDLK_F11): {
-                                            EnableWindowFullscreen(!IsWindowFullscreen()); // Toggle fullscreen.
+                                            Window::EnableFullscreen(!Window::IsFullscreen()); // Toggle fullscreen.
                                         } break;
                                     }
                                 } break;
@@ -39,23 +47,22 @@ int main (int argc, char** argv)
                                 // Special case we need to handle for quitting, because of ImGui, which can have multiple windows/viewports.
                                 case (SDL_WINDOWEVENT): {
                                     if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
-                                        if (event.window.windowID == SDL_GetWindowID(GetInternalWindow())) {
+                                        if (event.window.windowID == SDL_GetWindowID(Window::GetInternalWindow())) {
                                             running = false;
                                         }
                                     }
                                 } break;
                             }
-                            HandleUiEvents(event);
+                            Ui::HandleEvents(event);
                         }
 
-                        glClearColor(0,0,0,1);
-                        glClear(GL_COLOR_BUFFER_BIT);
+                        Renderer::Clear(0,0,0);
 
-                        BeginUiFrame();
-                        DoEditor();
-                        EndUiFrame();
+                        Ui::BeginFrame();
+                        Editor::Update();
+                        Ui::EndFrame();
 
-                        RefreshWindow();
+                        Window::Refresh();
                     }
                 }
             }

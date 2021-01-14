@@ -1,11 +1,22 @@
-EditorAPI bool InitUi ();
-EditorAPI void QuitUi ();
+#pragma once
 
-EditorAPI void HandleUiEvents (const SDL_Event& event);
+#include <string>
 
-EditorAPI void BeginUiFrame ();
-EditorAPI void EndUiFrame ();
+#include <imgui/imgui.h>
+#include <SDL2/SDL.h>
 
-// Wrap ImGui::ImageButton with getting a texture from the asset manager and using it.
-// If a texture cannot be received from the asset manager then NULL is passed to ImGui.
-EditorAPI bool DoImageButton (std::string imageName, ImVec2 size);
+namespace TEIN
+{
+    namespace Ui
+    {
+        bool Init ();
+        void Quit ();
+        void HandleEvents (const SDL_Event& event);
+        void BeginFrame ();
+        void EndFrame ();
+
+        // Wrap ImGui::ImageButton with getting a texture from the asset manager and using it.
+        // If a texture cannot be received from the asset manager then NULL is passed to ImGui.
+        bool DoImageButton (std::string imageName, ImVec2 size);
+    }
+}

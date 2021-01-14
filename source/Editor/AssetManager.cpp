@@ -1,53 +1,68 @@
-AssetManager::AssetManager ()
-{
-    assetBasePath = GetExecutablePath();
+#include "AssetManager.hpp"
 
-    // If there is a file in the current working directory specifying the assets relative path
-    // then we append that to the executable path, otherwise we just expect the exe directory.
-    std::ifstream file("asset_path.txt", std::ios::in);
-    if (file.is_open()) {
-        std::string assetPath;
-        std::getline(file, assetPath);
-        assetBasePath.append(assetPath);
-    } else {
-        assetBasePath.append("assets");
+#include "Utility.hpp"
+
+#include <fstream>
+
+namespace TEIN
+{
+    void AssetData::Load (std::string fileName)
+    {
+        data = GonObject::Load(fileName);
     }
-}
-
-EditorAPI void FreeAssets ()
-{
-    for (auto& [name,asset]: gAssetManager.assets) {
-        asset->Free();
-        delete asset;
+    void AssetData::Free ()
+    {
+        // Nothing...
     }
-    gAssetManager.assets.clear();
-}
 
-// Asset Types
+    void AssetShader::Load (std::string fileName)
+    {
+        data.Load(fileName);
+    }
+    void AssetShader::Free ()
+    {
+        data.Free();
+    }
 
-void AssetData::Load (std::string fileName)
-{
-    data = GonObject::Load(fileName);
-}
-void AssetData::Free ()
-{
-    // Nothing...
-}
+    void AssetTexture::Load (std::string fileName)
+    {
+        data.Load(fileName);
+    }
+    void AssetTexture::Free ()
+    {
+        data.Free();
+    }
 
-void AssetShader::Load (std::string fileName)
-{
-    LoadShader(data, fileName);
-}
-void AssetShader::Free ()
-{
-    FreeShader(data);
-}
+    namespace AssetManager
+    {
+        std::map<std::string,Asset*> g_Assets;
+        std::filesystem::path g_AssetBasePath;
 
-void AssetTexture::Load (std::string fileName)
-{
-    LoadTexture(data, fileName);
-}
-void AssetTexture::Free ()
-{
-    FreeTexture(data);
+        bool Init ()
+        {
+            g_AssetBasePath = Utility::GetExecutablePath();
+
+            // If there is a file in the current working directory specifying the assets relative path
+            // then we append that to the executable path, otherwise we just expect the exe directory.
+            std::ifstream file(g_AssetBasePath / "asset_path.txt", std::ios::in);
+            if (file.is_open()) {
+                std::string assetPath;
+                std::getline(file, assetPath);
+                g_AssetBasePath.append(assetPath);
+            } else {
+                g_AssetBasePath.append("assets");
+            }
+            return true;
+        }
+        void Quit ()
+        {
+            for (auto& [name,asset]: g_Assets) {
+                if (asset) {
+                    asset->Free();
+                }
+                delete asset;
+            }
+            g_Assets.clear();
+        }
+    }
 }

@@ -1,112 +1,92 @@
-//
-// Base Widget
-//
+#pragma once
 
-class Widget
+#include "Utility.hpp"
+
+#include <string>
+#include <map>
+#include <vector>
+
+namespace TEIN
 {
-public:
-             Widget (std::string name);
-    virtual ~Widget ();
-    virtual bool Create ();
-    virtual void Delete ();
-            void Update ();
+    class Widget // Base type for widgets, all custom widget types should inherit from this!
+    {
+    public:
+        virtual ~Widget     () = default;
+        virtual bool Create ();
+        virtual void Delete ();
+                void Update ();
 
-    std::string mName;
-    bool        mOpen;
+        std::string m_Name;
+        bool        m_Open;
 
-protected:
-    virtual void InternalUpdate () = 0;
-};
+    protected:
+        virtual void InternalUpdate () = 0;
+    };
 
-//
-// Widget Manager
-//
+    typedef U32 TileID;
 
-struct WidgetManager
-{
-    std::vector<Widget*> widgets;
-};
+    struct Tile
+    {
+        std::string name, tooltip;
+        int layer;
+        std::vector<TileID> ids;
+    };
 
-Global WidgetManager gWidgetManager;
+    struct Category
+    {
+        std::string name;
+        std::vector<std::string> tiles;
+    };
 
-EditorAPI bool InitWidgetManager ();
-EditorAPI void QuitWidgetManager ();
+    class TilesWidget: public Widget
+    {
+    public:
+        bool Create () override;
+    private:
+        void InternalUpdate () override;
 
-EditorAPI void UpdateWidgets ();
+        std::map<std::string,Tile>     m_Tiles;
+        std::map<std::string,Category> m_Categories;
+        std::vector<std::string>       m_CategoryList;
+    };
 
-template<typename T>
-EditorAPI bool CreateWidget ()
-{
-    gWidgetManager.widgets.push_back(new T);
-    return gWidgetManager.widgets.back()->Create();
+    class ToolsWidget: public Widget
+    {
+    public:
+        bool Create () override;
+    private:
+        void InternalUpdate () override;
+    };
+
+    class LayersWidget: public Widget
+    {
+    public:
+        bool Create () override;
+    private:
+        void InternalUpdate () override;
+    };
+
+    class HistoryWidget: public Widget
+    {
+    public:
+        bool Create () override;
+    private:
+        void InternalUpdate () override;
+    };
+
+    namespace WidgetManager
+    {
+        extern std::vector<Widget*> g_Widgets;
+
+        bool Init   ();
+        void Quit   ();
+        void Update ();
+
+        template<typename T>
+        bool CreateWidget ()
+        {
+            g_Widgets.push_back(new T);
+            return g_Widgets.back()->Create();
+        }
+    }
 }
-
-//
-// Tiles Widget
-//
-
-struct Tile
-{
-    std::string name, tooltip;
-    LevelLayer layer;
-    std::vector<TileID> ids;
-};
-
-struct Category
-{
-    std::string name;
-    std::vector<std::string> tiles;
-};
-
-class TilesWidget: public Widget
-{
-public:
-     TilesWidget ();
-    ~TilesWidget ();
-    bool  Create () override;
-private:
-    std::map<std::string,Tile>     mTiles;
-    std::map<std::string,Category> mCategories;
-    std::vector<std::string>       mCategoryList;
-
-    void InternalUpdate () override;
-};
-
-//
-// Tools Widget
-//
-
-class ToolsWidget: public Widget
-{
-public:
-     ToolsWidget ();
-    ~ToolsWidget ();
-private:
-    void InternalUpdate () override;
-};
-
-//
-// Layers Widget
-//
-
-class LayersWidget: public Widget
-{
-public:
-     LayersWidget ();
-    ~LayersWidget ();
-private:
-    void InternalUpdate () override;
-};
-
-//
-// History Widget
-//
-
-class HistoryWidget: public Widget
-{
-public:
-     HistoryWidget ();
-    ~HistoryWidget ();
-private:
-    void InternalUpdate () override;
-};

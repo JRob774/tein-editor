@@ -1,18 +1,24 @@
-Global constexpr const char* gSettingsFile = "settings.data";
+#pragma once
 
-Global constexpr int  gSettingsDefaultWindowWidth = gWindowStartWidth;
-Global constexpr int  gSettingsDefaultWindowHeight = gWindowStartHeight;
-Global constexpr bool gSettingsDefaultFullscreen = true;
+#include "Window.hpp"
 
-struct Settings
+namespace TEIN
 {
-    int windowWidth;
-    int windowHeight;
-    bool fullscreen;
-};
+    class Settings
+    {
+    public:
+        static inline constexpr int  k_DefaultWindowWidth = Window::k_StartWidth;
+        static inline constexpr int  k_DefaultWindowHeight = Window::k_StartHeight;
+        static inline constexpr bool k_DefaultFullscreen = true;
 
-Global Settings gSettings;
+        int  m_WindowWidth;
+        int  m_WindowHeight;
+        bool m_Fullscreen;
 
-EditorAPI void SaveSettings  ();
-EditorAPI void LoadSettings  ();
-EditorAPI void ResetSettings ();
+        void Save  ();
+        void Load  ();
+        void Reset ();
+    };
+
+    extern Settings g_Settings;
+}

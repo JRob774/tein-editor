@@ -1,46 +1,14 @@
-// Some more descriptive keywords for static depending on the context being used.
-#define Persistent static
-#define Internal static
-#define Global static
+#pragma once
 
-// We use static linkage for faster compilation times as we use unity/jumbo build.
-// It's a define so that if we decide to change this then the process is easy.
-#define EditorAPI static
+#include <cstdlib>
+#include <cstdint>
 
-typedef  uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef   int8_t  S8;
-typedef  int16_t S16;
-typedef  int32_t S32;
-typedef  int64_t S64;
+#include <filesystem>
 
-// @Refactor: Do we need all of the functionality of glm? It's quite a large library
-// and we are probably only going to use a small subset so we might want to just
-// implement that functionality ourselves (for now it is just useful to have though).
-typedef glm::vec2 Vec2;
-typedef glm::vec3 Vec3;
-typedef glm::vec4 Vec4;
-typedef glm::mat2 Mat2;
-typedef glm::mat3 Mat3;
-typedef glm::mat4 Mat4;
+#include <string>
+#include <vector>
 
-struct Rect
-{
-    float x,y,w,h;
-
-    inline bool operator== (const Rect& rhs) const {
-        return ((x == rhs.x) && (y == rhs.y) && (w == rhs.w) && (h == rhs.h));
-    }
-    inline bool operator!= (const Rect& rhs) const {
-        return !(operator==(rhs));
-    }
-};
-
-// We wrap the C functions malloc and free because C++ does not implicitly cast from void* so this macro handles the cast.
-#define Allocate(t,sz) static_cast<t*>(malloc((sz)*sizeof(t)))
-#define Deallocate(pt) free((pt))
+#include <glm/glm.hpp>
 
 // C++ implementation of defer functionality. This can be used to defer blocks of
 // code to be executed during exit of the current scope. Useful for freeing any
@@ -59,64 +27,92 @@ const auto& DeferJoin(defer, __COUNTER__) = DeferHelp() + [&]()
 const auto& DeferJoin(defer, __LINE__) = DeferHelp() + [&]()
 #endif
 
-template<typename T>
-struct DeferType
-{
-    T lambda;
+// A macro that wraps some boilerplate for generating a nicely scoped enumeration.
 
-    DeferType (T lambda): lambda(lambda) {}
-   ~DeferType () { lambda(); }
+#define DECLARE_ENUM(scope, name, type) \
+namespace scope { enum name: type; }    \
+typedef type name;                      \
+enum scope::name: type
 
-    // No copy!
-    DeferType& operator= (const DeferType& d) = delete;
-    DeferType (const DeferType& d) = delete;
-};
-struct DeferHelp
+namespace TEIN
 {
+    typedef  uint8_t  U8;
+    typedef uint16_t U16;
+    typedef uint32_t U32;
+    typedef uint64_t U64;
+    typedef   int8_t  S8;
+    typedef  int16_t S16;
+    typedef  int32_t S32;
+    typedef  int64_t S64;
+
+    // @Refactor: Do we need all of the functionality of glm? It's quite a large library
+    // and we are probably only going to use a small subset so we might want to just
+    // implement that functionality ourselves (for now it is just useful to have though).
+    typedef glm::vec2 Vec2;
+    typedef glm::vec3 Vec3;
+    typedef glm::vec4 Vec4;
+    typedef glm::mat2 Mat2;
+    typedef glm::mat3 Mat3;
+    typedef glm::mat4 Mat4;
+
+    struct Rect
+    {
+        float x,y,w,h;
+
+        inline bool operator== (const Rect& rhs) const {
+            return ((x == rhs.x) && (y == rhs.y) && (w == rhs.w) && (h == rhs.h));
+        }
+        inline bool operator!= (const Rect& rhs) const {
+            return !(operator==(rhs));
+        }
+    };
+
+    // Internal implementation details of the Defer macro.
     template<typename T>
-    DeferType<T> operator+ (T type) { return type; }
-};
+    struct DeferType
+    {
+        DeferType (T lambda): lambda(lambda) {}
+       ~DeferType () { lambda(); }
+        // No copy!
+        DeferType& operator= (const DeferType& d) = delete;
+        DeferType (const DeferType& d) = delete;
 
-// A macro for generating bitflag operators for enumerations as they do not work by default in C++.
-// The implementation of this macro is based off of winnt.h's DEFINE_ENUM_FLAG_OPERATORS() macro.
+        T lambda;
+    };
+    struct DeferHelp
+    {
+        template<typename T>
+        DeferType<T> operator+ (T type) { return type; }
+    };
 
-template<size_t S> struct EnumIntegralSizeType;
+    namespace Utility
+    {
+        // We wrap the C functions malloc and free because C++ does not
+        // implicitly cast from void* so this handles the cast for us.
+        template<typename T>
+        inline T* Allocate (size_t count)
+        {
+            return static_cast<T*>(malloc(count*sizeof(T)));
+        }
+        inline void Deallocate (void* ptr)
+        {
+            free(ptr);
+        }
 
-template<> struct EnumIntegralSizeType<1> { typedef  S8 type; };
-template<> struct EnumIntegralSizeType<2> { typedef S16 type; };
-template<> struct EnumIntegralSizeType<4> { typedef S32 type; };
-template<> struct EnumIntegralSizeType<8> { typedef S64 type; };
+        std::vector<U8> ReadEntireBinaryFile (std::string fileName);
+        std::string ReadEntireTextFile (std::string fileName);
 
-template<typename T> struct GetEnumIntegralSizeType
-{
-    typedef typename EnumIntegralSizeType<sizeof(T)>::type type;
-};
+        void TokenizeString (const std::string& str, const char* delims, std::vector<std::string>& tokens);
 
-#define GenerateEnumBitflagOperators(t)                                                                                              \
-inline t& operator |= (t& a, t b) { return (t&)( (GetEnumIntegralSizeType<t>::type&)(a) |= (GetEnumIntegralSizeType<t>::type)(b)); } \
-inline t& operator &= (t& a, t b) { return (t&)( (GetEnumIntegralSizeType<t>::type&)(a) &= (GetEnumIntegralSizeType<t>::type)(b)); } \
-inline t& operator ^= (t& a, t b) { return (t&)( (GetEnumIntegralSizeType<t>::type&)(a) ^= (GetEnumIntegralSizeType<t>::type)(b)); } \
-inline t  operator |  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::type )(a) |  (GetEnumIntegralSizeType<t>::type)(b)); } \
-inline t  operator &  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::type )(a) &  (GetEnumIntegralSizeType<t>::type)(b)); } \
-inline t  operator ^  (t  a, t b) { return (t )( (GetEnumIntegralSizeType<t>::type )(a) ^  (GetEnumIntegralSizeType<t>::type)(b)); } \
-inline t  operator ~  (t  a     ) { return (t )(~(GetEnumIntegralSizeType<t>::type )(a));                                          }
+        std::string FormatString (const char* format, ...);
+        std::string FormatString_V (const char* format, va_list args);
 
-///////////////////////
-// Utility Functions //
-///////////////////////
+        bool StringCaseInsensitiveCompare (const std::string& a, const std::string& b);
 
-EditorAPI std::vector<U8> ReadEntireBinaryFile (std::string fileName);
-EditorAPI std::string ReadEntireTextFile (std::string fileName);
-
-EditorAPI void TokenizeString (const std::string& str, const char* delims, std::vector<std::string>& tokens);
-
-EditorAPI std::string FormatString (const char* format, ...);
-EditorAPI std::string FormatString_V (const char* format, va_list args);
-
-EditorAPI bool StringCaseInsensitiveCompare (const std::string& a, const std::string& b);
-
-// These functions have platform-specific implementations in the source file.
-EditorAPI std::filesystem::path GetExecutablePath ();
-EditorAPI std::filesystem::path GetSaveDataPath ();
-EditorAPI bool RunExecutable (std::string exe);
-EditorAPI void LoadWebpage (std::string url);
+        // These functions have platform-specific implementations in the source file.
+        std::filesystem::path GetExecutablePath ();
+        std::filesystem::path GetSaveDataPath ();
+        bool RunExecutable (std::string exe);
+        void LoadWebpage (std::string url);
+    }
+}
